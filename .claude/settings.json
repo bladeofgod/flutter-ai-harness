@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Edit(app/**)",
+      "Edit(protos/**)",
+      "Edit(docs/**)",
+      "Edit(scripts/**)",
+      "Edit(CLAUDE.md)",
+      "Edit(AGENTS.md)",
+      "Edit(Makefile)",
+      "Edit(README.md)",
+      "Edit(.mcp.json)",
+      "Edit(.claude/**)",
+      "Bash(flutter *)",
+      "Bash(dart *)",
+      "Bash(fvm *)",
+      "Bash(melos *)",
+      "Bash(git *)",
+      "Bash(make *)",
+      "Bash(marionette_mcp *)",
+      "Bash(protoc *)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(*.jks)",
+      "Read(*.keystore)",
+      "Read(*.p12)",
+      "Read(*.mobileprovision)",
+      "Edit(*.jks)",
+      "Edit(*.keystore)",
+      "Edit(*.p12)",
+      "Edit(*.mobileprovision)",
+      "Edit(app/**/pubspec.lock)",
+      "Edit(app/**/*.g.dart)",
+      "Edit(app/**/*.freezed.dart)",
+      "Edit(app/packages/app_data/lib/generated/**)",
+      "Bash(rm -rf *)"
+    ]
+  }
+}

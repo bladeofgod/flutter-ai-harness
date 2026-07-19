@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+STAGED_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/flutter-ai-harness-staged.XXXXXX")"
+cleanup() {
+  rm -r -- "$STAGED_ROOT"
+}
+trap cleanup EXIT
+
+while IFS= read -r file; do
+  [[ -n "$file" ]] || continue
+  echo "[pre-commit] 检查格式：$file"
+  staged_file="$STAGED_ROOT/$file"
+  mkdir -p "$(dirname "$staged_file")"
+  git show ":$file" > "$staged_file"
+  bash scripts/dart-tool.sh format --output=none --set-exit-if-changed "$staged_file"
+done < <(git diff --cached --name-only --diff-filter=ACMR | rg '\.dart$' || true)
+
+proto_changed="$(git diff --cached --name-only | rg '\.proto$' || true)"
+if [[ -n "$proto_changed" ]]; then
+  make proto-check
+  generated_changed="$(git diff --cached --name-only | rg '^app/packages/app_data/lib/generated/.*\.dart$' || true)"
+  if [[ -z "$generated_changed" ]]; then
+    echo "错误：Proto 已变更，但生成的 Dart 文件未 Stage。请先执行 make proto。" >&2
+    exit 1
+  fi
+fi
+
+echo "[pre-commit] 通过。"

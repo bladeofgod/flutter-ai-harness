@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+echo "[pre-push] 静态分析"
+make analyze
+
+echo "[pre-push] 仓库边界 lint"
+make lint
+
+echo "[pre-push] 通过。"

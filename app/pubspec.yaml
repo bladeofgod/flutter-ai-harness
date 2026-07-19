@@ -1,0 +1,46 @@
+name: flutter_ai_harness_workspace
+description: Flutter AI Harness 工作区
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+workspace:
+  - apps/demo
+  - packages/app_core
+  - packages/app_data
+  - packages/app_ui
+  - packages/app_im
+  - packages/app_rtc
+  - packages/app_features
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  melos: ^7.4.1
+
+melos:
+  packages:
+    - apps/*
+    - packages/*
+  scripts:
+    analyze:
+      exec: dart analyze --fatal-infos
+      description: 对所有 Package 执行严格静态分析
+    format:
+      exec: dart format --output=none --set-exit-if-changed .
+      description: 只读格式检查
+    test:
+      run: bash ../scripts/quality/run-tests.sh
+      description: 运行当前已有测试；没有测试时安全跳过
+    lint:
+      run: bash ../scripts/lint/repository-boundaries.sh
+      description: 检查跨 Feature 引用、API 注入和路由边界
+    lint-test:
+      run: bash ../scripts/lint/test-repository-boundaries.sh
+      description: 运行仓库边界门禁 Fixture
+    hook-test:
+      run: bash ../scripts/git-hooks/test-pre-commit.sh
+      description: 验证 pre-commit 使用 Git 暂存内容
+    check:
+      run: melos run format && melos run analyze && melos run lint && melos run lint-test && melos run hook-test && melos run test
+      description: 本地完整质量门禁

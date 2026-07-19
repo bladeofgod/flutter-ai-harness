@@ -1,0 +1,8 @@
+name: app_core
+description: 平台无关基础设施包边界
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace

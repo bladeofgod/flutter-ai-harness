@@ -1,0 +1,11 @@
+name: app_data
+description: Domain Entity、协议与持久化适配包边界
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  app_core: any

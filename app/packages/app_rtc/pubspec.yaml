@@ -1,0 +1,11 @@
+name: app_rtc
+description: RTC 契约、Bridge 与生命周期基础设施包边界
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  app_core: any

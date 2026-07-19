@@ -1,0 +1,12 @@
+name: app_ui
+description: 设计 Token 与无业务 UI 原语包边界
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter

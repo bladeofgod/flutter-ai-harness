@@ -1,0 +1,17 @@
+name: app_features
+description: Feature、跨 Feature API、Controller、页面与路由包边界
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  app_core: any
+  app_data: any
+  app_im: any
+  app_rtc: any
+  app_ui: any
+  flutter:
+    sdk: flutter

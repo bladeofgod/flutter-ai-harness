@@ -1,0 +1,30 @@
+# 本地环境与敏感信息
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+
+# 编辑器与系统文件
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Dart 与 Flutter
+.dart_tool/
+.fvm/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+pubspec_overrides.yaml
+
+# 原生构建产物
+**/android/.gradle/
+**/android/local.properties
+**/ios/Pods/
+**/ios/.symlinks/
