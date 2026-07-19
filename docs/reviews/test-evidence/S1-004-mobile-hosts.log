@@ -1,0 +1,235 @@
+## Command
+
+```text
+bash -c 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                           1353.7s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```
+
+## Command
+
+```text
+bash -c 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Building com.example.demoApp for device (ios)...
+Warning: Missing build name (CFBundleShortVersionString).
+Warning: Missing build number (CFBundleVersion).
+Action Required: You must set a build name and number in the pubspec.yaml file version field before submitting to the App Store.
+Running Xcode build...                                          
+Xcode build done.                                            2.4s
+Failed to build iOS app
+Uncategorized (Xcode): Unable to find a destination matching the provided destination specifier:
+		{ generic:1, platform:iOS }
+
+	Ineligible destinations for the "Runner" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+
+Encountered error while building for device.
+
+```
+
+## Command
+
+```text
+make test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:03 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:04 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:04 +0: renders the neutral harness shell                                                                                                                                                            00:05 +0: renders the neutral harness shell                                                                                                                                                            00:05 +1: renders the neutral harness shell                                                                                                                                                            00:05 +1: main reuses the Flutter test binding                                                                                                                                                         00:05 +2: main reuses the Flutter test binding                                                                                                                                                         00:05 +2: All tests passed!                                                                                                                                                                            
+
+```
+
+## Command
+
+```text
+bash -c 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Building com.example.demoApp for device (ios)...
+Running Xcode build...                                          
+Xcode build done.                                            4.6s
+Failed to build iOS app
+Uncategorized (Xcode): Unable to find a destination matching the provided destination specifier:
+		{ generic:1, platform:iOS }
+
+	Ineligible destinations for the "Runner" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+
+Encountered error while building for device.
+
+```
+
+## Command
+
+```text
+bash -c 'xcodebuild -version && xcodebuild -showsdks'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Xcode 26.5
+Build version 17F42
+DriverKit SDKs:
+	DriverKit 25.5                	-sdk driverkit25.5
+
+iOS SDKs:
+	iOS 26.5                      	-sdk iphoneos26.5
+
+iOS Simulator SDKs:
+	Simulator - iOS 26.5          	-sdk iphonesimulator26.5
+
+macOS SDKs:
+	macOS 26.5                    	-sdk macosx26.5
+	macOS 26.5                    	-sdk macosx26.5
+
+tvOS SDKs:
+	tvOS 26.5                     	-sdk appletvos26.5
+
+tvOS Simulator SDKs:
+	Simulator - tvOS 26.5         	-sdk appletvsimulator26.5
+
+visionOS SDKs:
+	visionOS 26.5                 	-sdk xros26.5
+
+visionOS Simulator SDKs:
+	Simulator - visionOS 26.5     	-sdk xrsimulator26.5
+
+watchOS SDKs:
+	watchOS 26.5                  	-sdk watchos26.5
+
+watchOS Simulator SDKs:
+	Simulator - watchOS 26.5      	-sdk watchsimulator26.5
+
+
+```
+
+## Command
+
+```text
+bash -c 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+12 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                             37.0s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```

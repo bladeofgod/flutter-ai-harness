@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="${REPOSITORY_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+TOOL_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="${REPOSITORY_ROOT:-$TOOL_ROOT}"
 FEATURE_ROOT="$ROOT/app/packages/app_features/lib"
 fail=0
 
@@ -26,6 +27,24 @@ api_hits="$(rg -n -U 'Get\.find[[:space:]]*<[A-Za-z0-9_]+Api>[[:space:]]*\([^)]*
 if [[ -n "$api_hits" ]]; then
   echo "错误：Widget/Page 必须通过 Controller Facade 使用 API："
   echo "$api_hits"
+  fail=1
+fi
+
+echo "[lint] 检查 Controller 是否通过服务定位器获取 API"
+controller_api_hits="$(rg -n -U 'Get\.find[[:space:]]*<[A-Za-z0-9_]+Api>[[:space:]]*\(' "$FEATURE_ROOT" \
+  -g '**/controllers/**/*.dart' 2>/dev/null || true)"
+if [[ -n "$controller_api_hits" ]]; then
+  echo "错误：Controller 必须通过构造函数接收 API："
+  echo "$controller_api_hits"
+  fail=1
+fi
+
+echo "[lint] 检查壳工程是否引用 Feature 内部实现"
+shell_feature_hits="$(rg -n "^[[:space:]]*(import|export|part)[[:space:]]+['\"][^'\"]*(package:app_features/(feature_|src/)|app_features/(lib/)?feature_)" \
+  "$ROOT/app/apps" -g '*.dart' 2>/dev/null || true)"
+if [[ -n "$shell_feature_hits" ]]; then
+  echo "错误：壳工程只能引用 app_features 的公开入口："
+  echo "$shell_feature_hits"
   fail=1
 fi
 
@@ -58,6 +77,18 @@ if [[ -n "$proto_hits" ]]; then
   echo "错误：公共 API 和 Controller 不得 import 生成协议类型："
   echo "$proto_hits"
   fail=1
+fi
+
+echo "[lint] 检查 Workspace Package 依赖方向"
+if [[ -n "${PACKAGE_DEPS_JSON:-}" ]]; then
+  if ! bash "$TOOL_ROOT/scripts/dart-tool.sh" run tool/check_package_dependencies.dart \
+    --input "$PACKAGE_DEPS_JSON"; then
+    fail=1
+  fi
+else
+  if ! bash "$TOOL_ROOT/scripts/dart-tool.sh" run tool/check_package_dependencies.dart; then
+    fail=1
+  fi
 fi
 
 if [[ "$fail" -ne 0 ]]; then

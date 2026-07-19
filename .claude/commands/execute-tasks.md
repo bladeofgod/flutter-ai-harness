@@ -27,7 +27,7 @@ argument-hint: "<task-card-path>..."
 2. 格式化触碰的 Dart 文件。
 3. 运行受影响静态分析、聚焦测试和 `make lint`。
 4. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
-5. 把完整命令输出写入 `docs/reviews/test-evidence/<task-basename>.log`。
+5. 通过 `scripts/quality/capture-evidence.sh` 把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-basename>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得直接重定向原始 stdout/stderr 到入库证据。
 6. 同目录存在 `.spec.yaml` 时运行 `spec-auditor`。
 7. 运行 `reviewer`，写入 `docs/reviews/execute-<task-basename>.md`。
 8. 使用 `fix-review-findings` 修复 P0/P1，重新验证并复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。

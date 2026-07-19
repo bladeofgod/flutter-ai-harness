@@ -2,11 +2,12 @@
 
 权威语义见 `CLAUDE.md`：Controller 通过构造函数接收必需 API，服务定位器只用于装配点或全局服务。
 
-仓库 lint 应在 Feature 的 `pages/` 和 `widgets/` 中识别：
+仓库 lint 应在 Feature 的 `pages/` 和 `widgets/` 中识别直接持有或调用，并在 `controllers/` 中拒绝任何 `Get.find<XxxApi>()`：
 
 ```dart
 Get.find<SomeApi>().call();       // UI 直接调用
 final api = Get.find<SomeApi>();  // UI 持有 API
+final api = Get.find<SomeApi>();  // Controller 服务定位，始终禁止
 ```
 
 允许的装配点把解析后的 API 直接传入 Controller 或模块工厂：

@@ -42,12 +42,24 @@ make test         # 包测试
 make lint         # 仓库架构门禁
 make lint-test    # 仓库架构门禁 Fixture
 make hook-test    # pre-commit 暂存区回归测试
-make check        # format + analyze + lint + 门禁自测 + test
+make evidence-lint # 测试证据脱敏检查
+make evidence-test # 证据采集与门禁 Fixture
+make harness-check # AI Harness 配置、引用、链接与宿主检查
+make harness-test  # Harness Check 失败 Fixture
+make proto-check   # Proto 与生成产物同步检查
+make check         # 完整本地门禁
 ```
 
 开发过程中优先运行聚焦测试。修改共享 Entity、公共包 API、DI 注册、路由、协议生成或平台 Bridge 时扩大验证范围。
 
-`docs/reviews/test-evidence/` 中的命令日志属于可追溯交付证据，需要随对应任务提交。日志不得包含 Token、环境变量值、签名信息或用户数据。
+`docs/reviews/test-evidence/` 中的命令日志属于可追溯交付证据，需要随对应任务提交。必须通过以下入口采集，首条命令省略 `--append`，后续命令使用 `--append`：
+
+```bash
+bash scripts/quality/capture-evidence.sh <output.log> -- <command> [args...]
+bash scripts/quality/capture-evidence.sh --append <output.log> -- <command> [args...]
+```
+
+采集器保留命令、退出码和输出，将仓库/用户目录替换为稳定占位符，并遮蔽常见凭据形态。原始日志只存在于临时目录；不得绕过采集器直接提交 stdout/stderr。自由文本中的用户数据仍需调用方主动避免，并由 Review 复核。
 
 ## 任务生命周期
 
@@ -79,7 +91,13 @@ make marionette-install
 
 Claude Code 首次发现项目级 MCP Server 时需要用户批准。Demo 的 `main.dart` 只在 Debug 模式初始化 `MarionetteBinding` 并收集 `debugPrint` 日志；Profile 和 Release 使用标准 Flutter Binding。
 
-平台壳工程建立后，用 `flutter run` 启动 Demo，并把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。连接顺序必须是 `connect`、检查或交互、`disconnect`。自定义 UI 组件出现后，再按 Marionette 官方配置补充可交互组件识别、文本提取、Semantics 和日志收集。
+Demo 已包含 Android/iOS 中立宿主。Android Application ID 为 `com.example.demo_app`，iOS Bundle ID 为 `com.example.demoApp`；二者都是模板占位，发布前必须替换，且不得提交本机签名 Team。启动命令：
+
+```bash
+TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run
+```
+
+把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。连接顺序必须是 `connect`、检查或交互、`disconnect`。Marionette 操作 Flutter Widget Tree，不替代系统原生界面自动化。自定义 UI 组件出现后，再按 Marionette 官方配置补充可交互组件识别、文本提取、Semantics 和日志收集。
 
 ## Commit
 

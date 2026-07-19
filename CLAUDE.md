@@ -55,16 +55,13 @@ app/
 1. Domain Entity 是唯一允许跨架构层传递的数据类型。
 2. Proto Message 和数据库 Row 必须留在各自的数据适配层。
 3. 每个包只定义自己需要的接口，不建立中央万能契约包。
-4. 依赖方向保持单向：
+4. 依赖方向保持单向。下图中 `A -> B` 表示 Package A 可以 import Package B：
 
    ```text
-   app_core / app_ui
-           ↓
-   app_data / app_im / app_rtc
-           ↓
-   app_features
-           ↓
-   apps/demo
+   apps/demo -> app_features, app_data, app_im, app_rtc, app_core, app_ui
+   app_features -> app_data, app_im, app_rtc, app_core, app_ui
+   app_data / app_im / app_rtc -> app_core
+   app_core / app_ui -> 不依赖其他 Workspace Package
    ```
 
 5. Feature 不得 import 其他 Feature 的内部实现。
@@ -165,6 +162,7 @@ make format
 make analyze
 make test
 make lint
+make harness-check
 make check
 ```
 

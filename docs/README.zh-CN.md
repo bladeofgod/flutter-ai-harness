@@ -32,16 +32,13 @@ flutter-ai-harness/
 └── app/                    通过 Demo 迭代形成的 Flutter Workspace
 ```
 
-规划的 Package 依赖方向如下：
+规划的 Package 依赖方向如下，`A -> B` 表示 Package A 可以 import Package B：
 
 ```text
-app_core / app_ui
-        ↓
-app_data / app_im / app_rtc
-        ↓
-app_features
-        ↓
-apps/demo
+apps/demo -> app_features, app_data, app_im, app_rtc, app_core, app_ui
+app_features -> app_data, app_im, app_rtc, app_core, app_ui
+app_data / app_im / app_rtc -> app_core
+app_core / app_ui -> 不依赖其他 Workspace Package
 ```
 
 ## 工作流
@@ -74,6 +71,8 @@ make check
 ```
 
 `make bootstrap` 会解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口；产品说明和 Figma 设计确认后再开始产品 UI 实现。
+
+中立 Demo 已包含 Android/iOS 宿主，可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
 

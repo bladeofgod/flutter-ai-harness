@@ -12,6 +12,22 @@
 | `app_features` | Feature、Controller、Page、Route 和跨 Feature API 抽象 | 全局启动或原生工程配置 |
 | `apps/demo` | 全局服务、依赖装配、Router 创建和 `runApp` | Feature 内部实现 |
 
+## Package 依赖矩阵
+
+`A -> B` 表示 Package A 可以在 `dependencies` 或 `dev_dependencies` 中声明并 import Package B。表中未列出的 Workspace 依赖均禁止：
+
+| Package | 允许直接依赖的 Workspace Package |
+| --- | --- |
+| `app_core` | 无 |
+| `app_ui` | 无 |
+| `app_data` | `app_core` |
+| `app_im` | `app_core` |
+| `app_rtc` | `app_core` |
+| `app_features` | `app_core`、`app_data`、`app_im`、`app_rtc`、`app_ui` |
+| `apps/demo` | `app_core`、`app_data`、`app_im`、`app_rtc`、`app_ui`、`app_features` |
+
+`apps/demo` 位于最上层，负责装配所有公开模块入口；`app_core` 和 `app_ui` 位于基础层，不得反向依赖业务、数据或壳工程。新增 Workspace Package 时必须先在本矩阵中确定层级，再同步更新结构化依赖门禁。
+
 ## 类型边界
 
 ```text

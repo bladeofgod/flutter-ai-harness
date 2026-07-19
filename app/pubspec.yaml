@@ -17,6 +17,7 @@ workspace:
 dev_dependencies:
   flutter_lints: ^5.0.0
   melos: ^7.4.1
+  yaml: ^3.1.3
 
 melos:
   packages:
@@ -41,6 +42,21 @@ melos:
     hook-test:
       run: bash ../scripts/git-hooks/test-pre-commit.sh
       description: 验证 pre-commit 使用 Git 暂存内容
+    evidence-lint:
+      run: bash ../scripts/quality/evidence-lint.sh
+      description: 检查入库测试证据是否已脱敏
+    evidence-test:
+      run: bash ../scripts/quality/test-evidence.sh
+      description: 运行证据采集与脱敏 Fixture
+    harness-check:
+      run: dart run tool/harness_check.dart
+      description: 校验 AI Harness 配置、引用、链接与平台宿主
+    harness-test:
+      run: bash ../scripts/quality/test-harness.sh
+      description: 运行 Harness Check 失败 Fixture
+    proto-check:
+      run: bash ../scripts/proto/check.sh
+      description: 校验 Proto 与生成产物同步
     check:
-      run: melos run format && melos run analyze && melos run lint && melos run lint-test && melos run hook-test && melos run test
-      description: 本地完整质量门禁
+      run: make -C .. check
+      description: 委托仓库根 Makefile 执行唯一的完整质量门禁

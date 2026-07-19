@@ -32,16 +32,13 @@ flutter-ai-harness/
 └── app/                    Flutter workspace, implemented through the demo iteration
 ```
 
-The planned package dependency direction is:
+The planned package dependency direction is shown below. `A -> B` means package A may import package B:
 
 ```text
-app_core / app_ui
-        ↓
-app_data / app_im / app_rtc
-        ↓
-app_features
-        ↓
-apps/demo
+apps/demo -> app_features, app_data, app_im, app_rtc, app_core, app_ui
+app_features -> app_data, app_im, app_rtc, app_core, app_ui
+app_data / app_im / app_rtc -> app_core
+app_core / app_ui -> no other workspace packages
 ```
 
 ## Workflow
@@ -74,6 +71,8 @@ make check
 ```
 
 `make bootstrap` resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server. The Demo currently contains only a neutral bootstrap entry point; product UI starts after the product brief and Figma design are approved.
+
+The neutral Demo includes Android and iOS hosts. Run it with `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run`. The `com.example` application identifiers are placeholders and must be replaced before release.
 
 Figma workflows use the project-level desktop MCP configuration. Open the design in Figma Desktop, enable the Desktop MCP Server in Dev Mode, then approve the `figma` project server when Claude Code prompts.
 

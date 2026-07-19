@@ -1,0 +1,50 @@
+## Command
+
+```text
+make evidence-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-evidence.sh
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-test] 证据采集、脱敏和门禁 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make evidence-lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/evidence-lint.sh
+[evidence-lint] 测试证据脱敏检查通过。
+
+```
+
+## Command
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos tool/redact_evidence.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing redact_evidence.dart...
+No issues found!
+
+```

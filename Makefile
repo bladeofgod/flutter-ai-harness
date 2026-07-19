@@ -1,4 +1,4 @@
-.PHONY: bootstrap format analyze test lint lint-test hook-test check proto proto-check marionette-install hooks-install hooks-uninstall
+.PHONY: bootstrap format analyze test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
 
 bootstrap:
 	bash scripts/dart-tool.sh pub get
@@ -23,7 +23,19 @@ lint-test:
 hook-test:
 	bash scripts/git-hooks/test-pre-commit.sh
 
-check: format analyze lint lint-test hook-test test
+evidence-lint:
+	bash scripts/quality/evidence-lint.sh
+
+evidence-test:
+	bash scripts/quality/test-evidence.sh
+
+harness-check:
+	bash scripts/dart-tool.sh run tool/harness_check.dart
+
+harness-test:
+	bash scripts/quality/test-harness.sh
+
+check: format analyze harness-check lint lint-test harness-test hook-test evidence-lint evidence-test proto-check test
 
 proto:
 	bash scripts/proto/generate.sh
