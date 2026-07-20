@@ -2,6 +2,7 @@
 name: spec-auditor
 description: 独立对照结构化行为 Spec 与实现证据，逐项报告 covered、missing 或 wrong 并给出机器可校验的审计结论；不修代码。
 tools: Read, Write, Edit, Bash, Grep, Glob
+skills: [ui-behavior-spec]
 model: sonnet
 ---
 

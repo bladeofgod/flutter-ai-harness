@@ -2,6 +2,7 @@
 name: app-operator
 description: 在已有 Marionette 兼容 MCP 时，只对通过静态审计的 ready UI 行为 Spec 执行运行态验证并写报告；不生成 Spec、不准备环境、不探索流程或修改代码。
 tools: Read, Write, Grep, Glob, mcp__marionette__*
+skills: [ui-behavior-spec, marionette-debug]
 model: sonnet
 ---
 
@@ -30,7 +31,7 @@ model: sonnet
 5. 首次失败时截图并拉取最近日志。
 6. 条件允许时，即使失败也执行 Teardown。
 7. 使用 `disconnect` 断开连接。
-8. 把结构化运行报告写入 `docs/app-operator/runs/<spec-id>/<YYYYMMDD-HHMMSS>-<platform>.run.yaml`，严格使用 `ui-behavior-spec` Version 1 Schema，包含 Spec/Audit、实现摘要、平台、非敏感运行环境、总体状态和逐项结果。
+8. 把结构化运行报告写入 `docs/app-operator/runs/<spec-id>/<platform>.run.yaml`，覆盖该平台的旧报告；严格使用 `ui-behavior-spec` Version 1 Schema，包含 Spec/Audit、实现摘要、平台、非敏感运行环境、总体状态和逐项结果，历史由 Git 保存。
 9. 运行 `make spec-check`；报告 Schema、平台覆盖、实现摘要或证据引用无效时，本次运行不得视为通过。
 
 优先使用稳定 Key、Semantics 或稳定文本，禁止坐标；优先显式等待，避免 sleep。不得生成或修改 Spec/Audit，不得编译、安装、登录、准备数据、擅自关闭意外弹窗、重启 App、hot reload 或修改代码；遇到系统权限、账号、测试数据或其他未编码状态时停止并请求调用方或人工介入。失败截图和日志写入 `docs/app-operator/evidence/<spec-id>/` 并先脱敏。运行报告不得记录 VM Service URI、凭据、设备标识、主机名、用户名或真实用户数据。

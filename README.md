@@ -80,7 +80,7 @@ make harness-check
 make check
 ```
 
-Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it records the command and exit code while redacting local paths and common credential forms. `make setup` installs the repository Git hooks for each clone.
+Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it records the command and exit code while redacting local paths and common credential forms. `make setup` installs the repository Git hooks for each clone. If the clone already has a different `core.hooksPath`, setup reports the conflict and preserves the existing hook toolchain instead of overwriting it.
 
 ## Quick Start
 

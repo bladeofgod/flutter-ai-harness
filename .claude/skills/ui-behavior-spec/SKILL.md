@@ -15,7 +15,7 @@ paths: ["docs/**/*.spec.yaml", "docs/**/*.audit.yaml", "docs/**/*.run.yaml", ".c
 - 有任务卡：写入任务卡同目录 `<task-basename>.spec.yaml`，并声明任务 ID。
 - 仅有原型：写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
 - 静态审计：写入同目录 `<task-basename>.audit.yaml` 或 `<spec-id>.audit.yaml`。
-- 运行报告：按平台写入 `docs/app-operator/runs/<spec-id>/<YYYYMMDD-HHMMSS>-<platform>.run.yaml`。
+- 运行报告：按平台写入 `docs/app-operator/runs/<spec-id>/<platform>.run.yaml`；同一平台重新执行时覆盖当前报告，历史由 Git 保存。
 
 ## Version 1 Schema
 

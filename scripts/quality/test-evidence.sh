@@ -47,7 +47,7 @@ if bash "$ROOT/scripts/quality/evidence-lint.sh" "$FIXTURE_ROOT/unsafe.log" >/de
   exit 1
 fi
 
-operator_report="$FIXTURE_ROOT/docs/app-operator/runs/example/20260720-120000-android.run.yaml"
+operator_report="$FIXTURE_ROOT/docs/app-operator/runs/example/android.run.yaml"
 mkdir -p "$(dirname "$operator_report")"
 printf '%s\n' 'version: 1' 'token=not-redacted' > "$operator_report"
 if REPOSITORY_ROOT="$FIXTURE_ROOT" \

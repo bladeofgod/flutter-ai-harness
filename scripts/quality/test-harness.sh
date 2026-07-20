@@ -84,6 +84,7 @@ cat > "$FIXTURE_ROOT/.claude/agents/sample-agent.md" <<'MARKDOWN'
 name: sample-agent
 description: Sample agent
 tools: Read
+skills: [sample-skill]
 ---
 Sample.
 MARKDOWN
@@ -154,6 +155,17 @@ LOG
 write_valid_task
 write_valid_done_task
 run_check >/dev/null
+
+sed -i.bak 's/skills: \[sample-skill\]/skills: [missing-skill]/' \
+  "$FIXTURE_ROOT/.claude/agents/sample-agent.md"
+rm -f -- "$FIXTURE_ROOT/.claude/agents/sample-agent.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 Agent 引用不存在的 Skill。" >&2
+  exit 1
+fi
+sed -i.bak 's/skills: \[missing-skill\]/skills: [sample-skill]/' \
+  "$FIXTURE_ROOT/.claude/agents/sample-agent.md"
+rm -f -- "$FIXTURE_ROOT/.claude/agents/sample-agent.md.bak"
 
 sed -i.bak '/uiSpec:/d' \
   "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"

@@ -80,7 +80,7 @@ make harness-check
 make check
 ```
 
-任务证据必须通过 `scripts/quality/capture-evidence.sh` 采集；它会记录命令和退出码，并脱敏本机路径与常见凭据形态。`make setup` 会为每个 Clone 安装仓库 Git Hooks。
+任务证据必须通过 `scripts/quality/capture-evidence.sh` 采集；它会记录命令和退出码，并脱敏本机路径与常见凭据形态。`make setup` 会为每个 Clone 安装仓库 Git Hooks；如果当前 Clone 已配置其他 `core.hooksPath`，Setup 会报告冲突并保留原 Hook 工具链，不会静默覆盖。
 
 ## 快速开始
 

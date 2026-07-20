@@ -205,14 +205,6 @@ class _HarnessChecker {
   }
 
   void _validateFrontmatter() {
-    _validateDefinitions('.claude/agents', _agents, (file, metadata) {
-      _requireString(file, metadata, 'name');
-      _requireString(file, metadata, 'description');
-      _requireStringOrList(file, metadata, 'tools');
-    });
-    _validateDefinitions('.claude/commands', _commands, (file, metadata) {
-      _requireString(file, metadata, 'description');
-    });
     _validateDefinitions('.claude/skills', _skills, (file, metadata) {
       _requireString(file, metadata, 'name');
       final description = _requireString(file, metadata, 'description');
@@ -228,6 +220,39 @@ class _HarnessChecker {
         errors.add('${_relative(file)} 必须声明非空字符串 paths');
       }
     }, nestedEntry: 'SKILL.md');
+    _validateDefinitions('.claude/agents', _agents, (file, metadata) {
+      _requireString(file, metadata, 'name');
+      _requireString(file, metadata, 'description');
+      _requireStringOrList(file, metadata, 'tools');
+      _validateAgentSkillReferences(file, metadata);
+    });
+    _validateDefinitions('.claude/commands', _commands, (file, metadata) {
+      _requireString(file, metadata, 'description');
+    });
+  }
+
+  void _validateAgentSkillReferences(File file, YamlMap metadata) {
+    final value = metadata['skills'];
+    if (value == null) {
+      return;
+    }
+    if (value is! YamlList ||
+        value.isEmpty ||
+        value.any((item) => item is! String || item.trim().isEmpty)) {
+      errors.add('${_relative(file)} 的 skills 必须是非空 Skill 名称列表');
+      return;
+    }
+
+    final seen = <String>{};
+    for (final item in value) {
+      final name = item as String;
+      if (!seen.add(name)) {
+        errors.add('${_relative(file)} 的 skills 不得重复：$name');
+      }
+      if (!_skills.contains(name)) {
+        errors.add('${_relative(file)} 引用不存在的 Skill：$name');
+      }
+    }
   }
 
   void _validateDefinitions(

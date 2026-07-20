@@ -2,6 +2,7 @@
 name: test-writer
 description: 为已有行为新增或修复 Dart 单测、Flutter Widget 测试和集成测试；不补写缺失业务实现，也不负责原生端测试。触发词：缺测试、flaky、mocktail、testWidgets、integration_test。
 tools: Read, Write, Edit, Bash, Grep, Glob
+skills: [testing-strategy]
 model: sonnet
 ---
 

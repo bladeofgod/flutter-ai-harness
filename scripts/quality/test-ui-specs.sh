@@ -92,7 +92,6 @@ YAML
 
 write_passed_report() {
   local platform="$1"
-  local timestamp="$2"
   local device_kind="emulator"
   local os_version="Android 15"
   if [[ "$platform" == "ios" ]]; then
@@ -103,7 +102,7 @@ write_passed_report() {
   digest="$(implementation_digest)"
   local report_dir="$FIXTURE_ROOT/docs/app-operator/runs/profile-save"
   mkdir -p "$report_dir"
-  cat > "$report_dir/$timestamp-$platform.run.yaml" <<YAML
+  cat > "$report_dir/$platform.run.yaml" <<YAML
 version: 1
 spec: docs/tasks/sprint-2/S2-001-profile.spec.yaml
 audit: docs/tasks/sprint-2/S2-001-profile.audit.yaml
@@ -235,29 +234,38 @@ fi
 write_passed_audit
 run_check >/dev/null
 
-write_passed_report android 20260720-120000
-write_passed_report ios 20260720-120100
+write_passed_report android
+write_passed_report ios
 run_check >/dev/null
 
-sed -i.bak 's/deviceKind: emulator/deviceKind: simulator/' \
+cp "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/android.run.yaml" \
   "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120000-android.run.yaml"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝带时间戳的历史运行报告。" >&2
+  exit 1
+fi
 rm -f -- \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120000-android.run.yaml.bak"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120000-android.run.yaml"
+
+sed -i.bak 's/deviceKind: emulator/deviceKind: simulator/' \
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/android.run.yaml"
+rm -f -- \
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/android.run.yaml.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Spec Check 未拒绝与平台不匹配的运行环境。" >&2
   exit 1
 fi
-write_passed_report android 20260720-120000
+write_passed_report android
 
 sed -i.bak 's/implementationDigest: ./implementationDigest: 0/' \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120000-android.run.yaml"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/android.run.yaml"
 rm -f -- \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120000-android.run.yaml.bak"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/android.run.yaml.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Spec Check 未拒绝与 Audit 不一致的运行报告。" >&2
   exit 1
 fi
-write_passed_report android 20260720-120000
+write_passed_report android
 run_check >/dev/null
 
 DONE_DIR="$FIXTURE_ROOT/docs/tasks/done"
@@ -278,16 +286,16 @@ rm -f -- \
 run_check >/dev/null
 
 rm -f -- \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120100-ios.run.yaml"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/ios.run.yaml"
 if run_check >/dev/null 2>&1; then
   echo "错误：Spec Check 未拒绝缺少声明平台报告的归档 Spec。" >&2
   exit 1
 fi
-write_passed_report ios 20260720-120100
+write_passed_report ios
 sed -i.bak 's#docs/tasks/sprint-2/#docs/tasks/done/#g' \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120100-ios.run.yaml"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/ios.run.yaml"
 rm -f -- \
-  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/20260720-120100-ios.run.yaml.bak"
+  "$FIXTURE_ROOT/docs/app-operator/runs/profile-save/ios.run.yaml.bak"
 run_check >/dev/null
 
 rm -f -- "$DONE_DIR/S2-001-profile.audit.yaml"

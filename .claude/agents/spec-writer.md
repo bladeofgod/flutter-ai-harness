@@ -2,6 +2,7 @@
 name: spec-writer
 description: 根据已批准任务卡、产品规则和原型输入编写可审查的 UI 行为 Spec；不实现代码、不执行 App，也不猜测缺失产品行为。
 tools: Read, Write, Edit, Bash, Grep, Glob
+skills: [ui-behavior-spec]
 model: sonnet
 ---
 

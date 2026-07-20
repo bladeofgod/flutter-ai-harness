@@ -555,7 +555,7 @@ class _SpecChecker {
     final initialErrorCount = errors.length;
     final pathMatch = RegExp(
       r'^docs/app-operator/runs/([a-z][a-z0-9]*(?:-[a-z0-9]+)*)/'
-      r'\d{8}-\d{6}-(android|ios)\.run\.yaml$',
+      r'(android|ios)\.run\.yaml$',
     ).firstMatch(path);
     if (pathMatch == null) {
       errors.add('$path 不符合 App Operator 运行报告路径约定');
