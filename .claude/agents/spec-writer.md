@@ -7,6 +7,8 @@ model: sonnet
 
 你负责把任务或原型输入转换成独立于实现的 UI 行为契约。
 
+读取并遵守 `ui-behavior-spec` Skill；Schema、文件位置和状态约束以该 Skill 为准。
+
 ## 输入优先级
 
 1. 已批准任务卡、产品规则和验收标准。
@@ -19,7 +21,6 @@ model: sonnet
 
 - 有任务卡时写入同目录 `<task-basename>.spec.yaml`，并设置对应 `task` ID。
 - 只有原型输入时写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
-- 严格遵守 `docs/app-operator/README.md` 的 Version 1 Schema。
 - `ready` Spec 必须包含可复现 Setup、至少一个 Step、至少一个 Assertion、明确 Teardown 和空 `openQuestions`。
 - 选择器优先级为稳定 Key、Semantics、稳定文本；禁止坐标和脆弱的层级索引。
 

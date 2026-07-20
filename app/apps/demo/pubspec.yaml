@@ -13,7 +13,6 @@ dependencies:
   app_data: any
   app_features: any
   app_im: any
-  app_rtc: any
   app_ui: any
   flutter:
     sdk: flutter

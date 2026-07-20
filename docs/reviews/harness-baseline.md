@@ -9,7 +9,7 @@
 ### 1. 依赖方向图与真实 Import 方向相反
 
 - 位置：`CLAUDE.md:58`、`README.md:35`、`docs/README.zh-CN.md:35`
-- 影响：权威契约把箭头画成 `app_core -> ... -> apps/demo`，而实际 `pubspec.yaml` 是 `apps/demo -> app_features -> app_data/app_im/app_rtc -> app_core`。Agent 容易把图理解成允许的 Import 方向，进而创建反向依赖或循环。
+- 影响：权威契约的箭头与实际 Workspace Import 方向相反。Agent 容易把图理解成允许的 Import 方向，进而创建反向依赖或循环。
 - 证据：`app/packages/app_features/pubspec.yaml:10` 依赖基础设施包，`app/apps/demo/pubspec.yaml:10` 依赖全部下层包。
 - 修法：把图改成真实的 Import/Dependency 边，或明确标注现有箭头是“装配/能力流”而非依赖方向；最好补一张允许依赖矩阵，并由脚本校验各 `pubspec.yaml`。
 
@@ -22,14 +22,14 @@
 
 ### 3. “完整命令输出”与隐私规则冲突
 
-- 位置：`.claude/commands/execute-tasks.md:30`、`docs/development-workflow.md:50`、`CLAUDE.md:185`
+- 位置：`.claude/commands/execute-tasks.md:30`、`README.md`、`CLAUDE.md:185`
 - 影响：执行工作流要求把完整 stdout/stderr 提交到 `docs/reviews/test-evidence/`，但 Flutter/Pub/Test 默认会输出本机绝对路径，测试和构建日志还可能包含环境、账号或用户数据。这会让 Agent 在遵守证据规则时违反“不输出本机私有路径”和敏感信息规则。
 - 证据：本次 `make check` 输出中包含工作区绝对路径；当前没有脱敏或提交前校验步骤。
 - 修法：继续跟踪证据文件，但定义可复现的脱敏流程：保存命令、版本、退出码和必要结果，把仓库根替换为 `<repo>`，删除 Token/签名/用户数据；原始日志只留本地临时目录。增加 evidence lint，发现绝对用户目录或常见凭据形态时失败。
 
 ### 4. 当前 Demo 缺少移动端宿主，无法验证移动端 Marionette 闭环
 
-- 位置：`app/apps/demo/pubspec.yaml:1`、`CLAUDE.md:136`、`docs/development-workflow.md:82`
+- 位置：`app/apps/demo/pubspec.yaml:1`、`CLAUDE.md:136`、`README.md`
 - 影响：`marionette_flutter 0.6.0` 支持运行在 Android/iOS 上的 Flutter App，但本仓库只有 `main.dart`、Marionette Binding 和移动端 Bridge 契约，没有 `android/`、`ios/` 平台宿主。因此 `flutter run`、平台构建、移动端 Marionette App 连接和 Bridge 任务都无法实际执行。Marionette 操作的是 Flutter Widget Tree，不应把系统原生界面自动化纳入其能力范围。
 - 证据：`flutter build apk --debug` 报告 unsupported Gradle project；`flutter build ios --debug --no-codesign` 报告 `Application not configured for iOS`。
 - 修法：把“生成并中立化 Android/iOS 壳工程”设为 Demo 第一张基础任务卡，明确 application id/bundle id 占位、最低版本和可替换项；加入至少一个 Debug 启动/构建烟测，再验证 Marionette connect/disconnect。
@@ -51,7 +51,7 @@
 
 ### 7. App Operator 尚未接入标准任务闭环
 
-- 位置：`.claude/commands/execute-tasks.md:31`、`.claude/agents/app-operator.md:29`、`docs/app-operator/README.md:3`
+- 位置：`.claude/commands/execute-tasks.md:31`、`.claude/agents/app-operator.md`、`.claude/skills/ui-behavior-spec/SKILL.md`
 - 影响：当 `.spec.yaml` 出现时，`execute-tasks` 只运行静态 `spec-auditor`，没有调用 `app-operator` 执行真实 App 行为；运行报告的调用方也未定义。当前占位状态可接受，但首个 Spec 落地前必须闭环。
 - 修法：定义 Schema 时同步增加条件式 App Operator 阶段、运行报告路径、失败证据和清理规则，并明确静态审计与运行验证各自的通过条件。
 

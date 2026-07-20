@@ -11,7 +11,7 @@ P0/P1/P2 均为 0，任务通过。
 - `scripts/quality/evidence-lint.sh`
 - `scripts/quality/test-evidence.sh`
 - `.claude/commands/execute-tasks.md`
-- `docs/development-workflow.md`
+- `README.md`
 - `Makefile`
 
 ## 关键证据

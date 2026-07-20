@@ -8,7 +8,6 @@
 | `app_data` | Domain Entity、协议适配、持久化适配、Mapper | 页面、Controller、Feature 导航 |
 | `app_ui` | 设计 Token 和无业务通用 UI | 产品业务规则 |
 | `app_im` | IM Engine 契约和消息基础设施 | Feature 页面或壳工程装配 |
-| `app_rtc` | RTC 契约、Bridge Client 和生命周期基础设施 | Feature 页面或壳工程装配 |
 | `app_features` | Feature、Controller、Page、Route 和跨 Feature API 抽象 | 全局启动或原生工程配置 |
 | `apps/demo` | 全局服务、依赖装配、Router 创建和 `runApp` | Feature 内部实现 |
 
@@ -22,9 +21,8 @@
 | `app_ui` | 无 |
 | `app_data` | `app_core` |
 | `app_im` | `app_core` |
-| `app_rtc` | `app_core` |
-| `app_features` | `app_core`、`app_data`、`app_im`、`app_rtc`、`app_ui` |
-| `apps/demo` | `app_core`、`app_data`、`app_im`、`app_rtc`、`app_ui`、`app_features` |
+| `app_features` | `app_core`、`app_data`、`app_im`、`app_ui` |
+| `apps/demo` | `app_core`、`app_data`、`app_im`、`app_ui`、`app_features` |
 
 `apps/demo` 位于最上层，负责装配所有公开模块入口；`app_core` 和 `app_ui` 位于基础层，不得反向依赖业务、数据或壳工程。新增 Workspace Package 时必须先在本矩阵中确定层级，再同步更新结构化依赖门禁。
 
@@ -60,7 +58,7 @@ feature_example/
 
 1. 初始化平台无关的全局服务。
 2. 注册基础设施依赖。
-3. 按需注册 IM/RTC 基础设施。
+3. 按需注册 IM 基础设施。
 4. 通过模块级 Registry 注册 Feature API。
 5. 创建 GoRouter 并调用 `runApp`。
 

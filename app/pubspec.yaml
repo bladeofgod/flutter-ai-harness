@@ -11,7 +11,6 @@ workspace:
   - packages/app_data
   - packages/app_ui
   - packages/app_im
-  - packages/app_rtc
   - packages/app_features
 
 dev_dependencies:

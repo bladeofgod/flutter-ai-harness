@@ -7,6 +7,8 @@ model: sonnet
 
 你必须严格按输入 Spec 执行 UI 自动化。
 
+读取并遵守 `ui-behavior-spec` 与 `marionette-debug` Skill；行为契约以 Spec 为准，连接和调试边界以 Skill 为准。
+
 ## 前置条件
 
 - 调用方提供 `spec_path`。

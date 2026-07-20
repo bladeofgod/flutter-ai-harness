@@ -44,7 +44,6 @@ app/
     ├── app_data/
     ├── app_ui/
     ├── app_im/
-    ├── app_rtc/
     └── app_features/
 ```
 
@@ -58,9 +57,9 @@ app/
 4. 依赖方向保持单向。下图中 `A -> B` 表示 Package A 可以 import Package B：
 
    ```text
-   apps/demo -> app_features, app_data, app_im, app_rtc, app_core, app_ui
-   app_features -> app_data, app_im, app_rtc, app_core, app_ui
-   app_data / app_im / app_rtc -> app_core
+   apps/demo -> app_features, app_data, app_im, app_core, app_ui
+   app_features -> app_data, app_im, app_core, app_ui
+   app_data / app_im -> app_core
    app_core / app_ui -> 不依赖其他 Workspace Package
    ```
 
@@ -205,9 +204,6 @@ Dart 改动：
 
 - **架构设计**：[`docs/architecture.md`](./docs/architecture.md)（包职责、类型边界、Feature 边界、装配与路由）。
 - **IM 架构**：[`docs/im-architecture.md`](./docs/im-architecture.md)（占位；随 Demo 的首个 IM 任务补充 Engine、事件和生命周期设计）。
-- **RTC 架构**：[`docs/rtc-architecture.md`](./docs/rtc-architecture.md)（占位；随 Demo 的首个 RTC 任务补充 Bridge、会话和生命周期设计）。
 - **基础模块清册**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（占位；用于避免重复实现已有公共能力）。
 - **API 契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（占位；首个真实 API/Proto 任务建立权威来源和生成链路）。
 - **设计稿输入**：[`docs/figma-links.md`](./docs/figma-links.md)（占位；记录 Demo 使用的 Figma 来源、授权和读取规则）。
-- **UI 行为 Spec**：[`docs/app-operator/README.md`](./docs/app-operator/README.md)（Version 1 Schema、生成、静态审计与运行规则）。
-- **Marionette UI 调试**：[`docs/development-workflow.md`](./docs/development-workflow.md#marionette-mcp) 与 `marionette-debug` Skill。

@@ -26,9 +26,8 @@ cat > "$valid_dependencies" <<'JSON'
   {"name":"app_ui","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
   {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
   {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_rtc","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_rtc","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_rtc","app_ui"],"devDependencies":[]}
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_ui"],"devDependencies":[]}
 ]}
 JSON
 
@@ -68,9 +67,8 @@ cat > "$invalid_dependencies" <<'JSON'
   {"name":"app_ui","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
   {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
   {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_rtc","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_rtc","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_rtc","app_ui"],"devDependencies":[]}
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_ui"],"devDependencies":[]}
 ]}
 JSON
 

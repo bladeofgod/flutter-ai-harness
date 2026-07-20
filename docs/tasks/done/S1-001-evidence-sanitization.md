@@ -13,7 +13,7 @@ blockedBy: []
 
 - `docs/reviews/harness-baseline.md` P1-3
 - `.claude/commands/execute-tasks.md`
-- `docs/development-workflow.md`
+- `README.md`
 - `CLAUDE.md` 安全策略
 
 ## 目标
@@ -32,7 +32,7 @@ blockedBy: []
 - 将仓库路径、用户主目录和常见平台用户目录替换为稳定占位符。
 - 遮蔽 Authorization、Token、Password、Secret、API Key、常见访问 Token 和私钥块。
 - 新增 evidence lint，扫描 `docs/reviews/test-evidence/*.log`。
-- 更新 `/execute-tasks` 和开发工作流，要求通过采集器写证据。
+- 更新 `/execute-tasks` 和仓库 README，要求通过采集器写证据。
 
 ## 同时编写的测试
 

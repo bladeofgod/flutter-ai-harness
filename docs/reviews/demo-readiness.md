@@ -37,7 +37,7 @@
 
 ### 3. App Operator 尚未进入任务执行闭环
 
-- 位置：`.claude/commands/execute-tasks.md:31`、`.claude/agents/app-operator.md:29`、`docs/app-operator/README.md:3`
+- 位置：`.claude/commands/execute-tasks.md:31`、`.claude/agents/app-operator.md`、`.claude/skills/ui-behavior-spec/SKILL.md`
 - 影响：首个 `.spec.yaml` 出现后，流程只会执行静态 `spec-auditor`，不会自动运行 App Operator；运行报告的写入方、失败证据和通过条件也尚未定义。
 - 修法：在首个真实 Spec 任务中同步定义 Schema、Operator 条件阶段、报告路径、失败证据、Teardown 和静态/运行态双重通过条件。
 
@@ -112,7 +112,7 @@ P0/P1 均为 0；当时 5 个 P2 保持待办。`make check` 已通过，可以�
 ### Quick Start：已关闭
 
 - README 默认使用 HTTPS Clone 和 `make setup`。
-- `make setup` 已验证：使用 FVM 准备 Flutter 3.35.7，随后 Bootstrap 7 个 Workspace Package 并安装 Git Hooks；无 FVM 时会严格校验系统 Flutter 版本。
+- `make setup` 已验证：使用 FVM 准备 Flutter 3.35.7，随后 Bootstrap Workspace Package 并安装 Git Hooks；无 FVM 时会严格校验系统 Flutter 版本。
 
 ### 远端 CI：已关闭实现，等待首个远端结果
 

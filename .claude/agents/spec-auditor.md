@@ -5,7 +5,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 
-只有通过 `make spec-check` 且状态为 `ready` 的 `.spec.yaml` 才执行审计。Schema 以 `docs/app-operator/README.md` 为准。证据只能来自 Spec 与实现，不得来自测试或任务卡中的自述。
+读取并遵守 `ui-behavior-spec` Skill。只有通过 `make spec-check` 且状态为 `ready` 的 `.spec.yaml` 才执行审计。证据只能来自 Spec 与实现，不得来自测试或任务卡中的自述。
 
 ## 规则
 

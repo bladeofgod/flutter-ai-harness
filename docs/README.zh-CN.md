@@ -37,9 +37,9 @@ flutter-ai-harness/
 规划的 Package 依赖方向如下，`A -> B` 表示 Package A 可以 import Package B：
 
 ```text
-apps/demo -> app_features, app_data, app_im, app_rtc, app_core, app_ui
-app_features -> app_data, app_im, app_rtc, app_core, app_ui
-app_data / app_im / app_rtc -> app_core
+apps/demo -> app_features, app_data, app_im, app_core, app_ui
+app_features -> app_data, app_im, app_core, app_ui
+app_data / app_im -> app_core
 app_core / app_ui -> 不依赖其他 Workspace Package
 ```
 
@@ -61,6 +61,27 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
 
+任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；只有 Review 完成且状态为 `ready` 的 Spec 才能进入静态审计和运行态执行。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+
+## 质量门禁
+
+> **提示：** 以下命令用于说明仓库提供的质量门禁，并不要求开发者在每次修改后手工执行全部命令。使用 Harness 工作流时，Agent 会根据任务影响范围选择并运行相关检查；已安装的 Git Hooks 和 CI 会在对应时机自动触发。人工操作主要用于首次环境准备，以及依赖设备、本地 MCP 授权或其他外部环境的验证。
+
+开发时运行受影响的聚焦检查，交付前运行完整门禁：
+
+```bash
+make format
+make analyze
+make test
+make integration-test INTEGRATION_DEVICE=<device-id>
+make spec-check
+make lint
+make harness-check
+make check
+```
+
+任务证据必须通过 `scripts/quality/capture-evidence.sh` 采集；它会记录命令和退出码，并脱敏本机路径与常见凭据形态。`make setup` 会为每个 Clone 安装仓库 Git Hooks。
+
 ## 快速开始
 
 前置环境：Claude Code 2.1.198 或更高版本，以及推荐的 FVM；不使用 FVM 时需预先安装 Flutter 3.35.7。
@@ -77,6 +98,8 @@ make check
 中立 Demo 已包含 Android/iOS 宿主，可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
+
+运行态 Flutter UI 检查需要先执行 `make marionette-install`，以 Debug 模式启动 Demo，再把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。操作顺序固定为连接、检查或交互、断开。Marionette 只操作 Flutter Widget Tree，不负责原生系统界面自动化。
 
 ## 当前状态
 
