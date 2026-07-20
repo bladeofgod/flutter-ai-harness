@@ -84,7 +84,9 @@ Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it
 
 ## Quick Start
 
-Prerequisites: Claude Code 2.1.198 or later, plus FVM (recommended) or an existing Flutter 3.35.7 installation.
+Prerequisites: Claude Code 2.1.198 or later, `ripgrep`, plus FVM (recommended) or an existing Flutter 3.35.7 installation.
+
+Install `ripgrep` with `brew install ripgrep` on macOS, or `sudo apt-get update && sudo apt-get install --yes ripgrep` on Ubuntu/Debian. `make setup` checks this dependency before bootstrapping the workspace.
 
 ```bash
 git clone https://github.com/bladeofgod/flutter-ai-harness.git

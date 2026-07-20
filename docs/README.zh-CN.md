@@ -84,7 +84,9 @@ make check
 
 ## 快速开始
 
-前置环境：Claude Code 2.1.198 或更高版本，以及推荐的 FVM；不使用 FVM 时需预先安装 Flutter 3.35.7。
+前置环境：Claude Code 2.1.198 或更高版本、`ripgrep`，以及推荐的 FVM；不使用 FVM 时需预先安装 Flutter 3.35.7。
+
+macOS 使用 `brew install ripgrep` 安装；Ubuntu/Debian 使用 `sudo apt-get update && sudo apt-get install --yes ripgrep` 安装。`make setup` 会在 Bootstrap Workspace 前检查该依赖。
 
 ```bash
 git clone https://github.com/bladeofgod/flutter-ai-harness.git
