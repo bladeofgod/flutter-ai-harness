@@ -124,6 +124,7 @@ MethodChannel 和 EventChannel 必须遵守：
 
 - `/plan-tasks`：把产品或技术输入拆成任务卡。
 - `/plan-figma`：结合 Figma 和代码上下文生成 UI 任务卡，不做实现。
+- `/plan-spec`：根据已批准任务或原型输入生成 UI 行为 Spec，不做实现或 App 操作。
 - `/execute-tasks`：执行已有任务卡并完成验证与 Review。
 - `/review-changes`：只读审查当前改动并输出问题报告，不修改实现。
 - `/review-sprint`：从批次整体视角只读审查跨任务影响。
@@ -146,7 +147,8 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 
 ## 文档生命周期
 
-- `docs/tasks/` 保存规划过程产生的任务卡。
+- `docs/tasks/sprint-N/` 保存同一 Sprint 的 Overview、任务卡和可选输入快照；根目录不直接存放规划产物。
+- `docs/tasks/done/` 保存已完成的任务卡，任务 ID 保留所属 Sprint 编号。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。
 - `.claude/memories/` 保存低频且长期有效的经验，不保存任务历史或重复规范。
@@ -161,6 +163,8 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 make format
 make analyze
 make test
+make spec-check
+make integration-test INTEGRATION_DEVICE=<device-id>
 make lint
 make harness-check
 make check
@@ -205,5 +209,5 @@ Dart 改动：
 - **基础模块清册**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（占位；用于避免重复实现已有公共能力）。
 - **API 契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（占位；首个真实 API/Proto 任务建立权威来源和生成链路）。
 - **设计稿输入**：[`docs/figma-links.md`](./docs/figma-links.md)（占位；记录 Demo 使用的 Figma 来源、授权和读取规则）。
-- **UI 自动化 Spec**：[`docs/app-operator/README.md`](./docs/app-operator/README.md)（占位；首个真实 Spec 产生时定义格式和执行约定）。
+- **UI 行为 Spec**：[`docs/app-operator/README.md`](./docs/app-operator/README.md)（Version 1 Schema、生成、静态审计与运行规则）。
 - **Marionette UI 调试**：[`docs/development-workflow.md`](./docs/development-workflow.md#marionette-mcp) 与 `marionette-debug` Skill。

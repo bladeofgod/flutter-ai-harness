@@ -18,6 +18,8 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 - 通过分层 Flutter Workspace 阻止 Proto Message 和数据库 Row 泄漏到公共接口。
 - 为 Android、iOS 提供契约优先的 MethodChannel/EventChannel 规范。
 - 提供项目级 Marionette MCP 配置，用于检查和操作运行中的 Debug App。
+- 提供从 `spec-writer`、静态审计到 Marionette 执行的可 Review UI 行为 Spec 流程。
+- 提供 GitHub CI 和依赖来源门禁，保证公开 Clone 可复现。
 
 ## 仓库模型
 
@@ -61,16 +63,16 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 ## 快速开始
 
-前置环境：Flutter 3.35.7、Dart 3.9、Claude Code 2.1.198 或更高版本，推荐使用 FVM。
+前置环境：Claude Code 2.1.198 或更高版本，以及推荐的 FVM；不使用 FVM 时需预先安装 Flutter 3.35.7。
 
 ```bash
-git clone git@github.com:bladeofgod/flutter-ai-harness.git
+git clone https://github.com/bladeofgod/flutter-ai-harness.git
 cd flutter-ai-harness
-make bootstrap
+make setup
 make check
 ```
 
-`make bootstrap` 会解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口；产品说明和 Figma 设计确认后再开始产品 UI 实现。
+`make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口；产品说明和 Figma 设计确认后再开始产品 UI 实现。
 
 中立 Demo 已包含 Android/iOS 宿主，可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
 

@@ -1,4 +1,10 @@
-.PHONY: bootstrap format analyze test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
+.PHONY: setup flutter-sdk bootstrap format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
+
+setup: flutter-sdk
+	$(MAKE) bootstrap
+
+flutter-sdk:
+	bash scripts/prepare-flutter.sh
 
 bootstrap:
 	bash scripts/dart-tool.sh pub get
@@ -13,6 +19,18 @@ analyze:
 
 test:
 	bash scripts/quality/run-tests.sh
+
+integration-test:
+	INTEGRATION_DEVICE="$(INTEGRATION_DEVICE)" bash scripts/quality/run-integration-tests.sh
+
+integration-runner-test:
+	bash scripts/quality/test-integration-runner.sh
+
+spec-check:
+	bash scripts/dart-tool.sh run tool/validate_ui_specs.dart
+
+spec-test:
+	bash scripts/quality/test-ui-specs.sh
 
 lint:
 	bash scripts/lint/repository-boundaries.sh
@@ -35,7 +53,7 @@ harness-check:
 harness-test:
 	bash scripts/quality/test-harness.sh
 
-check: format analyze harness-check lint lint-test harness-test hook-test evidence-lint evidence-test proto-check test
+check: format analyze harness-check spec-check lint lint-test harness-test spec-test integration-runner-test hook-test evidence-lint evidence-test proto-check test
 
 proto:
 	bash scripts/proto/generate.sh

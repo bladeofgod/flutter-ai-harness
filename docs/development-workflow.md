@@ -2,14 +2,14 @@
 
 ## 首次 Clone
 
-中立 Harness 先于 Demo 工作区建立。`app/pubspec.yaml` 创建后执行：
+中立 Harness 先于 Demo 工作区建立。首次 Clone 后执行：
 
 ```bash
-make bootstrap
+make setup
 make check
 ```
 
-`make bootstrap` 解析工作区依赖并安装仓库内 Git hooks。
+`make setup` 使用 FVM 准备 `app/.fvmrc` 锁定的 Flutter 版本，或校验系统 Flutter 版本，然后解析工作区依赖并安装仓库内 Git hooks。已经准备好正确 SDK 时可以单独运行 `make bootstrap`。
 
 ## AI 辅助交付闭环
 
@@ -20,9 +20,13 @@ architect / plan command
       ↓
 docs/tasks 中的任务卡
       ↓
+需要运行态验收时：spec-writer → ready Spec
+      ↓
 task-executor 或 bridge-engineer
       ↓
 聚焦验证证据
+      ↓
+spec-auditor → app-operator
       ↓
 reviewer
       ↓
@@ -31,7 +35,7 @@ reviewer
 归档任务与决策
 ```
 
-规划命令只写任务产物，不做实现。执行命令必须基于已有任务卡。独立 Review 默认只读；需要修改实现时，由用户显式调用 `/fix-review-findings`。`/execute-tasks` 自身已经包含实现授权，因此会在单卡范围内执行 Review、修复和复审闭环。
+规划命令只写任务产物，不做实现。`uiSpec: required` 的任务在实现前通过 `/plan-spec` 生成并 Review ready Spec；原型输入不足时只生成不可执行的 draft。执行命令必须基于已有任务卡。独立 Review 默认只读；需要修改实现时，由用户显式调用 `/fix-review-findings`。`/execute-tasks` 自身已经包含实现授权，因此会在单卡范围内执行静态 Spec 审计、运行态 App Operator、Review、修复和复审闭环。
 
 ## 验证命令
 
@@ -39,6 +43,9 @@ reviewer
 make format       # 只读格式检查
 make analyze      # 静态分析
 make test         # 包测试
+make integration-test INTEGRATION_DEVICE=<device-id> # 真机/模拟器集成测试
+make spec-check   # UI 行为 Spec Schema
+make spec-test    # UI 行为 Spec 失败 Fixture
 make lint         # 仓库架构门禁
 make lint-test    # 仓库架构门禁 Fixture
 make hook-test    # pre-commit 暂存区回归测试
@@ -46,6 +53,7 @@ make evidence-lint # 测试证据脱敏检查
 make evidence-test # 证据采集与门禁 Fixture
 make harness-check # AI Harness 配置、引用、链接与宿主检查
 make harness-test  # Harness Check 失败 Fixture
+make integration-runner-test # Integration Runner Fixture
 make proto-check   # Proto 与生成产物同步检查
 make check         # 完整本地门禁
 ```
@@ -63,7 +71,7 @@ bash scripts/quality/capture-evidence.sh --append <output.log> -- <command> [arg
 
 ## 任务生命周期
 
-- 规划产生 `docs/tasks/<task>.md`。
+- 规划在全新的 `docs/tasks/sprint-N/` 中产生 `00-overview.md`、任务卡和可选输入快照；不得覆盖已有 Sprint。
 - 执行产生代码与测试证据。
 - Review 产生 `docs/reviews/<task>.md`。
 - 完成任务移入 `docs/tasks/done/`。

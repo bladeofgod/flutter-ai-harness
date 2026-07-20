@@ -36,6 +36,7 @@
 
 - `/plan-tasks`：`.claude/commands/plan-tasks.md`
 - `/plan-figma`：`.claude/commands/plan-figma.md`
+- `/plan-spec`：`.claude/commands/plan-spec.md`
 - `/execute-tasks`：`.claude/commands/execute-tasks.md`
 - `/review-changes`：`.claude/commands/review-changes.md`
 - `/review-sprint`：`.claude/commands/review-sprint.md`

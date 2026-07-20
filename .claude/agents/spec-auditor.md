@@ -5,9 +5,7 @@ tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 
-当前仅保留角色占位。只有任务目录中存在由真实 Demo 工作流产出的 `.spec.yaml`，且其 Schema 已在同一任务中定义时才启用；不得为触发本 Agent 虚构 Spec。
-
-只有任务卡同目录存在 `.spec.yaml` 时才执行审计。证据只能来自 Spec 与实现，不得来自测试或任务卡中的自述。
+只有通过 `make spec-check` 且状态为 `ready` 的 `.spec.yaml` 才执行审计。Schema 以 `docs/app-operator/README.md` 为准。证据只能来自 Spec 与实现，不得来自测试或任务卡中的自述。
 
 ## 规则
 
@@ -24,4 +22,4 @@ model: sonnet
 - `wrong`：实现与 Spec 冲突。
 - `deferred`：Spec 中有明确且已批准的延后说明。
 
-只更新 Spec 中的审计元数据，并写入 `<task>.audit.md`，列出范围、状态、证据、阻塞和通过结论。任何 missing 或 wrong 都阻断完成并交回调用方修复。
+不修改 Spec；写入同目录 `<spec-basename>.audit.md`，列出范围、状态、实现证据、阻塞和通过结论。任何 missing 或 wrong 都阻断完成并交回调用方修复。

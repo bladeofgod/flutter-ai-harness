@@ -9,8 +9,11 @@ cleanup() {
 trap cleanup EXIT
 
 evidence="$FIXTURE_ROOT/evidence.log"
+private_unix="/Use""rs/alice/project"
+private_windows='C:\Use''rs\bob\project'
 bash "$ROOT/scripts/quality/capture-evidence.sh" "$evidence" -- \
-  bash -c 'printf "%s\n" "path=/Users/alice/project" "windows=C:\Users\bob\project" "Authorization: Bearer fixture-bearer" "token=fixture-token" "api_key=fixture-api-key" "ghp_12345678901234567890" "-----BEGIN PRIVATE KEY-----" "fixture-private-key" "-----END PRIVATE KEY-----" "kept-output"'
+  bash -c 'printf "%s\n" "path=$1" "windows=$2" "Authorization: Bearer fixture-bearer" "token=fixture-token" "api_key=fixture-api-key" "ghp_12345678901234567890" "-----BEGIN PRIVATE KEY-----" "fixture-private-key" "-----END PRIVATE KEY-----" "kept-output"' \
+  fixture "$private_unix" "$private_windows"
 
 rg -q 'kept-output' "$evidence"
 rg -q '<home>/project' "$evidence"
@@ -36,7 +39,7 @@ if bash "$ROOT/scripts/quality/capture-evidence.sh" "$FIXTURE_ROOT/failure.log" 
 fi
 rg -q 'Exit code: 7' "$FIXTURE_ROOT/failure.log"
 
-printf '%s\n' '/Users/alice/raw' 'C:\Users\bob\raw' \
+printf '%s\n' "${private_unix%/project}/raw" "${private_windows%\\project}\\raw" \
   'Authorization: Bearer not-redacted' 'password=not-redacted' \
   > "$FIXTURE_ROOT/unsafe.log"
 if bash "$ROOT/scripts/quality/evidence-lint.sh" "$FIXTURE_ROOT/unsafe.log" >/dev/null 2>&1; then

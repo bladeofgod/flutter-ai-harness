@@ -43,13 +43,15 @@ class _HarnessChecker {
     _validateJson('.claude/settings.json');
     _validateJson('.mcp.json');
     _validateJson('app/.fvmrc');
+    _validateCiWorkflow();
     _loadMcpServerNames();
     _validateFrontmatter();
     _validateWorkflowReferences();
-    _validateTaskExecutors();
+    _validateTasks();
     _validateMarkdownLinks();
     _validateShellSyntax();
     _validateMobileHosts();
+    _validateDependencySources();
     _validatePrivatePaths();
   }
 
@@ -63,6 +65,35 @@ class _HarnessChecker {
       jsonDecode(file.readAsStringSync());
     } on FormatException catch (error) {
       errors.add('$relativePath 不是有效 JSON：${error.message}');
+    }
+  }
+
+  void _validateCiWorkflow() {
+    const relativePath = '.github/workflows/ci.yml';
+    final file = _file(relativePath);
+    if (!file.existsSync()) {
+      errors.add('缺少持续集成配置：$relativePath');
+      return;
+    }
+    try {
+      final document = loadYaml(file.readAsStringSync());
+      if (document is! YamlMap || document['jobs'] is! YamlMap) {
+        errors.add('$relativePath 必须声明 jobs');
+        return;
+      }
+    } on YamlException catch (error) {
+      errors.add('$relativePath 的 YAML 无效：${error.message}');
+      return;
+    }
+    final content = file.readAsStringSync();
+    for (final required in const [
+      'flutter-version: "3.35.7"',
+      'run: make bootstrap',
+      'run: make check',
+    ]) {
+      if (!content.contains(required)) {
+        errors.add('$relativePath 缺少必要步骤：$required');
+      }
     }
   }
 
@@ -239,27 +270,115 @@ class _HarnessChecker {
     }
   }
 
-  void _validateTaskExecutors() {
+  void _validateTasks() {
     final tasks = _directory('docs/tasks');
     if (!tasks.existsSync()) {
       return;
     }
-    for (final file in _markdownFiles(tasks)) {
-      final metadata = _frontmatterIfPresent(file);
-      final executor = metadata?['executor'];
-      if (executor != null &&
-          (executor is! String || !_agents.contains(executor))) {
-        errors.add('${_relative(file)} 引用不存在的 executor：$executor');
+
+    final activeTask = RegExp(
+      r'^docs/tasks/sprint-(\d+)/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
+    );
+    final completedTask = RegExp(
+      r'^docs/tasks/done/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
+    );
+    final taskIds = <String>{};
+    final dependencies = <({String file, String id})>[];
+
+    for (final entity in tasks.listSync(followLinks: false)) {
+      if (entity is! Directory) {
+        continue;
+      }
+      final name = _basename(entity.path);
+      if (!name.startsWith('sprint-')) {
+        continue;
+      }
+      if (!RegExp(r'^sprint-[1-9]\d*$').hasMatch(name)) {
+        errors.add('无效 Sprint 目录：docs/tasks/$name');
+        continue;
+      }
+      if (!File.fromUri(entity.uri.resolve('00-overview.md')).existsSync()) {
+        errors.add('Sprint 缺少 Overview：docs/tasks/$name/00-overview.md');
       }
     }
-  }
 
-  YamlMap? _frontmatterIfPresent(File file) {
-    final lines = file.readAsLinesSync();
-    if (lines.isEmpty || lines.first.trim() != '---') {
-      return null;
+    for (final file in _markdownFiles(tasks)) {
+      final relative = _relative(file);
+      if (RegExp(
+        r'^docs/tasks/sprint-[1-9]\d*/00-overview\.md$',
+      ).hasMatch(relative)) {
+        continue;
+      }
+      if (RegExp(
+        r'^docs/tasks/sprint-[1-9]\d*/\.figma-plan/',
+      ).hasMatch(relative)) {
+        continue;
+      }
+
+      final activeMatch = activeTask.firstMatch(relative);
+      final completedMatch = completedTask.firstMatch(relative);
+      if (activeMatch == null && completedMatch == null) {
+        errors.add('任务卡路径无效：$relative');
+        continue;
+      }
+
+      final id = activeMatch?.group(2) ?? completedMatch!.group(1)!;
+      final idSprint = activeMatch?.group(3) ?? completedMatch!.group(2)!;
+      final directorySprint = activeMatch?.group(1);
+      if (directorySprint != null && directorySprint != idSprint) {
+        errors.add('$relative 的任务 ID $id 与 Sprint 目录不一致');
+      }
+      if (!taskIds.add(id)) {
+        errors.add('重复任务 ID：$id');
+      }
+
+      final metadata = _frontmatter(file);
+      if (metadata == null) {
+        continue;
+      }
+      final executor = metadata['executor'];
+      if (executor is! String ||
+          !const {'task-executor', 'bridge-engineer'}.contains(executor) ||
+          !_agents.contains(executor)) {
+        errors.add('$relative 的 executor 必须是 task-executor 或 bridge-engineer');
+      }
+      if (activeMatch != null) {
+        final uiSpec = metadata['uiSpec'];
+        if (uiSpec is! String ||
+            !const {'required', 'not-required'}.contains(uiSpec)) {
+          errors.add('$relative 的 uiSpec 必须是 required 或 not-required');
+        }
+      }
+
+      final blockedBy = metadata['blockedBy'];
+      if (blockedBy is! YamlList ||
+          blockedBy.any(
+            (dependency) =>
+                dependency is! String ||
+                !RegExp(r'^S[1-9]\d*-\d{3}$').hasMatch(dependency),
+          )) {
+        errors.add('$relative 的 blockedBy 必须是任务 ID 列表');
+      } else {
+        dependencies.addAll(
+          blockedBy.cast<String>().map(
+            (dependency) => (file: relative, id: dependency),
+          ),
+        );
+      }
+
+      if (!RegExp(
+        '^# ${RegExp.escape(id)}(?:\\s|\$)',
+        multiLine: true,
+      ).hasMatch(file.readAsStringSync())) {
+        errors.add('$relative 的一级标题必须以任务 ID $id 开头');
+      }
     }
-    return _frontmatter(file);
+
+    for (final dependency in dependencies) {
+      if (!taskIds.contains(dependency.id)) {
+        errors.add('${dependency.file} 的 blockedBy 引用不存在：${dependency.id}');
+      }
+    }
   }
 
   void _validateMarkdownLinks() {
@@ -332,6 +451,157 @@ class _HarnessChecker {
     }
   }
 
+  void _validateDependencySources() {
+    final app = _directory('app');
+    if (!app.existsSync()) {
+      return;
+    }
+    final pubspecs =
+        app
+            .listSync(recursive: true, followLinks: false)
+            .whereType<File>()
+            .where(
+              (file) =>
+                  _basename(file.path) == 'pubspec.yaml' &&
+                  !_isExcluded(file.path),
+            )
+            .toList()
+          ..sort((left, right) => left.path.compareTo(right.path));
+
+    for (final pubspec in pubspecs) {
+      final relative = _relative(pubspec);
+      final YamlMap document;
+      try {
+        final parsed = loadYaml(pubspec.readAsStringSync());
+        if (parsed is! YamlMap) {
+          errors.add('$relative 的根节点必须是 Map');
+          continue;
+        }
+        document = parsed;
+      } on YamlException catch (error) {
+        errors.add('$relative 的 YAML 无效：${error.message}');
+        continue;
+      }
+
+      for (final section in const [
+        'dependencies',
+        'dev_dependencies',
+        'dependency_overrides',
+      ]) {
+        final dependencies = document[section];
+        if (dependencies == null) {
+          continue;
+        }
+        if (dependencies is! YamlMap) {
+          errors.add('$relative 的 $section 必须是 Map');
+          continue;
+        }
+        for (final entry in dependencies.entries) {
+          _validateDependencySource(
+            pubspec,
+            '$section.${entry.key}',
+            entry.value,
+          );
+        }
+      }
+    }
+  }
+
+  void _validateDependencySource(File pubspec, String name, Object? value) {
+    if (value == null || value is String) {
+      return;
+    }
+    final relative = _relative(pubspec);
+    if (value is! YamlMap) {
+      errors.add('$relative 的 $name 依赖声明无效');
+      return;
+    }
+
+    final sourceKeys = const {
+      'sdk',
+      'path',
+      'git',
+      'hosted',
+    }.where(value.containsKey).toList();
+    if (sourceKeys.length > 1) {
+      errors.add('$relative 的 $name 不能声明多个依赖来源');
+      return;
+    }
+    if (sourceKeys.isEmpty) {
+      if (value.keys.any((key) => key != 'version')) {
+        errors.add('$relative 的 $name 包含未知依赖来源');
+      }
+      return;
+    }
+
+    switch (sourceKeys.single) {
+      case 'sdk':
+        final sdk = value['sdk'];
+        if (sdk is! String || !const {'flutter', 'dart'}.contains(sdk)) {
+          errors.add('$relative 的 $name 使用不支持的 SDK 依赖');
+        }
+      case 'path':
+        _validatePathDependency(pubspec, name, value['path']);
+      case 'git':
+        _validateGitDependency(pubspec, name, value['git']);
+      case 'hosted':
+        _validateHostedDependency(pubspec, name, value['hosted']);
+    }
+  }
+
+  void _validatePathDependency(File pubspec, String name, Object? value) {
+    final relative = _relative(pubspec);
+    if (value is! String || value.trim().isEmpty || File(value).isAbsolute) {
+      errors.add('$relative 的 $name 不得使用本机绝对 path 依赖');
+      return;
+    }
+    final target = Directory.fromUri(pubspec.parent.uri.resolve('$value/'));
+    final targetPubspec = File.fromUri(target.uri.resolve('pubspec.yaml'));
+    if (!target.existsSync() || !targetPubspec.existsSync()) {
+      errors.add('$relative 的 $name path 依赖不存在或缺少 pubspec.yaml');
+      return;
+    }
+    final rootPath =
+        '${root.resolveSymbolicLinksSync()}${Platform.pathSeparator}';
+    final targetPath =
+        '${target.resolveSymbolicLinksSync()}${Platform.pathSeparator}';
+    if (!targetPath.startsWith(rootPath)) {
+      errors.add('$relative 的 $name path 依赖越出仓库');
+    }
+  }
+
+  void _validateGitDependency(File pubspec, String name, Object? value) {
+    final relative = _relative(pubspec);
+    if (value is! YamlMap) {
+      errors.add('$relative 的 $name Git 依赖必须声明 url 和完整 Commit ref');
+      return;
+    }
+    final url = value['url'];
+    final ref = value['ref'];
+    final uri = url is String ? Uri.tryParse(url) : null;
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty) {
+      errors.add('$relative 的 $name Git 依赖必须使用无凭据 HTTPS URL');
+    }
+    if (ref is! String || !RegExp(r'^[0-9a-fA-F]{40}$').hasMatch(ref)) {
+      errors.add('$relative 的 $name Git 依赖必须锁定完整 Commit ref');
+    }
+  }
+
+  void _validateHostedDependency(File pubspec, String name, Object? value) {
+    final relative = _relative(pubspec);
+    final Object? url = value is YamlMap ? value['url'] : value;
+    final uri = url is String ? Uri.tryParse(url) : null;
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host != 'pub.dev' ||
+        (uri.path.isNotEmpty && uri.path != '/')) {
+      errors.add('$relative 的 $name 不得使用非 Pub.dev Hosted 来源');
+    }
+  }
+
   void _validatePrivatePaths() {
     final usersRoot =
         '/Use'
@@ -349,15 +619,24 @@ class _HarnessChecker {
         'README.md',
         'CLAUDE.md',
         'AGENTS.md',
+        'Makefile',
+        '.gitignore',
         '.mcp.json',
         'app/apps/demo/ios/Runner.xcodeproj/project.pbxproj',
         'app/apps/demo/android/app/build.gradle.kts',
       ])
         if (_file(path).existsSync()) _file(path),
       ..._textFiles(_directory('.claude')).where(_isTextFile),
+      ..._textFiles(_directory('.github')).where(_isTextFile),
+      ..._textFiles(_directory('app')).where(_isTextFile),
       ..._textFiles(_directory('docs')).where(_isTextFile),
+      ..._textFiles(_directory('scripts')).where(_isTextFile),
     ];
+    final seen = <String>{};
     for (final file in candidates) {
+      if (!seen.add(file.path)) {
+        continue;
+      }
       final content = file.readAsStringSync();
       if (patterns.any((pattern) => pattern.hasMatch(content))) {
         errors.add('${_relative(file)} 包含本机用户绝对路径');
@@ -409,6 +688,10 @@ class _HarnessChecker {
       '/.idea/',
       '/build/',
       '/Pods/',
+      '/android/local.properties',
+      '/ios/Flutter/Generated.xcconfig',
+      '/ios/Flutter/flutter_export_environment.sh',
+      '/ios/Flutter/ephemeral/',
     ].any(normalized.contains);
   }
 

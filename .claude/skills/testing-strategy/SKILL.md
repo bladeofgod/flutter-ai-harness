@@ -30,5 +30,6 @@ paths: ["app/**/test/**/*.dart", "app/**/integration_test/**/*.dart", "app/**/*_
 - 只有 Semantics 或自动化需要时才增加稳定 Key。
 - 确认测试确实执行到目标断言，没有因 Setup 静默失败而假通过。
 - 先运行新增测试文件，再运行受影响包测试。
+- 完整用户旅程通过 `make integration-test INTEGRATION_DEVICE=<device-id>` 在显式设备上运行；该命令不属于快速 `make check`。
 
 重新确认产品契约前，不得削弱失败断言。

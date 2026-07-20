@@ -18,6 +18,8 @@ This project is an engineering harness for building applications with AI agents.
 - A layered Flutter workspace model that prevents protocol and persistence types from leaking across package boundaries.
 - Contract-first MethodChannel and EventChannel guidance for Android and iOS integrations.
 - Project-level Marionette MCP configuration for inspecting and operating a running Debug app.
+- A reviewable UI behavior Spec pipeline from `spec-writer` to static audit and Marionette execution.
+- GitHub CI and dependency-source gates for reproducible public clones.
 
 ## Repository Model
 
@@ -61,16 +63,16 @@ The runnable demo is intentionally developed after the neutral harness. Its task
 
 ## Quick Start
 
-Prerequisites: Flutter 3.35.7, Dart 3.9, Claude Code 2.1.198 or later, and FVM (recommended).
+Prerequisites: Claude Code 2.1.198 or later, plus FVM (recommended) or an existing Flutter 3.35.7 installation.
 
 ```bash
-git clone git@github.com:bladeofgod/flutter-ai-harness.git
+git clone https://github.com/bladeofgod/flutter-ai-harness.git
 cd flutter-ai-harness
-make bootstrap
+make setup
 make check
 ```
 
-`make bootstrap` resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server. The Demo currently contains only a neutral bootstrap entry point; product UI starts after the product brief and Figma design are approved.
+`make setup` installs the Flutter version from `app/.fvmrc` when FVM is available, otherwise verifies the system Flutter version. It then resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server. The Demo currently contains only a neutral bootstrap entry point; product UI starts after the product brief and Figma design are approved.
 
 The neutral Demo includes Android and iOS hosts. Run it with `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run`. The `com.example` application identifiers are placeholders and must be replaced before release.
 

@@ -37,6 +37,7 @@ model: sonnet
 ---
 executor: task-executor
 blockedBy: []
+uiSpec: not-required
 ---
 
 # <ID> <标题>

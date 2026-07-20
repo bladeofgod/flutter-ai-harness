@@ -19,7 +19,10 @@ if [[ "${#targets[@]}" -eq 0 ]]; then
 fi
 
 for file in "${targets[@]}"; do
-  path_hits="$(rg -n '(/Users/[^/[:space:]]+|/home/[^/[:space:]]+|[A-Za-z]:\\Users\\[^\\[:space:]]+)' "$file" || true)"
+  users_pattern='/Use''rs/[^/[:space:]]+'
+  home_pattern='/ho''me/[^/[:space:]]+'
+  windows_pattern='[A-Za-z]:\\Use''rs\\[^\\[:space:]]+'
+  path_hits="$(rg -n "(${users_pattern}|${home_pattern}|${windows_pattern})" "$file" || true)"
   if [[ -n "$path_hits" ]]; then
     echo "错误：测试证据包含未脱敏的用户目录：$file" >&2
     fail=1

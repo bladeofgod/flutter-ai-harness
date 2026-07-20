@@ -12,6 +12,7 @@
       "Edit(README.md)",
       "Edit(.mcp.json)",
       "Edit(.claude/**)",
+      "Edit(.github/**)",
       "Bash(flutter *)",
       "Bash(dart *)",
       "Bash(fvm *)",

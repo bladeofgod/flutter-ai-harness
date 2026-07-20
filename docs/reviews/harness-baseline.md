@@ -108,3 +108,7 @@ Demo 已生成并去本机化 Android/iOS 标准宿主。Android Debug 构建通
 ### 复审结论
 
 P0/P1 均为 0。详细任务 Review 和脱敏命令证据见 `docs/reviews/execute-S1-*.md` 与 `docs/reviews/test-evidence/`。原 P2 不在本轮修复范围内。
+
+## 后续状态
+
+原 4 个 P2 已在后续 Demo 开发就绪复审中关闭；当前状态与新增依赖来源门禁见 `docs/reviews/demo-readiness.md`。

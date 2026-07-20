@@ -12,10 +12,12 @@ argument-hint: "<task-card-path>..."
 3. 按声明依赖排序，再按文件名排序。
 4. 阻塞项未解决或外部依赖缺失时停止。
 5. 保护无关工作树改动，并将 diff 限定在当前卡范围。
+6. `uiSpec: required` 时，确认同名 `.spec.yaml` 已通过用户 Review、状态为 `ready` 且 `make spec-check` 通过；缺失时停止并要求先运行 `/plan-spec`。
 
 ## Executor 分流
 
-- 缺少 `executor` 或值为 `task-executor`：使用 `task-executor`。
+- 缺少 `executor`：停止并报告无效任务卡，不猜测执行角色。
+- 值为 `task-executor`：使用 `task-executor`。
 - 值为 `bridge-engineer`：使用 `bridge-engineer`，要求有契约文档并覆盖所有声明平台。
 - 其他值：停止并报告无效任务卡。
 
@@ -28,10 +30,11 @@ argument-hint: "<task-card-path>..."
 3. 运行受影响静态分析、聚焦测试和 `make lint`。
 4. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
 5. 通过 `scripts/quality/capture-evidence.sh` 把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-basename>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得直接重定向原始 stdout/stderr 到入库证据。
-6. 同目录存在 `.spec.yaml` 时运行 `spec-auditor`。
-7. 运行 `reviewer`，写入 `docs/reviews/execute-<task-basename>.md`。
-8. 使用 `fix-review-findings` 修复 P0/P1，重新验证并复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
-9. 将完成任务和同名 spec/audit 文件移入 `docs/tasks/done/`。
+6. `uiSpec: required` 时先运行 `make spec-check`，再运行 `spec-auditor`；missing 或 wrong 阻断后续步骤。
+7. `uiSpec: required` 时由调用方启动 Debug App 并提供 VM Service URI，再运行 `app-operator`；运行失败、MCP 未批准或缺少可用设备时记录验证缺口并停止归档，不把静态审计当作运行通过。
+8. 运行 `reviewer`，写入 `docs/reviews/execute-<task-basename>.md`。
+9. 使用 `fix-review-findings` 修复 P0/P1，重新验证并复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
+10. 将完成任务和同名 spec/audit 文件移入 `docs/tasks/done/`；App Operator 运行报告保留在 `docs/app-operator/runs/`。
 
 归档前必须清零 P0/P1。P2 只有在记录负责人或 Follow-up 任务后才可延后。
 
