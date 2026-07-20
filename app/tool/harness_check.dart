@@ -283,7 +283,8 @@ class _HarnessChecker {
       r'^docs/tasks/done/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
     );
     final taskIds = <String>{};
-    final dependencies = <({String file, String id})>[];
+    final dependencies = <({String file, String owner, String id})>[];
+    final dependencyGraph = <String, Set<String>>{};
 
     for (final entity in tasks.listSync(followLinks: false)) {
       if (entity is! Directory) {
@@ -359,9 +360,14 @@ class _HarnessChecker {
           )) {
         errors.add('$relative 的 blockedBy 必须是任务 ID 列表');
       } else {
+        final dependencyIds = blockedBy.cast<String>();
+        if (dependencyIds.toSet().length != dependencyIds.length) {
+          errors.add('$relative 的 blockedBy 不得包含重复任务 ID');
+        }
+        dependencyGraph[id] = dependencyIds.toSet();
         dependencies.addAll(
-          blockedBy.cast<String>().map(
-            (dependency) => (file: relative, id: dependency),
+          dependencyIds.map(
+            (dependency) => (file: relative, owner: id, id: dependency),
           ),
         );
       }
@@ -375,9 +381,50 @@ class _HarnessChecker {
     }
 
     for (final dependency in dependencies) {
+      if (dependency.owner == dependency.id) {
+        errors.add('${dependency.file} 的 blockedBy 不得引用自身：${dependency.id}');
+      }
       if (!taskIds.contains(dependency.id)) {
         errors.add('${dependency.file} 的 blockedBy 引用不存在：${dependency.id}');
       }
+    }
+    _validateTaskDependencyCycles(dependencyGraph);
+  }
+
+  void _validateTaskDependencyCycles(Map<String, Set<String>> graph) {
+    final visited = <String>{};
+    final visiting = <String>{};
+    final path = <String>[];
+    final reported = <String>{};
+
+    void visit(String taskId) {
+      if (visited.contains(taskId)) {
+        return;
+      }
+      final cycleStart = path.indexOf(taskId);
+      if (visiting.contains(taskId) && cycleStart >= 0) {
+        final cycle = [...path.sublist(cycleStart), taskId];
+        final signature = cycle.toSet().toList()..sort();
+        if (reported.add(signature.join(','))) {
+          errors.add('任务依赖存在循环：${cycle.join(' -> ')}');
+        }
+        return;
+      }
+
+      visiting.add(taskId);
+      path.add(taskId);
+      for (final dependency in graph[taskId] ?? const <String>{}) {
+        if (graph.containsKey(dependency)) {
+          visit(dependency);
+        }
+      }
+      path.removeLast();
+      visiting.remove(taskId);
+      visited.add(taskId);
+    }
+
+    for (final taskId in graph.keys) {
+      visit(taskId);
     }
   }
 

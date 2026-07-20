@@ -32,7 +32,7 @@ argument-hint: "[需求、文档路径和额外约束]"
 
 - 与文件名一致的 `SN-XXX` 标题和任务 ID。
 - `executor` frontmatter，只允许 `task-executor` 或 `bridge-engineer`。
-- `blockedBy` frontmatter，使用任务 ID 列表，无依赖时为 `[]`。
+- `blockedBy` frontmatter，使用任务 ID 列表，无依赖时为 `[]`；禁止重复、自依赖和循环依赖，全部任务必须构成可拓扑排序的 DAG。
 - `uiSpec` frontmatter：完整用户流程或需要运行态交互验收时为 required，否则为 not-required。
 - 输入和事实来源。
 - 目标和非目标。
@@ -43,6 +43,6 @@ argument-hint: "[需求、文档路径和额外约束]"
 
 适用时按以下顺序安排基础契约与消费者：协议或持久化 Adapter、Domain Entity、Mapper、API、Controller、装配、Route、UI、集成验证。
 
-uiSpec 为 required 的任务必须在用户批准任务卡后、执行实现前通过 `/plan-spec` 生成并 Review ready Spec。
+uiSpec 为 required 的任务必须在用户批准任务卡后、执行实现前通过 `/plan-spec` 生成；机器校验通过且没有待决问题时状态为 ready。
 
 写入前再次确认目标目录不存在；创建目录和全部规划产物后运行 `make harness-check`。最后汇报 Sprint 编号、创建路径、依赖顺序、待决事项和第一张可执行任务卡。停在实现前，等待用户 Review。

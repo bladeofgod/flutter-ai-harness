@@ -61,7 +61,7 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
 
-任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；只有 Review 完成且状态为 `ready` 的 Spec 才能进入静态审计和运行态执行。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
 ## 质量门禁
 

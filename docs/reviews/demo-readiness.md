@@ -106,7 +106,7 @@ P0/P1 均为 0；当时 5 个 P2 保持待办。`make check` 已通过，可以�
 
 - 新增 `spec-writer` Agent 与 `/plan-spec`：根据已批准任务、产品规则和原型输入生成 `draft`/`ready` UI 行为 Spec。
 - Version 1 Schema、`spec-check` 和失败 Fixture 已建立；原型信息不足时必须保留 `openQuestions`，不得交给 Operator。
-- `uiSpec: required` 的任务必须依次通过用户 Spec Review、`spec-auditor` 静态覆盖审计和 `app-operator` 运行验证才能归档。
+- `uiSpec: required` 的任务必须依次通过机器 Schema 校验、`spec-auditor` 静态覆盖审计和 `app-operator` 运行验证才能归档；只有待决产品信息或外部运行状态需要人工介入。
 - 当前没有真实 Demo Spec，因此未虚构 App Operator 运行历史；首个真实流程仍需验证 Marionette 连接和报告产出。
 
 ### Quick Start：已关闭

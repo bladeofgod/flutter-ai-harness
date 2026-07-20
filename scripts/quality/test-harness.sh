@@ -117,6 +117,33 @@ if run_check >/dev/null 2>&1; then
 fi
 write_valid_task
 
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-001]/' \
+  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝任务自依赖。" >&2
+  exit 1
+fi
+write_valid_task
+
+cat > "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-002-cycle-task.md" <<'MARKDOWN'
+---
+executor: task-executor
+blockedBy: [S2-001]
+uiSpec: not-required
+---
+# S2-002 Cycle task
+MARKDOWN
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-002]/' \
+  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝循环任务依赖。" >&2
+  exit 1
+fi
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-002-cycle-task.md"
+write_valid_task
+
 sed -i.bak 's/executor: task-executor/executor: sample-agent/' \
   "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
 rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"

@@ -40,10 +40,10 @@ melos:
       description: 验证 Integration Test Runner 的发现与设备传参
     spec-check:
       run: dart run tool/validate_ui_specs.dart
-      description: 校验 UI 行为 Spec Schema
+      description: 校验 UI 行为 Spec 与静态审计 Schema
     spec-test:
       run: bash ../scripts/quality/test-ui-specs.sh
-      description: 运行 UI 行为 Spec Schema 失败 Fixture
+      description: 运行 UI 行为 Spec 与静态审计失败 Fixture
     lint:
       run: bash ../scripts/lint/repository-boundaries.sh
       description: 检查跨 Feature 引用、API 注入和路由边界

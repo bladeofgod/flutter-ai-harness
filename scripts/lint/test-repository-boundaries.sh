@@ -46,6 +46,20 @@ printf '%s\n' "import 'package:app_features/app_features.dart';" \
 REPOSITORY_ROOT="$FIXTURE_ROOT" PACKAGE_DEPS_JSON="$valid_dependencies" \
   bash "$ROOT/scripts/lint/repository-boundaries.sh" >/dev/null
 
+failing_rg="$FIXTURE_ROOT/failing-rg"
+cat > "$failing_rg" <<'BASH'
+#!/usr/bin/env bash
+echo "fixture rg parse error" >&2
+exit 2
+BASH
+chmod +x "$failing_rg"
+if RG="$failing_rg" REPOSITORY_ROOT="$FIXTURE_ROOT" \
+  PACKAGE_DEPS_JSON="$valid_dependencies" \
+  bash "$ROOT/scripts/lint/repository-boundaries.sh" >/dev/null 2>&1; then
+  echo "错误：仓库边界 lint 吞掉了 ripgrep 执行错误。" >&2
+  exit 1
+fi
+
 printf '%s\n' 'import "package:app_features/feature_beta/controllers/beta_controller.dart";' \
   > "$FEATURE_ROOT/feature_alpha/pages/double_quote.dart"
 printf '%s\n' "export '../../feature_beta/controllers/beta_controller.dart';" \

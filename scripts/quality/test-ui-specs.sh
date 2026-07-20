@@ -20,6 +20,7 @@ run_check() {
 write_ready_spec() {
   cat > "$TASK_DIR/S2-001-profile.spec.yaml" <<'YAML'
 version: 1
+revision: 1
 id: profile-save
 status: ready
 task: S2-001
@@ -28,9 +29,6 @@ sources:
   - type: task
     ref: docs/tasks/sprint-2/S2-001-profile.md
 platforms: [android, ios]
-setup:
-  - id: profile-open
-    description: Profile is open
 steps:
   - id: save
     action: tap
@@ -45,6 +43,23 @@ assertions:
       value: Saved
 teardown: []
 openQuestions: []
+YAML
+}
+
+write_passed_audit() {
+  cat > "$TASK_DIR/S2-001-profile.audit.yaml" <<'YAML'
+version: 1
+spec: docs/tasks/sprint-2/S2-001-profile.spec.yaml
+specId: profile-save
+specRevision: 1
+status: passed
+items:
+  - id: save
+    status: covered
+    evidence: [app/example.dart:10]
+  - id: success-visible
+    status: covered
+    evidence: [app/example.dart:20]
 YAML
 }
 
@@ -69,6 +84,25 @@ if run_check >/dev/null 2>&1; then
 fi
 write_ready_spec
 
+sed -i.bak '/platforms:/a\
+setup: []' "$TASK_DIR/S2-001-profile.spec.yaml"
+rm -f -- "$TASK_DIR/S2-001-profile.spec.yaml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝已移除的 Setup 字段。" >&2
+  exit 1
+fi
+write_ready_spec
+
+sed -i.bak \
+  's#docs/tasks/sprint-2/S2-001-profile.md#docs/tasks/done/S2-001-profile.md#' \
+  "$TASK_DIR/S2-001-profile.spec.yaml"
+rm -f -- "$TASK_DIR/S2-001-profile.spec.yaml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝失效的任务 Source。" >&2
+  exit 1
+fi
+write_ready_spec
+
 sed -i.bak 's/status: ready/status: draft/' \
   "$TASK_DIR/S2-001-profile.spec.yaml"
 sed -i.bak 's/openQuestions: \[\]/openQuestions: [Need product decision]/' \
@@ -76,4 +110,48 @@ sed -i.bak 's/openQuestions: \[\]/openQuestions: [Need product decision]/' \
 rm -f -- "$TASK_DIR/S2-001-profile.spec.yaml.bak"
 run_check >/dev/null
 
-echo "[spec-test] UI 行为 Spec Schema 与失败 Fixture 通过。"
+write_ready_spec
+write_passed_audit
+run_check >/dev/null
+
+sed -i.bak 's/specRevision: 1/specRevision: 2/' \
+  "$TASK_DIR/S2-001-profile.audit.yaml"
+rm -f -- "$TASK_DIR/S2-001-profile.audit.yaml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝过期的静态审计。" >&2
+  exit 1
+fi
+write_passed_audit
+
+sed -i.bak 's/status: covered/status: missing/g' \
+  "$TASK_DIR/S2-001-profile.audit.yaml"
+rm -f -- "$TASK_DIR/S2-001-profile.audit.yaml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝包含 missing 的 passed 审计。" >&2
+  exit 1
+fi
+write_passed_audit
+run_check >/dev/null
+
+DONE_DIR="$FIXTURE_ROOT/docs/tasks/done"
+mkdir -p "$DONE_DIR"
+mv "$TASK_DIR/S2-001-profile.md" "$DONE_DIR/S2-001-profile.md"
+mv "$TASK_DIR/S2-001-profile.spec.yaml" \
+  "$DONE_DIR/S2-001-profile.spec.yaml"
+mv "$TASK_DIR/S2-001-profile.audit.yaml" \
+  "$DONE_DIR/S2-001-profile.audit.yaml"
+sed -i.bak 's#docs/tasks/sprint-2/#docs/tasks/done/#g' \
+  "$DONE_DIR/S2-001-profile.spec.yaml" \
+  "$DONE_DIR/S2-001-profile.audit.yaml"
+rm -f -- \
+  "$DONE_DIR/S2-001-profile.spec.yaml.bak" \
+  "$DONE_DIR/S2-001-profile.audit.yaml.bak"
+run_check >/dev/null
+
+rm -f -- "$DONE_DIR/S2-001-profile.audit.yaml"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Spec Check 未拒绝缺少 passed 审计的归档 Spec。" >&2
+  exit 1
+fi
+
+echo "[spec-test] UI 行为 Spec、静态审计与失败 Fixture 通过。"

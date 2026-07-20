@@ -21,7 +21,7 @@ model: sonnet
 
 - 有任务卡时写入同目录 `<task-basename>.spec.yaml`，并设置对应 `task` ID。
 - 只有原型输入时写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
-- `ready` Spec 必须包含可复现 Setup、至少一个 Step、至少一个 Assertion、明确 Teardown 和空 `openQuestions`。
+- `ready` Spec 必须包含至少一个 Step、至少一个 Assertion、明确 Teardown 和空 `openQuestions`。
 - 选择器优先级为稳定 Key、Semantics、稳定文本；禁止坐标和脆弱的层级索引。
 
 ## 边界
@@ -32,4 +32,4 @@ model: sonnet
 - 不把系统原生界面操作写成 Marionette Step。
 - 不记录凭据、VM Service URI、设备标识或真实用户数据。
 
-写入后运行 `make spec-check`。汇报 Spec 路径、状态、事实来源和待决问题，等待用户 Review；`draft` 不得交给 `app-operator`。
+写入后运行 `make spec-check`。汇报 Spec 路径、状态、事实来源和待决问题；校验通过的 `ready` 可以进入实现，`draft` 必须等待缺失决策，不得进入实现或交给 `app-operator`。
