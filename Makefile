@@ -1,6 +1,6 @@
 .PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
 
-setup: flutter-sdk
+setup: prerequisites flutter-sdk
 	$(MAKE) bootstrap
 
 flutter-sdk:
@@ -12,7 +12,7 @@ prerequisites:
 prerequisites-test:
 	bash scripts/quality/test-prerequisites.sh
 
-bootstrap: prerequisites
+bootstrap:
 	bash scripts/dart-tool.sh pub get
 	bash scripts/dart-tool.sh run melos bootstrap
 	bash scripts/git-hooks/install.sh
