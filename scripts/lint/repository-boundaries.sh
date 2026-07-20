@@ -4,6 +4,7 @@ set -euo pipefail
 TOOL_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ROOT="${REPOSITORY_ROOT:-$TOOL_ROOT}"
 FEATURE_ROOT="$ROOT/app/packages/app_features/lib"
+feature_import_pattern="^[[:space:]]*(import|export|part)[[:space:]]+['\"]"
 fail=0
 
 echo "[lint] 检查跨 Feature 内部引用"
@@ -11,13 +12,15 @@ if [[ -d "$FEATURE_ROOT" ]]; then
   while IFS= read -r hit; do
     [[ -n "$hit" ]] || continue
     file="${hit%%:*}"
+    content="${hit#*:*:}"
+    [[ "$content" =~ $feature_import_pattern ]] || continue
     owner="$(sed -nE 's#^.*/(feature_[^/]+)/.*#\1#p' <<< "$file")"
-    target="$(rg -o 'feature_[A-Za-z0-9_]+/' <<< "${hit#*:*:}" | tail -n 1 | tr -d '/')"
+    target="$(grep -oE 'feature_[A-Za-z0-9_]+/' <<< "$content" | tail -n 1 | tr -d '/')"
     if [[ -z "$owner" || "$owner" != "$target" ]]; then
       echo "错误：$owner 不得 import $target 内部实现：$hit"
       fail=1
     fi
-  done < <(rg -n "^[[:space:]]*(import|export|part)[[:space:]]+['\"][^'\"]*feature_[A-Za-z0-9_]+/" \
+  done < <(rg -n 'feature_[A-Za-z0-9_]+/' \
     "$FEATURE_ROOT" -g '*.dart' 2>/dev/null || true)
 fi
 
