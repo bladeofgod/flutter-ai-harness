@@ -64,10 +64,11 @@ app/
    ```
 
 5. Feature 不得 import 其他 Feature 的内部实现。
-6. 跨 Feature 交互通过 `app_features/lib/api/` 下的抽象接口和统一注册机制完成。
-7. 壳工程只负责模块与回调装配，不得 import Feature 实现类。
-8. Controller 通过构造函数接收必需 API。服务定位器只允许出现在装配点或显式全局服务中。
-9. 只有在确实降低复杂度或保护真实边界时才新增抽象。
+6. 业务抽象接口放在 `app_features/lib/api/`，具体实现放在对应 `feature_xxx/api/`；跨 Feature 交互只依赖抽象接口，并由统一 Registry 绑定实现。
+7. `app_data` 提供 Domain Entity、LocalDataSource、确定性 Fixture，以及真实协议或持久化出现后的 Mapper/Adapter；不得承载页面、Controller 或 Feature 业务编排。
+8. 壳工程只负责模块与回调装配，不得 import Feature 实现类。
+9. Controller 通过构造函数接收必需 API。服务定位器只允许出现在装配点或显式全局服务中。
+10. 只有在确实降低复杂度或保护真实边界时才新增抽象。
 
 详细规则见 `docs/architecture.md` 和当前任务相关的 Skill。
 
@@ -81,6 +82,8 @@ app/
 - `*.g.dart`、`*.freezed.dart` 和 Protobuf 生成文件只能由生成器修改。
 
 依赖写入真实消费者所属的 Package `pubspec.yaml`；只有 Workspace 工具依赖写入根 `app/pubspec.yaml`。
+
+Demo 当前没有真实远程 API 或 Wire Contract，业务数据使用确定性的本地 Fixture。不得为模拟远程链路而引入 Dio、Proto 或伪造 HTTP Server；只有真实 Endpoint/协议成为事实来源后才能增加远程 API 实现和 Proto 生成链路。Drift 只在出现跨 App 重启持久化需求时引入。
 
 ## 混合工程 Bridge 契约
 
@@ -211,5 +214,5 @@ Dart 改动：
 - **架构设计**：[`docs/architecture.md`](./docs/architecture.md)（包职责、类型边界、Feature 边界、装配与路由）。
 - **IM 架构**：[`docs/im-architecture.md`](./docs/im-architecture.md)（占位；随 Demo 的首个 IM 任务补充 Engine、事件和生命周期设计）。
 - **基础模块清册**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（占位；用于避免重复实现已有公共能力）。
-- **API 契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（占位；首个真实 API/Proto 任务建立权威来源和生成链路）。
-- **设计稿输入**：[`docs/figma-links.md`](./docs/figma-links.md)（占位；记录 Demo 使用的 Figma 来源、授权和读取规则）。
+- **API 与数据契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（当前本地数据策略、业务 API 边界和未来远程协议启用条件）。
+- **设计稿输入**：[`docs/figma-links.md`](./docs/figma-links.md)（Demo 使用的 Figma 来源、授权和读取规则）。
