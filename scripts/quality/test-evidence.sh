@@ -47,4 +47,13 @@ if bash "$ROOT/scripts/quality/evidence-lint.sh" "$FIXTURE_ROOT/unsafe.log" >/de
   exit 1
 fi
 
+operator_report="$FIXTURE_ROOT/docs/app-operator/runs/example/20260720-120000-android.run.yaml"
+mkdir -p "$(dirname "$operator_report")"
+printf '%s\n' 'version: 1' 'token=not-redacted' > "$operator_report"
+if REPOSITORY_ROOT="$FIXTURE_ROOT" \
+  bash "$ROOT/scripts/quality/evidence-lint.sh" >/dev/null 2>&1; then
+  echo "错误：evidence lint 未扫描 App Operator 产物。" >&2
+  exit 1
+fi
+
 echo "[evidence-test] 证据采集、脱敏和门禁 Fixture 通过。"

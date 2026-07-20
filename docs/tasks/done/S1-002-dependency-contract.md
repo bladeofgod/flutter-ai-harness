@@ -1,6 +1,7 @@
 ---
 executor: task-executor
 blockedBy: []
+uiSpec: not-required
 ---
 
 # S1-002 修正依赖方向契约

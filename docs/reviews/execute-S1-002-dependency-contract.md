@@ -1,3 +1,10 @@
+---
+task: S1-002
+status: passed
+p0: 0
+p1: 0
+---
+
 # S1-002 Review：修正依赖方向契约
 
 ## 结论

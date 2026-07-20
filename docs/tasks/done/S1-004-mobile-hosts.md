@@ -1,6 +1,7 @@
 ---
 executor: task-executor
 blockedBy: []
+uiSpec: not-required
 ---
 
 # S1-004 建立 Android/iOS 中立宿主

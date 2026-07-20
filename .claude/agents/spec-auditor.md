@@ -20,4 +20,4 @@ Spec 中每个 Step、Assertion 和 Teardown ID 必须选择一种状态：
 - `missing`：没有实现。
 - `wrong`：实现与 Spec 冲突。
 
-不修改 Spec；严格按 `ui-behavior-spec` Skill 写入同目录 `<task-basename>.audit.yaml` 或 `<spec-id>.audit.yaml`。全部条目为 covered 时 `status: passed`，否则为 `failed`。写入后运行 `make spec-check`；任何 missing、wrong、版本不匹配或 Schema 错误都阻断测试，并交回调用方修复实现后重新审计。
+不修改 Spec；严格按 `ui-behavior-spec` Skill 写入同目录 `<task-basename>.audit.yaml` 或 `<spec-id>.audit.yaml`。证据只使用真实生产实现 `file:line`，先用 `implementation_digest.dart` 对去重后的证据文件计算摘要；全部条目为 covered 时同时写入 `implementationDigest` 和 `status: passed`，否则为 `failed`。写入后运行 `make spec-check`；任何证据无效、摘要过期、missing、wrong、版本不匹配或 Schema 错误都阻断测试，并交回调用方修复实现后重新审计。

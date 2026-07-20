@@ -19,7 +19,7 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 - 为 Android、iOS 提供契约优先的 MethodChannel/EventChannel 规范。
 - 提供项目级 Marionette MCP 配置，用于检查和操作运行中的 Debug App。
 - 提供从 `spec-writer`、静态审计到 Marionette 执行的可 Review UI 行为 Spec 流程。
-- 提供 GitHub CI 和依赖来源门禁，保证公开 Clone 可复现。
+- 提供包含仓库检查与 Android/iOS Debug 构建的 GitHub CI，以及依赖来源门禁，保证公开 Clone 可复现。
 
 ## 仓库模型
 
@@ -61,7 +61,7 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
 
-任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。随后每个声明平台分别生成与当前实现绑定的结构化 App Operator 报告。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
 ## 质量门禁
 
@@ -99,7 +99,7 @@ make check
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
 
-运行态 Flutter UI 检查需要先执行 `make marionette-install`，以 Debug 模式启动 Demo，再把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。操作顺序固定为连接、检查或交互、断开。Marionette 只操作 Flutter Widget Tree，不负责原生系统界面自动化。
+运行态 Flutter UI 检查需要先执行 `make marionette-install`，以 Debug 模式启动 Demo，再把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。操作顺序固定为连接、检查或交互、断开。Harness 任务执行会对 UI Spec 声明的每个平台重复该流程，并分别保存经过校验且不含敏感信息的报告。Marionette 只操作 Flutter Widget Tree，不负责原生系统界面自动化。
 
 ## 当前状态
 

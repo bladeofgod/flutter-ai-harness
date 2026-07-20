@@ -134,7 +134,9 @@ MethodChannel 和 EventChannel 必须遵守：
 
 Demo 使用 `marionette_flutter` 暴露 Debug VM Service 扩展，仓库根目录的 `.mcp.json` 为 Claude Code 配置 `marionette_mcp`。Marionette Binding 只能在 Debug 模式初始化，不得进入 Profile 或 Release。
 
-首次 Clone 后运行 `make marionette-install` 安装 MCP Server。启动 Demo 后，将 `flutter run` 输出中的 `ws://.../ws` VM Service URI 提供给 Agent，再按 `marionette-debug` Skill 或 `app-operator` Agent 操作。
+首次 Clone 后运行 `make marionette-install` 安装 MCP Server。人工调试时启动 Demo，并将 `flutter run` 输出中的 `ws://.../ws` VM Service URI 提供给 Agent；执行 `uiSpec: required` 任务时，由 `execute-tasks` 按 Spec 声明平台加载 `flutter-debug-runtime`，逐端启动并把 URI 仅在当前调用中交给 `app-operator`。
+
+App Operator 每个平台单独写入结构化运行报告，报告必须绑定当前 Spec、Audit 和实现摘要，只记录 OS 版本、设备类型、Flutter/Marionette 版本等非敏感复现信息。VM Service URI、设备 ID、主机名、用户名、账号和真实数据不得入库。
 
 自定义设计系统组件必须在 Demo 实装时补充 `MarionetteConfiguration`、稳定 Key/Semantics 和日志收集；不得把“已连接 MCP”误认为自定义组件已经可操作。
 
@@ -149,6 +151,7 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 - `docs/tasks/sprint-N/` 保存同一 Sprint 的 Overview、任务卡和可选输入快照；根目录不直接存放规划产物。
 - `docs/tasks/done/` 保存已完成的任务卡，任务 ID 保留所属 Sprint 编号。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。
+- `docs/app-operator/runs/` 保存按 Spec 与平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。
 - `.claude/memories/` 保存低频且长期有效的经验，不保存任务历史或重复规范。
 
@@ -178,6 +181,8 @@ Dart 改动：
 
 原生改动必须构建受影响的平台。环境不可用时，应明确列出未验证平台和文件，不得宣称已经验证。
 
+远端 CI 必须保留独立的 `check`、Android Debug Build 和 iOS no-codesign Debug Build Job；静态门禁通过不能替代平台宿主编译。
+
 ## 安全策略
 
 - 不读取或提交 `.env*`。
@@ -187,6 +192,7 @@ Dart 改动：
 - 不执行 `rm -rf` 等破坏性命令。
 - 保护用户已有改动，不做无关重写。
 - 用户未明确要求时，不 commit、不 push。
+- `.claude/settings.json` 不得无条件允许全部 Git 命令；只读命令保持可用，破坏性 Git 操作必须拒绝。
 - 正常流程中禁止使用 `--no-verify` 绕过 hooks。
 - 优先使用官方公开 API。若生产方案必须依赖私有 API、反射、修改三方依赖或未文档化行为，必须先说明风险并取得用户同意。
 

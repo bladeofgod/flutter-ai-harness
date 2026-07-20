@@ -30,3 +30,14 @@ model: sonnet
 ## 输出
 
 每条问题包含严重级别、影响、证据、可点击文件行号和具体修法。随后列出待确认问题、验证缺口和简短摘要。没有问题时明确说明，并指出剩余风险。
+
+当调用方要求写入 `docs/reviews/execute-<task-basename>.md` 时，报告必须使用以下 frontmatter；`p0`、`p1` 是当前未解决数量，只有两者都为 0 时 `status` 才能为 `passed`：
+
+```yaml
+---
+task: S2-001
+status: passed
+p0: 0
+p1: 0
+---
+```

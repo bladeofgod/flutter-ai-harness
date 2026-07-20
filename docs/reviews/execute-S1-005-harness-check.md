@@ -1,3 +1,10 @@
+---
+task: S1-005
+status: passed
+p0: 0
+p1: 0
+---
+
 # S1-005 Review：Harness 自检与完整门禁
 
 ## 结论

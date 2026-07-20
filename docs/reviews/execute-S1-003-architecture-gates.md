@@ -1,3 +1,10 @@
+---
+task: S1-003
+status: passed
+p0: 0
+p1: 0
+---
+
 # S1-003 Review：补强架构边界 lint
 
 ## 结论

@@ -10,7 +10,7 @@ paths: ["app/apps/**/lib/main.dart", "app/apps/**/android/**", "app/apps/**/ios/
 
 ## 流程
 
-1. 读取任务卡和 Spec 的 `platforms`，确认本次目标平台。
+1. 读取任务卡和 Spec 的 `platforms`，由调用方按声明顺序逐个平台执行本流程；每次只确认一个目标平台。
 2. 运行 `bash scripts/flutter-tool.sh devices`，选择用户指定设备；存在多个候选且用户未指定时请求选择。
 3. 依赖发生变化时先运行 `bash scripts/dart-tool.sh pub get`。
 4. 使用以下入口构建、安装并保持 Debug App 运行：
@@ -20,6 +20,6 @@ paths: ["app/apps/**/lib/main.dart", "app/apps/**/android/**", "app/apps/**/ios/
    ```
 
 5. 从输出中取得 `ws://.../ws` VM Service URI，只在当前调用中交给 Operator，不写入仓库产物。
-6. 确认 App 启动且 Marionette Binding 可连接后完成交接。
+6. 确认 App 启动且 Marionette Binding 可连接后，将目标平台、非敏感 OS 版本、设备类型和 VM Service URI 仅在当前调用中交接给 Operator。
 
 不得修改签名、Development Team、应用标识或发布配置。设备不可用、系统权限弹窗阻塞、账号/测试数据缺失或平台工具链需要人工处理时，准确说明阻塞并请求介入，不用伪造状态或产品行为绕过。

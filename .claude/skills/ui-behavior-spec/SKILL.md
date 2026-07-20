@@ -1,7 +1,7 @@
 ---
 name: ui-behavior-spec
 description: "适用：根据已批准任务、产品规则、原型或 Figma 输入生成、审计或执行 Version 1 UI 行为 Spec。不适用：替代产品决策、实现 UI、操作系统原生界面或探索未定义流程。触发词：UI Spec、行为契约、plan-spec、spec-writer、spec-auditor、app-operator、Marionette 验收。"
-paths: ["docs/**/*.spec.yaml", "docs/**/*.audit.yaml", ".claude/agents/spec-writer.md", ".claude/agents/spec-auditor.md", ".claude/agents/app-operator.md", ".claude/commands/plan-spec.md", ".claude/commands/execute-tasks.md", "app/tool/validate_ui_specs.dart"]
+paths: ["docs/**/*.spec.yaml", "docs/**/*.audit.yaml", "docs/**/*.run.yaml", ".claude/agents/spec-writer.md", ".claude/agents/spec-auditor.md", ".claude/agents/app-operator.md", ".claude/commands/plan-spec.md", ".claude/commands/execute-tasks.md", "app/tool/validate_ui_specs.dart", "app/tool/implementation_digest.dart"]
 ---
 
 # UI 行为 Spec
@@ -15,7 +15,7 @@ paths: ["docs/**/*.spec.yaml", "docs/**/*.audit.yaml", ".claude/agents/spec-writ
 - 有任务卡：写入任务卡同目录 `<task-basename>.spec.yaml`，并声明任务 ID。
 - 仅有原型：写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
 - 静态审计：写入同目录 `<task-basename>.audit.yaml` 或 `<spec-id>.audit.yaml`。
-- 运行报告：写入 `docs/app-operator/runs/<spec-id>/<YYYYMMDD-HHMMSS>.md`。
+- 运行报告：按平台写入 `docs/app-operator/runs/<spec-id>/<YYYYMMDD-HHMMSS>-<platform>.run.yaml`。
 
 ## Version 1 Schema
 
@@ -78,6 +78,7 @@ spec: docs/tasks/sprint-2/S2-003-profile.spec.yaml
 specId: profile-save-name
 specRevision: 1
 status: passed
+implementationDigest: <sha256>
 items:
   - id: open-profile
     status: covered
@@ -96,14 +97,53 @@ items:
     evidence: [app/packages/app_features/lib/feature_profile/pages/profile_page.dart:72]
 ```
 
-审计项必须逐一覆盖 Spec 中的 Step、Assertion 和 Teardown ID，状态只允许 `covered`、`missing`、`wrong`。`passed` 要求全部为 `covered`；存在 `missing` 或 `wrong` 时必须为 `failed`。`spec`、`specId` 和 `specRevision` 必须与同目录 Spec 一致；修改 Spec 后必须重新审计。
+审计项必须逐一覆盖 Spec 中的 Step、Assertion 和 Teardown ID，状态只允许 `covered`、`missing`、`wrong`。`covered`、`wrong` 的证据必须是仓库内真实生产实现的 `file:line`，不得引用测试、文档、生成文件、仓库外路径或越界行号；`missing` 不得包含证据。`passed` 要求全部为 `covered`，并运行 `bash scripts/dart-tool.sh run tool/implementation_digest.dart <证据文件路径...>` 计算去重后全部证据文件的 `implementationDigest`；实现文件变化后旧审计自动失效。`spec`、`specId` 和 `specRevision` 必须与同目录 Spec 一致；修改 Spec 后必须重新审计。
+
+## 运行报告
+
+每个声明平台单独生成 Version 1 YAML：
+
+```yaml
+version: 1
+spec: docs/tasks/sprint-2/S2-003-profile.spec.yaml
+audit: docs/tasks/sprint-2/S2-003-profile.audit.yaml
+specId: profile-save-name
+specRevision: 1
+implementationDigest: <与 Audit 一致的 sha256>
+platform: android
+status: passed
+environment:
+  osVersion: Android 15
+  deviceKind: emulator
+  buildMode: debug
+  flutterVersion: 3.35.7
+  marionetteVersion: 0.6.0
+items:
+  - id: open-profile
+    status: passed
+    evidence: []
+  - id: enter-name
+    status: passed
+    evidence: []
+  - id: save
+    status: passed
+    evidence: []
+  - id: save-succeeded
+    status: passed
+    evidence: []
+  - id: close-profile
+    status: passed
+    evidence: []
+```
+
+报告必须逐一覆盖 Spec 的全部 ID，条目状态只允许 `passed`、`failed`、`skipped`；总体 `passed` 要求全部条目 `passed`。失败条目必须引用 `docs/app-operator/evidence/<spec-id>/` 下的脱敏截图或日志。环境只记录平台复现所需的非敏感信息，不记录设备 ID、主机名、用户名、VM Service URI、账号或真实数据。归档 Spec 必须在每个 `platforms` 声明平台上存在与当前 Spec、Audit、实现摘要一致的通过报告。
 
 ## 角色流程
 
 1. `spec-writer` 从事实来源生成或修改 Spec，运行 `make spec-check`；无待决问题时直接输出 `ready`。
 2. `spec-auditor` 只审计通过校验且为 `ready` 的 Spec，对照实现输出结构化审计，不修改 Spec 或实现。
-3. 审计为 `passed` 后，调用方按 `flutter-debug-runtime` Skill 构建、安装并启动 Debug App。
-4. `app-operator` 校验 Spec 与审计版本一致，只执行静态审计通过的行为验证。
-5. Operator 依次执行 Step、Assertion、Teardown，首次失败时采集脱敏截图和日志，最终断开连接并写运行报告。
+3. 审计为 `passed` 后，调用方按 `flutter-debug-runtime` Skill 为 Spec 的每个声明平台构建、安装并启动 Debug App。
+4. `app-operator` 校验 Spec、审计和实现摘要一致，每次只执行一个明确平台的行为验证。
+5. Operator 依次执行 Step、Assertion、Teardown，首次失败时采集脱敏截图和日志，最终断开连接并写该平台的结构化运行报告。
 
 Marionette 只操作 Flutter Widget Tree。系统权限弹窗等原生系统 UI 必须使用平台自动化，不得写成本 Schema 的 Step。Spec、审计和运行报告均不得记录凭据、VM Service URI、设备标识或真实用户数据。

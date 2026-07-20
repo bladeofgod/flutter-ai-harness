@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+TOOL_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="${REPOSITORY_ROOT:-$TOOL_ROOT}"
 fail=0
 targets=()
 
@@ -11,6 +12,12 @@ elif [[ -d "$ROOT/docs/reviews/test-evidence" ]]; then
   while IFS= read -r -d '' file; do
     targets+=("$file")
   done < <(find "$ROOT/docs/reviews/test-evidence" -type f -name '*.log' -print0)
+fi
+
+if [[ "$#" -eq 0 && -d "$ROOT/docs/app-operator" ]]; then
+  while IFS= read -r -d '' file; do
+    targets+=("$file")
+  done < <(find "$ROOT/docs/app-operator" -type f -print0)
 fi
 
 if [[ "${#targets[@]}" -eq 0 ]]; then

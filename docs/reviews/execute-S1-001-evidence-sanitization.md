@@ -1,3 +1,10 @@
+---
+task: S1-001
+status: passed
+p0: 0
+p1: 0
+---
+
 # S1-001 Review：测试证据脱敏与门禁
 
 ## 结论

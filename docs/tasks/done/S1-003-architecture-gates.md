@@ -1,6 +1,7 @@
 ---
 executor: task-executor
 blockedBy: [S1-002]
+uiSpec: not-required
 ---
 
 # S1-003 补强架构边界 lint

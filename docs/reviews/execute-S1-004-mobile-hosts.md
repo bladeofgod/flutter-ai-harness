@@ -1,3 +1,10 @@
+---
+task: S1-004
+status: passed
+p0: 0
+p1: 0
+---
+
 # S1-004 Review：建立 Android/iOS 中立宿主
 
 ## 结论

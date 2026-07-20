@@ -43,6 +43,7 @@ class _HarnessChecker {
     _validateJson('.claude/settings.json');
     _validateJson('.mcp.json');
     _validateJson('app/.fvmrc');
+    _validateClaudePermissions();
     _validateCiWorkflow();
     _loadMcpServerNames();
     _validateFrontmatter();
@@ -75,12 +76,14 @@ class _HarnessChecker {
       errors.add('缺少持续集成配置：$relativePath');
       return;
     }
+    final YamlMap jobs;
     try {
       final document = loadYaml(file.readAsStringSync());
       if (document is! YamlMap || document['jobs'] is! YamlMap) {
         errors.add('$relativePath 必须声明 jobs');
         return;
       }
+      jobs = document['jobs'] as YamlMap;
     } on YamlException catch (error) {
       errors.add('$relativePath 的 YAML 无效：${error.message}');
       return;
@@ -95,6 +98,92 @@ class _HarnessChecker {
         errors.add('$relativePath 缺少必要步骤：$required');
       }
     }
+    _validateCiBuildJob(
+      jobs,
+      relativePath,
+      name: 'android-build',
+      runnerPrefix: 'ubuntu-',
+      command:
+          'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh '
+          'build apk --debug',
+    );
+    _validateCiBuildJob(
+      jobs,
+      relativePath,
+      name: 'ios-build',
+      runnerPrefix: 'macos-',
+      command:
+          'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh '
+          'build ios --debug --no-codesign',
+    );
+  }
+
+  void _validateCiBuildJob(
+    YamlMap jobs,
+    String path, {
+    required String name,
+    required String runnerPrefix,
+    required String command,
+  }) {
+    final job = jobs[name];
+    if (job is! YamlMap) {
+      errors.add('$path 缺少 $name Job');
+      return;
+    }
+    final runner = job['runs-on'];
+    if (runner is! String || !runner.startsWith(runnerPrefix)) {
+      errors.add('$path 的 $name 必须使用 $runnerPrefix Runner');
+    }
+    final steps = job['steps'];
+    if (steps is! YamlList ||
+        !steps.whereType<YamlMap>().any((step) => step['run'] == command)) {
+      errors.add('$path 的 $name 缺少构建命令：$command');
+    }
+  }
+
+  void _validateClaudePermissions() {
+    const path = '.claude/settings.json';
+    final file = _file(path);
+    if (!file.existsSync()) {
+      return;
+    }
+    try {
+      final document = jsonDecode(file.readAsStringSync());
+      if (document is! Map<String, Object?> ||
+          document['permissions'] is! Map<String, Object?>) {
+        errors.add('$path 必须声明 permissions');
+        return;
+      }
+      final permissions = document['permissions'] as Map<String, Object?>;
+      final allow = _jsonStringSet(permissions['allow']);
+      final deny = _jsonStringSet(permissions['deny']);
+      if (allow == null || deny == null) {
+        errors.add('$path 的 permissions.allow/deny 必须是字符串列表');
+        return;
+      }
+      if (allow.contains('Bash(git *)')) {
+        errors.add('$path 不得无条件允许全部 Git 命令');
+      }
+      for (final required in const {
+        'Bash(git reset *)',
+        'Bash(git clean *)',
+        'Bash(git checkout -- *)',
+        'Bash(git restore *)',
+      }) {
+        if (!deny.contains(required)) {
+          errors.add('$path 缺少破坏性 Git 拒绝规则：$required');
+        }
+      }
+    } on FormatException {
+      // _validateJson reports the actionable syntax error.
+    }
+  }
+
+  Set<String>? _jsonStringSet(Object? value) {
+    if (value is! List<Object?> || value.any((item) => item is! String)) {
+      return null;
+    }
+    return value.cast<String>().toSet();
   }
 
   void _loadMcpServerNames() {
@@ -283,7 +372,9 @@ class _HarnessChecker {
       r'^docs/tasks/done/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
     );
     final taskIds = <String>{};
-    final dependencies = <({String file, String owner, String id})>[];
+    final completedTaskIds = <String>{};
+    final dependencies =
+        <({String file, String owner, String id, bool ownerCompleted})>[];
     final dependencyGraph = <String, Set<String>>{};
 
     for (final entity in tasks.listSync(followLinks: false)) {
@@ -332,6 +423,9 @@ class _HarnessChecker {
       if (!taskIds.add(id)) {
         errors.add('重复任务 ID：$id');
       }
+      if (completedMatch != null) {
+        completedTaskIds.add(id);
+      }
 
       final metadata = _frontmatter(file);
       if (metadata == null) {
@@ -343,12 +437,17 @@ class _HarnessChecker {
           !_agents.contains(executor)) {
         errors.add('$relative 的 executor 必须是 task-executor 或 bridge-engineer');
       }
-      if (activeMatch != null) {
-        final uiSpec = metadata['uiSpec'];
-        if (uiSpec is! String ||
-            !const {'required', 'not-required'}.contains(uiSpec)) {
-          errors.add('$relative 的 uiSpec 必须是 required 或 not-required');
-        }
+      final uiSpec = metadata['uiSpec'];
+      if (uiSpec is! String ||
+          !const {'required', 'not-required'}.contains(uiSpec)) {
+        errors.add('$relative 的 uiSpec 必须是 required 或 not-required');
+      }
+      if (completedMatch != null) {
+        _validateCompletedTaskArtifacts(
+          file,
+          id,
+          uiSpec is String ? uiSpec : null,
+        );
       }
 
       final blockedBy = metadata['blockedBy'];
@@ -367,7 +466,12 @@ class _HarnessChecker {
         dependencyGraph[id] = dependencyIds.toSet();
         dependencies.addAll(
           dependencyIds.map(
-            (dependency) => (file: relative, owner: id, id: dependency),
+            (dependency) => (
+              file: relative,
+              owner: id,
+              id: dependency,
+              ownerCompleted: completedMatch != null,
+            ),
           ),
         );
       }
@@ -387,8 +491,56 @@ class _HarnessChecker {
       if (!taskIds.contains(dependency.id)) {
         errors.add('${dependency.file} 的 blockedBy 引用不存在：${dependency.id}');
       }
+      if (dependency.ownerCompleted &&
+          taskIds.contains(dependency.id) &&
+          !completedTaskIds.contains(dependency.id)) {
+        errors.add('${dependency.file} 已归档，但依赖任务尚未归档：${dependency.id}');
+      }
     }
     _validateTaskDependencyCycles(dependencyGraph);
+  }
+
+  void _validateCompletedTaskArtifacts(File task, String id, String? uiSpec) {
+    final basename = _basename(task.path).replaceFirst(RegExp(r'\.md$'), '');
+    final reviewPath = 'docs/reviews/execute-$basename.md';
+    final review = _file(reviewPath);
+    if (!review.existsSync()) {
+      errors.add('${_relative(task)} 归档前缺少 Review：$reviewPath');
+    } else {
+      final metadata = _frontmatter(review);
+      if (metadata != null) {
+        if (metadata['task'] != id) {
+          errors.add('$reviewPath 的 task 必须是 $id');
+        }
+        if (metadata['status'] != 'passed' ||
+            metadata['p0'] != 0 ||
+            metadata['p1'] != 0) {
+          errors.add('$reviewPath 必须声明 passed 且 P0/P1 为 0');
+        }
+      }
+    }
+
+    final evidencePath = 'docs/reviews/test-evidence/$basename.log';
+    final evidence = _file(evidencePath);
+    if (!evidence.existsSync()) {
+      errors.add('${_relative(task)} 归档前缺少测试证据：$evidencePath');
+    } else if (!RegExp(
+      r'^Exit code: -?\d+$',
+      multiLine: true,
+    ).hasMatch(evidence.readAsStringSync())) {
+      errors.add('$evidencePath 缺少命令退出码');
+    }
+
+    if (uiSpec == 'required') {
+      final specPath = 'docs/tasks/done/$basename.spec.yaml';
+      final auditPath = 'docs/tasks/done/$basename.audit.yaml';
+      if (!_file(specPath).existsSync()) {
+        errors.add('${_relative(task)} 归档前缺少 UI Spec：$specPath');
+      }
+      if (!_file(auditPath).existsSync()) {
+        errors.add('${_relative(task)} 归档前缺少 UI Audit：$auditPath');
+      }
+    }
   }
 
   void _validateTaskDependencyCycles(Map<String, Set<String>> graph) {

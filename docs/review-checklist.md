@@ -35,3 +35,6 @@
 - 验证范围与真实影响面匹配。
 - 生成文件保持同步且未被手工编辑。
 - Review 报告列出已运行命令、跳过项和剩余风险。
+- 归档任务的 Review frontmatter 与任务 ID 一致，并且 `status: passed`、P0/P1 为 0。
+- UI 静态审计证据指向真实生产实现，`implementationDigest` 与当前文件内容一致。
+- UI 运行报告覆盖 Spec 声明的全部平台，且未记录设备 ID、VM Service URI 或其他敏感环境信息。

@@ -20,10 +20,23 @@ mkdir -p \
   "$FIXTURE_ROOT/app" \
   "$FIXTURE_ROOT/docs/tasks/done" \
   "$FIXTURE_ROOT/docs/tasks/sprint-2" \
+  "$FIXTURE_ROOT/docs/reviews/test-evidence" \
   "$FIXTURE_ROOT/docs" \
   "$FIXTURE_ROOT/scripts"
 
-printf '%s\n' '{}' > "$FIXTURE_ROOT/.claude/settings.json"
+cat > "$FIXTURE_ROOT/.claude/settings.json" <<'JSON'
+{
+  "permissions": {
+    "allow": ["Read(**)"],
+    "deny": [
+      "Bash(git reset *)",
+      "Bash(git clean *)",
+      "Bash(git checkout -- *)",
+      "Bash(git restore *)"
+    ]
+  }
+}
+JSON
 printf '%s\n' '{"mcpServers":{}}' > "$FIXTURE_ROOT/.mcp.json"
 printf '%s\n' '{"flutter":"3.35.7"}' > "$FIXTURE_ROOT/app/.fvmrc"
 cat > "$FIXTURE_ROOT/.github/workflows/ci.yml" <<'YAML'
@@ -38,6 +51,14 @@ jobs:
           flutter-version: "3.35.7"
       - run: make bootstrap
       - run: make check
+  android-build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+  ios-build:
+    runs-on: macos-15
+    steps:
+      - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign
 YAML
 cat > "$FIXTURE_ROOT/app/pubspec.yaml" <<'YAML'
 name: fixture
@@ -105,8 +126,107 @@ uiSpec: not-required
 MARKDOWN
 }
 
+write_valid_done_task() {
+  cat > "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md" <<'MARKDOWN'
+---
+executor: task-executor
+blockedBy: []
+uiSpec: not-required
+---
+# S1-001 Complete task
+MARKDOWN
+  cat > "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md" <<'MARKDOWN'
+---
+task: S1-001
+status: passed
+p0: 0
+p1: 0
+---
+# Review
+MARKDOWN
+  cat > "$FIXTURE_ROOT/docs/reviews/test-evidence/S1-001-complete-task.log" <<'LOG'
+## Command
+
+Exit code: 0
+LOG
+}
+
 write_valid_task
+write_valid_done_task
 run_check >/dev/null
+
+sed -i.bak '/uiSpec:/d' \
+  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 uiSpec 的归档任务卡。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 Review 的归档任务卡。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+sed -i.bak 's/status: passed/status: failed/' \
+  "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝未通过的归档 Review。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+rm -f -- "$FIXTURE_ROOT/docs/reviews/test-evidence/S1-001-complete-task.log"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少测试证据的归档任务卡。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-001]/' \
+  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝依赖活动任务的归档任务卡。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+sed -i.bak 's/uiSpec: not-required/uiSpec: required/' \
+  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 Spec/Audit 的归档 UI 任务。" >&2
+  exit 1
+fi
+write_valid_done_task
+
+cp "$FIXTURE_ROOT/.claude/settings.json" \
+  "$FIXTURE_ROOT/.claude/settings.json.valid"
+sed -i.bak 's/"Read(\*\*)"/"Read(**)", "Bash(git *)"/' \
+  "$FIXTURE_ROOT/.claude/settings.json"
+rm -f -- "$FIXTURE_ROOT/.claude/settings.json.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝无条件 Git 权限。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/.claude/settings.json.valid" \
+  "$FIXTURE_ROOT/.claude/settings.json"
+
+cp "$FIXTURE_ROOT/.claude/settings.json" \
+  "$FIXTURE_ROOT/.claude/settings.json.valid"
+sed -i.bak '/Bash(git reset/d' "$FIXTURE_ROOT/.claude/settings.json"
+rm -f -- "$FIXTURE_ROOT/.claude/settings.json.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺失的破坏性 Git 规则。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/.claude/settings.json.valid" \
+  "$FIXTURE_ROOT/.claude/settings.json"
 
 sed -i.bak '/uiSpec:/d' \
   "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
@@ -273,6 +393,18 @@ if run_check >/dev/null 2>&1; then
   exit 1
 fi
 mv "$FIXTURE_ROOT/.github/workflows/ci.yml.bak" \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml"
+
+cp "$FIXTURE_ROOT/.github/workflows/ci.yml" \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml.valid"
+sed -i.bak '/build ios --debug --no-codesign/d' \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml"
+rm -f -- "$FIXTURE_ROOT/.github/workflows/ci.yml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 iOS 构建命令的 CI。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/.github/workflows/ci.yml.valid" \
   "$FIXTURE_ROOT/.github/workflows/ci.yml"
 
 cat > "$FIXTURE_ROOT/.claude/skills/sample-skill/SKILL.md" <<'MARKDOWN'
