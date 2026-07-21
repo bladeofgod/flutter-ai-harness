@@ -1,11 +1,15 @@
 library;
 
+import 'package:app_features/app_features.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// 产品设计实装前使用的中立 Demo 壳。
 class DemoApp extends StatefulWidget {
-  const DemoApp({super.key});
+  const DemoApp({super.key, this.onGetStarted, this.onSignIn});
+
+  final VoidCallback? onGetStarted;
+  final VoidCallback? onSignIn;
 
   @override
   State<DemoApp> createState() => _DemoAppState();
@@ -13,18 +17,24 @@ class DemoApp extends StatefulWidget {
 
 class _DemoAppState extends State<DemoApp> {
   late final GoRouter _router = GoRouter(
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Flutter AI Harness'))),
-      ),
-    ],
+    routes: buildWelcomeRoutes(
+      onGetStarted: _handleGetStarted,
+      onSignIn: _handleSignIn,
+    ),
   );
+
+  void _handleGetStarted() => widget.onGetStarted?.call();
+
+  void _handleSignIn() => widget.onSignIn?.call();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: _router);
+    return MaterialApp.router(
+      title: 'Shoppe',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      routerConfig: _router,
+    );
   }
 
   @override

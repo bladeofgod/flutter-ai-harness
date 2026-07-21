@@ -13,6 +13,7 @@ FEATURE_ROOT="$FIXTURE_ROOT/app/packages/app_features/lib"
 mkdir -p \
   "$FEATURE_ROOT/feature_alpha/pages" \
   "$FEATURE_ROOT/feature_alpha/controllers" \
+  "$FEATURE_ROOT/feature_alpha/api" \
   "$FEATURE_ROOT/feature_beta/controllers" \
   "$FIXTURE_ROOT/app/packages/app_data/lib/generated" \
   "$FIXTURE_ROOT/app/packages/app_data/lib/mappers" \
@@ -37,6 +38,14 @@ printf '%s\n' \
   > "$FEATURE_ROOT/feature_alpha/pages/allowed.dart"
 printf '%s\n' 'class AlphaController { AlphaController({required Object api}); }' \
   > "$FEATURE_ROOT/feature_alpha/controllers/alpha_controller.dart"
+printf '%s\n' 'const alphaRoutes = <Object>[];' \
+  > "$FEATURE_ROOT/feature_alpha/routes.dart"
+printf '%s\n' 'class AlphaApiImpl {}' \
+  > "$FEATURE_ROOT/feature_alpha/api/alpha_api_impl.dart"
+printf '%s\n' "export 'feature_alpha/routes.dart';" \
+  > "$FEATURE_ROOT/app_features.dart"
+printf '%s\n' "import 'feature_alpha/api/alpha_api_impl.dart';" \
+  > "$FEATURE_ROOT/features_registry.dart"
 printf '%s\n' "import '../generated/model.pb.dart';" \
   > "$FIXTURE_ROOT/app/packages/app_data/lib/mappers/model_mapper.dart"
 printf '%s\n' 'library;' > "$FIXTURE_ROOT/app/packages/app_data/lib/app_data.dart"
@@ -70,6 +79,8 @@ printf '%s\n' "export 'generated/model.pb.dart';" \
   > "$FIXTURE_ROOT/app/packages/app_data/lib/app_data.dart"
 printf '%s\n' 'final api = Get.find<ExampleApi>();' \
   > "$FEATURE_ROOT/feature_alpha/controllers/bad_controller.dart"
+printf '%s\n' "export 'feature_beta/controllers/beta_controller.dart';" \
+  >> "$FEATURE_ROOT/app_features.dart"
 printf '%s\n' "import 'package:app_features/feature_alpha/controllers/alpha_controller.dart';" \
   > "$FIXTURE_ROOT/app/apps/demo/lib/bad_shell.dart"
 
@@ -93,7 +104,8 @@ if output="$(REPOSITORY_ROOT="$FIXTURE_ROOT" PACKAGE_DEPS_JSON="$invalid_depende
 fi
 
 for expected in double_quote.dart relative_export.dart direct_api.dart app_data.dart \
-  bad_controller.dart bad_shell.dart 'app_core 不得依赖 app_features'; do
+  bad_controller.dart app_features.dart bad_shell.dart \
+  'app_core 不得依赖 app_features'; do
   if [[ "$output" != *"$expected"* ]]; then
     echo "错误：仓库边界 lint 未报告 $expected。" >&2
     exit 1

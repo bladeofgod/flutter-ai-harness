@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 
 # 修正 Workspace 依赖方向契约

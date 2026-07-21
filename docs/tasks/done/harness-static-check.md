@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: [test-evidence-sanitization, repository-architecture-gates, mobile-platform-hosts]
-uiSpec: not-required
 ---
 
 # 增加 Harness 静态自检并接入完整门禁

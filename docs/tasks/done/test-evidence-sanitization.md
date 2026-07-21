@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 
 # 测试证据脱敏与门禁

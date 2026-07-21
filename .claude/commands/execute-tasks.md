@@ -12,7 +12,6 @@ argument-hint: "<task-card-path>..."
 3. 按声明依赖排序，再按文件名排序。
 4. 阻塞项未解决或外部依赖缺失时停止。
 5. 保护无关工作树改动，并将 diff 限定在当前卡范围。
-6. `uiSpec: required` 时，确认同名 `.spec.yaml` 状态为 `ready` 且 `make spec-check` 通过；缺失或为 `draft` 时停止并要求先运行 `/plan-spec` 或补充待决信息。
 
 ## Executor 分流
 
@@ -26,15 +25,13 @@ argument-hint: "<task-card-path>..."
 ## 单卡闭环
 
 1. 严格按卡片范围实现代码和测试。
-2. `uiSpec: required` 时先运行 `make spec-check` 和 `spec-auditor`；审计 Schema、版本或任一条目不是 covered 时，修复实现并重新审计，不运行后续测试或 App Operator。
-3. `uiSpec: required` 的静态审计通过后，或任务为 `uiSpec: not-required` 时，格式化触碰的 Dart 文件。
-4. 通过 `scripts/quality/capture-evidence.sh` 直接执行受影响静态分析、聚焦测试和 `make lint`，把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-slug>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得先裸跑再为留证重复执行，也不得直接重定向原始 stdout/stderr 到入库证据。
-5. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
-6. `uiSpec: required` 时加载并遵守 `flutter-debug-runtime` Skill，对 Spec 声明的每个平台逐一自动构建、安装并启动目标 Debug App，取得 VM Service URI 后为该平台运行一次 `app-operator`；每个平台都必须生成通过 `make spec-check` 的结构化报告。设备、签名、系统权限、账号或测试数据需要外部处理时请求人工介入。任一平台运行失败或 MCP 未批准时记录验证缺口并停止归档。
-7. 运行 `reviewer`，写入 `docs/reviews/execute-<task-slug>.md`；报告 frontmatter 必须包含与任务文件 basename 一致的 `task` slug、`status` 和当前未解决的 `p0`、`p1` 数量。
-8. 使用 `fix-review-findings` 修复 P0/P1，重新验证并由 `reviewer` 复审；修复触及静态审计证据文件时，必须重新生成 Audit 并重跑全部声明平台的 App Operator 报告。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
-9. 将完成任务和同名 `.spec.yaml`、`.audit.yaml` 移入 `docs/tasks/done/`；同步把 Spec 的任务 Source、Audit 与 App Operator 报告中的 `spec`/`audit`、Review 和其他仓库内引用更新为归档后路径。App Operator 运行报告保留在 `docs/app-operator/runs/`。
-10. 归档完成后重新运行 `make spec-check` 和 `make harness-check`；归档任务缺少 `uiSpec`、未完成依赖、通过的 Review、测试证据或全部声明平台报告时门禁必须失败。
+2. 格式化触碰的 Dart 文件。
+3. 通过 `scripts/quality/capture-evidence.sh` 直接执行受影响静态分析、聚焦测试和 `make lint`，把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-slug>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得先裸跑再为留证重复执行，也不得直接重定向原始 stdout/stderr 到入库证据。
+4. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
+5. 运行 `reviewer`，写入 `docs/reviews/execute-<task-slug>.md`；报告 frontmatter 必须包含与任务文件 basename 一致的 `task` slug、`status` 和当前未解决的 `p0`、`p1` 数量。
+6. 使用 `fix-review-findings` 修复 P0/P1，重新验证并由 `reviewer` 复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
+7. 将完成任务卡移入 `docs/tasks/done/`，并更新 Review 和其他仓库内任务引用。UI Spec、Audit、App Operator 报告不属于任务归档产物，不得随任务移动。
+8. 归档完成后重新运行 `make harness-check`；归档任务缺少已完成依赖、通过的 Review 或测试证据时门禁必须失败。
 
 归档前必须清零 P0/P1。P2 只有在记录负责人或 Follow-up 任务后才可延后。
 
@@ -45,6 +42,7 @@ argument-hint: "<task-card-path>..."
 - 不手工编辑生成文件。
 - 没有命令证据时不得宣称验证通过。
 - 不删除无关文件，不覆盖已有工作。
+- 不自动生成 UI Spec/Audit，不调用 App Operator；这些能力只由人通过独立 UI 自动化流程安排。
 
 ## 交付
 

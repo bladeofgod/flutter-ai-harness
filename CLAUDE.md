@@ -134,7 +134,8 @@ MethodChannel 和 EventChannel 必须遵守：
 
 - `/plan-tasks`：把产品或技术输入拆成任务卡。
 - `/plan-figma`：结合 Figma 和代码上下文生成 UI 任务卡，不做实现。
-- `/plan-spec`：根据已批准任务或原型输入生成 UI 行为 Spec，不做实现或 App 操作。
+- `/plan-spec`：人工明确安排 UI 自动化时，根据任务、产品规则或原型生成独立行为 Spec。
+- `/execute-ui-spec`：人工显式选择 ready Spec 和平台后，执行静态审计与 App Operator 运行验证。
 - `/execute-tasks`：执行已有任务卡并完成验证与 Review。
 - `/review-changes`：只读审查当前改动并输出问题报告，不修改实现。
 - `/review-batch`：按用户明确指定的任务和 diff 范围，只读审查跨任务影响。
@@ -145,11 +146,11 @@ MethodChannel 和 EventChannel 必须遵守：
 
 Demo 使用 `marionette_flutter` 暴露 Debug VM Service 扩展，仓库根目录的 `.mcp.json` 为 Claude Code 配置 `marionette_mcp`。Marionette Binding 只能在 Debug 模式初始化，不得进入 Profile 或 Release。
 
-首次 Clone 后运行 `make marionette-install` 安装 MCP Server。人工调试时启动 Demo，并将 `flutter run` 输出中的 `ws://.../ws` VM Service URI 提供给 Agent；执行 `uiSpec: required` 任务时，由 `execute-tasks` 按 Spec 声明平台加载 `flutter-debug-runtime`，逐端启动并把 URI 仅在当前调用中交给 `app-operator`。
+首次 Clone 后运行 `make marionette-install` 安装 MCP Server。人工调试时启动 Demo，并将 `flutter run` 输出中的 `ws://.../ws` VM Service URI 提供给 Agent。只有人工明确调用 `/execute-ui-spec` 并指定 Spec 与平台后，该工作流才加载 `flutter-debug-runtime`、启动目标 Debug App，并把 URI 仅在当前调用中交给 `app-operator`。普通任务规划、实现、Review 和归档不得自动调用 Spec Auditor 或 App Operator。
 
-App Operator 每个平台单独写入结构化运行报告，报告必须绑定当前 Spec、Audit 和实现摘要，只记录 OS 版本、设备类型、Flutter/Marionette 版本等非敏感复现信息。VM Service URI、设备 ID、主机名、用户名、账号和真实数据不得入库。
+UI 自动化是由人独立安排的验证流程，不是任务完成门禁。App Operator 每个平台单独写入结构化运行报告，报告必须绑定当前 Spec、Audit 和实现摘要，只记录 OS 版本、设备类型、Flutter/Marionette 版本等非敏感复现信息。VM Service URI、设备 ID、主机名、用户名、账号和真实数据不得入库。
 
-自定义设计系统组件必须在 Demo 实装时补充 `MarionetteConfiguration`、稳定 Key/Semantics 和日志收集；不得把“已连接 MCP”误认为自定义组件已经可操作。
+当人决定把自定义组件纳入 Marionette 自动化范围时，再为对应流程补充必要的 `MarionetteConfiguration`、稳定 Key/Semantics 和日志收集。普通实现不得为了尚未安排的自动化预置测试专用接口；也不得把“已连接 MCP”误认为自定义组件已经可操作。
 
 ## Figma MCP
 
@@ -162,9 +163,10 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 - 任务卡是生产者无关的仓库产物，可以由用户、Agent、Command 或外部工具创建；不要求经过特定角色或工作流。
 - `docs/tasks/*.md` 保存未完成任务卡。文件 basename 应清晰概括任务内容，并在活动与归档任务中保持唯一；为保证跨平台和工具兼容，使用 lowercase kebab-case，不要求编号、固定前缀或生产者标识。
 - `docs/tasks/done/` 保存已完成任务卡；`docs/tasks/` 下只允许该子目录，不创建批次或输入快照目录。
-- 无论由谁创建，任务卡都必须包含非空一级标题，以及 `executor`、`blockedBy`、`uiSpec` frontmatter；正文应提供足以执行和验收当前任务的事实来源、范围、要求、验证与限制，但不强制无意义的固定章节。
+- 无论由谁创建，任务卡都必须包含非空一级标题，以及 `executor`、`blockedBy` frontmatter；正文应提供足以执行和验收当前任务的事实来源、范围、要求、验证与限制，但不强制无意义的固定章节。任务卡不得声明 `uiSpec` 或把 App Operator 作为默认执行、Review、归档门禁。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。
-- `docs/app-operator/runs/` 保存按 Spec 与平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
+- `docs/app-operator/specs/` 保存人工独立安排的 UI 行为 Spec 及同名静态 Audit；它们不随任务卡移动或归档。
+- `docs/app-operator/runs/` 保存人工执行 Spec 后按平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。
 - `.claude/memories/` 保存低频且长期有效的经验，不保存任务历史或重复规范。
 

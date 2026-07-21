@@ -64,7 +64,7 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
 
-未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。任务卡可以由开发者、Agent、Command 或其他工具创建；文件使用清晰、能概括内容且全局唯一的 lowercase kebab-case slug，无需编号、生产者前缀或指定规划入口。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。随后每个声明平台分别生成与当前实现绑定的结构化 App Operator 报告。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。任务卡可以由开发者、Agent、Command 或其他工具创建；文件使用清晰、能概括内容且全局唯一的 lowercase kebab-case slug，无需编号、生产者前缀或指定规划入口。普通任务只负责实现、聚焦测试、只读审查、显式修复和证据归档。UI 自动化由人独立安排：`/plan-spec` 生成独立行为契约，`/execute-ui-spec` 只对人明确选择的平台执行静态审计和 App Operator。Spec、Audit 和 Run 不作为普通任务门禁，也不随任务归档。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
 ## 质量门禁
 
@@ -77,7 +77,7 @@ make format
 make analyze
 make test
 make integration-test INTEGRATION_DEVICE=<device-id>
-make spec-check
+make spec-check # 仅在创建或校验 UI 自动化产物时执行
 make lint
 make harness-check
 make check
@@ -106,7 +106,7 @@ make check
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
 
-运行态 Flutter UI 检查需要先执行 `make marionette-install`，以 Debug 模式启动 Demo，再把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。操作顺序固定为连接、检查或交互、断开。Harness 任务执行会对 UI Spec 声明的每个平台重复该流程，并分别保存经过校验且不含敏感信息的报告。Marionette 只操作 Flutter Widget Tree，不负责原生系统界面自动化。
+运行态 Flutter UI 检查需要先执行 `make marionette-install`，以 Debug 模式启动 Demo，再把控制台中的 `ws://.../ws` VM Service URI 提供给 Agent。操作顺序固定为连接、检查或交互、断开。只有人在显式调用 `/execute-ui-spec` 后，工作流才会对本次选定的平台重复该流程，并分别保存经过校验且不含敏感信息的报告；普通任务执行不会启动 App Operator。Marionette 只操作 Flutter Widget Tree，不负责原生系统界面自动化。
 
 ## 当前状态
 

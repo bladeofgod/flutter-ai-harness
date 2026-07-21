@@ -14,3 +14,12 @@ dependencies:
   app_ui: any
   flutter:
     sdk: flutter
+  go_router: ^15.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  assets:
+    - assets/images/welcome/shoppe_brand.png

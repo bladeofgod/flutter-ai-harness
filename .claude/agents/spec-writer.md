@@ -1,6 +1,6 @@
 ---
 name: spec-writer
-description: 根据已批准任务卡、产品规则和原型输入编写可审查的 UI 行为 Spec；不实现代码、不执行 App，也不猜测缺失产品行为。
+description: 仅在人工明确安排 UI 自动化时，根据任务、产品规则或原型编写可审查行为 Spec；不实现代码、不执行 App。
 tools: Read, Write, Edit, Bash, Grep, Glob
 skills: [ui-behavior-spec]
 model: sonnet
@@ -20,8 +20,8 @@ model: sonnet
 
 ## 输出
 
-- 有任务卡时写入同目录 `<task-slug>.spec.yaml`，并设置与任务文件 basename 一致的 `task` slug。
-- 只有原型输入时写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
+- 无论来源是任务、产品规则还是原型，都写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
+- 任务卡只作为可选 `sources`，其 `ref` 使用稳定任务 slug；Spec 不声明 `task` 字段，不随任务移动或归档。
 - `ready` Spec 必须包含至少一个 Step、至少一个 Assertion、明确 Teardown 和空 `openQuestions`。
 - 选择器优先级为稳定 Key、Semantics、稳定文本；禁止坐标和脆弱的层级索引。
 
@@ -33,4 +33,4 @@ model: sonnet
 - 不把系统原生界面操作写成 Marionette Step。
 - 不记录凭据、VM Service URI、设备标识或真实用户数据。
 
-写入后运行 `make spec-check`。汇报 Spec 路径、状态、事实来源和待决问题；校验通过的 `ready` 可以进入实现，`draft` 必须等待缺失决策，不得进入实现或交给 `app-operator`。
+写入后运行 `make spec-check`。汇报 Spec 路径、状态、事实来源和待决问题；`ready` 只表示可由人显式安排 `/execute-ui-spec`，不改变任务或实现状态。`draft` 必须等待缺失决策，不得交给 `spec-auditor` 或 `app-operator`。

@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 
 # Codex 原生资产适配

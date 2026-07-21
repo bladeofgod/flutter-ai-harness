@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 
 # Demo 基础 Service 设计清册

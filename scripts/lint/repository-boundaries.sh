@@ -31,6 +31,16 @@ if [[ -d "$FEATURE_ROOT" ]]; then
     file="${hit%%:*}"
     owner="$(sed -nE 's#^.*/(feature_[^/]+)/.*#\1#p' <<< "$file")"
     target="$("$RG" -o 'feature_[A-Za-z0-9_]+/' <<< "${hit#*:*:}" | tail -n 1 | tr -d '/')"
+    relative_file="${file#"$FEATURE_ROOT"/}"
+    reference="${hit#*:*:}"
+    if [[ "$relative_file" == "app_features.dart" \
+      && "$reference" =~ ^[[:space:]]*export[[:space:]]+[\"\']feature_[A-Za-z0-9_]+/routes\.dart[\"\'] ]]; then
+      continue
+    fi
+    if [[ "$relative_file" == "features_registry.dart" \
+      && "$reference" =~ ^[[:space:]]*import[[:space:]]+[\"\']feature_[A-Za-z0-9_]+/api/[^\"\']+\.dart[\"\'] ]]; then
+      continue
+    fi
     if [[ -z "$owner" || "$owner" != "$target" ]]; then
       echo "错误：$owner 不得 import $target 内部实现：$hit"
       fail=1

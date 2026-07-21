@@ -1,7 +1,7 @@
 ---
 name: flutter-debug-runtime
 description: "适用：在 App Operator 或 Marionette 验证前，为 Android/iOS 构建、安装并启动 Flutter Debug App，获取 VM Service URI。不适用：Release 构建、签名配置、系统权限自动化、账号登录或测试数据准备。触发词：flutter run、Debug App、设备安装、VM Service URI、App Operator 前置环境。"
-paths: ["app/apps/**/lib/main.dart", "app/apps/**/android/**", "app/apps/**/ios/**", ".claude/commands/execute-tasks.md", ".mcp.json", "scripts/flutter-tool.sh"]
+paths: ["app/apps/**/lib/main.dart", "app/apps/**/android/**", "app/apps/**/ios/**", ".claude/commands/execute-ui-spec.md", ".mcp.json", "scripts/flutter-tool.sh"]
 ---
 
 # Flutter Debug Runtime
@@ -10,7 +10,7 @@ paths: ["app/apps/**/lib/main.dart", "app/apps/**/android/**", "app/apps/**/ios/
 
 ## 流程
 
-1. 读取任务卡和 Spec 的 `platforms`，由调用方按声明顺序逐个平台执行本流程；每次只确认一个目标平台。
+1. 读取 Spec，并只处理用户在 `/execute-ui-spec` 中明确选择的当前平台；不得自动扩展到 Spec 的其他声明平台。
 2. 运行 `bash scripts/flutter-tool.sh devices`，选择用户指定设备；存在多个候选且用户未指定时请求选择。
 3. 依赖发生变化时先运行 `bash scripts/dart-tool.sh pub get`。
 4. 使用以下入口构建、安装并保持 Debug App 运行：

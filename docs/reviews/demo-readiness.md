@@ -129,3 +129,9 @@ P0/P1 均为 0；当时 5 个 P2 保持待办。`make check` 已通过，可以�
 ### 最终结论
 
 P0/P1/P2 均为 0。`make setup`、`make check` 和无真实测试时的 `make integration-test` 路径均已验证。剩余两项外部运行验证是首个 GitHub CI Job，以及首个真实 ready Spec 的 Marionette App Operator 执行。
+
+## 后续流程调整（2026-07-21）
+
+本报告记录的是当时的 Harness 状态，其中“`uiSpec: required` 任务自动进入 Spec/Audit/App Operator 并以 Run 报告作为任务归档门禁”的结论已被后续决策替代，不再是当前规范。
+
+当前普通任务只负责实现、聚焦测试、Review、修复和归档；任务卡不再声明 `uiSpec`。UI 自动化由人独立调用 `/plan-spec` 和 `/execute-ui-spec`，并显式选择运行平台。Spec、Audit、Run 保留为独立证据，不随任务移动，也不决定任务能否归档。权威规则以当前 `CLAUDE.md`、`.claude/commands/execute-tasks.md` 和 `.claude/commands/execute-ui-spec.md` 为准；本节只补充历史演进，不删除原始 Review 证据。

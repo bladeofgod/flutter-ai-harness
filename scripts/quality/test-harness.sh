@@ -126,7 +126,6 @@ write_valid_task() {
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 # Sample task
 MARKDOWN
@@ -137,7 +136,6 @@ write_valid_done_task() {
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 # Complete task
 MARKDOWN
@@ -423,15 +421,6 @@ sed -i.bak 's/skills: \[missing-skill\]/skills: [sample-skill]/' \
   "$FIXTURE_ROOT/.claude/agents/sample-agent.md"
 rm -f -- "$FIXTURE_ROOT/.claude/agents/sample-agent.md.bak"
 
-sed -i.bak '/uiSpec:/d' \
-  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
-if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝缺少 uiSpec 的归档任务卡。" >&2
-  exit 1
-fi
-write_valid_done_task
-
 rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-complete-task.md"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 Review 的归档任务卡。" >&2
@@ -464,15 +453,6 @@ if run_check >/dev/null 2>&1; then
 fi
 write_valid_done_task
 
-sed -i.bak 's/uiSpec: not-required/uiSpec: required/' \
-  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
-if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝缺少 Spec/Audit 的归档 UI 任务。" >&2
-  exit 1
-fi
-write_valid_done_task
-
 cp "$FIXTURE_ROOT/.claude/settings.json" \
   "$FIXTURE_ROOT/.claude/settings.json.valid"
 sed -i.bak 's/"Read(\*\*)"/"Read(**)", "Bash(git *)"/' \
@@ -496,11 +476,12 @@ fi
 mv "$FIXTURE_ROOT/.claude/settings.json.valid" \
   "$FIXTURE_ROOT/.claude/settings.json"
 
-sed -i.bak '/uiSpec:/d' \
+sed -i.bak '/blockedBy:/a\
+uiSpec: required' \
   "$FIXTURE_ROOT/docs/tasks/sample-task.md"
 rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝缺少 uiSpec 的活动任务卡。" >&2
+  echo "错误：Harness Check 未拒绝已废弃的 uiSpec 任务元数据。" >&2
   exit 1
 fi
 write_valid_task
@@ -518,7 +499,6 @@ cat > "$FIXTURE_ROOT/docs/tasks/cycle-task.md" <<'MARKDOWN'
 ---
 executor: task-executor
 blockedBy: [sample-task]
-uiSpec: not-required
 ---
 # Cycle task
 MARKDOWN

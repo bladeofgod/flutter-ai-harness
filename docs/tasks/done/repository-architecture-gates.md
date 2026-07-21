@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: [workspace-dependency-contract]
-uiSpec: not-required
 ---
 
 # 补强仓库架构边界 lint

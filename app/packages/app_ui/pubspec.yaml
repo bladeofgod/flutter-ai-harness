@@ -10,3 +10,18 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/raleway/Raleway-Variable.ttf
+          weight: 700
+    - family: Nunito Sans
+      fonts:
+        - asset: assets/fonts/nunito_sans/NunitoSans-Variable.ttf
+          weight: 300

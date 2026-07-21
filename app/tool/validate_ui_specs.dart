@@ -75,7 +75,6 @@ class _SpecChecker {
   final _specIds = <String>{};
   final _specs = <String, _SpecMetadata>{};
   final _audits = <String, _AuditMetadata>{};
-  final _passedReportPlatforms = <String, Set<String>>{};
   var specCount = 0;
 
   void run() {
@@ -114,40 +113,16 @@ class _SpecChecker {
     for (final report in reports) {
       _validateRunReport(report);
     }
-    for (final entry in _specs.entries) {
-      if (!entry.key.startsWith('docs/tasks/done/')) {
-        continue;
-      }
-      if (entry.value.status != 'ready') {
-        errors.add('${entry.key} 归档后必须是 ready');
-        continue;
-      }
-      final auditPath = entry.key.replaceFirst(
-        RegExp(r'\.spec\.yaml$'),
-        '.audit.yaml',
-      );
-      if (_audits[auditPath]?.status != 'passed') {
-        errors.add('${entry.key} 归档前必须有同名 passed 静态审计：$auditPath');
-      }
-      final passedPlatforms = _passedReportPlatforms[entry.key] ?? const {};
-      final missingPlatforms = entry.value.platforms.difference(
-        passedPlatforms,
-      );
-      if (missingPlatforms.isNotEmpty) {
-        final missing = missingPlatforms.toList()..sort();
-        errors.add(
-          '${entry.key} 归档前缺少通过的 App Operator 平台报告：'
-          '${missing.join(', ')}',
-        );
-      }
-    }
   }
 
   void _validateSpec(File file) {
     final path = _relative(file);
-    if (!path.startsWith('docs/tasks/') &&
-        !path.startsWith('docs/app-operator/specs/')) {
-      errors.add('$path 不在允许的 Spec 目录');
+    final pathMatch = RegExp(
+      r'^docs/app-operator/specs/'
+      r'([a-z][a-z0-9]*(?:-[a-z0-9]+)*)\.spec\.yaml$',
+    ).firstMatch(path);
+    if (pathMatch == null) {
+      errors.add('$path 不符合独立 UI Spec 路径约定');
     }
     final YamlMap document;
     try {
@@ -167,7 +142,6 @@ class _SpecChecker {
       'revision',
       'id',
       'status',
-      'task',
       'title',
       'sources',
       'platforms',
@@ -189,6 +163,9 @@ class _SpecChecker {
       if (!_specIds.add(id)) {
         errors.add('$path 的 Spec id 重复：$id');
       }
+      if (pathMatch != null && pathMatch.group(1) != id) {
+        errors.add('$path 的文件名必须与 Spec id $id 一致');
+      }
     }
     final status = _requiredString(document, 'status', path);
     if (status != null && !const {'draft', 'ready'}.contains(status)) {
@@ -196,33 +173,10 @@ class _SpecChecker {
     }
     _requiredString(document, 'title', path);
 
-    final task = document['task'];
-    String? expectedTaskRef;
-    if (path.startsWith('docs/tasks/') && task == null) {
-      errors.add('$path 位于任务目录时必须声明 task');
-    }
-    if (task != null &&
-        (task is! String ||
-            !RegExp(r'^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$').hasMatch(task))) {
-      errors.add('$path 的 task 必须是有效任务 slug');
-    } else if (task is String) {
-      final basename = _basename(file.path).replaceFirst('.spec.yaml', '');
-      if (basename != task) {
-        errors.add('$path 的文件名必须与任务 slug $task 一致');
-      }
-      final taskFile = File.fromUri(file.parent.uri.resolve('$basename.md'));
-      if (!taskFile.existsSync()) {
-        errors.add('$path 缺少同名任务卡：${_relative(taskFile)}');
-      } else {
-        expectedTaskRef = _relative(taskFile);
-      }
-    }
-
     final sources = _requiredList(document, 'sources', path);
     if (sources.isEmpty) {
       errors.add('$path 必须声明至少一个 source');
     }
-    var hasMatchingTaskSource = false;
     for (var index = 0; index < sources.length; index++) {
       final source = sources[index];
       final itemPath = '$path sources[$index]';
@@ -237,19 +191,12 @@ class _SpecChecker {
       final ref = _requiredString(source, 'ref', itemPath);
       if (ref != null) {
         if (type == 'task') {
-          if (expectedTaskRef != null && ref == expectedTaskRef) {
-            hasMatchingTaskSource = true;
-          }
-          _validateLocalRef(ref, itemPath);
+          _validateTaskRef(ref, itemPath);
         } else if (_looksLikeLocalRef(ref)) {
           _validateLocalRef(ref, itemPath);
         }
       }
     }
-    if (expectedTaskRef != null && !hasMatchingTaskSource) {
-      errors.add('$path 必须声明指向 $expectedTaskRef 的 task source');
-    }
-
     final platforms = _requiredStringList(document, 'platforms', path);
     if (platforms.isEmpty) {
       errors.add('$path 必须声明至少一个 platform');
@@ -347,6 +294,12 @@ class _SpecChecker {
 
   void _validateAudit(File file) {
     final path = _relative(file);
+    if (!RegExp(
+      r'^docs/app-operator/specs/'
+      r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*\.audit\.yaml$',
+    ).hasMatch(path)) {
+      errors.add('$path 不符合独立 UI Audit 路径约定');
+    }
     final specPath = path.replaceFirst(RegExp(r'\.audit\.yaml$'), '.spec.yaml');
     final metadata = _specs[specPath];
     if (metadata == null) {
@@ -553,7 +506,6 @@ class _SpecChecker {
 
   void _validateRunReport(File file) {
     final path = _relative(file);
-    final initialErrorCount = errors.length;
     final pathMatch = RegExp(
       r'^docs/app-operator/runs/([a-z][a-z0-9]*(?:-[a-z0-9]+)*)/'
       r'(android|ios)\.run\.yaml$',
@@ -709,13 +661,6 @@ class _SpecChecker {
     if (status == 'failed' && allPassed) {
       errors.add('$path 的条目全部 passed，status 应为 passed');
     }
-
-    if (errors.length == initialErrorCount &&
-        status == 'passed' &&
-        specPath != null &&
-        platform != null) {
-      _passedReportPlatforms.putIfAbsent(specPath, () => {}).add(platform);
-    }
   }
 
   void _validateRunEnvironment(Object? value, String? platform, String path) {
@@ -841,6 +786,18 @@ class _SpecChecker {
     }
   }
 
+  void _validateTaskRef(String ref, String path) {
+    if (!RegExp(r'^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$').hasMatch(ref)) {
+      errors.add('$path 的 task ref 必须是任务 slug：$ref');
+      return;
+    }
+    final active = File.fromUri(root.uri.resolve('docs/tasks/$ref.md'));
+    final completed = File.fromUri(root.uri.resolve('docs/tasks/done/$ref.md'));
+    if (!active.existsSync() && !completed.existsSync()) {
+      errors.add('$path 引用了不存在的任务 slug：$ref');
+    }
+  }
+
   String? _requiredString(YamlMap map, String key, String path) {
     final value = map[key];
     if (value is! String || value.trim().isEmpty) {
@@ -872,6 +829,4 @@ class _SpecChecker {
       .substring(root.path.length)
       .replaceAll('\\', '/')
       .replaceFirst(RegExp(r'^/'), '');
-
-  String _basename(String path) => path.replaceAll('\\', '/').split('/').last;
 }

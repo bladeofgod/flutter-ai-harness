@@ -444,17 +444,11 @@ class _HarnessChecker {
           !_agents.contains(executor)) {
         errors.add('$relative 的 executor 必须是 task-executor 或 bridge-engineer');
       }
-      final uiSpec = metadata['uiSpec'];
-      if (uiSpec is! String ||
-          !const {'required', 'not-required'}.contains(uiSpec)) {
-        errors.add('$relative 的 uiSpec 必须是 required 或 not-required');
+      if (metadata.containsKey('uiSpec')) {
+        errors.add('$relative 不得声明 uiSpec；UI 自动化由人独立安排');
       }
       if (completedMatch != null) {
-        _validateCompletedTaskArtifacts(
-          file,
-          slug,
-          uiSpec is String ? uiSpec : null,
-        );
+        _validateCompletedTaskArtifacts(file, slug);
       }
 
       final blockedBy = metadata['blockedBy'];
@@ -506,7 +500,7 @@ class _HarnessChecker {
     _validateTaskDependencyCycles(dependencyGraph);
   }
 
-  void _validateCompletedTaskArtifacts(File task, String slug, String? uiSpec) {
+  void _validateCompletedTaskArtifacts(File task, String slug) {
     final basename = _basename(task.path).replaceFirst(RegExp(r'\.md$'), '');
     final reviewPath = 'docs/reviews/execute-$basename.md';
     final review = _file(reviewPath);
@@ -535,17 +529,6 @@ class _HarnessChecker {
       multiLine: true,
     ).hasMatch(evidence.readAsStringSync())) {
       errors.add('$evidencePath 缺少命令退出码');
-    }
-
-    if (uiSpec == 'required') {
-      final specPath = 'docs/tasks/done/$basename.spec.yaml';
-      final auditPath = 'docs/tasks/done/$basename.audit.yaml';
-      if (!_file(specPath).existsSync()) {
-        errors.add('${_relative(task)} 归档前缺少 UI Spec：$specPath');
-      }
-      if (!_file(auditPath).existsSync()) {
-        errors.add('${_relative(task)} 归档前缺少 UI Audit：$auditPath');
-      }
     }
   }
 

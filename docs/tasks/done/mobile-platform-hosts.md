@@ -1,7 +1,6 @@
 ---
 executor: task-executor
 blockedBy: []
-uiSpec: not-required
 ---
 
 # 建立 Android/iOS 中立宿主
