@@ -4,8 +4,8 @@
 
 | 包 | 负责 | 禁止承担 |
 | --- | --- | --- |
-| `app_core` | 网络、存储抽象、日志、环境、平台无关基础设施 | Feature 业务或 UI |
-| `app_data` | Domain Entity、LocalDataSource、确定性 Fixture、协议/持久化适配和 Mapper | 页面、Controller、Feature 导航或业务 API 实现 |
+| `app_core` | `ApiClient`、`ApiTransport`、存储抽象、日志、环境和平台无关基础设施 | Feature 业务、业务 Entity 或 UI |
+| `app_data` | Domain Entity、LocalDataSource、确定性 Fixture 及其 Transport、协议/持久化适配和 Mapper | 页面、Controller、Feature 导航或业务 API 实现 |
 | `app_ui` | 设计 Token 和无业务通用 UI | 产品业务规则 |
 | `app_im` | IM Engine 契约和消息基础设施 | Feature 页面或壳工程装配 |
 | `app_features` | Feature、Controller、Page、Route、业务 API 抽象及其 Feature 实现 | 全局启动、基础数据适配或原生工程配置 |
@@ -29,12 +29,12 @@
 ## 类型边界
 
 ```text
+Fixture Payload → Mapper → Domain Entity → API/Controller/UI
 Wire/Proto 类型 → Mapper → Domain Entity → API/Controller/UI
 数据库 Row      → Mapper → Domain Entity → API/Controller/UI
-本地 Fixture    → LocalDataSource → Domain Entity → API/Controller/UI
 ```
 
-协议类型和持久化类型只能出现在 Adapter 与 Mapper 内。公共方法、Controller 构造参数、Route 参数和跨包 API 必须使用 Domain Entity 或明确的 Value Object。
+`app_core` 只能定义并处理传输中立的 Request、Response、Failure 和不透明 Payload，不得定义、import 或解析具体 Fixture、协议或持久化类型。具体 Fixture Payload、协议类型和数据库 Row 及其解析只能位于 `app_data` 的 Transport、Adapter 和 Mapper 内。Feature 公共方法、Controller 构造参数、Route 参数和跨 Feature API 必须使用 Domain Entity 或明确的 Value Object。
 
 ## 业务 API 与数据来源
 
@@ -53,31 +53,45 @@ Local API Impl                       app_features/lib/feature_xxx/api/
       ↓
 LocalDataSource                      app_data
       ↓
+ApiClient                            app_core
+      ↓
+FixtureApiTransport                  app_data
+      ↓
 Deterministic Fixture
+      ↓ 返回 Fixture Payload
+LocalDataSource Mapper               app_data
       ↓
 Domain Entity                        app_data
 ```
 
-未来存在真实 Endpoint 和 Wire Contract 后，可以增加远程实现，但不改变 Page、Controller 和抽象 API：
+`ApiClient` 只负责请求编排、传输委托以及统一结果和错误边界，不引用业务 Entity。`ApiTransport` 是 `app_core` 定义的传输抽象；`FixtureApiTransport` 由 `app_data` 实现，使用稳定请求键读取确定性 Fixture。LocalDataSource 和 Mapper 同样位于 `app_data`，Feature API 实现不得接收或解析原始 Payload。
+
+未来存在真实 Endpoint 后，可以注入 `DioApiTransport`；存在真实 Wire Contract 后，再由 `app_data` 增加协议 Adapter 和 Mapper。Page、Controller 和抽象 API 不随传输方式变化：
 
 ```text
 Abstract API                         app_features/lib/api/
       ↓
 Remote API Impl                      app_features/lib/feature_xxx/api/
       ↓
-ApiClient                            app_core
+RemoteDataSource / Adapter           app_data
       ↓
-Proto Message → Mapper → Entity      app_data
+ApiClient → DioApiTransport          app_core
+      ↓ 返回 Wire Payload
+Protocol Mapper → Domain Entity      app_data
 ```
 
-本地和远程实现由 `app_features` 的模块级 Registry 绑定。`apps/demo` 只调用 Registry 入口并提供壳工程回调或环境选择，不直接 import `LocalXxxApiImpl`、`RemoteXxxApiImpl` 等 Feature 内部实现。切换数据来源时只调整 Registry 装配，不把分支散落到 Controller 或 UI。
+本地和远程实现及其 DataSource、ApiClient 和 Transport 依赖由 `app_features` 的模块级 Registry 统一装配。`apps/demo` 只调用 Registry 入口并提供壳工程回调或环境选择，不直接 import `LocalXxxApiImpl`、`RemoteXxxApiImpl` 等 Feature 内部实现。切换数据来源时只调整 Registry 装配，不把分支散落到 Controller 或 UI。
 
 初始目录在产生真实消费者时按以下职责逐步形成：
 
 ```text
+app_core/lib/
+└── network/                         # ApiClient、ApiTransport 与统一结果/错误
+
 app_data/lib/
 ├── models/                          # Domain Entity
-└── local/                           # LocalDataSource 与确定性 Fixture
+├── local/                           # FixtureApiTransport、Fixture、LocalDataSource 与 Mapper
+└── remote/                          # 有真实协议后增加 Adapter、Mapper 与 RemoteDataSource
 
 app_features/lib/
 ├── api/                             # 业务抽象接口
@@ -85,7 +99,7 @@ app_features/lib/
 └── features_registry.dart           # 抽象接口与实现的统一绑定
 ```
 
-测试 Fake 只服务测试，不作为 Demo 运行时的数据实现；Demo 使用可重复执行的 LocalDataSource。不得为了填充目录提前创建未被页面或流程消费的 Entity、API、Fixture 或 Adapter。
+测试 Fake 只服务测试，不作为 Demo 运行时的数据实现；Demo 使用可重复执行的 FixtureApiTransport 和 LocalDataSource。不得为了填充目录提前创建未被页面或流程消费的 Entity、API、Fixture、Transport 或 Adapter。
 
 ## Feature 边界
 
