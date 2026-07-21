@@ -159,8 +159,10 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 
 ## 文档生命周期
 
-- `docs/tasks/*.md` 保存未完成任务卡；文件 basename 使用能概括内容且全局唯一的 lowercase kebab-case slug。
+- 任务卡是生产者无关的仓库产物，可以由用户、Agent、Command 或外部工具创建；不要求经过特定角色或工作流。
+- `docs/tasks/*.md` 保存未完成任务卡。文件 basename 应清晰概括任务内容，并在活动与归档任务中保持唯一；为保证跨平台和工具兼容，使用 lowercase kebab-case，不要求编号、固定前缀或生产者标识。
 - `docs/tasks/done/` 保存已完成任务卡；`docs/tasks/` 下只允许该子目录，不创建批次或输入快照目录。
+- 无论由谁创建，任务卡都必须包含非空一级标题，以及 `executor`、`blockedBy`、`uiSpec` frontmatter；正文应提供足以执行和验收当前任务的事实来源、范围、要求、验证与限制，但不强制无意义的固定章节。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。
 - `docs/app-operator/runs/` 保存按 Spec 与平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。
@@ -222,6 +224,6 @@ Dart 改动：
 
 - **架构设计**：[`docs/architecture.md`](./docs/architecture.md)（包职责、类型边界、Feature 边界、装配与路由）。
 - **IM 架构**：[`docs/im-architecture.md`](./docs/im-architecture.md)（占位；随 Demo 的首个 IM 任务补充 Engine、事件和生命周期设计）。
-- **基础模块清册**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（占位；用于避免重复实现已有公共能力）。
+- **基础模块索引**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（能力速查与详情路由；先读索引，只按当前任务加载相关子文档）。
 - **API 与数据契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（当前本地数据策略、业务 API 边界和未来远程协议启用条件）。
 - **设计稿输入**：[`docs/figma-links.md`](./docs/figma-links.md)（Demo 使用的 Figma 来源、授权和读取规则）。

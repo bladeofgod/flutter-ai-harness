@@ -3,7 +3,7 @@ description: 将一个或多个 Figma 设计拆成符合架构的任务卡，不
 argument-hint: "<figma-url>... [feature=feature_name] [额外约束]"
 ---
 
-把 Figma 设计转换为结构化规划输入，再复用 `plan-tasks` 的唯一任务卡输出契约。不实现代码，也不修改设计稿。
+把 Figma 设计转换为结构化规划输入，并按仓库任务卡约定形成可执行计划。不实现代码，也不修改设计稿。本命令不是 Figma 任务卡的唯一生产方式。
 
 ## 设计输入标准化
 
@@ -18,10 +18,10 @@ argument-hint: "<figma-url>... [feature=feature_name] [额外约束]"
 
 ## 统一规划
 
-1. 完整读取并执行 `plan-tasks` 的“任务命名与位置”和“统一输出契约”，使用 `architect` 确定架构、依赖和任务边界。
+1. 遵守 `CLAUDE.md` 的任务卡生命周期，使用 `architect` 确定架构、依赖和任务边界。
 2. 将标准化设计内容写入唯一且能概括范围的 `docs/figma/<context-slug>-design-context.md`。
 3. 任务卡直接写入 `docs/tasks/`，并显式引用设计输入文件；不得在 `docs/tasks/` 下创建 Figma 快照或其他子目录，也不得另行定义任务卡格式。
-4. 每张卡必须引用准确的 Figma 节点、输入快照和相关代码路径，并区分设计事实与工程推断。
+4. 每张卡必须引用准确的 Figma 节点、设计输入文档和相关代码路径，并区分设计事实与工程推断。
 
 存在设计 Token 时不得写无解释的裸视觉值。资源授权和导出参数未确认前，不得生成正式 Asset。
 

@@ -84,8 +84,8 @@ P2 不阻塞第一批 UI/架构任务，但 Integration Test 与 App Operator �
 
 ### P1-1 规划产物生命周期：已关闭
 
-- `plan-tasks` 现在是唯一的任务命名和输出契约，定义了描述性唯一 slug、目标冲突停止、活动/归档位置、frontmatter 和验证规则。
-- `plan-figma` 只负责设计输入标准化，把 `design-context.md` 写入 `docs/figma/`，任务卡继续复用统一输出契约。
+- 任务卡现在遵循生产者无关的仓库最小契约：名称清晰、概括且唯一，并具备可执行的 frontmatter、范围和验证信息。
+- `plan-tasks` 与 `plan-figma` 是可选的规划入口；后者负责设计输入标准化，并把 `design-context.md` 写入 `docs/figma/`。
 - `docs/tasks/` 下只保留活动任务文件和 `done/` 子目录，不再维护 Overview 或批次目录。
 - `execute-tasks` 不再为缺少 `executor` 的卡片猜测角色。
 - Harness Check 会拒绝额外任务子目录、无效或重复 slug、不存在的依赖、无效 `executor`、无效 `blockedBy` 和缺少一级标题；相关失败 Fixture 已覆盖。

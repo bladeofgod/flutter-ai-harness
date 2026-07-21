@@ -5,6 +5,8 @@ argument-hint: "[需求、文档路径和额外约束]"
 
 使用 `architect` 角色创建实现计划，不编写应用代码。
 
+本命令是任务拆解的便捷入口，不是任务卡的唯一生产方式。已有任务卡无论由谁创建，只要符合 `CLAUDE.md` 的文档生命周期和仓库门禁，都可以进入后续执行流程。
+
 ## 输入
 
 读取 `$ARGUMENTS`、`CLAUDE.md`、`docs/architecture.md`、相关 App 文档、协议定义和现有代码。
@@ -13,19 +15,18 @@ argument-hint: "[需求、文档路径和额外约束]"
 
 不得编造无法从产品输入、设计、协议或代码推导出的需求。未确定的产品决策必须显式记录。
 
-## 任务命名与位置
+## 规划规则
 
-1. 未完成任务直接写入 `docs/tasks/<task-slug>.md`；完成后由 `execute-tasks` 移入 `docs/tasks/done/`。
-2. `task-slug` 使用 lowercase kebab-case，必须准确概括任务内容，并在活动与归档任务中全局唯一；文件 basename 同时作为依赖、Review、证据和 UI Spec 使用的任务标识。
-3. 写入前计算本次全部目标路径，并扫描 `docs/tasks/*.md` 与 `docs/tasks/done/*.md` 检查重名；任一目标已存在时停止并报告冲突，不覆盖、不合并，也不添加无语义编号规避冲突。
-4. `docs/tasks/` 下只允许 `done/` 子目录，不创建 Overview、批次目录、输入快照目录或其他任务分组目录。
+1. 遵守 `CLAUDE.md` 的任务卡生命周期、命名和必要元数据约定。
+2. 写入前扫描活动与归档任务，确保名称能区分当前任务且没有冲突；发生重名时使用更清晰的业务范围命名，无法区分时停止并报告。
+3. 文件 basename 同时作为依赖、Review、证据和 UI Spec 使用的任务标识。
 
-## 统一输出契约
+## 本命令输出
 
 创建：
 
 - `docs/tasks/<task-slug>.md`：可独立执行的任务卡。
-- `docs/figma/<context-slug>-design-context.md`：仅在有 Figma 输入时由 `plan-figma` 生成，并由相关任务卡显式引用。
+- `docs/figma/<context-slug>-design-context.md`：仅在需要标准化 Figma 输入时生成，并由相关任务卡显式引用。
 
 每张任务卡必须包含：
 
@@ -44,4 +45,4 @@ argument-hint: "[需求、文档路径和额外约束]"
 
 uiSpec 为 required 的任务必须在用户批准任务卡后、执行实现前通过 `/plan-spec` 生成；机器校验通过且没有待决问题时状态为 ready。
 
-写入前再次确认全部目标文件不存在；创建规划产物后运行 `make harness-check`。最后汇报创建路径、依赖顺序、待决事项和第一张可执行任务卡。停在实现前，等待用户 Review。
+写入前再次确认全部目标文件没有冲突；创建规划产物后运行 `make harness-check`。最后汇报创建路径、依赖顺序、待决事项和第一张可执行任务卡。停在实现前，等待用户 Review。
