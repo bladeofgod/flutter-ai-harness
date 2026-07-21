@@ -120,7 +120,7 @@ MethodChannel 和 EventChannel 必须遵守：
 - `.agents/skills/*/SKILL.md`：从 Claude Skill 和 Command 生成，使 Codex 支持 Skill 语义匹配与 `$skill-name` 显式调用。
 - `.codex/agents/*.toml`：从 Claude Agent 生成，使 Codex 原生发现项目角色。
 
-不得手工编辑带生成标记的适配文件。修改 `.claude` 事实源后运行 `make codex-adapters`；`make codex-adapters-check` 和 `make harness-check` 会阻断缺失、过期或被篡改的适配。`.claude/memories/` 继续按任务读取，不批量注册为 Skill。
+不得手工编辑带生成标记的适配文件。修改 `.claude` 事实源后运行 `make codex-adapters`；`make codex-adapters-check`、`pre-push` 和 `make harness-check` 会阻断缺失、过期或被篡改的适配。`.claude/memories/` 继续按任务读取，不批量注册为 Skill。
 
 命名约定：
 

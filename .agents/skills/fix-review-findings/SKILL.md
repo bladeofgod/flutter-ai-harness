@@ -8,6 +8,12 @@ description: "修复已有 Review 报告中的问题，验证后执行复审"
 
 这是 Claude Command 工作流 的 Codex 原生发现入口。执行前必须完整读取并遵守
 [`Command 工作流 事实源`](../../../.claude/commands/fix-review-findings.md)。
-将当前用户请求视为该 Command 的 `$ARGUMENTS`。
+参数映射：
+
+- 参数提示：`<review-report-path> [问题范围]`。
+- 显式调用 `$fix-review-findings ...` 时，移除只用于选择 Skill 的
+  `$fix-review-findings` token，其余用户输入作为 `$ARGUMENTS`。
+- 由语义匹配触发时，完整的当前用户任务输入作为 `$ARGUMENTS`。
+- 必需参数缺失时，遵守源 Command 的停止条件，不猜测输入。
 
 不要在本文件复制或修改工作流正文。

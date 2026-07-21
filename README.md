@@ -83,7 +83,7 @@ make harness-check
 make check
 ```
 
-Claude assets under `.claude/` are the single source of truth. After changing a Command, Agent, or Skill, run `make codex-adapters`; `make codex-adapters-check` verifies the generated `AGENTS.md`, `.agents/skills/`, and `.codex/agents/` entries without modifying them. Codex invokes generated workflow Skills with `$skill-name` or semantic matching; Claude keeps its `/command` entry points.
+Claude assets under `.claude/` are the single source of truth. After changing a Command, Agent, or Skill, run `make codex-adapters`; `make codex-adapters-check` verifies the generated `AGENTS.md`, `.agents/skills/`, and `.codex/agents/` entries without modifying them. The repository `pre-push` hook runs this lightweight check automatically. Codex invokes generated workflow Skills with `$skill-name` or semantic matching; Claude keeps its `/command` entry points.
 
 Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it records the command and exit code while redacting local paths and common credential forms. `make setup` installs the repository Git hooks for each clone. If the clone already has a different `core.hooksPath`, setup reports the conflict and preserves the existing hook toolchain instead of overwriting it.
 

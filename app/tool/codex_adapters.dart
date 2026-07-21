@@ -12,6 +12,14 @@ class CodexAdapterManager {
   final Directory root;
 
   List<String> check() {
+    try {
+      return _check();
+    } on FileSystemException catch (error) {
+      return ['Codex 适配检查失败：${_fileSystemError(error)}'];
+    }
+  }
+
+  List<String> _check() {
     final result = _buildExpectedFiles();
     if (result.errors.isNotEmpty) {
       return result.errors;
@@ -19,6 +27,10 @@ class CodexAdapterManager {
 
     final errors = <String>[];
     _validateExpectedSyntax(result.files, errors);
+    _validateManagedLayout(result.files.keys, errors);
+    if (errors.isNotEmpty) {
+      return errors;
+    }
     for (final entry in result.files.entries) {
       final file = _file(entry.key);
       if (!file.existsSync()) {
@@ -26,7 +38,7 @@ class CodexAdapterManager {
         continue;
       }
       final actual = file.readAsStringSync();
-      if (actual == entry.value) {
+      if (_normalizeLineEndings(actual) == _normalizeLineEndings(entry.value)) {
         continue;
       }
       if (!_isGenerated(actual)) {
@@ -36,7 +48,7 @@ class CodexAdapterManager {
       }
     }
 
-    for (final file in _generatedAdapterFiles()) {
+    for (final file in _generatedAdapterFiles(errors)) {
       final relative = _relative(file);
       if (!result.files.containsKey(relative)) {
         errors.add('存在过期 Codex 适配：$relative');
@@ -133,12 +145,30 @@ class CodexAdapterManager {
   }
 
   List<String> sync() {
+    try {
+      return _sync();
+    } on FileSystemException catch (error) {
+      return ['Codex 适配同步失败：${_fileSystemError(error)}'];
+    }
+  }
+
+  List<String> _sync() {
     final result = _buildExpectedFiles();
     if (result.errors.isNotEmpty) {
       return result.errors;
     }
 
     final errors = <String>[];
+    _validateExpectedSyntax(result.files, errors);
+    _validateManagedLayout(result.files.keys, errors);
+    if (errors.isNotEmpty) {
+      return errors;
+    }
+
+    final generatedFiles = _generatedAdapterFiles(errors).toList();
+    if (errors.isNotEmpty) {
+      return errors;
+    }
     for (final entry in result.files.entries) {
       final file = _file(entry.key);
       if (file.existsSync() && !_isGenerated(file.readAsStringSync())) {
@@ -149,19 +179,74 @@ class CodexAdapterManager {
       return errors;
     }
 
-    for (final file in _generatedAdapterFiles()) {
-      final relative = _relative(file);
-      if (result.files.containsKey(relative)) {
-        continue;
-      }
-      file.deleteSync();
-      _deleteEmptyGeneratedParent(file.parent);
+    final staleFiles = [
+      for (final file in generatedFiles)
+        if (!result.files.containsKey(_relative(file))) file,
+    ];
+    final transactionPaths = <String>{
+      ...result.files.keys,
+      ...staleFiles.map(_relative),
+    }.toList()..sort();
+    final originals = <String, List<int>?>{};
+    for (final relative in transactionPaths) {
+      final file = _file(relative);
+      originals[relative] = file.existsSync() ? file.readAsBytesSync() : null;
     }
 
-    for (final entry in result.files.entries) {
-      final file = _file(entry.key);
-      file.parent.createSync(recursive: true);
-      file.writeAsStringSync(entry.value);
+    final staging = Directory.fromUri(
+      root.absolute.uri.resolve(
+        '.codex-adapters-tmp-$pid-${DateTime.now().microsecondsSinceEpoch}/',
+      ),
+    );
+    final createdDirectories = <Directory>[];
+    try {
+      staging.createSync();
+      var index = 0;
+      final stagedFiles = <String, File>{};
+      for (final entry in result.files.entries) {
+        final staged = File.fromUri(staging.uri.resolve('${index++}.tmp'));
+        staged.writeAsStringSync(entry.value, flush: true);
+        stagedFiles[entry.key] = staged;
+      }
+
+      for (final entry in result.files.entries) {
+        final target = _file(entry.key);
+        _createParentDirectories(target.parent, createdDirectories);
+        final commitErrors = <String>[];
+        _validateManagedPath(entry.key, commitErrors, expectedDirectory: false);
+        if (commitErrors.isNotEmpty) {
+          throw FileSystemException(commitErrors.join('；'), target.path);
+        }
+        stagedFiles[entry.key]!.renameSync(target.path);
+      }
+
+      for (final stale in staleFiles) {
+        final stalePath = _relative(stale);
+        final commitErrors = <String>[];
+        _validateManagedPath(stalePath, commitErrors, expectedDirectory: false);
+        if (commitErrors.isNotEmpty) {
+          throw FileSystemException(commitErrors.join('；'), stale.path);
+        }
+        stale.deleteSync();
+      }
+    } on FileSystemException catch (error) {
+      final rollbackErrors = _restoreOriginals(
+        originals,
+        createdDirectories: createdDirectories,
+      );
+      rollbackErrors.addAll(_cleanupTransactionArtifacts(staging));
+      final rollbackSuffix = rollbackErrors.isEmpty
+          ? ''
+          : '；回滚异常：${rollbackErrors.join('；')}';
+      return ['Codex 适配同步失败：${_fileSystemError(error)}$rollbackSuffix'];
+    }
+
+    final cleanupErrors = _cleanupTransactionArtifacts(staging);
+    if (cleanupErrors.isNotEmpty) {
+      return ['Codex 适配同步完成，但临时文件清理失败：${cleanupErrors.join('；')}'];
+    }
+    for (final file in staleFiles) {
+      _deleteEmptyGeneratedParent(file.parent);
     }
     return check();
   }
@@ -226,6 +311,7 @@ class CodexAdapterManager {
     errors,
     requireName: false,
     nameFromParent: false,
+    readArgumentHint: true,
   );
 
   List<_ClaudeAsset> _readAgents(List<String> errors) => _readFlatAssets(
@@ -233,6 +319,7 @@ class CodexAdapterManager {
     errors,
     requireName: true,
     nameFromParent: false,
+    readArgumentHint: false,
   );
 
   List<_ClaudeAsset> _readFlatAssets(
@@ -240,6 +327,7 @@ class CodexAdapterManager {
     List<String> errors, {
     required bool requireName,
     required bool nameFromParent,
+    required bool readArgumentHint,
   }) {
     final directory = _directory(relativeDirectory);
     if (!directory.existsSync()) {
@@ -260,6 +348,7 @@ class CodexAdapterManager {
               errors,
               requireName: requireName,
               nameFromParent: nameFromParent,
+              readArgumentHint: readArgumentHint,
             )
             case final asset?)
           asset,
@@ -271,6 +360,7 @@ class CodexAdapterManager {
     List<String> errors, {
     required bool requireName,
     required bool nameFromParent,
+    bool readArgumentHint = false,
   }) {
     final relative = _relative(file);
     final lines = file.readAsLinesSync();
@@ -319,20 +409,32 @@ class CodexAdapterManager {
       errors.add('$relative 缺少非空 description');
       return null;
     }
+    final rawArgumentHint = metadata['argument-hint'];
+    if (readArgumentHint &&
+        rawArgumentHint != null &&
+        rawArgumentHint is! String) {
+      errors.add('$relative 的 argument-hint 必须是字符串');
+      return null;
+    }
     return _ClaudeAsset(
       name: name,
       description: description,
       sourcePath: relative,
+      argumentHint: readArgumentHint ? rawArgumentHint as String? : null,
     );
   }
 
-  Iterable<File> _generatedAdapterFiles() sync* {
+  Iterable<File> _generatedAdapterFiles(List<String> errors) sync* {
     final skills = _directory('.agents/skills');
     if (skills.existsSync()) {
       for (final entity in skills.listSync(
         recursive: true,
         followLinks: false,
       )) {
+        if (entity is Link) {
+          errors.add('Codex 适配目录不允许符号链接：${_relativeEntity(entity)}');
+          continue;
+        }
         if (entity is! File || _basename(entity.path) != 'SKILL.md') {
           continue;
         }
@@ -344,6 +446,10 @@ class CodexAdapterManager {
     final agents = _directory('.codex/agents');
     if (agents.existsSync()) {
       for (final entity in agents.listSync(followLinks: false)) {
+        if (entity is Link) {
+          errors.add('Codex 适配目录不允许符号链接：${_relativeEntity(entity)}');
+          continue;
+        }
         if (entity is File &&
             entity.path.endsWith('.toml') &&
             _isGenerated(entity.readAsStringSync())) {
@@ -355,7 +461,7 @@ class CodexAdapterManager {
 
   void _deleteEmptyGeneratedParent(Directory directory) {
     final relative = directory.path
-        .substring(root.path.length)
+        .substring(root.absolute.path.length)
         .replaceAll('\\', '/')
         .replaceFirst(RegExp(r'^/'), '');
     if (!relative.startsWith('.agents/skills/') ||
@@ -366,10 +472,156 @@ class CodexAdapterManager {
     directory.deleteSync();
   }
 
-  bool _isGenerated(String content) => content
-      .split('\n')
-      .take(3)
-      .any((line) => line.contains(_generatedMarker));
+  void _validateManagedLayout(
+    Iterable<String> expectedPaths,
+    List<String> errors,
+  ) {
+    if (!root.existsSync()) {
+      errors.add('Codex 适配仓库根目录不存在：${root.path}');
+      return;
+    }
+    _validateManagedPath('.agents/skills', errors, expectedDirectory: true);
+    _validateManagedPath('.codex/agents', errors, expectedDirectory: true);
+    for (final path in expectedPaths) {
+      _validateManagedPath(path, errors, expectedDirectory: false);
+    }
+  }
+
+  void _validateManagedPath(
+    String relativePath,
+    List<String> errors, {
+    required bool expectedDirectory,
+  }) {
+    final components = relativePath.split('/');
+    if (relativePath.isEmpty ||
+        relativePath.startsWith('/') ||
+        components.any((component) => component.isEmpty || component == '..')) {
+      errors.add('Codex 适配路径不是安全的仓库相对路径：$relativePath');
+      return;
+    }
+
+    final canonicalRoot = root.resolveSymbolicLinksSync();
+    var current = root.absolute.path;
+    for (var index = 0; index < components.length; index++) {
+      current = _joinPath(current, components[index]);
+      final type = FileSystemEntity.typeSync(current, followLinks: false);
+      if (type == FileSystemEntityType.notFound) {
+        continue;
+      }
+      if (type == FileSystemEntityType.link) {
+        errors.add('Codex 适配路径不允许符号链接：$relativePath');
+        return;
+      }
+
+      final isLast = index == components.length - 1;
+      if (!isLast && type != FileSystemEntityType.directory) {
+        errors.add('Codex 适配父路径必须是目录：$relativePath');
+        return;
+      }
+      if (isLast &&
+          ((expectedDirectory && type != FileSystemEntityType.directory) ||
+              (!expectedDirectory && type != FileSystemEntityType.file))) {
+        final expectedKind = expectedDirectory ? '目录' : '文件';
+        errors.add('Codex 适配路径必须是$expectedKind：$relativePath');
+        return;
+      }
+
+      final resolved = type == FileSystemEntityType.directory
+          ? Directory(current).resolveSymbolicLinksSync()
+          : File(current).resolveSymbolicLinksSync();
+      if (!_isWithinRoot(resolved, canonicalRoot)) {
+        errors.add('Codex 适配路径解析到仓库外：$relativePath');
+        return;
+      }
+    }
+  }
+
+  bool _isWithinRoot(String candidate, String canonicalRoot) {
+    final normalizedCandidate = Platform.isWindows
+        ? candidate.toLowerCase()
+        : candidate;
+    final normalizedRoot = Platform.isWindows
+        ? canonicalRoot.toLowerCase()
+        : canonicalRoot;
+    return normalizedCandidate == normalizedRoot ||
+        normalizedCandidate.startsWith(
+          '$normalizedRoot${Platform.pathSeparator}',
+        );
+  }
+
+  void _createParentDirectories(
+    Directory directory,
+    List<Directory> createdDirectories,
+  ) {
+    if (directory.existsSync()) {
+      return;
+    }
+    if (directory.absolute.path == root.absolute.path) {
+      return;
+    }
+    _createParentDirectories(directory.parent, createdDirectories);
+    directory.createSync();
+    createdDirectories.add(directory);
+  }
+
+  List<String> _restoreOriginals(
+    Map<String, List<int>?> originals, {
+    required List<Directory> createdDirectories,
+  }) {
+    final errors = <String>[];
+    for (final entry in originals.entries) {
+      final target = _file(entry.key);
+      try {
+        final type = FileSystemEntity.typeSync(target.path, followLinks: false);
+        if (type == FileSystemEntityType.link ||
+            type == FileSystemEntityType.directory) {
+          errors.add('${entry.key} 的节点类型在同步期间发生变化');
+          continue;
+        }
+        if (entry.value == null) {
+          if (type == FileSystemEntityType.file) {
+            target.deleteSync();
+          }
+          continue;
+        }
+        target.parent.createSync(recursive: true);
+        target.writeAsBytesSync(entry.value!, flush: true);
+      } on FileSystemException catch (error) {
+        errors.add('${entry.key}：${_fileSystemError(error)}');
+      }
+    }
+    for (final directory in createdDirectories.reversed) {
+      try {
+        if (directory.existsSync() && directory.listSync().isEmpty) {
+          directory.deleteSync();
+        }
+      } on FileSystemException catch (error) {
+        errors.add(
+          '${_relativeDirectory(directory)}：${_fileSystemError(error)}',
+        );
+      }
+    }
+    return errors;
+  }
+
+  List<String> _cleanupTransactionArtifacts(Directory staging) {
+    final errors = <String>[];
+    try {
+      if (staging.existsSync()) {
+        staging.deleteSync(recursive: true);
+      }
+    } on FileSystemException catch (error) {
+      errors.add(_fileSystemError(error));
+    }
+    return errors;
+  }
+
+  String _normalizeLineEndings(String content) =>
+      content.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+
+  bool _isGenerated(String content) => _normalizeLineEndings(
+    content,
+  ).split('\n').take(3).any((line) => line.contains(_generatedMarker));
 
   String _agentsAdapter() => '''<!-- $_generatedMarker -->
 # Codex 项目入口
@@ -385,9 +637,7 @@ class CodexAdapterManager {
 
   String _skillAdapter(_ClaudeAsset source, {required bool command}) {
     final kind = command ? 'Command 工作流' : 'Skill';
-    final argumentInstruction = command
-        ? '\n将当前用户请求视为该 Command 的 `\$ARGUMENTS`。'
-        : '';
+    final argumentInstruction = command ? _commandArguments(source) : '';
     return '''---
 # $_generatedMarker
 name: ${source.name}
@@ -403,6 +653,22 @@ description: ${jsonEncode(source.description)}
 ''';
   }
 
+  String _commandArguments(_ClaudeAsset source) {
+    final hint = source.argumentHint?.trim();
+    final hintInstruction = hint == null || hint.isEmpty
+        ? '- 参数提示：源 Command 未声明 `argument-hint`。'
+        : '- 参数提示：`${hint.replaceAll('`', r'\`')}`。';
+    return '''
+
+参数映射：
+
+$hintInstruction
+- 显式调用 `\$${source.name} ...` 时，移除只用于选择 Skill 的
+  `\$${source.name}` token，其余用户输入作为 `\$ARGUMENTS`。
+- 由语义匹配触发时，完整的当前用户任务输入作为 `\$ARGUMENTS`。
+- 必需参数缺失时，遵守源 Command 的停止条件，不猜测输入。''';
+  }
+
   String _agentAdapter(_ClaudeAsset source) {
     final instructions =
         '开始工作前，完整读取并严格遵守 `${source.sourcePath}`。'
@@ -415,18 +681,55 @@ developer_instructions = ${jsonEncode(instructions)}
   }
 
   File _file(String relativePath) =>
-      File.fromUri(root.uri.resolve(relativePath));
+      File.fromUri(root.absolute.uri.resolve(relativePath));
 
   Directory _directory(String relativePath) => Directory.fromUri(
-    root.uri.resolve(
+    root.absolute.uri.resolve(
       relativePath.endsWith('/') ? relativePath : '$relativePath/',
     ),
   );
 
   String _relative(File file) => file.path
-      .substring(root.path.length)
+      .substring(root.absolute.path.length)
       .replaceAll('\\', '/')
       .replaceFirst(RegExp(r'^/'), '');
+
+  String _relativeEntity(FileSystemEntity entity) => entity.path
+      .substring(root.absolute.path.length)
+      .replaceAll('\\', '/')
+      .replaceFirst(RegExp(r'^/'), '');
+
+  String _relativeDirectory(Directory directory) => directory.path
+      .substring(root.absolute.path.length)
+      .replaceAll('\\', '/')
+      .replaceFirst(RegExp(r'^/'), '');
+
+  String _joinPath(String parent, String child) =>
+      parent.endsWith(Platform.pathSeparator)
+      ? '$parent$child'
+      : '$parent${Platform.pathSeparator}$child';
+
+  String _fileSystemError(FileSystemException error) {
+    final path = error.path == null ? '' : '（${_safeErrorPath(error.path!)}）';
+    return '${_sanitizeErrorMessage(error.message)}$path';
+  }
+
+  String _sanitizeErrorMessage(String message) {
+    return message.replaceAll(root.absolute.path, '<repo>');
+  }
+
+  String _safeErrorPath(String path) {
+    final absolutePath = File(path).absolute.path;
+    final absoluteRoot = root.absolute.path;
+    if (!_isWithinRoot(absolutePath, absoluteRoot)) {
+      return '<outside-path>';
+    }
+    final relative = absolutePath
+        .substring(absoluteRoot.length)
+        .replaceAll('\\', '/')
+        .replaceFirst(RegExp(r'^/'), '');
+    return relative.isEmpty ? '<repo>' : '<repo>/$relative';
+  }
 
   String _basename(String path) => path.replaceAll('\\', '/').split('/').last;
 }
@@ -436,11 +739,13 @@ class _ClaudeAsset {
     required this.name,
     required this.description,
     required this.sourcePath,
+    this.argumentHint,
   });
 
   final String name;
   final String description;
   final String sourcePath;
+  final String? argumentHint;
 }
 
 class _ExpectedFilesResult {

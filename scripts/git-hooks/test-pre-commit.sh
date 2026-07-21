@@ -19,7 +19,17 @@ cp "$ROOT/scripts/git-hooks/pre-push" scripts/git-hooks/pre-push
 cp "$ROOT/scripts/git-hooks/install.sh" scripts/git-hooks/install.sh
 cp "$ROOT/scripts/git-hooks/uninstall.sh" scripts/git-hooks/uninstall.sh
 printf '%s\n' '#!/usr/bin/env bash' 'exec dart "$@"' > scripts/dart-tool.sh
-printf '%s\n' '.PHONY: proto-check' 'proto-check:' $'\t@true' > Makefile
+cat > Makefile <<'MAKEFILE'
+.PHONY: proto-check codex-adapters-check analyze lint
+proto-check:
+	@true
+codex-adapters-check:
+	@touch .codex-adapters-check-ran
+analyze:
+	@touch .analyze-ran
+lint:
+	@touch .lint-ran
+MAKEFILE
 
 printf '%s\n' 'void main() {' '  print(1);' '}' > lib/example.dart
 git add .
@@ -57,4 +67,10 @@ git add lib/example.dart
 printf '%s\n' 'void main(){print(3);}' > lib/example.dart
 bash scripts/git-hooks/pre-commit >/dev/null
 
-echo "[hook-test] Git Hook 安装冲突与 pre-commit 暂存内容检查通过。"
+bash scripts/git-hooks/pre-push >/dev/null
+if [[ ! -f .codex-adapters-check-ran || ! -f .analyze-ran || ! -f .lint-ran ]]; then
+  echo "错误：pre-push 未执行 Codex 适配、Analyze 和 Lint 门禁。" >&2
+  exit 1
+fi
+
+echo "[hook-test] Git Hook 安装冲突、pre-commit 与 pre-push 门禁检查通过。"

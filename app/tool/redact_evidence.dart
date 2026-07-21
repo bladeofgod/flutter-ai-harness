@@ -3,7 +3,11 @@ import 'dart:io';
 void main(List<String> arguments) {
   if (arguments.length >= 3 && arguments.first == '--command') {
     final output = File(arguments[1]);
-    final command = arguments.skip(2).map(_redact).map(_shellQuote).join(' ');
+    final command = arguments
+        .skip(2)
+        .map((argument) => _redact(argument, normalizeTerminalOutput: false))
+        .map(_shellQuote)
+        .join(' ');
     output.parent.createSync(recursive: true);
     output.writeAsStringSync('$command\n');
     return;
@@ -25,8 +29,10 @@ void main(List<String> arguments) {
   output.writeAsStringSync(content);
 }
 
-String _redact(String input) {
-  var content = input;
+String _redact(String input, {bool normalizeTerminalOutput = true}) {
+  var content = normalizeTerminalOutput
+      ? _normalizeTerminalOutput(input)
+      : input;
 
   final repositoryRoot = Platform.environment['EVIDENCE_REPO_ROOT'];
   final home =
@@ -76,12 +82,29 @@ String _redact(String input) {
   return content;
 }
 
+String _normalizeTerminalOutput(String input) {
+  final normalized = input.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+  return normalized
+      .split('\n')
+      .map((line) => line.replaceFirst(RegExp(r'[ \t]+$'), ''))
+      .join('\n');
+}
+
 String _shellQuote(String argument) {
   if (argument.isEmpty) {
     return "''";
   }
   if (RegExp(r'^[A-Za-z0-9_@%+=:,./-]+$').hasMatch(argument)) {
     return argument;
+  }
+  if (RegExp(r'[\r\n\t]').hasMatch(argument)) {
+    final escaped = argument
+        .replaceAll('\\', r'\\')
+        .replaceAll("'", r"\'")
+        .replaceAll('\r', r'\r')
+        .replaceAll('\n', r'\n')
+        .replaceAll('\t', r'\t');
+    return "\$'$escaped'";
   }
   return "'${argument.replaceAll("'", "'\"'\"'")}'";
 }

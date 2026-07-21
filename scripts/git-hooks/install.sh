@@ -20,4 +20,4 @@ chmod +x scripts/git-hooks/pre-commit scripts/git-hooks/pre-push
 
 echo "Git hooks 已就绪："
 echo "  pre-commit：Dart 格式 + Proto 生成同步"
-echo "  pre-push：静态分析 + 仓库边界 lint"
+echo "  pre-push：Codex 适配同步检查 + 静态分析 + 仓库边界 lint"

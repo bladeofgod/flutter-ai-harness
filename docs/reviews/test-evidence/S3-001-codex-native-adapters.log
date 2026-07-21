@@ -1,7 +1,7 @@
 ## Command
 
 ```text
-make codex-adapters-check
+make codex-adapters
 ```
 
 Exit code: 0
@@ -9,41 +9,8 @@ Exit code: 0
 ## Output
 
 ```text
-bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
-[codex-adapters] Codex 原生适配同步检查通过。
-
-```
-
-## Command
-
-```text
-make analyze
-```
-
-Exit code: 0
-
-## Output
-
-```text
-bash scripts/dart-tool.sh analyze --fatal-infos .
-Analyzing ....
-No issues found!
-
-```
-
-## Command
-
-```text
-make harness-test
-```
-
-Exit code: 0
-
-## Output
-
-```text
-bash scripts/quality/test-harness.sh
-[harness-test] Harness 配置与失败 Fixture 通过。
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart
+[codex-adapters] Codex 原生适配已同步。
 
 ```
 
@@ -61,7 +28,7 @@ Exit code: 0
 bash scripts/check-prerequisites.sh
 [prerequisites] ripgrep 已就绪。
 bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
-Formatted 15 files (0 changed) in 0.69 seconds.
+Formatted 15 files (0 changed) in 0.61 seconds.
 bash scripts/dart-tool.sh analyze --fatal-infos .
 Analyzing ....
 No issues found!
@@ -90,7 +57,7 @@ bash scripts/quality/test-ui-specs.sh
 bash scripts/quality/test-integration-runner.sh
 [integration-runner-test] Integration Test Runner Fixture 通过。
 bash scripts/git-hooks/test-pre-commit.sh
-[hook-test] Git Hook 安装冲突与 pre-commit 暂存内容检查通过。
+[hook-test] Git Hook 安装冲突、pre-commit 与 pre-push 门禁检查通过。
 bash scripts/quality/evidence-lint.sh
 [evidence-lint] 测试证据脱敏检查通过。
 bash scripts/quality/test-evidence.sh
@@ -121,57 +88,15 @@ Downloading packages...
 Got dependencies in `<repo>/app`!
 12 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
-00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: renders the neutral harness shell                                                                                                                                                            00:02 +1: renders the neutral harness shell                                                                                                                                                            00:02 +1: main reuses the Flutter test binding                                                                                                                                                         00:02 +2: main reuses the Flutter test binding                                                                                                                                                         00:02 +2: All tests passed!
 
-```
-
-## Command
-
-```text
-make harness-test
-```
-
-Exit code: 0
-
-## Output
-
-```text
-bash scripts/quality/test-harness.sh
-[harness-test] Harness 配置与失败 Fixture 通过。
-
-```
-
-## Command
-
-```text
-make codex-adapters
-```
-
-Exit code: 0
-
-## Output
-
-```text
-bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart
-[codex-adapters] Codex 原生适配已同步。
-
-```
-
-## Command
-
-```text
-make harness-check
-```
-
-Exit code: 0
-
-## Output
-
-```text
-bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
-[codex-adapters] Codex 原生适配同步检查通过。
-bash scripts/dart-tool.sh run tool/harness_check.dart
-[harness-check] AI Harness 静态检查通过。
+00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:02 +0: renders the neutral harness shell
+00:02 +1: renders the neutral harness shell
+00:02 +1: main reuses the Flutter test binding
+00:02 +2: main reuses the Flutter test binding
+00:02 +2: All tests passed!
 
 ```
 
@@ -203,7 +128,7 @@ Exit code: 0
 bash scripts/check-prerequisites.sh
 [prerequisites] ripgrep 已就绪。
 bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
-Formatted 15 files (0 changed) in 0.50 seconds.
+Formatted 15 files (0 changed) in 0.44 seconds.
 bash scripts/dart-tool.sh analyze --fatal-infos .
 Analyzing ....
 No issues found!
@@ -232,7 +157,7 @@ bash scripts/quality/test-ui-specs.sh
 bash scripts/quality/test-integration-runner.sh
 [integration-runner-test] Integration Test Runner Fixture 通过。
 bash scripts/git-hooks/test-pre-commit.sh
-[hook-test] Git Hook 安装冲突与 pre-commit 暂存内容检查通过。
+[hook-test] Git Hook 安装冲突、pre-commit 与 pre-push 门禁检查通过。
 bash scripts/quality/evidence-lint.sh
 [evidence-lint] 测试证据脱敏检查通过。
 bash scripts/quality/test-evidence.sh
@@ -263,14 +188,21 @@ Downloading packages...
 Got dependencies in `<repo>/app`!
 12 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
-00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: renders the neutral harness shell                                                                                                                                                            00:03 +0: renders the neutral harness shell                                                                                                                                                            00:03 +1: renders the neutral harness shell                                                                                                                                                            00:03 +1: main reuses the Flutter test binding                                                                                                                                                         00:03 +2: main reuses the Flutter test binding                                                                                                                                                         00:03 +2: All tests passed!
+
+00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +0: renders the neutral harness shell
+00:01 +1: renders the neutral harness shell
+00:01 +1: main reuses the Flutter test binding
+00:01 +2: main reuses the Flutter test binding
+00:01 +2: All tests passed!
 
 ```
 
 ## Command
 
 ```text
-make harness-test
+git diff --check
 ```
 
 Exit code: 0
@@ -278,7 +210,5 @@ Exit code: 0
 ## Output
 
 ```text
-bash scripts/quality/test-harness.sh
-[harness-test] Harness 配置与失败 Fixture 通过。
 
 ```

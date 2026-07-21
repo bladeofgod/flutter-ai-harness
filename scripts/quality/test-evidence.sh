@@ -11,24 +11,32 @@ trap cleanup EXIT
 evidence="$FIXTURE_ROOT/evidence.log"
 private_unix="/Use""rs/alice/project"
 private_windows='C:\Use''rs\bob\project'
+multiline_argument=$'line-one   \nline-two\r\tend'
 bash "$ROOT/scripts/quality/capture-evidence.sh" "$evidence" -- \
   bash -c 'printf "%s\n" "path=$1" "windows=$2" "Authorization: Bearer fixture-bearer" "token=fixture-token" "api_key=fixture-api-key" "ghp_12345678901234567890" "-----BEGIN PRIVATE KEY-----" "fixture-private-key" "-----END PRIVATE KEY-----" "kept-output"' \
-  fixture "$private_unix" "$private_windows"
+  fixture "$private_unix" "$private_windows" 'value   ' "$multiline_argument"
 
 rg -q 'kept-output' "$evidence"
 rg -q '<home>/project' "$evidence"
 rg -q 'token=<redacted>' "$evidence"
 rg -q 'Authorization: Bearer <redacted>' "$evidence"
 rg -q '<redacted-private-key>' "$evidence"
+rg -Fq "'value   '" "$evidence"
+rg -Fq "\$'line-one   \\nline-two\\r\\tend'" "$evidence"
 if rg -q 'alice|bob|fixture-bearer|fixture-token|fixture-api-key|fixture-private-key|ghp_' "$evidence"; then
   echo "错误：证据采集器未脱敏 Fixture。" >&2
   exit 1
 fi
 
 bash "$ROOT/scripts/quality/capture-evidence.sh" --append "$evidence" -- \
-  bash -c 'printf "%s\n" "second-command"'
+  bash -c 'printf "progress   \rcomplete   \nsecond-command\n"'
 if [[ "$(rg -c '^## Command$' "$evidence")" -ne 2 ]]; then
   echo "错误：证据追加模式未保留两条命令。" >&2
+  exit 1
+fi
+if ! rg -q '^progress$' "$evidence" || ! rg -q '^complete$' "$evidence" ||
+  LC_ALL=C rg -U $'\r|[ \t]+$' "$evidence" >/dev/null; then
+  echo "错误：证据采集器未规范化终端回车或行尾空格。" >&2
   exit 1
 fi
 

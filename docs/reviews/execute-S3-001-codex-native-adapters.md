@@ -127,3 +127,69 @@ P2：0。
 - `git diff --check`：通过。
 
 最终结论：S3-001 的生成安全、过期清理、Skill/Agent 格式、跨平台路径策略、CLI、Harness 算法复用、任务证据和双语文档均满足本任务验收；P0/P1/P2 全部清零。
+
+## 提交后独立审查（2026-07-21）
+
+前述“最终复审”已被本节取代。任务已重新打开，当前状态为 `failed`。
+
+### P1-1 受管输出路径可通过符号链接逃逸仓库
+
+- 影响：`.agents` 或 `.codex` 的祖先路径被替换为符号链接时，同步可能在仓库外写入生成文件。
+- 修复要求：检查和同步必须拒绝受管路径中的符号链接或仓库外解析结果，并以结构化错误退出。
+
+### P1-2 CRLF checkout 会被误判为全部适配漂移
+
+- 影响：Git 在 CRLF 工作区检出生成文件时，逐字节字符串比较会产生无业务意义的失败。
+- 修复要求：比较时统一换行，并通过 `.gitattributes` 固定生成资产的 LF 入库规则。
+
+### P2-1 同步缺少事务边界
+
+- 影响：当前实现先删除过期文件、再逐个直写期望文件；中途异常会留下部分同步状态。
+- 修复要求：全量预检，先准备所有新内容，最后应用；任一步失败时恢复同步前内容，过期文件最后处理。
+
+### P2-2 Command 参数契约不完整
+
+- 影响：生成 Skill 没有保留 Command 的 `argument-hint`，也没有区分显式 `$skill-name` token 与实际 `$ARGUMENTS`。
+- 修复要求：在生成正文中写入参数提示，并明确显式调用时移除选择 Skill 的 token、语义触发时使用完整任务输入。
+
+### P2-3 Git Hook 未覆盖适配漂移
+
+- 影响：开发者可在本地 push 前遗漏 `make codex-adapters`，只能依赖 CI 较晚发现。
+- 修复要求：在 `pre-push` 增加轻量 `make codex-adapters-check`，不扩大为完整 Harness 门禁。
+
+## 修复后独立复审（2026-07-21）
+
+### 结论
+
+P0：0。
+
+P1：0。
+
+P2：0。
+
+任务恢复为 `passed`，提交后独立审查列出的两项 P1 和三项 P2 全部关闭。
+
+### 修复状态
+
+| 问题 | 状态 | 复审证据 |
+| --- | --- | --- |
+| P1-1 符号链接逃逸 | 已关闭 | 受管路径逐级拒绝符号链接和仓库外解析结果，写入与 stale 删除前再次校验；Fixture 覆盖 `.agents`、`.codex/agents` 和 `AGENTS.md`，并断言仓库外内容未变化。 |
+| P1-2 CRLF 漂移 | 已关闭 | 比较和生成标记识别统一换行，`.gitattributes` 固定受管资产为 LF；Fixture 验证 CRLF 只读检查通过且同步恢复 LF。 |
+| P2-1 同步事务 | 已关闭 | 同步先预检并暂存全部期望文件，逐文件原子替换，最后删除 stale；失败时恢复全部原始字节并清理临时目录。Fixture 注入真实中途权限失败，比较所有受管输出与 stale 状态。 |
+| P2-2 Command 参数 | 已关闭 | 生成 Skill 保留 `argument-hint`，区分显式 `$skill-name` token 与语义触发输入，并声明缺参停止规则；Fixture 覆盖多目标提示和两种触发说明。 |
+| P2-3 pre-push 覆盖 | 已关闭 | `pre-push` 增加轻量 `make codex-adapters-check`，Hook Fixture 断言适配、Analyze 和 Lint 三项均执行，安装提示同步更新。 |
+
+修复期间额外关闭了五项复审缺口：文件系统错误诊断会把仓库路径替换为 `<repo>`，不会泄漏本机绝对路径；事务 Fixture 确实进入部分替换后的回滚分支；后续 Command 失败 Fixture 保留 `argument-hint`，避免由适配漂移造成假通过；证据采集会规范化终端 CR 和行尾空格；命令 argv 与终端输出使用独立管线，尾随空格及多行参数通过可重放 quoting 保持原始语义。
+
+### 独立验证
+
+- `make harness-test`：通过，覆盖符号链接逃逸、CRLF、Command 参数、事务中途失败回滚和路径脱敏。
+- `make check`：通过，包含格式、Analyze、Harness、Spec、Lint、Hook、Evidence、Proto 和 Flutter 测试。
+- `make codex-adapters-check`：通过。
+- `git diff --check` 与 Shell 语法检查：通过。
+- `git check-attr`：`AGENTS.md`、生成 Skill 和 Agent 均固定为 LF。
+
+### 剩余风险
+
+- 未在 Windows 主机实际执行；CRLF 和路径分隔行为已由跨平台 Dart API、`.gitattributes` 和本地 Fixture 覆盖。
+- 未验证具体 Codex 客户端版本的项目 Agent 自动委派行为；该行为继续属于运行模式约束，不是生成器保证。

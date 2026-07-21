@@ -28,11 +28,11 @@ if [[ "$#" -eq 0 ]]; then
 fi
 
 raw_output="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-output.XXXXXX")"
-raw_record="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-record.XXXXXX")"
-sanitized="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-sanitized.XXXXXX")"
+sanitized_output="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-sanitized-output.XXXXXX")"
+record="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-record.XXXXXX")"
 sanitized_command="$(mktemp "${TMPDIR:-/tmp}/flutter-ai-harness-evidence-command.XXXXXX")"
 cleanup() {
-  rm -f -- "$raw_output" "$raw_record" "$sanitized" "$sanitized_command"
+  rm -f -- "$raw_output" "$sanitized_output" "$record" "$sanitized_command"
 }
 trap cleanup EXIT
 
@@ -44,6 +44,9 @@ set -e
 EVIDENCE_REPO_ROOT="$ROOT" \
   bash "$ROOT/scripts/dart-tool.sh" run tool/redact_evidence.dart \
   --command "$sanitized_command" "$@"
+EVIDENCE_REPO_ROOT="$ROOT" \
+  bash "$ROOT/scripts/dart-tool.sh" run tool/redact_evidence.dart \
+  "$raw_output" "$sanitized_output"
 
 {
   echo "## Command"
@@ -56,20 +59,16 @@ EVIDENCE_REPO_ROOT="$ROOT" \
   echo "## Output"
   echo
   printf '```text\n'
-  cat "$raw_output"
+  cat "$sanitized_output"
   printf '\n```\n'
-} > "$raw_record"
-
-EVIDENCE_REPO_ROOT="$ROOT" \
-  bash "$ROOT/scripts/dart-tool.sh" run tool/redact_evidence.dart \
-  "$raw_record" "$sanitized"
+} > "$record"
 
 mkdir -p "$(dirname "$output")"
 if [[ "$append" -eq 1 && -f "$output" ]]; then
   printf '\n' >> "$output"
-  cat "$sanitized" >> "$output"
+  cat "$record" >> "$output"
 else
-  cp "$sanitized" "$output"
+  cp "$record" "$output"
 fi
 
 bash "$ROOT/scripts/quality/evidence-lint.sh" "$output"

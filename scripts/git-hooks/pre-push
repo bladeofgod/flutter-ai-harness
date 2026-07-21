@@ -4,6 +4,9 @@ set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 
+echo "[pre-push] Codex 适配同步检查"
+make codex-adapters-check
+
 echo "[pre-push] 静态分析"
 make analyze
 

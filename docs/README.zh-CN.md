@@ -83,7 +83,7 @@ make harness-check
 make check
 ```
 
-`.claude/` 下的资产是唯一事实来源。修改 Command、Agent 或 Skill 后运行 `make codex-adapters`；`make codex-adapters-check` 会只读校验生成的 `AGENTS.md`、`.agents/skills/` 和 `.codex/agents/`，不会修改文件。Codex 通过 `$skill-name` 或语义匹配调用生成的工作流 Skill，Claude 继续使用 `/command` 入口。
+`.claude/` 下的资产是唯一事实来源。修改 Command、Agent 或 Skill 后运行 `make codex-adapters`；`make codex-adapters-check` 会只读校验生成的 `AGENTS.md`、`.agents/skills/` 和 `.codex/agents/`，不会修改文件，仓库 `pre-push` Hook 会自动执行这项轻量检查。Codex 通过 `$skill-name` 或语义匹配调用生成的工作流 Skill，Claude 继续使用 `/command` 入口。
 
 任务证据必须通过 `scripts/quality/capture-evidence.sh` 采集；它会记录命令和退出码，并脱敏本机路径与常见凭据形态。`make setup` 会为每个 Clone 安装仓库 Git Hooks；如果当前 Clone 已配置其他 `core.hooksPath`，Setup 会报告冲突并保留原 Hook 工具链，不会静默覆盖。
 

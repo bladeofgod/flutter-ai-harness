@@ -100,6 +100,7 @@ MARKDOWN
 cat > "$FIXTURE_ROOT/.claude/commands/sample-command.md" <<'MARKDOWN'
 ---
 description: Sample command
+argument-hint: "<target>... [scope]"
 ---
 使用 `sample-agent`。
 MARKDOWN
@@ -162,6 +163,139 @@ write_valid_task
 write_valid_done_task
 sync_adapters >/dev/null
 run_check >/dev/null
+
+command_adapter="$FIXTURE_ROOT/.agents/skills/sample-command/SKILL.md"
+if ! rg -F '参数提示：`<target>... [scope]`' "$command_adapter" >/dev/null ||
+  ! rg -F '显式调用 `$sample-command ...`' "$command_adapter" >/dev/null ||
+  ! rg -F '其余用户输入作为 `$ARGUMENTS`' "$command_adapter" >/dev/null ||
+  ! rg -F '由语义匹配触发时' "$command_adapter" >/dev/null; then
+  echo "错误：Command 适配未保留 argument-hint 或参数提取契约。" >&2
+  exit 1
+fi
+
+while IFS= read -r line; do
+  printf '%s\r\n' "$line"
+done < "$command_adapter" > "$command_adapter.crlf"
+mv "$command_adapter.crlf" "$command_adapter"
+if ! run_check >/dev/null 2>&1; then
+  echo "错误：Codex 适配检查未兼容 CRLF 工作区换行。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+if rg -U $'\r' "$command_adapter" >/dev/null; then
+  echo "错误：Codex 适配同步未恢复 LF 换行。" >&2
+  exit 1
+fi
+
+outside_agents="$FIXTURE_PARENT/outside-agents"
+mkdir -p "$outside_agents"
+mv "$FIXTURE_ROOT/.agents" "$FIXTURE_ROOT/.agents.valid"
+ln -s "$outside_agents" "$FIXTURE_ROOT/.agents"
+if sync_adapters >/dev/null 2>&1 || run_check >/dev/null 2>&1; then
+  echo "错误：Codex 适配未拒绝受管目录符号链接。" >&2
+  exit 1
+fi
+if [[ -e "$outside_agents/skills/sample-command/SKILL.md" ]]; then
+  echo "错误：Codex 适配通过符号链接写入了仓库外路径。" >&2
+  exit 1
+fi
+rm -f -- "$FIXTURE_ROOT/.agents"
+mv "$FIXTURE_ROOT/.agents.valid" "$FIXTURE_ROOT/.agents"
+
+outside_codex_agents="$FIXTURE_PARENT/outside-codex-agents"
+mkdir -p "$outside_codex_agents"
+mv "$FIXTURE_ROOT/.codex/agents" "$FIXTURE_ROOT/.codex/agents.valid"
+ln -s "$outside_codex_agents" "$FIXTURE_ROOT/.codex/agents"
+if sync_adapters >/dev/null 2>&1 || run_check >/dev/null 2>&1; then
+  echo "错误：Codex 适配未拒绝 Agent 输出目录符号链接。" >&2
+  exit 1
+fi
+if [[ -e "$outside_codex_agents/sample-agent.toml" ]]; then
+  echo "错误：Codex Agent 适配通过符号链接写入了仓库外路径。" >&2
+  exit 1
+fi
+rm -f -- "$FIXTURE_ROOT/.codex/agents"
+mv "$FIXTURE_ROOT/.codex/agents.valid" "$FIXTURE_ROOT/.codex/agents"
+
+outside_entry="$FIXTURE_PARENT/outside-AGENTS.md"
+printf '%s\n' 'outside entry' > "$outside_entry"
+mv "$FIXTURE_ROOT/AGENTS.md" "$FIXTURE_ROOT/AGENTS.md.valid"
+ln -s "$outside_entry" "$FIXTURE_ROOT/AGENTS.md"
+if sync_adapters >/dev/null 2>&1 || run_check >/dev/null 2>&1; then
+  echo "错误：Codex 适配未拒绝受管文件符号链接。" >&2
+  exit 1
+fi
+if [[ "$(cat "$outside_entry")" != 'outside entry' ]]; then
+  echo "错误：Codex 适配修改了符号链接指向的仓库外文件。" >&2
+  exit 1
+fi
+rm -f -- "$FIXTURE_ROOT/AGENTS.md"
+mv "$FIXTURE_ROOT/AGENTS.md.valid" "$FIXTURE_ROOT/AGENTS.md"
+
+mkdir -p "$FIXTURE_ROOT/.agents/skills/stale-before-failure"
+cp "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md" \
+  "$FIXTURE_ROOT/.agents/skills/stale-before-failure/SKILL.md"
+mv "$command_adapter" "$FIXTURE_ROOT/sample-command-adapter.valid"
+mkdir "$command_adapter"
+if sync_adapters >/dev/null 2>&1; then
+  echo "错误：Codex 适配同步未拒绝文件路径上的目录节点。" >&2
+  exit 1
+fi
+if [[ ! -f "$FIXTURE_ROOT/.agents/skills/stale-before-failure/SKILL.md" ]]; then
+  echo "错误：Codex 适配预检失败前删除了过期适配。" >&2
+  exit 1
+fi
+rmdir "$command_adapter"
+mv "$FIXTURE_ROOT/sample-command-adapter.valid" "$command_adapter"
+sync_adapters >/dev/null
+if [[ -e "$FIXTURE_ROOT/.agents/skills/stale-before-failure/SKILL.md" ]]; then
+  echo "错误：恢复有效布局后未清理过期适配。" >&2
+  exit 1
+fi
+
+transaction_snapshot="$FIXTURE_PARENT/transaction-snapshot"
+mkdir -p "$transaction_snapshot"
+printf '%s\n' 'transaction drift' >> "$FIXTURE_ROOT/AGENTS.md"
+mkdir -p "$FIXTURE_ROOT/.agents/skills/stale-before-runtime-failure"
+cp "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md" \
+  "$FIXTURE_ROOT/.agents/skills/stale-before-runtime-failure/SKILL.md"
+cp "$FIXTURE_ROOT/AGENTS.md" "$transaction_snapshot/AGENTS.md"
+cp -R "$FIXTURE_ROOT/.agents" "$transaction_snapshot/.agents"
+cp -R "$FIXTURE_ROOT/.codex" "$transaction_snapshot/.codex"
+chmod 0555 "$FIXTURE_ROOT/.agents/skills/sample-skill"
+set +e
+sync_adapters > "$transaction_snapshot/error.log" 2>&1
+runtime_failure_status=$?
+set -e
+chmod 0755 "$FIXTURE_ROOT/.agents/skills/sample-skill"
+if [[ "$runtime_failure_status" -eq 0 ]]; then
+  echo "错误：Codex 适配事务 Fixture 未触发中途写入失败。" >&2
+  exit 1
+fi
+if ! cmp -s "$transaction_snapshot/AGENTS.md" "$FIXTURE_ROOT/AGENTS.md" ||
+  ! /usr/bin/diff -r "$transaction_snapshot/.agents" "$FIXTURE_ROOT/.agents" >/dev/null ||
+  ! /usr/bin/diff -r "$transaction_snapshot/.codex" "$FIXTURE_ROOT/.codex" >/dev/null; then
+  echo "错误：Codex 适配同步失败后未完整恢复受管输出。" >&2
+  exit 1
+fi
+if [[ ! -f "$FIXTURE_ROOT/.agents/skills/stale-before-runtime-failure/SKILL.md" ]]; then
+  echo "错误：Codex 适配中途失败时删除了过期适配。" >&2
+  exit 1
+fi
+if compgen -G "$FIXTURE_ROOT/.codex-adapters-tmp-*" >/dev/null; then
+  echo "错误：Codex 适配同步失败后残留事务临时目录。" >&2
+  exit 1
+fi
+if rg -F "$FIXTURE_ROOT" "$transaction_snapshot/error.log" >/dev/null ||
+  ! rg -F '<repo>/' "$transaction_snapshot/error.log" >/dev/null; then
+  echo "错误：Codex 适配文件系统诊断泄漏本机路径或缺少仓库相对路径。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+if [[ -e "$FIXTURE_ROOT/.agents/skills/stale-before-runtime-failure/SKILL.md" ]]; then
+  echo "错误：事务恢复后未清理过期适配。" >&2
+  exit 1
+fi
 
 bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
   --check --root "$FIXTURE_ROOT" >/dev/null
@@ -236,7 +370,6 @@ if [[ -e "$FIXTURE_ROOT/.agents/skills/stale-skill/SKILL.md" ]]; then
   exit 1
 fi
 
-command_adapter="$FIXTURE_ROOT/.agents/skills/sample-command/SKILL.md"
 cp "$command_adapter" "$FIXTURE_ROOT/sample-command-adapter.valid"
 printf '%s\n' '# Hand-written Codex skill' > "$command_adapter"
 if sync_adapters >/dev/null 2>&1; then
@@ -574,6 +707,7 @@ printf '%s\n' '# Readme' '[Guide](docs/guide.md "Guide")' > "$FIXTURE_ROOT/READM
 cat > "$FIXTURE_ROOT/.claude/commands/sample-command.md" <<'MARKDOWN'
 ---
 description: Sample command
+argument-hint: "<target>... [scope]"
 ---
 使用 `missing-agent`。
 MARKDOWN
@@ -584,6 +718,7 @@ fi
 cat > "$FIXTURE_ROOT/.claude/commands/sample-command.md" <<'MARKDOWN'
 ---
 description: Sample command
+argument-hint: "<target>... [scope]"
 ---
 使用 `sample-agent`。
 MARKDOWN

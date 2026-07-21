@@ -57,12 +57,17 @@ Codex 会自动加载 `AGENTS.md`，原生发现 `.agents/skills/*/SKILL.md` 和
 10. 增加 `make codex-adapters` 和 `make codex-adapters-check`；完整 `make check` 必须覆盖只读适配检查。
 11. 更新 `CLAUDE.md` 和 README 中的资产说明，明确事实来源、生成目录、生成命令和 Codex 调用方式；不得把生成目录描述为第二事实源。
 12. 不修改现有 `.claude` 资产正文来迎合适配器；只有发现无效或缺失的必需 frontmatter 时才允许同任务修正。
+13. 所有受管输出路径必须拒绝符号链接和仓库外逃逸；同步必须先完成全量预检，并在写入失败时恢复同步前状态。
+14. 只读检查兼容 Git 的 CRLF 工作区换行；Command 适配必须保留 `argument-hint`，并明确显式调用与语义触发时 `$ARGUMENTS` 的提取规则。
 
 ## 同时编写的测试
 
 - 扩展 Harness 失败 Fixture，先为有效 Fixture 生成 Codex 适配，再验证有效状态通过。
 - 至少覆盖：篡改生成 Skill、缺失生成 Agent、过期生成适配、同名非生成文件冲突，以及 `AGENTS.md` 漂移。
 - 验证同步命令可以恢复可修复的生成内容，但不会覆盖同名非生成文件。
+- 验证符号链接无法把检查或同步引向仓库外路径，CRLF checkout 不产生虚假漂移。
+- 验证同步失败不会留下部分写入或提前删除过期适配。
+- 验证生成的 Command Skill 包含原始 `argument-hint` 和 `$ARGUMENTS` 提取约定。
 
 ## 验收标准
 
@@ -72,6 +77,7 @@ Codex 会自动加载 `AGENTS.md`，原生发现 `.agents/skills/*/SKILL.md` 和
 - 修改 Claude description 后，`--check` 与 `make harness-check` 都会失败，重新同步后恢复通过。
 - 删除或重命名 Claude 资产后，不会遗留通过门禁的过期生成适配。
 - `AGENTS.md` 不再重复 `CLAUDE.md` 的安全、架构、工作流和交付规则。
+- `pre-push` 以轻量只读检查阻止未同步的 Codex 适配进入远端。
 - `make check` 通过。
 
 ## 验证命令
@@ -97,5 +103,7 @@ git diff --check
 
 ## 完成记录
 
+- 2026-07-21：提交后独立审查发现路径逃逸、CRLF 漂移、同步事务性、Command 参数映射和 pre-push 覆盖缺口，任务重新移入进行中目录。
+- 2026-07-21：全部问题修复并由独立 agent 复审，P0/P1/P2 均为 0，任务重新归档。
 - Review：[`execute-S3-001-codex-native-adapters.md`](../../reviews/execute-S3-001-codex-native-adapters.md)
 - 测试证据：[`S3-001-codex-native-adapters.log`](../../reviews/test-evidence/S3-001-codex-native-adapters.log)
