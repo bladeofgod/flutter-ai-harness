@@ -30,7 +30,7 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Shoppe',
+      title: 'Ai-Harness',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: _router,
