@@ -137,7 +137,7 @@ MethodChannel 和 EventChannel 必须遵守：
 - `/plan-spec`：根据已批准任务或原型输入生成 UI 行为 Spec，不做实现或 App 操作。
 - `/execute-tasks`：执行已有任务卡并完成验证与 Review。
 - `/review-changes`：只读审查当前改动并输出问题报告，不修改实现。
-- `/review-sprint`：从批次整体视角只读审查跨任务影响。
+- `/review-batch`：按用户明确指定的任务和 diff 范围，只读审查跨任务影响。
 - `/fix-review-findings`：在用户明确要求后，修复已有 Review 报告中的问题并复审。
 - `/check-release`：执行发版前就绪检查。
 
@@ -159,8 +159,8 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 
 ## 文档生命周期
 
-- `docs/tasks/sprint-N/` 保存同一 Sprint 的 Overview、任务卡和可选输入快照；根目录不直接存放规划产物。
-- `docs/tasks/done/` 保存已完成的任务卡，任务 ID 保留所属 Sprint 编号。
+- `docs/tasks/*.md` 保存未完成任务卡；文件 basename 使用能概括内容且全局唯一的 lowercase kebab-case slug。
+- `docs/tasks/done/` 保存已完成任务卡；`docs/tasks/` 下只允许该子目录，不创建批次或输入快照目录。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。
 - `docs/app-operator/runs/` 保存按 Spec 与平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。

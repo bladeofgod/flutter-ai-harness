@@ -4,7 +4,7 @@ blockedBy: []
 uiSpec: not-required
 ---
 
-# S1-004 建立 Android/iOS 中立宿主
+# 建立 Android/iOS 中立宿主
 
 ## 背景
 

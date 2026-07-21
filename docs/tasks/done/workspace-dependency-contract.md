@@ -4,7 +4,7 @@ blockedBy: []
 uiSpec: not-required
 ---
 
-# S1-002 修正依赖方向契约
+# 修正 Workspace 依赖方向契约
 
 ## 背景
 
@@ -35,7 +35,7 @@ uiSpec: not-required
 
 ## 同时编写的测试
 
-本任务为文档契约修正；结构化依赖图自动验证由 `S1-003` 完成。
+本任务为文档契约修正；结构化依赖图自动验证由 `repository-architecture-gates` 完成。
 
 ## 验收标准
 
@@ -48,7 +48,7 @@ uiSpec: not-required
 make harness-check
 ```
 
-在 `S1-005` 完成前，使用本地 Markdown 链接和差异检查替代该占位命令。
+在 `harness-static-check` 完成前，使用本地 Markdown 链接和差异检查替代该占位命令。
 
 ## 风险与待决问题
 

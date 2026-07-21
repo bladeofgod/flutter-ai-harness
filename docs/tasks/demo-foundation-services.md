@@ -4,7 +4,7 @@ blockedBy: []
 uiSpec: not-required
 ---
 
-# S2-001 Demo 基础 Service 设计清册
+# Demo 基础 Service 设计清册
 
 ## 背景
 

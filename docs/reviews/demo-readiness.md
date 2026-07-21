@@ -11,19 +11,19 @@
 | 全新 Clone、Bootstrap、静态门禁 | 已验证 | 可用 |
 | Android Debug 构建 | 已验证 | 可用 |
 | Figma 读取 | 配置已识别，等待批准和真实设计 | 外部前置未完成 |
-| Demo 任务规划 | Sprint 产物契约已统一并通过门禁 | 可用 |
+| Demo 任务规划 | 任务 slug、活动/归档位置和关联产物契约已统一 | 可用 |
 | 单元与 Widget 测试 | 已验证 | 可用 |
 | Integration Test、App Operator | 标准入口与 Spec 闭环已建立 | 可用，等待首个真实流程 |
 | iOS 构建 | 宿主已建立，本机 Platform/destination 不可用 | 换可用环境复验 |
 
 ## P1
 
-### 1. 普通规划与 Figma 规划没有统一的 Sprint 产物生命周期
+### 1. 普通规划与 Figma 规划没有统一的任务产物生命周期
 
-- 位置：`.claude/commands/plan-tasks.md:18`、`.claude/commands/plan-figma.md:21`、`docs/tasks/00-overview.md:1`、`app/tool/harness_check.dart:242`
-- 影响：`plan-tasks` 固定创建根目录 `docs/tasks/00-overview.md`，但该文件已经属于 Sprint 1；`plan-figma` 又要求把快照写入全局 `.figma-plan/`、把任务卡直接写入 `docs/tasks/`，没有复用 `sprint-N` 布局。Agent 严格执行时，要么覆盖已有 Overview，要么自行发明目录和编号。与此同时，Harness Check 只在 `executor` 已存在时校验其值，无法阻止缺少必需 frontmatter 或位置错误的任务卡进入执行流程。
-- 证据：当前已归档任务位于 `docs/tasks/done/S1-*`，Overview 仍占用唯一根路径；两个规划命令对同一批次的目录约定不同，且没有定义如何分配下一个 `N`、如何处理路径冲突或如何把 Figma 快照关联到 Sprint。
-- 修法：将 Overview、Figma 输入快照和任务卡统一放入 `docs/tasks/sprint-N/`；定义显式 Sprint 参数或可靠的下一编号规则，目标文件存在时停止而不是覆盖；让 `plan-figma` 复用 `plan-tasks` 的任务卡 Schema；由 Harness Check 对活动任务卡强制校验 `executor`、`blockedBy`、ID、所属 Sprint 和引用路径。
+- 位置：`.claude/commands/plan-tasks.md`、`.claude/commands/plan-figma.md`、`app/tool/harness_check.dart`
+- 影响：`plan-tasks` 和 `plan-figma` 曾分别定义 Overview、输入快照和任务卡位置，Agent 严格执行时可能覆盖已有规划文件或自行发明目录与编号。与此同时，Harness Check 只在 `executor` 已存在时校验其值，无法阻止缺少必需 frontmatter、重名或位置错误的任务卡进入执行流程。
+- 证据：两个规划命令曾对同一组任务采用不同目录约定，也没有统一如何处理文件名冲突或把 Figma 快照关联到任务。
+- 修法：活动任务直接使用 `docs/tasks/<task-slug>.md`，完成后移入 `done/`；Figma 输入独立放在 `docs/figma/` 并由任务显式引用；让两个规划命令复用同一任务卡 Schema，由 Harness Check 强制校验位置、slug、frontmatter、依赖和关联路径。
 
 ## P2
 
@@ -84,15 +84,15 @@ P2 不阻塞第一批 UI/架构任务，但 Integration Test 与 App Operator �
 
 ### P1-1 规划产物生命周期：已关闭
 
-- `plan-tasks` 现在是唯一的 Sprint 分配和任务卡输出契约，定义了自动/显式编号、目标冲突停止、目录、文件名、frontmatter 和验证规则。
-- `plan-figma` 只负责设计输入标准化，并将 `design-context.md`、Overview 和任务卡交给同一 Sprint 输出契约，不再维护另一套目录和 Schema。
-- Sprint 1 Overview 已从根目录迁移到 `docs/tasks/sprint-1/00-overview.md`，根目录不再直接保存规划产物。
+- `plan-tasks` 现在是唯一的任务命名和输出契约，定义了描述性唯一 slug、目标冲突停止、活动/归档位置、frontmatter 和验证规则。
+- `plan-figma` 只负责设计输入标准化，把 `design-context.md` 写入 `docs/figma/`，任务卡继续复用统一输出契约。
+- `docs/tasks/` 下只保留活动任务文件和 `done/` 子目录，不再维护 Overview 或批次目录。
 - `execute-tasks` 不再为缺少 `executor` 的卡片猜测角色。
-- Harness Check 会拒绝根目录任务卡、错误 Sprint 编号、重复或不存在的任务 ID、无效 `executor`、无效 `blockedBy` 和不匹配的一级标题；相关失败 Fixture 已覆盖。
+- Harness Check 会拒绝额外任务子目录、无效或重复 slug、不存在的依赖、无效 `executor`、无效 `blockedBy` 和缺少一级标题；相关失败 Fixture 已覆盖。
 
 ### 第一次复审结论（仅 P1）
 
-P0/P1 均为 0；当时 5 个 P2 保持待办。`make check` 已通过，可以开始 Demo 设计输入和 Sprint 2 拆卡。
+P0/P1 均为 0；当时 5 个 P2 保持待办。`make check` 已通过，可以开始 Demo 设计输入和任务拆分。
 
 ## P2 修复复审
 

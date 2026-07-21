@@ -1,7 +1,7 @@
 ---
 name: figma-to-flutter
 description: "适用：读取 Figma 或根据节点实现 Flutter UI，包括 Token 反查、Auto Layout、组件 Variant、Asset 和视觉验证。不适用：替代产品决策，或从像素推断设计稿不可见的数据行为。触发词：Figma URL、node-id、design-to-code、视觉还原、Auto Layout、design token。"
-paths: ["app/packages/app_features/lib/**/pages/**", "app/packages/app_features/lib/**/widgets/**", "app/packages/app_ui/lib/**", "docs/tasks/sprint-*/.figma-plan/**"]
+paths: ["app/packages/app_features/lib/**/pages/**", "app/packages/app_features/lib/**/widgets/**", "app/packages/app_ui/lib/**", "docs/figma/**"]
 ---
 
 # Figma 到 Flutter

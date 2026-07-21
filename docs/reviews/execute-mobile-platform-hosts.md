@@ -1,11 +1,11 @@
 ---
-task: S1-004
+task: mobile-platform-hosts
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S1-004 Review：建立 Android/iOS 中立宿主
+# Review：建立 Android/iOS 中立宿主
 
 ## 结论
 
@@ -23,7 +23,7 @@ P0/P1/P2 均为 0，任务通过；iOS 构建保留一项明确的本机环境�
 
 ## 验证
 
-完整输出见 `docs/reviews/test-evidence/S1-004-mobile-hosts.log`：
+完整输出见 `docs/reviews/test-evidence/mobile-platform-hosts.log`：
 
 - Android `flutter build apk --debug`：最终通过，产出 `app-debug.apk`。
 - `make test`：2 个 Widget 测试通过。

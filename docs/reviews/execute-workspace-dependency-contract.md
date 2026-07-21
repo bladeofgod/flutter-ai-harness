@@ -1,11 +1,11 @@
 ---
-task: S1-002
+task: workspace-dependency-contract
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S1-002 Review：修正依赖方向契约
+# Review：修正 Workspace 依赖方向契约
 
 ## 结论
 
@@ -20,11 +20,11 @@ P0/P1/P2 均为 0，任务通过。
 
 ## 验证
 
-完整输出见 `docs/reviews/test-evidence/S1-002-dependency-contract.log`：
+完整输出见 `docs/reviews/test-evidence/workspace-dependency-contract.log`：
 
 - `git diff --check`：通过。
 - `make lint`：真实 Workspace 依赖矩阵通过。
 
 ## 剩余风险
 
-新增 Workspace Package 时必须同步更新矩阵和结构化门禁；`S1-003` 已覆盖该失败场景。
+新增 Workspace Package 时必须同步更新矩阵和结构化门禁；`repository-architecture-gates` 已覆盖该失败场景。

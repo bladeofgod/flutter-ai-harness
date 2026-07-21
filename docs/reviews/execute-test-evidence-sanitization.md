@@ -1,11 +1,11 @@
 ---
-task: S1-001
+task: test-evidence-sanitization
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S1-001 Review：测试证据脱敏与门禁
+# Review：测试证据脱敏与门禁
 
 ## 结论
 
@@ -30,7 +30,7 @@ P0/P1/P2 均为 0，任务通过。
 
 ## 验证
 
-完整输出见 `docs/reviews/test-evidence/S1-001-evidence-sanitization.log`：
+完整输出见 `docs/reviews/test-evidence/test-evidence-sanitization.log`：
 
 - `make evidence-test`：通过。
 - `make evidence-lint`：通过。

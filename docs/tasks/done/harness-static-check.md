@@ -1,10 +1,10 @@
 ---
 executor: task-executor
-blockedBy: [S1-001, S1-003, S1-004]
+blockedBy: [test-evidence-sanitization, repository-architecture-gates, mobile-platform-hosts]
 uiSpec: not-required
 ---
 
-# S1-005 增加 Harness 自检并接入完整门禁
+# 增加 Harness 静态自检并接入完整门禁
 
 ## 背景
 

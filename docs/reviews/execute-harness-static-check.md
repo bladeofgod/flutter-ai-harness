@@ -1,11 +1,11 @@
 ---
-task: S1-005
+task: harness-static-check
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S1-005 Review：Harness 自检与完整门禁
+# Review：Harness 静态自检与完整门禁
 
 ## 结论
 
@@ -26,7 +26,7 @@ P0/P1/P2 均为 0，任务通过。
 
 ## 验证
 
-完整输出见 `docs/reviews/test-evidence/S1-005-harness-check.log`：
+完整输出见 `docs/reviews/test-evidence/harness-static-check.log`：
 
 - `make harness-test`：无效 frontmatter、断链、失效 Agent 引用和缺失平台宿主 Fixture 均被拒绝。
 - `make check`：通过；12 个 Dart 文件格式正确，Analyze 无问题，全部 Harness/架构/证据 Fixture 通过，2 个 Widget 测试通过。

@@ -202,12 +202,13 @@ class _SpecChecker {
       errors.add('$path 位于任务目录时必须声明 task');
     }
     if (task != null &&
-        (task is! String || !RegExp(r'^S[1-9]\d*-\d{3}$').hasMatch(task))) {
-      errors.add('$path 的 task 必须是有效任务 ID');
+        (task is! String ||
+            !RegExp(r'^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$').hasMatch(task))) {
+      errors.add('$path 的 task 必须是有效任务 slug');
     } else if (task is String) {
       final basename = _basename(file.path).replaceFirst('.spec.yaml', '');
-      if (!basename.startsWith('$task-')) {
-        errors.add('$path 的文件名必须以任务 ID $task 开头');
+      if (basename != task) {
+        errors.add('$path 的文件名必须与任务 slug $task 一致');
       }
       final taskFile = File.fromUri(file.parent.uri.resolve('$basename.md'));
       if (!taskFile.existsSync()) {

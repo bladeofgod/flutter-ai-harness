@@ -64,7 +64,7 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 
 可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
 
-任务规划在全新的 `docs/tasks/sprint-N/` 目录中产生，并按单张任务卡执行。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。随后每个声明平台分别生成与当前实现绑定的结构化 App Operator 报告。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。每个文件使用能概括内容且全局唯一的 lowercase kebab-case slug，无需额外编号。标记为 `uiSpec: required` 的任务必须先经过 `/plan-spec`；机器校验通过的 `ready` Spec 先进入静态实现审计，只有审计通过才能执行运行态验证。随后每个声明平台分别生成与当前实现绑定的结构化 App Operator 报告。仅当产品决策或外部运行状态缺失时请求人工介入。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
 ## 质量门禁
 
@@ -110,7 +110,7 @@ Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开�
 
 ## 当前状态
 
-Harness 基线已经完成。Demo 设计来源已经登记，Sprint 2 正在进行架构规划；选定页面级 Figma 输入后，产品 UI 和行为通过独立、可追踪的任务卡逐步实现。
+Harness 基线已经完成。Demo 设计来源已经登记，基础 Service 正在规划；选定页面级 Figma 输入后，产品 UI 和行为通过独立、可追踪的任务卡逐步实现。
 
 ## 许可证
 

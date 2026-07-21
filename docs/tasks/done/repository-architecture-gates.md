@@ -1,10 +1,10 @@
 ---
 executor: task-executor
-blockedBy: [S1-002]
+blockedBy: [workspace-dependency-contract]
 uiSpec: not-required
 ---
 
-# S1-003 补强架构边界 lint
+# 补强仓库架构边界 lint
 
 ## 背景
 

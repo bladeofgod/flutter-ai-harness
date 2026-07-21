@@ -1,11 +1,11 @@
 ---
-task: S3-001
+task: codex-native-adapters
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S3-001 Review：Codex 原生资产适配
+# Review：Codex 原生资产适配
 
 ## Findings
 
@@ -29,7 +29,7 @@ P1：0。
 
 ### P2-3 入库任务证据尚未覆盖完整验收命令
 
-- 位置：`docs/reviews/test-evidence/S3-001-codex-native-adapters.log:1`、`docs/tasks/done/S3-001-codex-native-adapters.md:79`
+- 位置：`docs/reviews/test-evidence/codex-native-adapters.log:1`、`docs/tasks/done/codex-native-adapters.md:79`
 - 影响：现有日志只记录 `make codex-adapters-check`、`make analyze` 和 `make harness-test`，没有保存任务卡列出的 `make codex-adapters`、`make harness-check`、`make check` 与 `git diff --check` 证据。当前实现已由本次 Review 独立验证，但归档证据仍不完整。
 - 建议：归档前通过证据采集器补录缺少的只读验收命令；同步命令如不希望为留证再次写入，可记录首次生成时的原始执行证据，或明确以只读 Check 作为确定性等价验证。
 
@@ -80,7 +80,7 @@ P2：1。
 | --- | --- | --- |
 | P2-1 CLI 参数解析 | 部分关闭 | `app/tool/sync_codex_adapters.dart:36` 已拒绝选项充当 root 和重复 root；两种合法顺序及 `--root --check` 已有 Fixture，重复 `--root` 仅由本次复审手工验证，`scripts/quality/test-harness.sh` 中没有对应调用。 |
 | P2-2 独立格式与冲突验证 | 已关闭 | `CodexAdapterManager.check()` 会独立解析期望 Skill 的 YAML frontmatter，并用受限 TOML 字段/JSON 字符串解析验证 Agent；Fixture 使用带空格根路径，覆盖 Command/Skill 名称冲突并用 `cmp` 断言已有输出不变。 |
-| P2-3 入库命令证据 | 已关闭 | `docs/reviews/test-evidence/S3-001-codex-native-adapters.log` 已记录 `make codex-adapters`、`make harness-check`、`git diff --check`、修改后的 `make harness-test` 和完整 `make check`，退出码均为 0。 |
+| P2-3 入库命令证据 | 已关闭 | `docs/reviews/test-evidence/codex-native-adapters.log` 已记录 `make codex-adapters`、`make harness-check`、`git diff --check`、修改后的 `make harness-test` 和完整 `make check`，退出码均为 0。 |
 | P2-4 README 入口名称 | 已关闭 | `README.md:13` 与 `docs/README.zh-CN.md:13` 已分别改为 Codex entry point / Codex 入口。 |
 
 ### 剩余 P2
@@ -117,7 +117,7 @@ P2：0。
 
 - 位置：`scripts/quality/test-harness.sh:179`
 - 修复：Fixture 现在显式执行 `--root "$FIXTURE_ROOT" --root "$FIXTURE_ROOT"`，捕获退出码并要求为 64；与缺失 root 值及两种合法选项顺序共同覆盖 CLI 分支。
-- 复审证据：新增断言位于 `scripts/quality/test-harness.sh:179-187`；更新后的 `make harness-test` 已通过，并记录在 `docs/reviews/test-evidence/S3-001-codex-native-adapters.log`。
+- 复审证据：新增断言位于 `scripts/quality/test-harness.sh:179-187`；更新后的 `make harness-test` 已通过，并记录在 `docs/reviews/test-evidence/codex-native-adapters.log`。
 
 ### 最终验证
 
@@ -126,7 +126,7 @@ P2：0。
 - `make check`：最新完整门禁证据退出码为 0。
 - `git diff --check`：通过。
 
-最终结论：S3-001 的生成安全、过期清理、Skill/Agent 格式、跨平台路径策略、CLI、Harness 算法复用、任务证据和双语文档均满足本任务验收；P0/P1/P2 全部清零。
+最终结论：Codex 原生适配的生成安全、过期清理、Skill/Agent 格式、跨平台路径策略、CLI、Harness 算法复用、任务证据和双语文档均满足本任务验收；P0/P1/P2 全部清零。
 
 ## 提交后独立审查（2026-07-21）
 

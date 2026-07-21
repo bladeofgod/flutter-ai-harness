@@ -1,11 +1,11 @@
 ---
-task: S1-003
+task: repository-architecture-gates
 status: passed
 p0: 0
 p1: 0
 ---
 
-# S1-003 Review：补强架构边界 lint
+# Review：补强仓库架构边界 lint
 
 ## 结论
 
@@ -21,7 +21,7 @@ P0/P1/P2 均为 0，任务通过。
 
 ## 验证
 
-完整输出见 `docs/reviews/test-evidence/S1-003-architecture-gates.log`：
+完整输出见 `docs/reviews/test-evidence/repository-architecture-gates.log`：
 
 - `make lint`：通过。
 - `make lint-test`：允许/拒绝 Fixture 通过。

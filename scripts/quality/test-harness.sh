@@ -21,7 +21,6 @@ mkdir -p \
   "$FIXTURE_ROOT/app/lib" \
   "$FIXTURE_ROOT/app" \
   "$FIXTURE_ROOT/docs/tasks/done" \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2" \
   "$FIXTURE_ROOT/docs/reviews/test-evidence" \
   "$FIXTURE_ROOT/docs" \
   "$FIXTURE_ROOT/scripts"
@@ -72,7 +71,6 @@ YAML
 printf '%s\n' '# Contract' '`/sample-command`' > "$FIXTURE_ROOT/CLAUDE.md"
 printf '%s\n' '# Readme' '[Guide](docs/guide.md "Guide")' > "$FIXTURE_ROOT/README.md"
 printf '%s\n' '# Guide' > "$FIXTURE_ROOT/docs/guide.md"
-printf '%s\n' '# Sprint 2' > "$FIXTURE_ROOT/docs/tasks/sprint-2/00-overview.md"
 printf '\211PNG\r\n\032\n' > "$FIXTURE_ROOT/docs/image.png"
 printf '%s\n' '#!/usr/bin/env bash' 'set -euo pipefail' > "$FIXTURE_ROOT/scripts/check.sh"
 printf '%s\n' 'plugins {}' > "$FIXTURE_ROOT/app/apps/demo/android/app/build.gradle.kts"
@@ -124,35 +122,35 @@ sync_adapters() {
 }
 
 write_valid_task() {
-  cat > "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md" <<'MARKDOWN'
+  cat > "$FIXTURE_ROOT/docs/tasks/sample-task.md" <<'MARKDOWN'
 ---
 executor: task-executor
 blockedBy: []
 uiSpec: not-required
 ---
-# S2-001 Sample task
+# Sample task
 MARKDOWN
 }
 
 write_valid_done_task() {
-  cat > "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md" <<'MARKDOWN'
+  cat > "$FIXTURE_ROOT/docs/tasks/done/complete-task.md" <<'MARKDOWN'
 ---
 executor: task-executor
 blockedBy: []
 uiSpec: not-required
 ---
-# S1-001 Complete task
+# Complete task
 MARKDOWN
-  cat > "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md" <<'MARKDOWN'
+  cat > "$FIXTURE_ROOT/docs/reviews/execute-complete-task.md" <<'MARKDOWN'
 ---
-task: S1-001
+task: complete-task
 status: passed
 p0: 0
 p1: 0
 ---
 # Review
 MARKDOWN
-  cat > "$FIXTURE_ROOT/docs/reviews/test-evidence/S1-001-complete-task.log" <<'LOG'
+  cat > "$FIXTURE_ROOT/docs/reviews/test-evidence/complete-task.log" <<'LOG'
 ## Command
 
 Exit code: 0
@@ -426,15 +424,15 @@ sed -i.bak 's/skills: \[missing-skill\]/skills: [sample-skill]/' \
 rm -f -- "$FIXTURE_ROOT/.claude/agents/sample-agent.md.bak"
 
 sed -i.bak '/uiSpec:/d' \
-  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 uiSpec 的归档任务卡。" >&2
   exit 1
 fi
 write_valid_done_task
 
-rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-complete-task.md"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 Review 的归档任务卡。" >&2
   exit 1
@@ -442,24 +440,24 @@ fi
 write_valid_done_task
 
 sed -i.bak 's/status: passed/status: failed/' \
-  "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-S1-001-complete-task.md.bak"
+  "$FIXTURE_ROOT/docs/reviews/execute-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/execute-complete-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝未通过的归档 Review。" >&2
   exit 1
 fi
 write_valid_done_task
 
-rm -f -- "$FIXTURE_ROOT/docs/reviews/test-evidence/S1-001-complete-task.log"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/test-evidence/complete-task.log"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少测试证据的归档任务卡。" >&2
   exit 1
 fi
 write_valid_done_task
 
-sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-001]/' \
-  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [sample-task]/' \
+  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝依赖活动任务的归档任务卡。" >&2
   exit 1
@@ -467,8 +465,8 @@ fi
 write_valid_done_task
 
 sed -i.bak 's/uiSpec: not-required/uiSpec: required/' \
-  "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S1-001-complete-task.md.bak"
+  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 Spec/Audit 的归档 UI 任务。" >&2
   exit 1
@@ -499,44 +497,44 @@ mv "$FIXTURE_ROOT/.claude/settings.json.valid" \
   "$FIXTURE_ROOT/.claude/settings.json"
 
 sed -i.bak '/uiSpec:/d' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 uiSpec 的活动任务卡。" >&2
   exit 1
 fi
 write_valid_task
 
-sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-001]/' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [sample-task]/' \
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝任务自依赖。" >&2
   exit 1
 fi
 write_valid_task
 
-cat > "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-002-cycle-task.md" <<'MARKDOWN'
+cat > "$FIXTURE_ROOT/docs/tasks/cycle-task.md" <<'MARKDOWN'
 ---
 executor: task-executor
-blockedBy: [S2-001]
+blockedBy: [sample-task]
 uiSpec: not-required
 ---
-# S2-002 Cycle task
+# Cycle task
 MARKDOWN
-sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-002]/' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [cycle-task]/' \
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝循环任务依赖。" >&2
   exit 1
 fi
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-002-cycle-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/cycle-task.md"
 write_valid_task
 
 sed -i.bak 's/executor: task-executor/executor: sample-agent/' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝无效任务 executor。" >&2
   exit 1
@@ -544,58 +542,74 @@ fi
 write_valid_task
 
 sed -i.bak '/blockedBy:/d' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝缺少 blockedBy 的任务卡。" >&2
   exit 1
 fi
 write_valid_task
 
-sed -i.bak 's/blockedBy: \[\]/blockedBy: [S2-999]/' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+sed -i.bak 's/blockedBy: \[\]/blockedBy: [missing-task]/' \
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝不存在的 blockedBy 任务。" >&2
   exit 1
 fi
 write_valid_task
 
-cp "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md" \
-  "$FIXTURE_ROOT/docs/tasks/S2-002-misplaced-task.md"
+mkdir -p "$FIXTURE_ROOT/docs/tasks/group"
+cp "$FIXTURE_ROOT/docs/tasks/sample-task.md" \
+  "$FIXTURE_ROOT/docs/tasks/group/misplaced-task.md"
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝根目录任务卡。" >&2
+  echo "错误：Harness Check 未拒绝多余的任务子目录。" >&2
   exit 1
 fi
-rm -f -- "$FIXTURE_ROOT/docs/tasks/S2-002-misplaced-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/group/misplaced-task.md"
+rmdir "$FIXTURE_ROOT/docs/tasks/group"
 
-cp "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md" \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S3-002-wrong-sprint.md"
-sed -i.bak 's/S2-001/S3-002/g' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S3-002-wrong-sprint.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S3-002-wrong-sprint.md.bak"
+cp "$FIXTURE_ROOT/docs/tasks/sample-task.md" \
+  "$FIXTURE_ROOT/docs/tasks/Invalid_Task.md"
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝 Sprint 编号不一致的任务卡。" >&2
+  echo "错误：Harness Check 未拒绝非法任务 slug。" >&2
   exit 1
 fi
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S3-002-wrong-sprint.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/Invalid_Task.md"
 
-sed -i.bak 's/# S2-001/# S2-999/' \
-  "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md"
-rm -f -- "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md.bak"
+sed -i.bak 's/# Sample task/## Sample task/' \
+  "$FIXTURE_ROOT/docs/tasks/sample-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/sample-task.md.bak"
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝标题任务 ID 不一致的任务卡。" >&2
+  echo "错误：Harness Check 未拒绝缺少一级标题的任务卡。" >&2
   exit 1
 fi
 write_valid_task
 
-cp "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md" \
-  "$FIXTURE_ROOT/docs/tasks/done/S2-001-duplicate-task.md"
+cp "$FIXTURE_ROOT/docs/tasks/sample-task.md" \
+  "$FIXTURE_ROOT/docs/tasks/done/sample-task.md"
+cat > "$FIXTURE_ROOT/docs/reviews/execute-sample-task.md" <<'MARKDOWN'
+---
+task: sample-task
+status: passed
+p0: 0
+p1: 0
+---
+# Review
+MARKDOWN
+cat > "$FIXTURE_ROOT/docs/reviews/test-evidence/sample-task.log" <<'LOG'
+## Command
+
+Exit code: 0
+LOG
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝重复任务 ID。" >&2
+  echo "错误：Harness Check 未拒绝重复任务 slug。" >&2
   exit 1
 fi
-rm -f -- "$FIXTURE_ROOT/docs/tasks/done/S2-001-duplicate-task.md"
+rm -f -- \
+  "$FIXTURE_ROOT/docs/tasks/done/sample-task.md" \
+  "$FIXTURE_ROOT/docs/reviews/execute-sample-task.md" \
+  "$FIXTURE_ROOT/docs/reviews/test-evidence/sample-task.log"
 
 private_root="/Use""rs/example/private"
 mkdir -p "$FIXTURE_ROOT/app/local_package"

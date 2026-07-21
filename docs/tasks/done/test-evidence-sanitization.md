@@ -4,7 +4,7 @@ blockedBy: []
 uiSpec: not-required
 ---
 
-# S1-001 测试证据脱敏与门禁
+# 测试证据脱敏与门禁
 
 ## 背景
 

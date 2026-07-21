@@ -2,7 +2,7 @@
 
 - 审查范围：`7c071a5..946ea70` 以及提交后的完整仓库状态
 - 审查视角：AI Harness 工作流、架构契约、可执行门禁、移动端反馈闭环与开源可用性
-- 初审结论：未发现 P0；存在 5 个 P1 和 4 个 P2。Sprint 1 已修复并复审关闭全部 P1，4 个 P2 保持待办。
+- 初审结论：未发现 P0；存在 5 个 P1 和 4 个 P2。Harness P1 修复批次已修复并复审关闭全部 P1，4 个 P2 保持待办。
 
 ## P1
 
@@ -83,7 +83,7 @@
 - 因平台宿主不存在，Android/iOS 构建失败；这不是本机 SDK 环境缺失导致。
 - 本机未安装 ShellCheck/shfmt，Shell 仅通过现有 Fixture 与 Bash 执行路径验证。
 
-## 复审：Sprint 1
+## 复审：Harness P1 修复批次
 
 ### P1-1 依赖方向：已关闭
 
@@ -107,7 +107,7 @@ Demo 已生成并去本机化 Android/iOS 标准宿主。Android Debug 构建通
 
 ### 复审结论
 
-P0/P1 均为 0。详细任务 Review 和脱敏命令证据见 `docs/reviews/execute-S1-*.md` 与 `docs/reviews/test-evidence/`。原 P2 不在本轮修复范围内。
+P0/P1 均为 0。详细任务 Review 和脱敏命令证据见 `docs/reviews/execute-*.md` 与 `docs/reviews/test-evidence/`。原 P2 不在本轮修复范围内。
 
 ## 后续状态
 

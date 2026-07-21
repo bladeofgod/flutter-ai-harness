@@ -397,16 +397,14 @@ class _HarnessChecker {
       return;
     }
 
-    final activeTask = RegExp(
-      r'^docs/tasks/sprint-(\d+)/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
-    );
-    final completedTask = RegExp(
-      r'^docs/tasks/done/(S(\d+)-\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$',
-    );
-    final taskIds = <String>{};
-    final completedTaskIds = <String>{};
+    const taskSlugPattern = r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*';
+    final taskSlug = RegExp('^$taskSlugPattern\$');
+    final activeTask = RegExp('^docs/tasks/($taskSlugPattern)\\.md\$');
+    final completedTask = RegExp('^docs/tasks/done/($taskSlugPattern)\\.md\$');
+    final taskSlugs = <String>{};
+    final completedTaskSlugs = <String>{};
     final dependencies =
-        <({String file, String owner, String id, bool ownerCompleted})>[];
+        <({String file, String owner, String slug, bool ownerCompleted})>[];
     final dependencyGraph = <String, Set<String>>{};
 
     for (final entity in tasks.listSync(followLinks: false)) {
@@ -414,31 +412,13 @@ class _HarnessChecker {
         continue;
       }
       final name = _basename(entity.path);
-      if (!name.startsWith('sprint-')) {
-        continue;
-      }
-      if (!RegExp(r'^sprint-[1-9]\d*$').hasMatch(name)) {
-        errors.add('无效 Sprint 目录：docs/tasks/$name');
-        continue;
-      }
-      if (!File.fromUri(entity.uri.resolve('00-overview.md')).existsSync()) {
-        errors.add('Sprint 缺少 Overview：docs/tasks/$name/00-overview.md');
+      if (name != 'done') {
+        errors.add('docs/tasks/ 只允许 done 子目录：docs/tasks/$name');
       }
     }
 
     for (final file in _markdownFiles(tasks)) {
       final relative = _relative(file);
-      if (RegExp(
-        r'^docs/tasks/sprint-[1-9]\d*/00-overview\.md$',
-      ).hasMatch(relative)) {
-        continue;
-      }
-      if (RegExp(
-        r'^docs/tasks/sprint-[1-9]\d*/\.figma-plan/',
-      ).hasMatch(relative)) {
-        continue;
-      }
-
       final activeMatch = activeTask.firstMatch(relative);
       final completedMatch = completedTask.firstMatch(relative);
       if (activeMatch == null && completedMatch == null) {
@@ -446,17 +426,12 @@ class _HarnessChecker {
         continue;
       }
 
-      final id = activeMatch?.group(2) ?? completedMatch!.group(1)!;
-      final idSprint = activeMatch?.group(3) ?? completedMatch!.group(2)!;
-      final directorySprint = activeMatch?.group(1);
-      if (directorySprint != null && directorySprint != idSprint) {
-        errors.add('$relative 的任务 ID $id 与 Sprint 目录不一致');
-      }
-      if (!taskIds.add(id)) {
-        errors.add('重复任务 ID：$id');
+      final slug = activeMatch?.group(1) ?? completedMatch!.group(1)!;
+      if (!taskSlugs.add(slug)) {
+        errors.add('重复任务 slug：$slug');
       }
       if (completedMatch != null) {
-        completedTaskIds.add(id);
+        completedTaskSlugs.add(slug);
       }
 
       final metadata = _frontmatter(file);
@@ -477,7 +452,7 @@ class _HarnessChecker {
       if (completedMatch != null) {
         _validateCompletedTaskArtifacts(
           file,
-          id,
+          slug,
           uiSpec is String ? uiSpec : null,
         );
       }
@@ -486,22 +461,21 @@ class _HarnessChecker {
       if (blockedBy is! YamlList ||
           blockedBy.any(
             (dependency) =>
-                dependency is! String ||
-                !RegExp(r'^S[1-9]\d*-\d{3}$').hasMatch(dependency),
+                dependency is! String || !taskSlug.hasMatch(dependency),
           )) {
-        errors.add('$relative 的 blockedBy 必须是任务 ID 列表');
+        errors.add('$relative 的 blockedBy 必须是任务 slug 列表');
       } else {
-        final dependencyIds = blockedBy.cast<String>();
-        if (dependencyIds.toSet().length != dependencyIds.length) {
-          errors.add('$relative 的 blockedBy 不得包含重复任务 ID');
+        final dependencySlugs = blockedBy.cast<String>();
+        if (dependencySlugs.toSet().length != dependencySlugs.length) {
+          errors.add('$relative 的 blockedBy 不得包含重复任务 slug');
         }
-        dependencyGraph[id] = dependencyIds.toSet();
+        dependencyGraph[slug] = dependencySlugs.toSet();
         dependencies.addAll(
-          dependencyIds.map(
+          dependencySlugs.map(
             (dependency) => (
               file: relative,
-              owner: id,
-              id: dependency,
+              owner: slug,
+              slug: dependency,
               ownerCompleted: completedMatch != null,
             ),
           ),
@@ -509,30 +483,30 @@ class _HarnessChecker {
       }
 
       if (!RegExp(
-        '^# ${RegExp.escape(id)}(?:\\s|\$)',
+        r'^#\s+\S',
         multiLine: true,
       ).hasMatch(file.readAsStringSync())) {
-        errors.add('$relative 的一级标题必须以任务 ID $id 开头');
+        errors.add('$relative 必须包含非空一级标题');
       }
     }
 
     for (final dependency in dependencies) {
-      if (dependency.owner == dependency.id) {
-        errors.add('${dependency.file} 的 blockedBy 不得引用自身：${dependency.id}');
+      if (dependency.owner == dependency.slug) {
+        errors.add('${dependency.file} 的 blockedBy 不得引用自身：${dependency.slug}');
       }
-      if (!taskIds.contains(dependency.id)) {
-        errors.add('${dependency.file} 的 blockedBy 引用不存在：${dependency.id}');
+      if (!taskSlugs.contains(dependency.slug)) {
+        errors.add('${dependency.file} 的 blockedBy 引用不存在：${dependency.slug}');
       }
       if (dependency.ownerCompleted &&
-          taskIds.contains(dependency.id) &&
-          !completedTaskIds.contains(dependency.id)) {
-        errors.add('${dependency.file} 已归档，但依赖任务尚未归档：${dependency.id}');
+          taskSlugs.contains(dependency.slug) &&
+          !completedTaskSlugs.contains(dependency.slug)) {
+        errors.add('${dependency.file} 已归档，但依赖任务尚未归档：${dependency.slug}');
       }
     }
     _validateTaskDependencyCycles(dependencyGraph);
   }
 
-  void _validateCompletedTaskArtifacts(File task, String id, String? uiSpec) {
+  void _validateCompletedTaskArtifacts(File task, String slug, String? uiSpec) {
     final basename = _basename(task.path).replaceFirst(RegExp(r'\.md$'), '');
     final reviewPath = 'docs/reviews/execute-$basename.md';
     final review = _file(reviewPath);
@@ -541,8 +515,8 @@ class _HarnessChecker {
     } else {
       final metadata = _frontmatter(review);
       if (metadata != null) {
-        if (metadata['task'] != id) {
-          errors.add('$reviewPath 的 task 必须是 $id');
+        if (metadata['task'] != slug) {
+          errors.add('$reviewPath 的 task 必须是 $slug');
         }
         if (metadata['status'] != 'passed' ||
             metadata['p0'] != 0 ||
@@ -581,13 +555,13 @@ class _HarnessChecker {
     final path = <String>[];
     final reported = <String>{};
 
-    void visit(String taskId) {
-      if (visited.contains(taskId)) {
+    void visit(String taskSlug) {
+      if (visited.contains(taskSlug)) {
         return;
       }
-      final cycleStart = path.indexOf(taskId);
-      if (visiting.contains(taskId) && cycleStart >= 0) {
-        final cycle = [...path.sublist(cycleStart), taskId];
+      final cycleStart = path.indexOf(taskSlug);
+      if (visiting.contains(taskSlug) && cycleStart >= 0) {
+        final cycle = [...path.sublist(cycleStart), taskSlug];
         final signature = cycle.toSet().toList()..sort();
         if (reported.add(signature.join(','))) {
           errors.add('任务依赖存在循环：${cycle.join(' -> ')}');
@@ -595,20 +569,20 @@ class _HarnessChecker {
         return;
       }
 
-      visiting.add(taskId);
-      path.add(taskId);
-      for (final dependency in graph[taskId] ?? const <String>{}) {
+      visiting.add(taskSlug);
+      path.add(taskSlug);
+      for (final dependency in graph[taskSlug] ?? const <String>{}) {
         if (graph.containsKey(dependency)) {
           visit(dependency);
         }
       }
       path.removeLast();
-      visiting.remove(taskId);
-      visited.add(taskId);
+      visiting.remove(taskSlug);
+      visited.add(taskSlug);
     }
 
-    for (final taskId in graph.keys) {
-      visit(taskId);
+    for (final taskSlug in graph.keys) {
+      visit(taskSlug);
     }
   }
 

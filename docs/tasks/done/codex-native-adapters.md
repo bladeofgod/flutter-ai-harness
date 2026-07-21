@@ -4,7 +4,7 @@ blockedBy: []
 uiSpec: not-required
 ---
 
-# S3-001 Codex 原生资产适配
+# Codex 原生资产适配
 
 ## 背景
 
@@ -105,5 +105,5 @@ git diff --check
 
 - 2026-07-21：提交后独立审查发现路径逃逸、CRLF 漂移、同步事务性、Command 参数映射和 pre-push 覆盖缺口，任务重新移入进行中目录。
 - 2026-07-21：全部问题修复并由独立 agent 复审，P0/P1/P2 均为 0，任务重新归档。
-- Review：[`execute-S3-001-codex-native-adapters.md`](../../reviews/execute-S3-001-codex-native-adapters.md)
-- 测试证据：[`S3-001-codex-native-adapters.log`](../../reviews/test-evidence/S3-001-codex-native-adapters.log)
+- Review：[`execute-codex-native-adapters.md`](../../reviews/execute-codex-native-adapters.md)
+- 测试证据：[`codex-native-adapters.log`](../../reviews/test-evidence/codex-native-adapters.log)

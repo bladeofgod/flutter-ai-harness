@@ -12,9 +12,9 @@ paths: ["docs/**/*.spec.yaml", "docs/**/*.audit.yaml", "docs/**/*.run.yaml", ".c
 
 事实优先级依次为：已批准任务和产品规则、Figma/原型中的明确行为、代码中的 Route、Key、Semantics 与可操作边界。代码不得反向定义产品要求；存在会改变用户行为的缺失决策时生成 `draft`，不得猜测。
 
-- 有任务卡：写入任务卡同目录 `<task-basename>.spec.yaml`，并声明任务 ID。
+- 有任务卡：写入任务卡同目录 `<task-slug>.spec.yaml`，并声明与任务文件 basename 一致的任务 slug。
 - 仅有原型：写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
-- 静态审计：写入同目录 `<task-basename>.audit.yaml` 或 `<spec-id>.audit.yaml`。
+- 静态审计：写入同目录 `<task-slug>.audit.yaml` 或 `<spec-id>.audit.yaml`。
 - 运行报告：按平台写入 `docs/app-operator/runs/<spec-id>/<platform>.run.yaml`；同一平台重新执行时覆盖当前报告，历史由 Git 保存。
 
 ## Version 1 Schema
@@ -24,11 +24,11 @@ version: 1
 revision: 1
 id: profile-save-name
 status: ready
-task: S2-003
+task: profile-save-name
 title: 保存个人资料名称
 sources:
   - type: task
-    ref: docs/tasks/sprint-2/S2-003-profile.md
+    ref: docs/tasks/profile-save-name.md
 platforms: [android, ios]
 steps:
   - id: open-profile
@@ -56,7 +56,7 @@ openQuestions: []
 
 - `version` 固定为 `1`；`revision` 从 `1` 开始，行为内容变化时递增；`id` 和各条目 `id` 使用小写 kebab-case。
 - `status` 只允许 `draft`、`ready`。
-- `task` 在任务目录中必填，格式为 `S<非零 Sprint>-<三位编号>`；Spec 与任务卡同名。
+- `task` 在任务目录中必填，使用 lowercase kebab-case，且必须与任务卡文件 basename 一致；Spec 与任务卡同名。
 - `sources` 至少一个，`type` 只允许 `task`、`product`、`prototype`、`figma`、`code`。
 - `platforms` 至少一个，只允许 `android`、`ios`。
 - `teardown` 使用与 Step 相同的结构，无清理动作时显式写 `[]`。
@@ -74,7 +74,7 @@ Assertion 只验证用户可观察状态，不断言私有方法、Controller �
 
 ```yaml
 version: 1
-spec: docs/tasks/sprint-2/S2-003-profile.spec.yaml
+spec: docs/tasks/profile-save-name.spec.yaml
 specId: profile-save-name
 specRevision: 1
 status: passed
@@ -105,8 +105,8 @@ items:
 
 ```yaml
 version: 1
-spec: docs/tasks/sprint-2/S2-003-profile.spec.yaml
-audit: docs/tasks/sprint-2/S2-003-profile.audit.yaml
+spec: docs/tasks/profile-save-name.spec.yaml
+audit: docs/tasks/profile-save-name.audit.yaml
 specId: profile-save-name
 specRevision: 1
 implementationDigest: <与 Audit 一致的 sha256>

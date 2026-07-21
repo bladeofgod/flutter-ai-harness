@@ -20,7 +20,7 @@ model: sonnet
 
 ## 输出
 
-- 有任务卡时写入同目录 `<task-basename>.spec.yaml`，并设置对应 `task` ID。
+- 有任务卡时写入同目录 `<task-slug>.spec.yaml`，并设置与任务文件 basename 一致的 `task` slug。
 - 只有原型输入时写入 `docs/app-operator/specs/<spec-id>.spec.yaml`。
 - `ready` Spec 必须包含至少一个 Step、至少一个 Assertion、明确 Teardown 和空 `openQuestions`。
 - 选择器优先级为稳定 Key、Semantics、稳定文本；禁止坐标和脆弱的层级索引。
