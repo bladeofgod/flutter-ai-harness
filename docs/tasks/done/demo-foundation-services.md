@@ -60,7 +60,7 @@ blockedBy: []
 7. `UserService` 必须记录为“已批准、随首个 Auth/Profile 消费者实现”，并遵守：
    - 位于 `apps/demo` 的全局 Service 层，与 AuthService 分离，管理当前用户 Entity 的内存快照、更新和清除。
    - 用户 Entity 字段由具体 Figma 页面和业务流程决定，不预置无消费者字段。
-   - 登录成功后由壳工程回调或 Use Case 同时更新 AuthService 与 UserService；Feature API 实现不得反向依赖壳工程 Service。
+   - Auth/Profile 同批消费 Session 与当前用户时，由壳工程增加唯一协调入口，原子更新 AuthService 与 UserService 后统一通知；Feature API 实现不得反向依赖壳工程 Service。
 8. 整体 Fixture 数据链路继续以 `docs/api-contracts.md` 为事实源，包职责和依赖方向继续以 `docs/architecture.md` 为事实源；索引和子文档只链接，不重复展开。
 9. Secure Storage、KV 和 Drift 分别由敏感持久化、普通跨重启持久化和结构化迁移需求触发；当前内存状态不触发。NetworkService 只有远程请求或明确联网差异行为出现时才创建。
 10. ServiceInitializer 只编排已经存在且确需启动期初始化的全局 Service；在 AuthService/UserService 实现任务之前不得创建空初始化框架。

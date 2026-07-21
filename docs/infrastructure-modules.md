@@ -18,6 +18,7 @@
 | API 传输编排 | `ApiClient` | `app_core` | 已批准 | 未实现 | 首个 Auth 或 Catalog API 已确定请求键、Fixture 结构和 Entity 映射 | [network.md](./infrastructure/network.md) |
 | 登录态 | `AuthService` | `apps/demo` | 已批准 | 未实现 | 首个 Auth 流程已确定 Session 和登录态行为 | [session.md](./infrastructure/session.md) |
 | 当前用户 | `UserService` | `apps/demo` | 已批准 | 未实现 | 首个 Auth 或 Profile 流程已确定 User Entity 字段 | [session.md](./infrastructure/session.md) |
+| 认证状态协调 | `AuthStateCoordinator` | `apps/demo` | 已批准 | 未实现 | Auth 与 Profile 同时消费一致的 Session/User 状态和 Route 刷新 | [session.md](./infrastructure/session.md) |
 | 安全存储 | 待首个实现确定 | `app_data` | 延后 | 未实现 | 敏感信息需要跨 App 重启持久化和明确清除策略 | [storage.md](./infrastructure/storage.md) |
 | 普通 KV | 待首个实现确定 | `app_data` | 延后 | 未实现 | 非敏感小规模配置或偏好需要跨重启持久化 | [storage.md](./infrastructure/storage.md) |
 | Drift 数据库生命周期 | 待首个实现确定 | `app_data` | 延后 | 未实现 | 结构化数据需要跨重启保留、Schema 和迁移 | [storage.md](./infrastructure/storage.md) |
