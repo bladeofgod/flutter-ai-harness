@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:yaml/yaml.dart';
 
+import 'codex_adapters.dart';
+
 void main(List<String> arguments) {
   final root = _parseRoot(arguments);
   final checker = _HarnessChecker(root);
@@ -47,6 +49,7 @@ class _HarnessChecker {
     _validateCiWorkflow();
     _loadMcpServerNames();
     _validateFrontmatter();
+    _validateCodexAdapters();
     _validateWorkflowReferences();
     _validateTasks();
     _validateMarkdownLinks();
@@ -54,6 +57,10 @@ class _HarnessChecker {
     _validateMobileHosts();
     _validateDependencySources();
     _validatePrivatePaths();
+  }
+
+  void _validateCodexAdapters() {
+    errors.addAll(CodexAdapterManager(root).check());
   }
 
   void _validateJson(String relativePath) {

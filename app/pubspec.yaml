@@ -24,6 +24,12 @@ melos:
     - apps/*
     - packages/*
   scripts:
+    codex-adapters:
+      run: dart run tool/sync_codex_adapters.dart
+      description: 从 Claude 事实源同步 Codex 原生 Skill 与 Agent 适配
+    codex-adapters-check:
+      run: dart run tool/sync_codex_adapters.dart --check
+      description: 只读检查 Codex 原生适配是否与 Claude 事实源同步
     analyze:
       exec: dart analyze --fatal-infos
       description: 对所有 Package 执行严格静态分析
@@ -61,7 +67,7 @@ melos:
       run: bash ../scripts/quality/test-evidence.sh
       description: 运行证据采集与脱敏 Fixture
     harness-check:
-      run: dart run tool/harness_check.dart
+      run: dart run tool/sync_codex_adapters.dart --check && dart run tool/harness_check.dart
       description: 校验 AI Harness 配置、引用、链接与平台宿主
     harness-test:
       run: bash ../scripts/quality/test-harness.sh

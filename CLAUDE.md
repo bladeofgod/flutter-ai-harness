@@ -51,8 +51,8 @@ app/
 
 ## 架构不变量
 
-1. Domain Entity 是唯一允许跨架构层传递的数据类型。
-2. Proto Message 和数据库 Row 必须留在各自的数据适配层。
+1. Domain Entity 或明确的 Value Object 是数据适配层进入业务层以及业务公共 API 之间唯一允许传递的数据类型。
+2. `app_core` 只能定义并处理传输中立的 Request、Response、Failure 和不透明 Payload，不得定义、import 或解析具体 Fixture Payload、Proto Message 或数据库 Row；这些具体类型及其解析必须留在 `app_data`，不得进入 Feature、Controller 或 UI。
 3. 每个包只定义自己需要的接口，不建立中央万能契约包。
 4. 依赖方向保持单向。下图中 `A -> B` 表示 Package A 可以 import Package B：
 
@@ -65,7 +65,7 @@ app/
 
 5. Feature 不得 import 其他 Feature 的内部实现。
 6. 业务抽象接口放在 `app_features/lib/api/`，具体实现放在对应 `feature_xxx/api/`；跨 Feature 交互只依赖抽象接口，并由统一 Registry 绑定实现。
-7. `app_data` 提供 Domain Entity、LocalDataSource、确定性 Fixture，以及真实协议或持久化出现后的 Mapper/Adapter；不得承载页面、Controller 或 Feature 业务编排。
+7. `app_data` 提供 Domain Entity、LocalDataSource、确定性 Fixture 及其 Transport，以及协议或持久化出现后的 Mapper/Adapter；不得承载页面、Controller 或 Feature 业务编排。
 8. 壳工程只负责模块与回调装配，不得 import Feature 实现类。
 9. Controller 通过构造函数接收必需 API。服务定位器只允许出现在装配点或显式全局服务中。
 10. 只有在确实降低复杂度或保护真实边界时才新增抽象。
@@ -83,7 +83,7 @@ app/
 
 依赖写入真实消费者所属的 Package `pubspec.yaml`；只有 Workspace 工具依赖写入根 `app/pubspec.yaml`。
 
-Demo 当前没有真实远程 API 或 Wire Contract，业务数据使用确定性的本地 Fixture。不得为模拟远程链路而引入 Dio、Proto 或伪造 HTTP Server；只有真实 Endpoint/协议成为事实来源后才能增加远程 API 实现和 Proto 生成链路。Drift 只在出现跨 App 重启持久化需求时引入。
+Demo 当前没有真实远程 API 或 Wire Contract，业务数据使用确定性的本地 Fixture。首个真实消费者出现后，`app_core` 的 `ApiClient` 通过构造函数接收 `ApiTransport`；当前由 `app_data` 提供 `FixtureApiTransport`、LocalDataSource 和 Mapper，在进入业务 API 前把 Fixture Payload 转换为 Domain Entity。不得为模拟远程链路而引入 Dio、Proto 或伪造 HTTP Server；只有真实 Endpoint/协议成为事实来源后才能增加 `DioApiTransport` 和 Proto 生成链路。Drift 只在出现跨 App 重启持久化需求时引入。
 
 ## 混合工程 Bridge 契约
 
@@ -113,6 +113,14 @@ MethodChannel 和 EventChannel 必须遵守：
 - 角色：`.claude/agents/*.md`
 - 技能：`.claude/skills/*/SKILL.md`
 - 低频工程经验：`.claude/memories/*.md`
+
+`.claude/` 是 Command、Agent、Skill 和 Memory 的唯一事实来源。Codex 原生适配由仓库工具确定性生成：
+
+- `AGENTS.md`：要求 Codex 完整读取本文件的薄入口。
+- `.agents/skills/*/SKILL.md`：从 Claude Skill 和 Command 生成，使 Codex 支持 Skill 语义匹配与 `$skill-name` 显式调用。
+- `.codex/agents/*.toml`：从 Claude Agent 生成，使 Codex 原生发现项目角色。
+
+不得手工编辑带生成标记的适配文件。修改 `.claude` 事实源后运行 `make codex-adapters`；`make codex-adapters-check` 和 `make harness-check` 会阻断缺失、过期或被篡改的适配。`.claude/memories/` 继续按任务读取，不批量注册为 Skill。
 
 命名约定：
 
@@ -195,6 +203,7 @@ Dart 改动：
 - 不执行 `rm -rf` 等破坏性命令。
 - 保护用户已有改动，不做无关重写。
 - 用户未明确要求时，不 commit、不 push。
+- 不手工编辑 `AGENTS.md`、`.agents/skills/` 或 `.codex/agents/` 下带生成标记的 Codex 适配；修改对应 `.claude` 事实源后运行 `make codex-adapters`。
 - `.claude/settings.json` 不得无条件允许全部 Git 命令；只读命令保持可用，破坏性 Git 操作必须拒绝。
 - 正常流程中禁止使用 `--no-verify` 绕过 hooks。
 - 优先使用官方公开 API。若生产方案必须依赖私有 API、反射、修改三方依赖或未文档化行为，必须先说明风险并取得用户同意。

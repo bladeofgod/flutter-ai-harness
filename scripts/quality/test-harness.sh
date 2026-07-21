@@ -2,12 +2,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-FIXTURE_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/flutter-ai-harness-check.XXXXXX")"
+FIXTURE_PARENT="$(mktemp -d "${TMPDIR:-/tmp}/flutter-ai-harness-check.XXXXXX")"
+FIXTURE_ROOT="$FIXTURE_PARENT/repo with spaces"
 cleanup() {
-  rm -r -- "$FIXTURE_ROOT"
+  rm -r -- "$FIXTURE_PARENT"
 }
 trap cleanup EXIT
 
+mkdir -p "$FIXTURE_ROOT"
 mkdir -p \
   "$FIXTURE_ROOT/.claude/agents" \
   "$FIXTURE_ROOT/.claude/commands" \
@@ -68,7 +70,6 @@ dependencies:
   collection: ^1.19.0
 YAML
 printf '%s\n' '# Contract' '`/sample-command`' > "$FIXTURE_ROOT/CLAUDE.md"
-printf '%s\n' '# Agents' > "$FIXTURE_ROOT/AGENTS.md"
 printf '%s\n' '# Readme' '[Guide](docs/guide.md "Guide")' > "$FIXTURE_ROOT/README.md"
 printf '%s\n' '# Guide' > "$FIXTURE_ROOT/docs/guide.md"
 printf '%s\n' '# Sprint 2' > "$FIXTURE_ROOT/docs/tasks/sprint-2/00-overview.md"
@@ -116,6 +117,11 @@ run_check() {
     --root "$FIXTURE_ROOT"
 }
 
+sync_adapters() {
+  bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
+    --root "$FIXTURE_ROOT"
+}
+
 write_valid_task() {
   cat > "$FIXTURE_ROOT/docs/tasks/sprint-2/S2-001-sample-task.md" <<'MARKDOWN'
 ---
@@ -154,7 +160,126 @@ LOG
 
 write_valid_task
 write_valid_done_task
+sync_adapters >/dev/null
 run_check >/dev/null
+
+bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
+  --check --root "$FIXTURE_ROOT" >/dev/null
+bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
+  --root "$FIXTURE_ROOT" --check >/dev/null
+set +e
+bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
+  --root --check >/dev/null 2>&1
+invalid_root_status=$?
+set -e
+if [[ "$invalid_root_status" -ne 64 ]]; then
+  echo "错误：Codex 适配 CLI 未以 usage 状态拒绝缺失的 --root 值。" >&2
+  exit 1
+fi
+set +e
+bash "$ROOT/scripts/dart-tool.sh" run tool/sync_codex_adapters.dart \
+  --root "$FIXTURE_ROOT" --root "$FIXTURE_ROOT" >/dev/null 2>&1
+duplicate_root_status=$?
+set -e
+if [[ "$duplicate_root_status" -ne 64 ]]; then
+  echo "错误：Codex 适配 CLI 未以 usage 状态拒绝重复的 --root。" >&2
+  exit 1
+fi
+
+cp "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md" \
+  "$FIXTURE_ROOT/sample-skill-adapter.valid"
+cat > "$FIXTURE_ROOT/.claude/commands/sample-skill.md" <<'MARKDOWN'
+---
+description: Conflicting command
+---
+Conflict.
+MARKDOWN
+if sync_adapters >/dev/null 2>&1; then
+  echo "错误：Codex 适配同步未拒绝 Command/Skill 名称冲突。" >&2
+  exit 1
+fi
+if ! cmp -s \
+  "$FIXTURE_ROOT/sample-skill-adapter.valid" \
+  "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md"; then
+  echo "错误：名称冲突时 Codex 适配同步修改了已有输出。" >&2
+  exit 1
+fi
+rm -f -- \
+  "$FIXTURE_ROOT/.claude/commands/sample-skill.md" \
+  "$FIXTURE_ROOT/sample-skill-adapter.valid"
+
+printf '%s\n' 'drift' >> \
+  "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝被篡改的 Codex Skill 适配。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+
+rm -f -- "$FIXTURE_ROOT/.codex/agents/sample-agent.toml"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺失的 Codex Agent 适配。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+
+mkdir -p "$FIXTURE_ROOT/.agents/skills/stale-skill"
+cp "$FIXTURE_ROOT/.agents/skills/sample-skill/SKILL.md" \
+  "$FIXTURE_ROOT/.agents/skills/stale-skill/SKILL.md"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝过期的 Codex Skill 适配。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+if [[ -e "$FIXTURE_ROOT/.agents/skills/stale-skill/SKILL.md" ]]; then
+  echo "错误：Codex 适配同步未清理生成器管理的过期文件。" >&2
+  exit 1
+fi
+
+command_adapter="$FIXTURE_ROOT/.agents/skills/sample-command/SKILL.md"
+cp "$command_adapter" "$FIXTURE_ROOT/sample-command-adapter.valid"
+printf '%s\n' '# Hand-written Codex skill' > "$command_adapter"
+if sync_adapters >/dev/null 2>&1; then
+  echo "错误：Codex 适配同步覆盖了同名非生成文件。" >&2
+  exit 1
+fi
+if [[ "$(cat "$command_adapter")" != '# Hand-written Codex skill' ]]; then
+  echo "错误：Codex 适配同步修改了同名非生成文件。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/sample-command-adapter.valid" "$command_adapter"
+
+printf '%s\n' 'drift' >> "$FIXTURE_ROOT/AGENTS.md"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝漂移的 AGENTS.md。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+
+cp "$FIXTURE_ROOT/AGENTS.md" "$FIXTURE_ROOT/AGENTS.md.valid"
+printf '%s\n' '# Hand-written agent entry' > "$FIXTURE_ROOT/AGENTS.md"
+if sync_adapters >/dev/null 2>&1; then
+  echo "错误：Codex 适配同步覆盖了非生成 AGENTS.md。" >&2
+  exit 1
+fi
+if [[ "$(cat "$FIXTURE_ROOT/AGENTS.md")" != '# Hand-written agent entry' ]]; then
+  echo "错误：Codex 适配同步修改了非生成 AGENTS.md。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/AGENTS.md.valid" "$FIXTURE_ROOT/AGENTS.md"
+
+sed -i.bak 's/Sample command/Changed command/' \
+  "$FIXTURE_ROOT/.claude/commands/sample-command.md"
+rm -f -- "$FIXTURE_ROOT/.claude/commands/sample-command.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝未同步的 Claude Command 元数据。" >&2
+  exit 1
+fi
+sync_adapters >/dev/null
+sed -i.bak 's/Changed command/Sample command/' \
+  "$FIXTURE_ROOT/.claude/commands/sample-command.md"
+rm -f -- "$FIXTURE_ROOT/.claude/commands/sample-command.md.bak"
+sync_adapters >/dev/null
 
 sed -i.bak 's/skills: \[sample-skill\]/skills: [missing-skill]/' \
   "$FIXTURE_ROOT/.claude/agents/sample-agent.md"

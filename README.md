@@ -10,7 +10,8 @@ This project is an engineering harness for building applications with AI agents.
 
 ## What It Provides
 
-- A single authoritative project contract in `CLAUDE.md`, with `AGENTS.md` as a tool-neutral entry point.
+- A single authoritative project contract in `CLAUDE.md`, with `AGENTS.md` as the Codex entry point.
+- Generated Codex-native Skill and Agent adapters backed by the same Claude command, role, and skill sources.
 - Structured workflows for planning, Figma decomposition, task execution, review, and release checks.
 - Focused agent roles for architecture, implementation, testing, native bridges, review, assets, and app operation.
 - On-demand Flutter skills covering Dart, GetX, go_router, testing, Protobuf, UI implementation, performance, and platform workflows.
@@ -28,6 +29,8 @@ flutter-ai-harness/
 ├── AGENTS.md               Agent entry point
 ├── CLAUDE.md               Authoritative project contract
 ├── .claude/                Commands, agents, skills, and reusable memories
+├── .agents/                Generated Codex-native Skill adapters
+├── .codex/                 Generated Codex-native project Agent adapters
 ├── docs/                   Architecture and workflow documentation
 ├── scripts/                Git hooks and executable quality gates
 ├── protos/                 Public demo protocol definitions, added with the demo
@@ -80,6 +83,8 @@ make harness-check
 make check
 ```
 
+Claude assets under `.claude/` are the single source of truth. After changing a Command, Agent, or Skill, run `make codex-adapters`; `make codex-adapters-check` verifies the generated `AGENTS.md`, `.agents/skills/`, and `.codex/agents/` entries without modifying them. Codex invokes generated workflow Skills with `$skill-name` or semantic matching; Claude keeps its `/command` entry points.
+
 Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it records the command and exit code while redacting local paths and common credential forms. `make setup` installs the repository Git hooks for each clone. If the clone already has a different `core.hooksPath`, setup reports the conflict and preserves the existing hook toolchain instead of overwriting it.
 
 ## Quick Start
@@ -95,7 +100,7 @@ make setup
 make check
 ```
 
-`make setup` installs the Flutter version from `app/.fvmrc` when FVM is available, otherwise verifies the system Flutter version. It then resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server. The Demo currently contains only a neutral bootstrap entry point; product UI starts after the product brief and Figma design are approved.
+`make setup` installs the Flutter version from `app/.fvmrc` when FVM is available, otherwise verifies the system Flutter version. It then resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server. The Demo currently contains only a neutral bootstrap entry point. Its design source is registered and architecture planning is underway; product UI starts after page-level Figma nodes and behavior scope are selected.
 
 The neutral Demo includes Android and iOS hosts. Run it with `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run`. The `com.example` application identifiers are placeholders and must be replaced before release.
 
@@ -105,7 +110,7 @@ For runtime Flutter UI inspection, install Marionette with `make marionette-inst
 
 ## Project Status
 
-The repository is currently in the harness extraction stage. The project contract, workflows, reusable guidance, and quality gates are being established first. Product design and demo implementation follow as separate, traceable iterations.
+The Harness baseline is complete. The Demo design source is registered and Sprint 2 architecture planning is underway; product UI and behavior are implemented through separate, traceable task cards after page-level Figma inputs are selected.
 
 ## License
 

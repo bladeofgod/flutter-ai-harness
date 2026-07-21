@@ -10,7 +10,8 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 
 ## 提供的能力
 
-- 以 `CLAUDE.md` 为单一权威项目契约，以 `AGENTS.md` 作为工具无关入口。
+- 以 `CLAUDE.md` 为单一权威项目契约，以 `AGENTS.md` 作为 Codex 入口。
+- 从同一套 Claude Command、角色和 Skill 事实源生成 Codex 原生 Skill 与 Agent 适配。
 - 提供任务规划、Figma 拆解、任务执行、代码审查和发版检查工作流。
 - 提供架构、实现、测试、原生 Bridge、审查、资源和 App 操作等专业角色。
 - 按任务加载 Dart、GetX、go_router、测试、Protobuf、UI、性能和平台相关 Skill。
@@ -28,6 +29,8 @@ flutter-ai-harness/
 ├── AGENTS.md               Agent 入口
 ├── CLAUDE.md               权威项目契约
 ├── .claude/                Command、Agent、Skill 和可复用 Memory
+├── .agents/                生成的 Codex 原生 Skill 适配
+├── .codex/                 生成的 Codex 原生项目 Agent 适配
 ├── docs/                   架构与工作流文档
 ├── scripts/                Git Hooks 和可执行质量门禁
 ├── protos/                 随 Demo 加入的公开协议定义
@@ -80,6 +83,8 @@ make harness-check
 make check
 ```
 
+`.claude/` 下的资产是唯一事实来源。修改 Command、Agent 或 Skill 后运行 `make codex-adapters`；`make codex-adapters-check` 会只读校验生成的 `AGENTS.md`、`.agents/skills/` 和 `.codex/agents/`，不会修改文件。Codex 通过 `$skill-name` 或语义匹配调用生成的工作流 Skill，Claude 继续使用 `/command` 入口。
+
 任务证据必须通过 `scripts/quality/capture-evidence.sh` 采集；它会记录命令和退出码，并脱敏本机路径与常见凭据形态。`make setup` 会为每个 Clone 安装仓库 Git Hooks；如果当前 Clone 已配置其他 `core.hooksPath`，Setup 会报告冲突并保留原 Hook 工具链，不会静默覆盖。
 
 ## 快速开始
@@ -95,7 +100,7 @@ make setup
 make check
 ```
 
-`make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口；产品说明和 Figma 设计确认后再开始产品 UI 实现。
+`make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口，设计来源已经登记并进入架构规划；选定页面级 Figma 节点和行为范围后再开始产品 UI 实现。
 
 中立 Demo 已包含 Android/iOS 宿主，可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
 
@@ -105,7 +110,7 @@ Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开�
 
 ## 当前状态
 
-仓库当前处于 Harness 提取阶段，优先建立项目契约、工作流、可复用指南和质量门禁。产品设计与 Demo 实现将作为独立、可追踪的迭代继续推进。
+Harness 基线已经完成。Demo 设计来源已经登记，Sprint 2 正在进行架构规划；选定页面级 Figma 输入后，产品 UI 和行为通过独立、可追踪的任务卡逐步实现。
 
 ## 许可证
 

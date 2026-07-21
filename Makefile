@@ -1,4 +1,4 @@
-.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
+.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap codex-adapters codex-adapters-check format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
 
 setup: prerequisites flutter-sdk
 	$(MAKE) bootstrap
@@ -16,6 +16,12 @@ bootstrap:
 	bash scripts/dart-tool.sh pub get
 	bash scripts/dart-tool.sh run melos bootstrap
 	bash scripts/git-hooks/install.sh
+
+codex-adapters:
+	bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart
+
+codex-adapters-check:
+	bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
 
 format:
 	bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
@@ -53,7 +59,7 @@ evidence-lint:
 evidence-test:
 	bash scripts/quality/test-evidence.sh
 
-harness-check:
+harness-check: codex-adapters-check
 	bash scripts/dart-tool.sh run tool/harness_check.dart
 
 harness-test:
