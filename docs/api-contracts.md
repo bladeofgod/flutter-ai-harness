@@ -20,6 +20,8 @@
 - ApiClient 只处理传输中立的 Request、Response、Failure 和泛型不透明 Payload；具体 Fixture 类型及其解析只存在于 `app_data`。
 - Fixture Payload 由 `app_data` 的 LocalDataSource 和 Mapper 转换为 Domain Entity 后才返回 Feature API。
 - 不使用随机数、当前时间或在线资源作为默认数据，保证 Widget Test 和 App Operator 可重复执行。
+- Auth Fixture 使用无状态 Demo 规则：账号查询和登录按规范化 Email 确定性生成用户，不读取注册记录；任意有效 Email 与非保留的 8 位密码可登录，`00000000` 固定返回错误凭据以支持错误状态演示。
+- Auth 注册只返回当次输入形成的 User/Session 快照，不保存账号。所选头像随返回值进入当前内存会话，重启或后续独立登录不复用注册头像。
 - 购物车、收藏等可变状态在对应流程出现时默认使用进程内存；App 重启后恢复初始状态。
 - 本地 API 保持异步边界，但不得随机延迟或随机失败。空数据、失败等场景通过显式构造参数或测试 Fake 注入。
 - 图片、字体和图标只使用许可明确且已登记来源的仓库资源；授权不明时使用替代资源。
@@ -36,6 +38,6 @@
 | Protobuf | 已有真实 Wire Contract、权威 `.proto` 来源、生成工具版本和可复现命令 |
 | Drift | 已有跨 App 重启保留数据的明确产品需求和迁移策略 |
 
-ApiClient 和 ApiTransport 不依赖 Dio；当前 Fixture Transport 只实现进程内确定性传输。采用真实 Endpoint 后，`DioApiTransport` 可以替换 Fixture Transport，但不能改变业务 API。采用 Protobuf 后，`.proto` 定义与注释是 Wire 契约的权威来源，生成类型只能停留在数据适配层；`app_data` 的 DataSource/Adapter 负责通过 Mapper 转换为 Domain Entity，公共接口不得暴露 Proto Message。采用 Drift 后，数据库 Row 同样不得离开持久化 Adapter。
+ApiClient 和 ApiTransport 不依赖 Dio；当前 Fixture Transport 只实现本地确定性传输，Auth 请求本身不持有账号状态。采用真实 Endpoint 后，`DioApiTransport` 可以替换 Fixture Transport，但不能改变业务 API。采用 Protobuf 后，`.proto` 定义与注释是 Wire 契约的权威来源，生成类型只能停留在数据适配层；`app_data` 的 DataSource/Adapter 负责通过 Mapper 转换为 Domain Entity，公共接口不得暴露 Proto Message。采用 Drift 后，数据库 Row 同样不得离开持久化 Adapter。
 
 生成链路建立前，`protobuf-workflow` 和 `make proto` 只代表预留入口；`make proto-check` 在不存在 Proto 时保持明确跳过。一旦出现首个 `.proto`，必须在同一任务中建立生成、同步检查和 Mapper 测试，不能提交不可复现的占位协议。

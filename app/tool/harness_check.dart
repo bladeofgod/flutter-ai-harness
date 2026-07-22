@@ -685,6 +685,13 @@ class _HarnessChecker {
           continue;
         }
         for (final entry in dependencies.entries) {
+          if (entry.key == 'get') {
+            _validateGetxDependency(
+              pubspec,
+              '$section.${entry.key}',
+              entry.value,
+            );
+          }
           _validateDependencySource(
             pubspec,
             '$section.${entry.key}',
@@ -692,6 +699,18 @@ class _HarnessChecker {
           );
         }
       }
+    }
+  }
+
+  void _validateGetxDependency(File pubspec, String name, Object? value) {
+    const expectedUrl = 'https://github.com/bladeofgod/getx.git';
+    const expectedRef = '7bfcd9c3711c8880ee730579724dabe54f4e2598';
+    final relative = _relative(pubspec);
+    final git = value is YamlMap ? value['git'] : null;
+    if (git is! YamlMap ||
+        git['url'] != expectedUrl ||
+        git['ref'] != expectedRef) {
+      errors.add('$relative 的 $name 必须使用仓库约定的 GetX 精简 fork，并锁定完整 Commit');
     }
   }
 

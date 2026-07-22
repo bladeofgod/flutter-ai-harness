@@ -14,7 +14,13 @@ dependencies:
   app_ui: any
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.10+1
+  get:
+    git:
+      url: https://github.com/bladeofgod/getx.git
+      ref: 7bfcd9c3711c8880ee730579724dabe54f4e2598
   go_router: ^15.1.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -22,4 +28,6 @@ dev_dependencies:
 
 flutter:
   assets:
+    - assets/images/auth/
+    - assets/images/profile/
     - assets/images/welcome/shoppe_brand.png

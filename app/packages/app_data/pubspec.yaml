@@ -9,3 +9,6 @@ resolution: workspace
 
 dependencies:
   app_core: any
+
+dev_dependencies:
+  test: ^1.26.2

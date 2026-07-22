@@ -19,7 +19,7 @@ void main() {
     expect(find.text('I already have an account'), findsOneWidget);
   });
 
-  testWidgets('keeps welcome actions inert when no callbacks are supplied', (
+  testWidgets('opens registration from the primary welcome action', (
     tester,
   ) async {
     _setPhoneViewport(tester);
@@ -27,32 +27,23 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.text("Let's get started"));
-    await tester.tap(find.text('I already have an account'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
-    expect(find.text('Shoppe'), findsOneWidget);
+    expect(find.text('Create\nAccount'), findsOneWidget);
   });
 
-  testWidgets('forwards welcome actions when the shell wires them', (
-    tester,
-  ) async {
+  testWidgets('opens Login from the secondary welcome action', (tester) async {
     _setPhoneViewport(tester);
-    var getStartedCount = 0;
-    var signInCount = 0;
-    await tester.pumpWidget(
-      DemoApp(
-        onGetStarted: () => getStartedCount += 1,
-        onSignIn: () => signInCount += 1,
-      ),
-    );
+    await tester.pumpWidget(const DemoApp());
     await tester.pump();
 
-    await tester.tap(find.text("Let's get started"));
     await tester.tap(find.text('I already have an account'));
+    await tester.pumpAndSettle();
 
-    expect(getStartedCount, 1);
-    expect(signInCount, 1);
+    expect(tester.takeException(), isNull);
+    expect(find.text('Login'), findsOneWidget);
+    expect(find.text('Good to see you back!'), findsOneWidget);
   });
 
   testWidgets('selects the 3x Shoppe brand asset on a 3x device', (

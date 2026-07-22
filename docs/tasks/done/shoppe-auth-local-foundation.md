@@ -7,18 +7,18 @@ blockedBy: []
 
 ## 背景
 
-Shoppe 注册和登录设计已经确定账号识别、8 位密码、当前用户头像/名称以及登录成功后的 Profile 行为。它们是 `ApiClient`、`AuthService` 和 `UserService` 的首个真实消费者，满足 [`docs/infrastructure-modules.md`](../infrastructure-modules.md) 记录的实现门槛。
+Shoppe 注册和登录设计已经确定账号识别、8 位密码、当前用户头像/名称以及登录成功后的 Profile 行为。它们是 `ApiClient`、`AuthService` 和 `UserService` 的首个真实消费者，满足 [`docs/infrastructure-modules.md`](../../infrastructure-modules.md) 记录的实现门槛。
 
 本任务先建立平台无关的本地 Auth 数据链路和壳工程会话能力，不实现任何页面。后续注册、登录和 Profile 任务只依赖 Domain Entity、业务 API 与壳工程回调，不直接读取 Fixture Payload 或 Feature 内部实现。
 
 ## 输入
 
-- [`CLAUDE.md`](../../CLAUDE.md)
-- [`docs/architecture.md`](../architecture.md)
-- [`docs/api-contracts.md`](../api-contracts.md)
-- [`docs/infrastructure/network.md`](../infrastructure/network.md)
-- [`docs/infrastructure/session.md`](../infrastructure/session.md)
-- [`docs/figma/shoppe-auth-flow-design-context.md`](../figma/shoppe-auth-flow-design-context.md)
+- [`CLAUDE.md`](../../../CLAUDE.md)
+- [`docs/architecture.md`](../../architecture.md)
+- [`docs/api-contracts.md`](../../api-contracts.md)
+- [`docs/infrastructure/network.md`](../../infrastructure/network.md)
+- [`docs/infrastructure/session.md`](../../infrastructure/session.md)
+- [`docs/figma/shoppe-auth-flow-design-context.md`](../../figma/shoppe-auth-flow-design-context.md)
 
 ## 目标与范围
 
@@ -41,7 +41,7 @@ Shoppe 注册和登录设计已经确定账号识别、8 位密码、当前用�
    - 重复提交相同认证结果或重复登出保持幂等；不得存在可以绕过 Coordinator 单独改变登录态或当前用户的公共调用路径。
 10. 不创建 `ServiceInitializer`、SecureStorage、Drift、NetworkService、Token 刷新、账号切换、页面提示或 Route。Service 不持有 `BuildContext`。
 11. 回填 `docs/infrastructure-modules.md`、`docs/infrastructure/network.md` 和 `docs/infrastructure/session.md` 的真实模块路径、公共 API、消费者、生命周期、实现状态与验证命令，不复制完整数据链路。
-12. 如新增 GetX 依赖，只允许公开可复现版本，并把 `Get.find` 限定在壳工程组合根；业务 Controller 仍通过构造函数接收 `AuthApi`。
+12. 如新增 GetX 依赖，只允许使用仓库约定的公开精简 fork 并固定完整 Commit；把 `Get.find` 限定在壳工程组合根，业务 Controller 仍通过构造函数接收 `AuthApi`。
 
 ## 同批测试
 
@@ -75,3 +75,7 @@ git diff --check
 - 本地明文 Fixture 密码只服务公开 Demo，不代表生产认证方案。
 - 当前 Session 不跨重启；不得因测试便利提前引入安全存储。
 - Profile Dashboard 数据不属于本卡，由 `shoppe-profile-dashboard` 扩展同一 Fixture Transport 和 Registry。
+
+## 后续规则调整
+
+[`demo-stateless-auth-policy`](demo-stateless-auth-policy.md) 已覆盖本卡第 5、6 条中的本地账号行为：当前 Auth Fixture 不再保存注册账号或私有密码记录，而是允许任意有效 Email 按确定性规则查询和登录。注册仍返回当次完整用户快照，所选头像只进入当前会话；公共重复账号、账号不存在失败契约继续保留给未来真实 API 和测试 Fake。

@@ -11,10 +11,10 @@ blockedBy: [shoppe-auth-local-foundation]
 
 ## 输入
 
-- [`docs/figma/shoppe-profile-dashboard-design-context.md`](../figma/shoppe-profile-dashboard-design-context.md)
-- [`docs/figma/shoppe-auth-flow-design-context.md`](../figma/shoppe-auth-flow-design-context.md)
-- [`docs/architecture.md`](../architecture.md)
-- [`docs/api-contracts.md`](../api-contracts.md)
+- [`docs/figma/shoppe-profile-dashboard-design-context.md`](../../figma/shoppe-profile-dashboard-design-context.md)
+- [`docs/figma/shoppe-auth-flow-design-context.md`](../../figma/shoppe-auth-flow-design-context.md)
+- [`docs/architecture.md`](../../architecture.md)
+- [`docs/api-contracts.md`](../../api-contracts.md)
 - `app_ui` 现有 Theme/字体/颜色
 - `shoppe-auth-local-foundation` 提供的 ApiClient、Registry、UserEntity、AuthService、UserService 与 AuthStateCoordinator
 

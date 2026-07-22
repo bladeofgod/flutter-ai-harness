@@ -1,6 +1,6 @@
 # 基础模块索引
 
-> 状态：维护中。当前 Workspace 只有包职责边界，尚无已实现的公共基础模块。
+> 状态：维护中。基础能力只在真实业务任务触发后逐项实现。
 
 本文件只用于发现能力和路由详情。开始新功能前先查下表；找到相关能力时只读取对应子文档，不批量加载 `docs/infrastructure/`。包职责见 [`architecture.md`](./architecture.md)，数据链路见 [`api-contracts.md`](./api-contracts.md)。
 
@@ -15,10 +15,10 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 日志门面 | 待首个实现确定 | `app_core` | 延后 | 未实现 | 至少两个生产消费者、统一错误采集或 App Operator 证据需求 | [app-runtime.md](./infrastructure/app-runtime.md) |
 | 运行环境 | 待首个实现确定 | `app_core` 契约、`apps/demo` 装配 | 延后 | 未实现 | 出现真实环境、Endpoint 或构建行为差异 | [app-runtime.md](./infrastructure/app-runtime.md) |
-| API 传输编排 | `ApiClient` | `app_core` | 已批准 | 未实现 | 首个 Auth 或 Catalog API 已确定请求键、Fixture 结构和 Entity 映射 | [network.md](./infrastructure/network.md) |
-| 登录态 | `AuthService` | `apps/demo` | 已批准 | 未实现 | 首个 Auth 流程已确定 Session 和登录态行为 | [session.md](./infrastructure/session.md) |
-| 当前用户 | `UserService` | `apps/demo` | 已批准 | 未实现 | 首个 Auth 或 Profile 流程已确定 User Entity 字段 | [session.md](./infrastructure/session.md) |
-| 认证状态协调 | `AuthStateCoordinator` | `apps/demo` | 已批准 | 未实现 | Auth 与 Profile 同时消费一致的 Session/User 状态和 Route 刷新 | [session.md](./infrastructure/session.md) |
+| API 传输编排 | `ApiClient` | `app_core` | 已批准 | 已实现 | Shoppe Auth 本地数据链路 | [network.md](./infrastructure/network.md) |
+| 登录态 | `AuthService` | `apps/demo` | 已批准 | 已实现 | Shoppe Auth Session | [session.md](./infrastructure/session.md) |
+| 当前用户 | `UserService` | `apps/demo` | 已批准 | 已实现 | Shoppe Auth/Profile 当前用户 | [session.md](./infrastructure/session.md) |
+| 认证状态协调 | `AuthStateCoordinator` | `apps/demo` | 已批准 | 已实现 | Shoppe Auth 与 Profile 的一致状态和 Route 刷新 | [session.md](./infrastructure/session.md) |
 | 安全存储 | 待首个实现确定 | `app_data` | 延后 | 未实现 | 敏感信息需要跨 App 重启持久化和明确清除策略 | [storage.md](./infrastructure/storage.md) |
 | 普通 KV | 待首个实现确定 | `app_data` | 延后 | 未实现 | 非敏感小规模配置或偏好需要跨重启持久化 | [storage.md](./infrastructure/storage.md) |
 | Drift 数据库生命周期 | 待首个实现确定 | `app_data` | 延后 | 未实现 | 结构化数据需要跨重启保留、Schema 和迁移 | [storage.md](./infrastructure/storage.md) |

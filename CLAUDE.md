@@ -18,7 +18,7 @@
 ### Flutter
 
 - Flutter 3.35.7 / Dart 3.9
-- 状态管理与轻量 DI：GetX（公开可复现依赖）
+- 状态管理与轻量 DI：GetX 精简版 fork（公开 Git 源，固定 Commit）
 - 路由：`go_router ^15.1.2`
 - 网络：`dio ^5.7.0` + Protocol Buffers `^6.0.0`
 - 本地存储：`drift ^2.20.0` + `flutter_secure_storage ^9.2.2`
@@ -76,7 +76,8 @@ app/
 
 - 路由统一使用 `go_router`，根应用使用 `MaterialApp.router`。
 - GetX 只用于状态管理和轻量 DI，不负责路由和 UI Overlay。
-- 只使用公开且可复现的依赖；开源模板不得依赖私有 fork。
+- GetX 必须使用 `https://github.com/bladeofgod/getx.git` 的精简版 fork，并固定到项目约定的完整 Commit；不得改回 pub.dev 官方版。
+- 只使用公开且可复现的依赖；开源模板不得依赖私有或本机 fork。
 - 即使存在服务定位器，也优先使用构造函数注入。
 - 响应式刷新必须包裹读取状态的最小子树。
 - `*.g.dart`、`*.freezed.dart` 和 Protobuf 生成文件只能由生成器修改。

@@ -1,0 +1,411 @@
+## Command
+
+```text
+make check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/check-prerequisites.sh
+[prerequisites] ripgrep 已就绪。
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 66 files (0 changed) in 0.75 seconds.
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+bash scripts/dart-tool.sh run tool/validate_ui_specs.dart
+[spec-check] 当前没有 UI 行为 Spec，跳过。
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+bash scripts/quality/test-ui-specs.sh
+[spec-test] UI 行为 Spec、静态审计与失败 Fixture 通过。
+bash scripts/quality/test-integration-runner.sh
+[integration-runner-test] Integration Test Runner Fixture 通过。
+bash scripts/git-hooks/test-pre-commit.sh
+[hook-test] Git Hook 安装冲突、pre-commit 与 pre-push 门禁检查通过。
+bash scripts/quality/evidence-lint.sh
+[evidence-lint] 测试证据脱敏检查通过。
+bash scripts/quality/test-evidence.sh
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-test] 证据采集、脱敏和门禁 Fixture 通过。
+bash scripts/quality/test-prerequisites.sh
+[prerequisites-test] ripgrep 前置检查与 Make 依赖边界 Fixture 通过。
+bash scripts/proto/check.sh
+[proto-check] Demo 尚未定义 Proto，跳过同步检查。
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:02 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:02 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:02 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:02 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:02 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:02 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:02 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:02 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:02 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:02 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:02 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:02 +6: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects a logged-out profile deep link to Welcome
+00:02 +7: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects a logged-out profile deep link to Welcome
+00:02 +8: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects a logged-out profile deep link to Welcome
+00:02 +9: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +10: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:02 +11: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:02 +12: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:02 +13: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:02 +14: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:02 +14: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:03 +14: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:03 +15: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:03 +15: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:03 +16: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:03 +16: All tests passed!
+[test] app_core
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: All tests passed![0m
+[test] app_data
+
+00:00 [32m+0[0m: [1m[90mloading test/auth/auth_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+1[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+2[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+3[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+4[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+5[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+6[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+7[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+8[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+9[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+10[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+11[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+12[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+13[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+14[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+15[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+16[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+17[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+17[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+18[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+19[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+20[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+22[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+23[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+24[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+25[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+26[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+27[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+28[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+29[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+30[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+31[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+32[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+33[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+34[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+35[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+35[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture is stable across repeated reads[0m
+00:00 [32m+36[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture is stable across repeated reads[0m
+00:00 [32m+36[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture uses only the approved local Profile image keys[0m
+00:00 [32m+37[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture uses only the approved local Profile image keys[0m
+00:00 [32m+37[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps all empty sections without inventing fallback content[0m
+00:00 [32m+38[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps all empty sections without inventing fallback content[0m
+00:00 [32m+38[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes malformed structures to invalidResponse[0m
+00:00 [32m+39[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes malformed structures to invalidResponse[0m
+00:00 [32m+39[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes invalid Domain values from payloads[0m
+00:00 [32m+40[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes invalid Domain values from payloads[0m
+00:00 [32m+40[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps unavailable rejection to a stable failure[0m
+00:00 [32m+41[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps unavailable rejection to a stable failure[0m
+00:00 [32m+41[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps transport failures and preserves their stack[0m
+00:00 [32m+42[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps transport failures and preserves their stack[0m
+00:00 [32m+42[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries does not hide unexpected mapper programming errors[0m
+00:00 [32m+43[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries does not hide unexpected mapper programming errors[0m
+00:00 [32m+43[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries uses the stable Profile Dashboard request key[0m
+00:00 [32m+44[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries uses the stable Profile Dashboard request key[0m
+00:00 [32m+44[0m: All tests passed![0m
+[test] app_features
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_controller_test.dart: moves from loading to Domain data
+00:01 +1: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:01 +2: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:01 +3: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:01 +4: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:01 +5: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:01 +6: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +6: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +7: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +8: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +9: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +10: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +11: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +12: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +13: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +14: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +15: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: remains usable on compact, landscape, and scaled viewports
+00:02 +16: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps section order and the bottom navigation fixed
+00:02 +17: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps section order and the bottom navigation fixed
+00:02 +18: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps section order and the bottom navigation fixed
+00:02 +18: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:02 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:02 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: renders retryable error and recovers
+00:03 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: renders retryable error and recovers
+00:03 +20: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: renders retryable error and recovers
+00:03 +20: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:03 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:03 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: shows stable empty-section states
+00:03 +22: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: shows stable empty-section states
+00:03 +22: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: reacts to user changes and releases the Provider listener
+00:03 +23: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: reacts to user changes and releases the Provider listener
+00:03 +23: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:03 +24: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:03 +24: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:03 +25: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:03 +25: All tests passed!
+[test] app_ui
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: light theme exposes the Shoppe design tokens
+00:01 +1: light theme exposes the Shoppe design tokens
+00:01 +1: bundles the local Shoppe fonts
+00:01 +2: bundles the local Shoppe fonts
+00:01 +2: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/demo_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/demo_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/demo_router_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/router/demo_router_test.dart
+00:02 +0: redirects a logged-out profile deep link to Welcome
+00:03 +0: redirects a logged-out profile deep link to Welcome
+00:03 +1: redirects a logged-out profile deep link to Welcome
+00:03 +1: redirects an authenticated Welcome location to Profile
+00:03 +2: redirects an authenticated Welcome location to Profile
+00:03 +2: redirects an authenticated Auth deep link to Profile
+00:03 +3: redirects an authenticated Auth deep link to Profile
+00:03 +3: logout redirects Profile back to Welcome
+00:03 +4: logout redirects Profile back to Welcome
+00:03 +4: renders the shell error page for an unknown route
+00:03 +5: renders the shell error page for an unknown route
+00:03 +5: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```

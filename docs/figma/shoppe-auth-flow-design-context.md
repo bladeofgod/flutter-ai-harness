@@ -4,11 +4,12 @@
 
 - 设计文件：[`Shoppe - eCommerce Clothing Fashion Store Multi Purpose UI Mobile App Design`](https://www.figma.com/design/JPP1rxO7ADGjAnECWe2Ndg/Shoppe---eCommerce-Clothing-Fashion-Store-Multi-Purpose-UI-Mobile-App-Design--Community-?node-id=0-12779&m=dev)
 - Figma File Key：`JPP1rxO7ADGjAnECWe2Ndg`
-- 读取日期：2026-07-21
+- 初次读取日期：2026-07-21
+- 本轮任务拆分复核日期：2026-07-22
 - 来源、作者和 CC BY 4.0 许可：[`docs/figma-links.md`](../figma-links.md)
 - 本文覆盖注册、登录、错误密码和密码找回入口。登录成功后的 Profile Dashboard 单独记录在 [`shoppe-profile-dashboard-design-context.md`](./shoppe-profile-dashboard-design-context.md)。
 
-结构、尺寸和样式来自 Figma Desktop MCP 的 `get_design_context`、`get_metadata`、`get_variable_defs` 与节点截图。Figma 没有提供表单校验、未知账号、提交中或接口错误 Variant；这些行为在下方作为工程规则单独记录。
+结构、尺寸和样式来自 Figma Desktop MCP 的 `get_design_context`、`get_metadata`、`get_variable_defs` 与节点截图。本轮重新读取 `0:12779`、`0:12718`、`0:12584`、`0:12518`、`0:12449` 及截图，未发现影响任务边界的设计漂移。Figma 没有提供表单校验、未知账号、提交中或接口错误 Variant；这些行为在下方作为工程规则单独记录。
 
 ## 节点与流程
 
@@ -80,6 +81,7 @@ Welcome
 
 - Welcome 的两个入口分别进入注册和登录；注册或登录成功后都进入 `/profile`。
 - 注册头像支持系统图片选择；国家区号使用由 Demo 提供的少量主要国家，不需要完整全球清单。
+- 用户注册并选择头像后，注册成功的当前会话与 Profile 必须展示该头像；无需跨 App 重启保存。
 - 密码固定为 8 位。
 - `Forgot your password?` 进入 Password Recovery；Recovery 只实现 UI 可达性，不发送 SMS/Email，也不进入后续页面。
 
@@ -87,16 +89,18 @@ Welcome
 
 下列规则是为了让当前 Figma 流程可执行而采用的可替换 Demo 默认，不是 Figma 或用户原话直接表达的产品事实。后续产品输入可以替换它们，但不能破坏 Auth API、Session 和 Route 边界。
 
-- Route 使用 `/auth/register`、`/auth/login`、`/auth/password`、`/auth/recovery`；Welcome 与 Auth Feature 不互相 import 页面，通过壳工程和公开 Route 常量完成回调装配。
+- Route 使用 `/auth/register`、`/auth/login`、`/auth/password`、`/auth/recovery`；Welcome 与 Auth Feature 不互相 import 页面，通过各自公开 Route 工厂与根 `createDemoRouter` 完成装配。
+- `WelcomePage` 保留页面级按钮回调，但 `DemoApp` 不暴露 `onGetStarted`、`onSignIn` 等 Welcome 专属参数。根 Router 把两个按钮事件分别映射到公开的注册和登录 Route。
+- 注册/登录成功只把 `AuthResult` 交给根装配回调；根回调调用唯一的 `AuthStateCoordinator.authenticate`。GoRouter 随 Coordinator 通知执行现有 Redirect 并进入 `/profile`，Auth 页面和 Controller 不额外调用 `go('/profile')`，避免双重导航。
 - `Cancel` 返回 Welcome 并清空当前流程的输入与错误状态。
 - 注册头像可选；点击后使用系统图片选择器，选择结果只在内存中预览和随当前 User 保存，不申请摄像头能力、不做裁剪编辑、不跨重启持久化。Picker 请求限制为最大 1024 x 1024、质量 85；读取后最多接受 2 MiB，超限时保持原状态并显示非敏感错误。
 - 国家选择器默认 United Kingdom `+44`，使用底部单选列表提供 United Kingdom、United States、Canada、China、Japan、South Korea、India、Australia、Germany、France；不增加搜索、远程国家数据或完整全球清单。
 - 注册 Email、Password、Phone 必填；Email 做基本格式校验，Password 必须恰好 8 位，Phone 按所选区号接受 6 至 15 位数字。头像不必填。
-- 设计没有姓名字段。Fixture 登录用户显示 `Romina`；新注册用户的显示名由 Email `@` 前部分确定性转为可读名称，无法转换时使用 `Shopper`。
-- 登录 Email `Next` 只接受本地 Fixture 中存在的账号；未知账号停留当前页并显示字段错误，不创建隐式账号。
-- 密码输入满 8 位或键盘 `Go` 时提交；正确登录进入 Profile，错误则清空真实输入值并显示 8 个红点状态，下一次输入恢复普通状态。
+- 设计没有姓名字段。`romina@example.com` 显示 `Romina`；其他注册或登录用户的显示名由 Email `@` 前部分确定性转为可读名称。
+- 登录 Email `Next` 接受任意格式有效的 Email，并确定性生成使用默认头像和公开 Demo 电话信息的用户，不依赖注册记录或账号数据库。
+- 密码输入满 8 位或键盘 `Go` 时提交；`00000000` 固定触发错误密码状态以演示 Wrong Password 与 Recovery，其他 8 位密码登录成功。错误时清空真实输入值并显示 8 个红点，下一次输入恢复普通状态。
 - Auth API 保持异步但不加入随机延迟。提交中禁止重复操作；错误通过 Controller 状态呈现，不由 `AuthService` 显示 Dialog/Snackbar。
-- 当前 Session、注册账号和头像只存在进程内存；App 重启后恢复初始 Fixture 和未登录状态，不引入 SecureStorage、Drift、Dio 或 Proto。
+- 注册不保存账号；注册接口只返回包含当次资料和所选头像的 `AuthResult`，由当前内存 Session/User 使用。App 重启后恢复未登录状态，后续独立登录使用合成用户的默认头像，不引入 SecureStorage、Drift、Dio 或 Proto。
 
 ## 布局与验证边界
 

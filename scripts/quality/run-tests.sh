@@ -13,7 +13,7 @@ if [[ -z "$packages" ]]; then
 fi
 
 status=0
-while IFS= read -r package; do
+while IFS= read -r package <&3; do
   [[ -n "$package" ]] || continue
   echo "[test] $(basename "$package")"
   if rg -q 'sdk:[[:space:]]+flutter' "$package/pubspec.yaml"; then
@@ -25,6 +25,6 @@ while IFS= read -r package; do
       status=1
     fi
   fi
-done <<< "$packages"
+done 3<<< "$packages"
 
 exit "$status"

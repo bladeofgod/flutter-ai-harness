@@ -5,7 +5,8 @@
 - 首屏节点：[`0:11956` - `13 Profile`](https://www.figma.com/design/JPP1rxO7ADGjAnECWe2Ndg/Shoppe---eCommerce-Clothing-Fashion-Store-Multi-Purpose-UI-Mobile-App-Design--Community-?node-id=0-11956&m=dev)，375 x 812。
 - 完整内容节点：[`0:11472` - `14 Full Profile`](https://www.figma.com/design/JPP1rxO7ADGjAnECWe2Ndg/Shoppe---eCommerce-Clothing-Fashion-Store-Multi-Purpose-UI-Mobile-App-Design--Community-?node-id=0-11472&m=dev)，375 x 2909。
 - Figma File Key：`JPP1rxO7ADGjAnECWe2Ndg`
-- 读取日期：2026-07-21
+- 规划读取日期：2026-07-21
+- 实现复核日期：2026-07-22
 - 来源、作者和 CC BY 4.0 许可：[`docs/figma-links.md`](../figma-links.md)
 
 两个节点描述同一个 Profile Dashboard。`0:11956` 是 375 x 812 首屏视觉基准；`0:11472` 是完整纵向内容来源，不应实现为第二个 Route 或一张缩放长图。
@@ -48,7 +49,7 @@
 
 ## Token、组件与资源
 
-- 复用现有字体与 `AppColors`。页面反复使用 `#F8F8F8`、`#E5EBFC`、`#004CFF`、`#202020`；Auth 任务建立的表单/浅色 Surface Token 可复用，页面专属尺寸留在 Feature 内。
+- 复用现有字体与 `AppColors`。页面反复使用的 `#F8F8F8`、`#E5EBFC` 和 `#08C514` 在本任务出现多个真实消费者后分别落为 `surfaceMuted`、`primarySurface` 和 `success`；页面专属尺寸留在 Feature 内。
 - 重复的 section header、圆形缩略图、横向商品卡、状态 pill 和商品网格卡应在 `feature_profile/widgets/` 内形成真实复用组件，不提升为全局 UI 原语。
 - 商品、Story、头像和分类图片必须本地化并按实际显示尺寸压缩；不得把完整 2909 高页面截图作为运行时资源，不得保留 MCP 临时 URL。
 - 设计文件许可已登记。图片若存在独立来源且授权无法确认，使用许可明确或生成的同类替代图，并在视觉 Review 中记录偏离。

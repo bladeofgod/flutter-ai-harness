@@ -176,8 +176,8 @@ Future<void> _pumpWelcome(
 }) async {
   final router = GoRouter(
     routes: buildWelcomeRoutes(
-      onGetStarted: onGetStarted ?? () {},
-      onSignIn: onSignIn ?? () {},
+      onGetStarted: (_) => onGetStarted?.call(),
+      onSignIn: (_) => onSignIn?.call(),
     ),
   );
   addTearDown(router.dispose);

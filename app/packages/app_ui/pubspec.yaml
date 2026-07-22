@@ -16,6 +16,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
+  assets:
+    - assets/fonts/OFL-Poppins.txt
   fonts:
     - family: Raleway
       fonts:
@@ -25,3 +27,7 @@ flutter:
       fonts:
         - asset: assets/fonts/nunito_sans/NunitoSans-Variable.ttf
           weight: 300
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500

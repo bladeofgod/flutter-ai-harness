@@ -639,6 +639,28 @@ name: fixture
 environment:
   sdk: ^3.9.0
 dependencies:
+  get: ^4.7.3
+YAML
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 pub.dev 官方 GetX。" >&2
+  exit 1
+fi
+cat > "$FIXTURE_ROOT/app/pubspec.yaml" <<'YAML'
+name: fixture
+environment:
+  sdk: ^3.9.0
+dependencies:
+  get:
+    git:
+      url: https://github.com/bladeofgod/getx.git
+      ref: 7bfcd9c3711c8880ee730579724dabe54f4e2598
+YAML
+run_check >/dev/null
+cat > "$FIXTURE_ROOT/app/pubspec.yaml" <<'YAML'
+name: fixture
+environment:
+  sdk: ^3.9.0
+dependencies:
   collection: ^1.19.0
 YAML
 

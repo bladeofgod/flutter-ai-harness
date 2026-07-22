@@ -6,7 +6,29 @@ paths: ["app/apps/**/lib/**", "app/packages/**/lib/**"]
 
 # GetX 状态与 DI 模式
 
-只使用公开 GetX 包提供状态管理和轻量依赖注册。路由归 `go_router`，UI Overlay 使用 Flutter/Context 所有的 API。
+本仓库使用公开、固定 Commit 的 GetX 精简版 fork，只提供状态管理和轻量依赖注册。路由归 `go_router`，UI Overlay 使用 Flutter/Context 所有的 API。
+
+## Fork 依赖与能力边界
+
+所有真实消费者必须使用同一个依赖源，不得写成 `get: ^4.x`：
+
+```yaml
+get:
+  git:
+    url: https://github.com/bladeofgod/getx.git
+    ref: 7bfcd9c3711c8880ee730579724dabe54f4e2598
+```
+
+精简 fork 保留 `GetxController`、`GetxService`、`Rx`、`Obx`、`GetBuilder`、Worker、轻量 DI，以及适配 `go_router` 页面生命周期的 `Binder<T>`。
+
+以下官方 GetX 全家桶能力已经移除，不得假设存在：
+
+- `GetMaterialApp`、`GetPage` 和 GetX 导航 API
+- `Get.snackbar`、`Get.dialog`、`Get.bottomSheet`
+- `Translations`、Middleware、`GetConnect`
+- `Get.context`、`Get.overlayContext`
+
+页面级 Controller 可由路由装配点显式构造后交给页面管理；需要服务定位与自动释放时，优先在 `GoRoute.builder` 使用 fork 的 `Binder<T>`。两种方式都必须保证 Controller 只创建一次并随 Route 销毁。
 
 ## 依赖规则
 
@@ -32,5 +54,7 @@ paths: ["app/apps/**/lib/**", "app/packages/**/lib/**"]
 ## 测试
 
 直接用 Fake/Mock 构造 Controller；teardown 中重置全局 GetX 状态。必需 API 的测试不得依赖服务定位器。
+
+该 fork 的 `Obx` 通过 microtask 调度 `markNeedsBuild`。Widget Test 在测试代码中直接修改 Rx 后，应先让 microtask 入队，再推进重建帧（通常连续两次 `pump()`，有持续异步任务时使用有界的 `pumpAndSettle()`），不要在首个 `pump()` 后立即断言新 UI。
 
 修改依赖 lint 时读取 `.claude/memories/api-injection-gate.md`。

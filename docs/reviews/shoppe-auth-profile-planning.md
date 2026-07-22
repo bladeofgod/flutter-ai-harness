@@ -15,7 +15,7 @@
 
 ### P1：Login Controller 跨 Route 生命周期未定义
 
-- 位置：`docs/tasks/shoppe-login-recovery-flow.md`
+- 位置：`docs/tasks/done/shoppe-login-recovery-flow.md`
 - 问题：Login、Password、Recovery 共享 Email/User 状态，但 Route 级 Controller 会丢失状态；direct 子 Route 也缺少前置用户。
 - 修法：使用单一 Login Flow 父级 Scope 持有 Controller，在离开整个流程时释放；缺少前置用户的 direct Route 返回 Login。
 
@@ -33,12 +33,12 @@
 
 ### P2：遗漏注册表单的 Poppins 字体事实
 
-- 位置：`docs/figma/shoppe-auth-flow-design-context.md`、`docs/tasks/shoppe-registration-flow.md`
+- 位置：`docs/figma/shoppe-auth-flow-design-context.md`、`docs/tasks/done/shoppe-registration-flow.md`
 - 修法：记录 Poppins Medium 约 13.8 的 Figma 事实，并要求本地字体、OFL 许可和 AssetBundle 测试。
 
 ### P2：图片选择没有解码与内存上限
 
-- 位置：`docs/tasks/shoppe-registration-flow.md`
+- 位置：`docs/tasks/done/shoppe-registration-flow.md`
 - 修法：限制 Picker 尺寸/质量和读取字节数，覆盖取消、超限、解码失败和路径不泄漏。
 
 ## 首轮验证

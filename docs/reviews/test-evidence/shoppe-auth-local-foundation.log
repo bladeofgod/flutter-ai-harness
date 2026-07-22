@@ -1,0 +1,1133 @@
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+
+  error - apps/demo/test/auth/auth_state_test.dart:104:14 - The constructor being called isn't a const constructor. Try removing 'const' from the constructor invocation. - const_with_non_const
+
+1 issue found.
+make: *** [analyze] Error 3
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_core bash scripts/dart-tool.sh test test/network/api_client_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: ApiClient normalizes any other transport exception[0m
+00:00 [32m+4[0m: ApiClient normalizes any other transport exception[0m
+00:00 [32m+4[0m: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+5[0m: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+5[0m: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+6[0m: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+6[0m: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+7[0m: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+7[0m: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+8[0m: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+8[0m: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+9[0m: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+9[0m: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+10[0m: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+10[0m: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+11[0m: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+11[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/auth
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/auth/auth_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+1[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+2[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+3[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+4[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+4[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+5[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+6[0m: test/auth/auth_local_data_source_test.dart: initial fixture logs in with the published demo fixture[0m
+00:00 [32m+7[0m: test/auth/auth_local_data_source_test.dart: initial fixture logs in with the published demo fixture[0m
+00:00 [32m+7[0m: test/auth/auth_models_test.dart: Password redacts password and Secret diagnostics[0m
+00:00 [32m+8[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+9[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+10[0m: test/auth/auth_models_test.dart: phone value objects rejects invalid country and local numbers[0m
+00:00 [32m+11[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps an unknown login account to a stable failure[0m
+00:00 [32m+12[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+13[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+14[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+15[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+16[0m: test/auth/auth_models_test.dart: AuthResult requires matching user and session identifiers[0m
+00:00 [32m+17[0m: test/auth/auth_models_test.dart: AuthResult requires matching user and session identifiers[0m
+00:00 [32m+17[0m: test/auth/auth_local_data_source_test.dart: registration fixture state returns a stable failure for a duplicate email[0m
+00:00 [32m+18[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+19[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+19[0m: test/auth/auth_local_data_source_test.dart: registration fixture state a new transport restores only the initial fixture[0m
+00:00 [32m+20[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures without exposing causes[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures without exposing causes[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+28[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_auth
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart
+00:01 +0: FeaturesRegistry local Auth API normalizes account input and returns a Domain user
+00:01 +1: FeaturesRegistry local Auth API normalizes account input and returns a Domain user
+00:01 +1: FeaturesRegistry local Auth API registers and logs in through the local Fixture chain
+00:01 +2: FeaturesRegistry local Auth API registers and logs in through the local Fixture chain
+00:01 +2: FeaturesRegistry local Auth API preserves stable Auth failures
+00:01 +3: FeaturesRegistry local Auth API preserves stable Auth failures
+00:01 +3: FeaturesRegistry local Auth API creates isolated registries from the initial Fixture state
+00:01 +4: FeaturesRegistry local Auth API creates isolated registries from the initial Fixture state
+00:01 +4: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/auth/auth_state_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +5: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +5: AuthStateCoordinator clears session and user before one logout notification
+00:01 +6: AuthStateCoordinator clears session and user before one logout notification
+00:01 +6: All tests passed!
+
+```
+
+## Command
+
+```text
+make test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator clears session and user before one logout notification
+00:01 +6: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator clears session and user before one logout notification
+00:01 +6: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +6: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:01 +6: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:01 +8: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:01 +8: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:01 +9: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:01 +9: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:01 +10: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:01 +10: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:01 +11: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:01 +11: <repo>/app/apps/demo/test/demo_app_test.dart: (tearDownAll)
+00:01 +11: All tests passed!
+
+```
+
+## Command
+
+```text
+make test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +5: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:01 +6: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:01 +6: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +7: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +8: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +8: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:02 +9: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:02 +9: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:02 +10: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:02 +10: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:02 +11: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:02 +11: <repo>/app/apps/demo/test/demo_app_test.dart: (tearDownAll)
+00:02 +11: All tests passed!
+[test] app_core
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes any other transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient normalizes any other transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+11[0m: All tests passed![0m
+[test] app_data
+
+00:00 [32m+0[0m: [1m[90mloading test/auth/auth_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+1[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+2[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+3[0m: test/auth/auth_models_test.dart: Password accepts exactly eight characters[0m
+00:00 [32m+4[0m: test/auth/auth_local_data_source_test.dart: initial fixture returns null for an unknown account lookup[0m
+00:00 [32m+5[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+6[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+7[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+7[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+8[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+9[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+10[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+10[0m: test/auth/auth_models_test.dart: phone value objects rejects invalid country and local numbers[0m
+00:00 [32m+11[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps an unknown login account to a stable failure[0m
+00:00 [32m+12[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps an unknown login account to a stable failure[0m
+00:00 [32m+12[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+13[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+14[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+15[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+16[0m: test/auth/auth_models_test.dart: AuthResult requires matching user and session identifiers[0m
+00:00 [32m+17[0m: test/auth/auth_local_data_source_test.dart: registration fixture state returns a stable failure for a duplicate email[0m
+00:00 [32m+18[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+19[0m: test/auth/auth_local_data_source_test.dart: registration fixture state a new transport restores only the initial fixture[0m
+00:00 [32m+20[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures without exposing causes[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures without exposing causes[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+28[0m: All tests passed![0m
+[test] app_features
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API normalizes account input and returns a Domain user
+00:01 +1: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API normalizes account input and returns a Domain user
+00:01 +1: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API registers and logs in through the local Fixture chain
+00:01 +2: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +3: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +4: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +4: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:01 +5: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:01 +5: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: forwards both optional actions
+00:01 +6: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: forwards both optional actions
+00:01 +6: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: exposes the account action to accessibility services
+00:01 +7: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: exposes the account action to accessibility services
+00:01 +7: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: remains usable on compact, landscape, and scaled viewports
+00:01 +8: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: remains usable on compact, landscape, and scaled viewports
+00:01 +8: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: bundles all Shoppe brand image densities
+00:01 +9: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: bundles all Shoppe brand image densities
+00:01 +9: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (tearDownAll)
+00:01 +9: All tests passed!
+[test] app_ui
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: light theme exposes the Shoppe design tokens
+00:01 +1: light theme exposes the Shoppe design tokens
+00:01 +1: bundles the local Shoppe fonts
+00:01 +2: bundles the local Shoppe fonts
+00:01 +2: All tests passed!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+make bootstrap
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh pub get
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `dart pub outdated` for more information.
+bash scripts/dart-tool.sh run melos bootstrap
+melos bootstrap
+  └> <repo>/app
+
+Running "flutter pub get" in workspace...
+  > SUCCESS
+
+Generating IntelliJ IDE files...
+  > SUCCESS
+
+ -> 6 packages bootstrapped
+bash scripts/git-hooks/install.sh
+Git hooks 已就绪：
+  pre-commit：Dart 格式 + Proto 生成同步
+  pre-push：Codex 适配同步检查 + 静态分析 + 仓库边界 lint
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 45 files (0 changed) in 0.65 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_core bash scripts/dart-tool.sh test test/network/api_client_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/auth
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/auth/auth_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+1[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+2[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+3[0m: test/auth/auth_models_test.dart: Password accepts exactly eight characters[0m
+00:00 [32m+4[0m: test/auth/auth_local_data_source_test.dart: initial fixture returns null for an unknown account lookup[0m
+00:00 [32m+5[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+6[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+7[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+7[0m: test/auth/auth_models_test.dart: Password redacts password and Secret diagnostics[0m
+00:00 [32m+8[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+9[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+10[0m: test/auth/auth_models_test.dart: phone value objects rejects invalid country and local numbers[0m
+00:00 [32m+11[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps an unknown login account to a stable failure[0m
+00:00 [32m+12[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+13[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+14[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+15[0m: test/auth/auth_models_test.dart: UserAvatar accepts relative asset keys and rejects paths or URIs[0m
+00:00 [32m+16[0m: test/auth/auth_models_test.dart: UserAvatar accepts relative asset keys and rejects paths or URIs[0m
+00:00 [32m+16[0m: test/auth/auth_local_data_source_test.dart: registration fixture state returns a stable failure for a duplicate email[0m
+00:00 [32m+17[0m: test/auth/auth_models_test.dart: AuthResult requires matching user and session identifiers[0m
+00:00 [32m+18[0m: test/auth/auth_local_data_source_test.dart: registration fixture state a new transport restores only the initial fixture[0m
+00:00 [32m+19[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+20[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+20[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+30[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+30[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/auth/auth_state_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: AuthStateCoordinator owns state independently from other coordinators
+00:01 +2: AuthStateCoordinator owns state independently from other coordinators
+00:01 +2: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +3: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +3: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +4: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +4: AuthStateCoordinator updates only a user matching the current session
+00:01 +5: AuthStateCoordinator updates only a user matching the current session
+00:01 +5: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +6: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +6: AuthStateCoordinator clears session and user before one logout notification
+00:01 +7: AuthStateCoordinator clears session and user before one logout notification
+00:01 +7: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:01 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:01 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:01 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:01 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +6: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:01 +6: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator clears session and user before one logout notification
+00:01 +7: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator clears session and user before one logout notification
+00:01 +7: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:01 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:02 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:02 +8: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:02 +8: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +9: <repo>/app/apps/demo/test/demo_app_test.dart: keeps welcome actions inert when no callbacks are supplied
+00:02 +9: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:02 +10: <repo>/app/apps/demo/test/demo_app_test.dart: forwards welcome actions when the shell wires them
+00:02 +10: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:02 +11: <repo>/app/apps/demo/test/demo_app_test.dart: selects the 3x Shoppe brand asset on a 3x device
+00:02 +11: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:02 +12: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:02 +12: <repo>/app/apps/demo/test/demo_app_test.dart: (tearDownAll)
+00:02 +12: All tests passed!
+[test] app_core
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: All tests passed![0m
+[test] app_data
+
+00:00 [32m+0[0m: [1m[90mloading test/auth/auth_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+1[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+2[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+3[0m: test/auth/auth_local_data_source_test.dart: initial fixture finds the deterministic Romina account[0m
+00:00 [32m+4[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+5[0m: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input[0m
+00:00 [32m+6[0m: test/auth/auth_local_data_source_test.dart: initial fixture logs in with the published demo fixture[0m
+00:00 [32m+7[0m: test/auth/auth_local_data_source_test.dart: initial fixture logs in with the published demo fixture[0m
+00:00 [32m+8[0m: test/auth/auth_models_test.dart: phone value objects normalizes a formatted local phone number[0m
+00:00 [32m+9[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+10[0m: test/auth/auth_local_data_source_test.dart: initial fixture maps wrong password to a stable failure[0m
+00:00 [32m+11[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+12[0m: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes[0m
+00:00 [32m+13[0m: test/auth/auth_local_data_source_test.dart: initial fixture does not expose fixture credentials through diagnostics[0m
+00:00 [32m+14[0m: test/auth/auth_models_test.dart: UserAvatar accepts relative asset keys and rejects paths or URIs[0m
+00:00 [32m+15[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+16[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+17[0m: test/auth/auth_local_data_source_test.dart: registration fixture state registers and then authenticates an account in the same instance[0m
+00:00 [32m+18[0m: test/auth/auth_models_test.dart: auth input diagnostics never contain password values[0m
+00:00 [32m+19[0m: test/auth/auth_local_data_source_test.dart: registration fixture state returns a stable failure for a duplicate email[0m
+00:00 [32m+20[0m: test/auth/auth_local_data_source_test.dart: registration fixture state returns a stable failure for a duplicate email[0m
+00:00 [32m+20[0m: test/auth/auth_local_data_source_test.dart: registration fixture state a new transport restores only the initial fixture[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state a new transport restores only the initial fixture[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: registration fixture state round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+30[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+30[0m: All tests passed![0m
+[test] app_features
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API normalizes account input and returns a Domain user
+00:01 +1: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API normalizes account input and returns a Domain user
+00:01 +1: <repo>/app/packages/app_features/test/feature_auth/local_auth_api_test.dart: ... local Auth API registers and logs in through the local Fixture chain
+00:01 +2: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +3: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +4: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:01 +4: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:01 +5: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:01 +5: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: forwards both optional actions
+00:02 +6: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: forwards both optional actions
+00:02 +6: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: exposes the account action to accessibility services
+00:02 +7: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: exposes the account action to accessibility services
+00:02 +7: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: remains usable on compact, landscape, and scaled viewports
+00:02 +8: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: remains usable on compact, landscape, and scaled viewports
+00:02 +8: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: bundles all Shoppe brand image densities
+00:02 +9: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: bundles all Shoppe brand image densities
+00:02 +9: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (tearDownAll)
+00:02 +9: All tests passed!
+[test] app_ui
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  go_router 15.1.3 (17.3.0 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: light theme exposes the Shoppe design tokens
+00:01 +1: light theme exposes the Shoppe design tokens
+00:01 +1: bundles the local Shoppe fonts
+00:01 +2: bundles the local Shoppe fonts
+00:01 +2: All tests passed!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 45 files (0 changed) in 0.69 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../infrastructure-modules.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../../CLAUDE.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../architecture.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../api-contracts.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../infrastructure/network.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../infrastructure/session.md
+错误：docs/tasks/done/shoppe-auth-local-foundation.md 包含失效本地链接：../figma/shoppe-auth-flow-design-context.md
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

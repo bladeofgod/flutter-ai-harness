@@ -5,27 +5,44 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class DemoApp extends StatefulWidget {
-  const DemoApp({super.key, this.onGetStarted, this.onSignIn});
+import 'auth/auth_state.dart';
+import 'router/demo_router.dart';
 
-  final VoidCallback? onGetStarted;
-  final VoidCallback? onSignIn;
+class DemoApp extends StatefulWidget {
+  const DemoApp({
+    super.key,
+    this.featuresRegistry,
+    this.authStateCoordinator,
+    this.initialLocation = welcomeRoutePath,
+  });
+
+  final FeaturesRegistry? featuresRegistry;
+  final AuthStateCoordinator? authStateCoordinator;
+  final String initialLocation;
 
   @override
   State<DemoApp> createState() => _DemoAppState();
 }
 
 class _DemoAppState extends State<DemoApp> {
-  late final GoRouter _router = GoRouter(
-    routes: buildWelcomeRoutes(
-      onGetStarted: _handleGetStarted,
-      onSignIn: _handleSignIn,
-    ),
-  );
+  late final FeaturesRegistry _featuresRegistry;
+  late final AuthStateCoordinator _authStateCoordinator;
+  late final bool _ownsAuthStateCoordinator;
+  late final GoRouter _router;
 
-  void _handleGetStarted() => widget.onGetStarted?.call();
-
-  void _handleSignIn() => widget.onSignIn?.call();
+  @override
+  void initState() {
+    super.initState();
+    _featuresRegistry = widget.featuresRegistry ?? FeaturesRegistry.local();
+    _ownsAuthStateCoordinator = widget.authStateCoordinator == null;
+    _authStateCoordinator =
+        widget.authStateCoordinator ?? AuthStateCoordinator();
+    _router = createDemoRouter(
+      featuresRegistry: _featuresRegistry,
+      authStateCoordinator: _authStateCoordinator,
+      initialLocation: widget.initialLocation,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +57,9 @@ class _DemoAppState extends State<DemoApp> {
   @override
   void dispose() {
     _router.dispose();
+    if (_ownsAuthStateCoordinator) {
+      _authStateCoordinator.dispose();
+    }
     super.dispose();
   }
 }
