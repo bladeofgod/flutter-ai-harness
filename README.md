@@ -8,6 +8,8 @@ Flutter AI Harness is a repository template for teams that want AI coding agents
 
 This project is an engineering harness for building applications with AI agents. It is not an SDK for adding AI features to a Flutter application.
 
+Background article (Chinese): [AI 编程的工程化实践：Flutter AI Harness 的设计与落地](https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA), covering the Harness design rationale, delivery loop, and adaptation approach.
+
 ## Demo Preview
 
 - Design source: [Shoppe Community design](https://www.figma.com/community/file/1321464360558173342/shoppe-ecommerce-clothing-fashion-store-multi-purpose-ui-mobile-app-design), with source and license notes in [`docs/figma-links.md`](docs/figma-links.md).

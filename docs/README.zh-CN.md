@@ -8,6 +8,8 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 
 本项目用于帮助 AI Agent 参与应用工程开发，不是在 Flutter App 内集成 AI 功能的运行时 SDK。
 
+项目背景文章：[AI 编程的工程化实践：Flutter AI Harness 的设计与落地](https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA)（中文），介绍 Harness 的设计思路、任务闭环和基于现有工程的改造方式。
+
 ## Demo 预览
 
 - 设计稿来源：[Shoppe Community 设计稿](https://www.figma.com/community/file/1321464360558173342/shoppe-ecommerce-clothing-fashion-store-multi-purpose-ui-mobile-app-design)，来源与许可说明见 [`docs/figma-links.md`](./figma-links.md)。
