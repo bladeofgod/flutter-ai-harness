@@ -8,6 +8,16 @@ Flutter AI Harness is a repository template for teams that want AI coding agents
 
 This project is an engineering harness for building applications with AI agents. It is not an SDK for adding AI features to a Flutter application.
 
+## Demo Preview
+
+- Design source: [Shoppe Community design](https://www.figma.com/community/file/1321464360558173342/shoppe-ecommerce-clothing-fashion-store-multi-purpose-ui-mobile-app-design), with source and license notes in [`docs/figma-links.md`](docs/figma-links.md).
+
+> **Automated development record:** The Demo was completed in one overnight run, with no human intervention in implementation during execution. Human input covered design selection, scope decisions, and environment operations.
+
+[![Ai-Harness Demo recording](docs/media/demo-app-cover.png)](docs/media/demo-app-video.mp4)
+
+`Android Debug · local fixtures and mock APIs · recording duration: 1m 13s`
+
 ## What It Provides
 
 - Native Claude support with a generated Codex adaptation layer; Claude assets remain the single source of truth.
