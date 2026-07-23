@@ -88,6 +88,10 @@ Task evidence must be captured through `scripts/quality/capture-evidence.sh`; it
 
 ## Quick Start
 
+This repository supports two adoption paths. You can run the included Demo to inspect a complete example, or use the repository as an AI engineering architecture reference and adapt the Harness to an existing project. The Demo is not a required runtime dependency or a plugin that must be copied unchanged.
+
+### Run the reference Demo
+
 Prerequisites: Claude Code 2.1.198 or later, `ripgrep`, plus FVM (recommended) or an existing Flutter 3.35.7 installation.
 
 Install `ripgrep` with `brew install ripgrep` on macOS, or `sudo apt-get update && sudo apt-get install --yes ripgrep` on Ubuntu/Debian. `make setup` checks this dependency before bootstrapping the workspace.
@@ -102,6 +106,18 @@ make check
 `make setup` installs the Flutter version from `app/.fvmrc` when FVM is available, otherwise verifies the system Flutter version. It then resolves the Pub Workspace, bootstraps Melos packages, and installs repository-owned Git hooks. Run `make marionette-install` once to install the optional Marionette MCP server.
 
 The repository includes an `Ai-Harness` Shoppe-inspired mobile demo with Welcome, Auth, Shop, Categories, Wishlist, Cart, Profile, Settings, Orders, Search, Promotions, Rewards, Support, and Product Detail flows. It uses deterministic local fixtures and mock APIs so the architecture and interactions can be demonstrated without a remote backend. Run it with `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run`. The `com.example` application identifiers are placeholders and must be replaced before release.
+
+### Adapt the Harness to an existing project
+
+The recommended reuse flow is to let your AI inspect the Harness, compare it with your project, and produce an adaptation plan before changing files:
+
+1. Read `CLAUDE.md`, `README.md`, `.claude/`, `docs/architecture.md`, and the target project's own contract.
+2. Separate reusable Harness assets from Demo-specific content. The contract, Commands, Agents, Skills, quality gates, generated Codex adapters, and MCP configuration are potential reusable assets; `app/`, Shoppe screens, Figma records, Fixtures, and Demo task history are reference material.
+3. Describe the target project's stack, package boundaries, native platforms, existing CI, and team workflow. Ask the AI to map those constraints to the Harness model and list conflicts or deliberate deviations.
+4. Have the AI write an adaptation plan and task cards first. Then migrate only the selected assets, update the project's own source-of-truth files, and regenerate Codex adapters instead of copying generated files as independent configuration.
+5. Run the adapted project's focused checks and complete gate. Keep the original Demo files only when they are useful as examples; they are not required for the Harness workflow.
+
+This path may keep only part of the repository and may change directory names, package boundaries, commands, or platform integrations to fit the host project. The goal is to preserve the engineering principles and feedback loops, not to reproduce this repository's layout verbatim.
 
 Figma workflows use the project-level desktop MCP configuration. Open the design in Figma Desktop, enable the Desktop MCP Server in Dev Mode, then approve the `figma` project server when Claude Code prompts.
 

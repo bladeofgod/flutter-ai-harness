@@ -88,6 +88,10 @@ make check
 
 ## 快速开始
 
+本仓库支持两种采用方式：可以直接运行内置 Demo，查看一套完整示例；也可以把仓库作为 AI 工程架构参考，让 AI 根据现有工程的特点进行抽象、裁剪和改造。Demo 不是必须复制的运行时依赖，也不是要求原样安装的代码插件。
+
+### 直接体验参考 Demo
+
 前置环境：Claude Code 2.1.198 或更高版本、`ripgrep`，以及推荐的 FVM；不使用 FVM 时需预先安装 Flutter 3.35.7。
 
 macOS 使用 `brew install ripgrep` 安装；Ubuntu/Debian 使用 `sudo apt-get update && sudo apt-get install --yes ripgrep` 安装。`make setup` 会在 Bootstrap Workspace 前检查该依赖。
@@ -102,6 +106,18 @@ make check
 `make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。
 
 仓库中的 `Ai-Harness` Demo 是一套 Shoppe 风格的本地电商演示，包含 Welcome、Auth、Shop、Categories、Wishlist、Cart、Profile、Settings、Orders、Search、Promotions、Rewards、Support 和 Product Detail 流程。它使用确定性本地 Fixture 与 Mock API，不依赖远程后端，便于展示架构和交互。可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
+
+### 改造到现有工程
+
+推荐让你的 AI 先阅读 Harness，再结合目标工程生成适配方案，确认方案后再修改文件：
+
+1. 阅读 `CLAUDE.md`、`README.md`、`.claude/`、`docs/architecture.md`，以及目标工程自己的项目契约。
+2. 区分 Harness 通用能力和 Demo 专属内容。项目契约、Command、Agent、Skill、质量门禁、生成的 Codex 适配层和 MCP 配置属于可评估复用的能力；`app/`、Shoppe 页面、Figma 记录、Fixture 和 Demo 任务历史属于参考材料。
+3. 向 AI 提供目标工程的技术栈、Package 边界、原生平台、现有 CI 和团队工作流，让它将这些约束映射到 Harness 模式，并列出冲突和有意偏离。
+4. 先让 AI 生成适配方案和任务卡，再迁移选中的资产；更新目标工程自己的事实源后重新生成 Codex 适配层，不要把生成文件当成独立配置直接维护。
+5. 按目标工程的影响范围运行聚焦检查和完整门禁。Demo 文件只有在作为参考有价值时才保留，不是 Harness 工作流的必要组成部分。
+
+这条路径可以只保留仓库的一部分，也可以根据宿主工程调整目录名、Package 边界、命令和平台集成。复用的目标是保留工程原则和反馈闭环，不是逐字复制本仓库的目录结构。
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
 
