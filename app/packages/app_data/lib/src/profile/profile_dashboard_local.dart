@@ -1,7 +1,8 @@
 import 'package:app_core/app_core.dart';
 
-import '../auth/auth_local.dart';
+import '../catalog/catalog_models.dart';
 import 'profile_dashboard_failure.dart';
+import 'profile_dashboard_fixture.dart';
 import 'profile_dashboard_models.dart';
 
 part 'profile_dashboard_mapper.dart';
@@ -15,7 +16,7 @@ final class ProfileDashboardLocalDataSource {
 
   Future<ProfileDashboard> load() async {
     final response = await _apiClient.send<Object?>(
-      const ApiRequest(key: FixtureRequestKeys.profileDashboard),
+      const ApiRequest(key: ProfileDashboardFixtureHandler.loadKey),
     );
     return switch (response) {
       ApiSuccess<Object?>(:final payload) =>

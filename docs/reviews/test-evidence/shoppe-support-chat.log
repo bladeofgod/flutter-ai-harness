@@ -1,0 +1,772 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_support
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: loading <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:01 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +5: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +5: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +6: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +6: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +7: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +7: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:02 +8: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:02 +8: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:03 +8: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:03 +9: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:03 +9: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh analyze --fatal-infos lib/support.dart lib/src/support test/support
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing support.dart, support, support...
+No issues found!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/support
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/support/support_data_test.dart[0m[0m
+00:00 [32m+0[0m: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain[0m
+00:00 [32m+1[0m: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain[0m
+00:00 [32m+1[0m: test/support/support_data_test.dart: uses stable request keys and rejects invalid script operations[0m
+00:00 [32m+2[0m: test/support/support_data_test.dart: uses stable request keys and rejects invalid script operations[0m
+00:00 [32m+2[0m: test/support/support_data_test.dart: starting a new route session resets messages and rating[0m
+00:00 [32m+3[0m: test/support/support_data_test.dart: starting a new route session resets messages and rating[0m
+00:00 [32m+3[0m: test/support/support_data_test.dart: maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+4[0m: test/support/support_data_test.dart: maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+4[0m: test/support/support_data_test.dart: domain collections are immutable and validate finite states[0m
+00:00 [32m+5[0m: test/support/support_data_test.dart: domain collections are immutable and validate finite states[0m
+00:00 [32m+5[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/dart-tool.sh analyze --fatal-infos lib/api/support_chat_api.dart lib/feature_support test/feature_support
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing support_chat_api.dart, feature_support, feature_support...
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_profile/profile_dashboard_page_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart
+00:01 +0: matches the Profile first-viewport structure
+00:02 +0: matches the Profile first-viewport structure
+00:02 +1: matches the Profile first-viewport structure
+00:02 +1: loads the public Rewards summary and opens Rewards
+00:02 +2: loads the public Rewards summary and opens Rewards
+00:02 +2: keeps sections accessible in one vertical scroll owner
+00:02 +3: keeps sections accessible in one vertical scroll owner
+00:02 +3: provides bounded horizontal scrolling for all designed rails
+00:02 +4: provides bounded horizontal scrolling for all designed rails
+00:02 +4: keeps Profile categories as single-image gradient cards
+00:02 +5: keeps Profile categories as single-image gradient cards
+00:02 +5: renders retryable error and recovers
+00:02 +6: renders retryable error and recovers
+00:02 +6: keeps a stable loading layout until data arrives
+00:02 +7: keeps a stable loading layout until data arrives
+00:02 +7: shows stable empty-section states
+00:02 +8: shows stable empty-section states
+00:02 +8: reacts to user changes and releases the Provider listener
+00:02 +9: reacts to user changes and releases the Provider listener
+00:02 +9: has no overflow on compact, landscape, or scaled viewports
+00:03 +9: has no overflow on compact, landscape, or scaled viewports
+00:03 +10: has no overflow on compact, landscape, or scaled viewports
+00:03 +10: buildProfileRoutes creates the real Profile destination
+00:03 +11: buildProfileRoutes creates the real Profile destination
+00:03 +11: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart --plain-name 'Profile opens Rewards and local Support through public routes'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:02 +0: Profile opens Rewards and local Support through public routes
+00:03 +0: Profile opens Rewards and local Support through public routes
+00:03 +1: Profile opens Rewards and local Support through public routes
+00:03 +1: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart --plain-name 'Profile opens Rewards and local Support through public routes'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: Profile opens Rewards and local Support through public routes
+00:02 +0: Profile opens Rewards and local Support through public routes
+00:02 +1: Profile opens Rewards and local Support through public routes
+00:02 +1: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: guards account service deep links while logged out
+00:02 +0: guards account service deep links while logged out
+00:02 +1: guards account service deep links while logged out
+00:02 +1: Profile opens Rewards and local Support through public routes
+00:02 +2: Profile opens Rewards and local Support through public routes
+00:02 +2: Rewards applies its shared Voucher ID in Checkout
+00:02 +3: Rewards applies its shared Voucher ID in Checkout
+00:02 +3: Settings opens shared payment methods and addresses
+00:02 +4: Settings opens shared payment methods and addresses
+00:02 +4: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/support test/rewards
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/support/support_data_test.dart[0m[0m
+00:00 [32m+0[0m: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain[0m
+00:00 [32m+1[0m: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain[0m
+00:00 [32m+2[0m: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain[0m
+00:00 [32m+3[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+4[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+5[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+6[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+7[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+8[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+8[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+9[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+9[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource publishes a reminder once and rebuilds from handler state[0m
+00:00 [32m+10[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource publishes a reminder once and rebuilds from handler state[0m
+00:00 [32m+10[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource rejects consumed and non-expiring reminders consistently[0m
+00:00 [32m+11[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource rejects consumed and non-expiring reminders consistently[0m
+00:00 [32m+11[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+12[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+12[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_support
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: selects and submits one service rating
+00:01 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: at least one matching candidate
+  Actual: _ElementPredicateWidgetFinder:<Found 0 widgets with element matching predicate: []>
+   Which: means none were found but some were expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file://<repo>/app/packages/app_features/test/feature_support/support_routes_test.dart:41:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file://<repo>/app/packages/app_features/test/feature_support/support_routes_test.dart line 41
+The test description was:
+  merges question, conversation, Voucher and rating states
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:02 +4 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states [E]
+  Test failed. See exception logs above.
+  The test description was: merges question, conversation, Voucher and rating states
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart -p vm --plain-name 'merges question, conversation, Voucher and rating states'
+
+00:02 +4 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +5 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +5 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +6 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +6 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:03 +6 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:03 +7 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:03 +7 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:03 +8 -1: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:03 +8 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: guards account service deep links while logged out
+00:02 +0: guards account service deep links while logged out
+00:02 +1: guards account service deep links while logged out
+00:02 +1: Profile opens Rewards and local Support through public routes
+00:02 +2: Profile opens Rewards and local Support through public routes
+00:02 +2: Rewards applies its shared Voucher ID in Checkout
+00:03 +2: Rewards applies its shared Voucher ID in Checkout
+00:03 +3: Rewards applies its shared Voucher ID in Checkout
+00:03 +3: Settings opens shared payment methods and addresses
+00:03 +4: Settings opens shared payment methods and addresses
+00:03 +4: invalid Settings payment child link shows a stable fallback
+00:03 +5: invalid Settings payment child link shows a stable fallback
+00:03 +5: Checkout settlement is visible in Payment History
+00:03 +6: Checkout settlement is visible in Payment History
+00:03 +6: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_support
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:01 +1: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: deduplicates question and message actions
+00:01 +2: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: cancels pending transitions and clears draft on release
+00:01 +3: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: selects and submits one service rating
+00:01 +4: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: selects and submits one service rating
+00:01 +4: loading <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart
+00:01 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +4: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +5: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:02 +5: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +6: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: keeps composer reachable with keyboard-sized insets
+00:02 +6: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +7: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: supports landscape and scaled starting content
+00:02 +7: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:02 +8: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: Back disposes the draft and re-entry starts a new session
+00:02 +8: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:02 +9: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows a repeatable go-to-bottom control for long history
+00:02 +9: All tests passed!
+
+```

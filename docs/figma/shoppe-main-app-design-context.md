@@ -49,6 +49,14 @@ Figma Desktop MCP 已读取 `0:1` 的 101 张顶层画板元数据，并完整�
 - Tab 根页面保持各自导航栈与滚动位置，规划采用 `StatefulShellRoute.indexedStack` 或等价结构；壳工程继续拥有根 GoRouter 和认证 Redirect。
 - 认证成功仍按已确认行为进入 `/profile`。主导航接入不改变 `01–12` Auth 页面或登录成功目标。
 
+## 节点 15 实施记录
+
+- 2026-07-22 重新读取 `0:11012` 的结构化上下文、截图和变量；画板为 375 x 2646，变量接口未返回可复用 Variable，颜色与字体已映射到现有 `app_ui` Token 或 Catalog Feature 局部样式。
+- 首屏结构为 28px `Shop` 标题、248 x 36 搜索框和 335 x 130 Big Sale Banner；完整区段顺序为 Categories、Top Products、New Items、Flash Sale、Most Popular、Just For You。
+- Categories 使用两列四图拼贴卡；Top Products、New Items、Most Popular 是有界横轨；Flash Sale 与 Just For You 使用响应式网格。Shop 页面只拥有一个纵向 `CustomScrollView`，本阶段不绘制主导航底栏。
+- Big Sale 原始位图从当前 Figma 节点导出、裁切并压缩为 `app/packages/app_features/assets/images/catalog/big_sale.png`（1005 x 390）；设计归属和 CC BY 4.0 署名沿用 [`docs/figma-links.md`](../figma-links.md)。运行时代码未保留 MCP 临时地址。
+- 商品和分类预览优先复用同一设计文件已本地化的 `assets/images/profile/product_01.png` 至 `product_20.png`。Categories 中未覆盖的 Shoes、Lingerie、Watch 和 Hoodies 原图已从节点 `8:5190` 本地化到 `assets/images/catalog/categories/`，最长边压缩到 300px；Top Products、New Items、Flash Sale、Most Popular 和 Just For You 缺失的 6 张原图已本地化到 `assets/images/catalog/products/`，最长边压缩到 400px。这些都是节点当前消费资源，不保留 MCP 地址或复制已有同源图片。
+
 ## 数据与组件边界
 
 - `Money`、Currency、类型化价格、`ProductSummary`、`CategorySummary`、`FlashSale` 等跨页面 Domain 类型必须在首个 Catalog 任务中一次建立或迁入 `app_data/src/catalog/`；Profile Dashboard 同批迁移 Mapper 并继续组合这些类型。Cart、Product 和 Checkout 只能消费该金额契约，不得二次迁移或继续使用展示字符串参与计算。

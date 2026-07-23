@@ -9,7 +9,11 @@ void main() {
     late ProfileDashboardLocalDataSource dataSource;
 
     setUp(() {
-      dataSource = _dataSource(FixtureApiTransport());
+      dataSource = _dataSource(
+        FixtureApiTransport(
+          handlers: <FixtureRequestHandler>[ProfileDashboardFixtureHandler()],
+        ),
+      );
     });
 
     test('maps the complete Dashboard in design section order', () async {
@@ -38,6 +42,8 @@ void main() {
       expect(dashboard.stories.first.isLive, isTrue);
       expect(dashboard.stories.skip(1).every((story) => !story.isLive), isTrue);
       expect(dashboard.newItems, hasLength(5));
+      expect(dashboard.newItems.first.price?.minorUnits, 1700);
+      expect(dashboard.newItems.first.displayPrice, r'$17,00');
       expect(dashboard.mostPopular.map((item) => item.tag), <String?>[
         'New',
         'Sale',

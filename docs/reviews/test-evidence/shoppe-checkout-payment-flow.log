@@ -1,0 +1,183 @@
+## Command
+
+```text
+bash -lc 'make analyze && TOOL_WORKDIR=app/packages/app_data bash scripts/flutter-tool.sh test test/checkout && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_checkout test/feature_orders && TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/checkout_router_test.dart test/router/discovery_router_test.dart test/router/settings_router_test.dart && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_data/test/checkout/payment_profile_store_test.dart
+00:01 +0: loading <repo>/app/packages/app_data/test/checkout/payment_profile_store_test.dart
+00:01 +0: loading <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart
+00:01 +0: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... loads totals and applies or clears the deterministic voucher
+00:01 +1: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... loads totals and applies or clears the deterministic voucher
+00:01 +2: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... loads totals and applies or clears the deterministic voucher
+00:01 +3: <repo>/app/packages/app_data/test/checkout/payment_profile_store_test.dart: payment diagnostics never expand card data
+00:01 +4: <repo>/app/packages/app_data/test/checkout/payment_profile_store_test.dart: payment diagnostics never expand card data
+00:01 +5: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... routes address and masked payment mutations through the Store
+00:01 +6: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... routes address and masked payment mutations through the Store
+00:01 +7: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... routes address and masked payment mutations through the Store
+00:01 +7: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... maps primary success, secondary failure, and idempotent attempt
+00:01 +8: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: ... maps primary success, secondary failure, and idempotent attempt
+00:01 +8: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse
+00:01 +9: <repo>/app/packages/app_data/test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse
+00:01 +9: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_checkout/checkout_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_checkout/checkout_controller_test.dart: loads a non-empty Cart and guards an empty direct entry
+00:01 +1: <repo>/app/packages/app_features/test/feature_checkout/checkout_controller_test.dart: loads a non-empty Cart and guards an empty direct entry
+00:01 +2: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +3: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +4: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +5: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +6: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +7: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +8: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +9: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +10: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +11: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +12: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:01 +13: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:02 +13: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:02 +14: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:02 +15: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:02 +16: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:02 +17: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:02 +18: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:02 +19: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:03 +19: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:03 +20: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:03 +21: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:03 +22: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:03 +23: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:03 +24: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:03 +25: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:03 +25: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:03 +26: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:03 +26: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/checkout_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/checkout_router_test.dart
+00:01 +0: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:01 +1: <repo>/app/apps/demo/test/router/discovery_router_test.dart: guards Search, Promotions and Orders deep links when logged out
+00:01 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +4: <repo>/app/apps/demo/test/router/discovery_router_test.dart: Shop opens Search and Promotions through public routes
+00:02 +5: <repo>/app/apps/demo/test/router/discovery_router_test.dart: Shop opens Search and Promotions through public routes
+00:02 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +9: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +9: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +10: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +10: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +11: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```

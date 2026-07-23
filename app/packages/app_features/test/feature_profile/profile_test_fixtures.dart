@@ -150,7 +150,7 @@ ProductSummary profileTestProduct(
   title: title ?? 'Demo product $number',
   imageAssetKey:
       'assets/images/profile/product_${number.toString().padLeft(2, '0')}.png',
-  displayPrice: r'$17,00',
+  price: Money(currency: Currency.usd, minorUnits: 1700),
   tag: tag,
   popularityCount: 1780,
 );

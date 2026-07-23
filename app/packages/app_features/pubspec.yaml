@@ -29,5 +29,10 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/auth/
+    - assets/images/cart/
+    - assets/images/catalog/
+    - assets/images/catalog/categories/
+    - assets/images/catalog/products/
     - assets/images/profile/
+    - assets/images/wishlist/
     - assets/images/welcome/shoppe_brand.png

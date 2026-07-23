@@ -1,0 +1,194 @@
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh analyze --fatal-infos lib/settings.dart lib/src/settings test/settings && TOOL_WORKDIR=app/packages/app_features bash scripts/dart-tool.sh analyze --fatal-infos lib/api/settings_api.dart lib/feature_settings test/feature_settings && TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/settings && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing settings.dart, settings, settings...
+No issues found!
+Analyzing settings_api.dart, feature_settings, feature_settings...
+No issues found!
+
+00:00 [32m+0[0m: [1m[90mloading test/settings/settings_local_data_source_test.dart[0m[0m
+00:00 [32m+0[0m: test/settings/settings_local_data_source_test.dart: loads defaults, updates in memory, and reconstruction resets[0m
+00:00 [32m+1[0m: test/settings/settings_local_data_source_test.dart: loads defaults, updates in memory, and reconstruction resets[0m
+00:00 [32m+2[0m: test/settings/settings_models_test.dart: ProfileEditInput normalizes name without exposing contact data[0m
+00:00 [32m+3[0m: test/settings/settings_local_data_source_test.dart: updates Profile while preserving the authenticated user id[0m
+00:00 [32m+4[0m: test/settings/settings_local_data_source_test.dart: updates Profile while preserving the authenticated user id[0m
+00:00 [32m+4[0m: test/settings/settings_local_data_source_test.dart: uses stable request keys[0m
+00:00 [32m+5[0m: test/settings/settings_local_data_source_test.dart: uses stable request keys[0m
+00:00 [32m+5[0m: test/settings/settings_local_data_source_test.dart: maps malformed payload and rejected mutation to stable failures[0m
+00:00 [32m+6[0m: test/settings/settings_local_data_source_test.dart: maps malformed payload and rejected mutation to stable failures[0m
+00:00 [32m+6[0m: All tests passed![0m
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_settings/settings_controller_test.dart: loads and updates preferences through the narrow API
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:01 +2: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:01 +3: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:01 +4: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:01 +5: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:02 +5: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:02 +6: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: renders one long Settings page with designed destinations
+00:02 +6: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: updates a selected preference and keeps it after Back
+00:03 +6: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: updates a selected preference and keeps it after Back
+00:03 +7: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: updates a selected preference and keeps it after Back
+00:03 +7: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +8: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +8: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: Delete Cancel keeps session and Confirm calls root once
+00:03 +9: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: Delete Cancel keeps session and Confirm calls root once
+00:03 +9: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +9: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +10: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +10: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:04 +11: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:04 +11: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: keeps Profile fields reachable above keyboard insets
+00:04 +12: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: keeps Profile fields reachable above keyboard insets
+00:04 +12: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: shows retry state and recovers
+00:04 +13: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: shows retry state and recovers
+00:04 +13: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/apps/demo bash scripts/dart-tool.sh analyze --fatal-infos lib/auth/auth_state.dart lib/router/demo_router.dart test/auth/auth_state_test.dart test/router/settings_router_test.dart && TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/auth/auth_state_test.dart test/router/settings_router_test.dart test/router/demo_router_test.dart'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing auth_state.dart, demo_router.dart, auth_state_test.dart, settings_router_test.dart...
+No issues found!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:01 +1: loading <repo>/app/apps/demo/test/router/settings_router_test.dart
+00:01 +1: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +3: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +4: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +5: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:01 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +9: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +10: <repo>/app/apps/demo/test/router/demo_router_test.dart: keeps an authenticated Shop deep link at the real page
+00:02 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +12: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +13: <repo>/app/apps/demo/test/router/demo_router_test.dart: preserves branch child stacks and repeats return to branch root
+00:03 +14: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +15: <repo>/app/apps/demo/test/router/demo_router_test.dart: guards every main branch deep link while logged out
+00:03 +16: <repo>/app/apps/demo/test/router/demo_router_test.dart: guards every main branch deep link while logged out
+00:03 +17: <repo>/app/apps/demo/test/router/demo_router_test.dart: guards every main branch deep link while logged out
+00:03 +17: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:03 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:03 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens every main branch from an authenticated deep link
+00:04 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens every main branch from an authenticated deep link
+00:04 +19: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens every main branch from an authenticated deep link
+00:04 +19: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout from a child branch returns to Welcome
+00:04 +20: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout from a child branch returns to Welcome
+00:04 +20: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:04 +21: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:04 +21: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Auth deep link to Profile
+00:04 +22: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Auth deep link to Profile
+00:04 +22: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens registration and cancels back to Welcome
+00:04 +23: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens registration and cancels back to Welcome
+00:04 +23: <repo>/app/apps/demo/test/router/demo_router_test.dart: registration authenticates once and redirects to Profile
+00:04 +24: <repo>/app/apps/demo/test/router/demo_router_test.dart: registration authenticates once and redirects to Profile
+00:04 +24: <repo>/app/apps/demo/test/router/demo_router_test.dart: Profile uses the avatar returned by registration
+00:04 +25: <repo>/app/apps/demo/test/router/demo_router_test.dart: Profile uses the avatar returned by registration
+00:04 +25: <repo>/app/apps/demo/test/router/demo_router_test.dart: direct Password and Recovery links redirect to Login
+00:05 +25: <repo>/app/apps/demo/test/router/demo_router_test.dart: direct Password and Recovery links redirect to Login
+00:05 +26: <repo>/app/apps/demo/test/router/demo_router_test.dart: direct Password and Recovery links redirect to Login
+00:05 +26: <repo>/app/apps/demo/test/router/demo_router_test.dart: an unregistered email authenticates once and opens Profile
+00:05 +27: <repo>/app/apps/demo/test/router/demo_router_test.dart: an unregistered email authenticates once and opens Profile
+00:05 +27: <repo>/app/apps/demo/test/router/demo_router_test.dart: the reserved password reaches the recovery entry
+00:05 +28: <repo>/app/apps/demo/test/router/demo_router_test.dart: the reserved password reaches the recovery entry
+00:05 +28: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:05 +29: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:05 +29: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:05 +30: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:05 +30: All tests passed!
+
+```

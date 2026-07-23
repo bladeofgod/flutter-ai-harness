@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_data/app_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,7 +82,7 @@ final class _LoginPasswordPageState extends State<LoginPasswordPage> {
                       key: const ValueKey('login-password-dots'),
                       enteredCharacters: controller.enteredPasswordCharacters,
                       showError: controller.showFailedPasswordDots,
-                      onPressed: controller.passwordFocusNode.requestFocus,
+                      onPressed: () => _focusPassword(controller),
                     ),
                   ),
                   Align(
@@ -188,5 +190,14 @@ final class _LoginPasswordPageState extends State<LoginPasswordPage> {
   void _back(LoginController controller) {
     controller.returnToEmail();
     widget.onBack();
+  }
+
+  void _focusPassword(LoginController controller) {
+    final focusNode = controller.passwordFocusNode;
+    if (focusNode.hasFocus) {
+      unawaited(SystemChannels.textInput.invokeMethod<void>('TextInput.show'));
+      return;
+    }
+    focusNode.requestFocus();
   }
 }

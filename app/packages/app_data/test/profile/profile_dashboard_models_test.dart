@@ -106,5 +106,5 @@ ProductSummary _product() => ProductSummary(
   id: 'product-1',
   title: 'Lorem ipsum dolor sit amet consectetur.',
   imageAssetKey: 'assets/images/profile/product_01.png',
-  displayPrice: r'$17,00',
+  price: Money(currency: Currency.usd, minorUnits: 1700),
 );

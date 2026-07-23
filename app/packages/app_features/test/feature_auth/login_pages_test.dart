@@ -120,6 +120,24 @@ void main() {
     );
     await tester.pump();
     expect(controller.passwordFocusNode.hasFocus, isTrue);
+
+    final textInputCalls = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.textInput,
+      (call) async {
+        textInputCalls.add(call.method);
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.textInput,
+        null,
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey('login-password-dots')));
+    await tester.pump();
+    expect(textInputCalls, contains('TextInput.show'));
   });
 
   testWidgets('shows eight red dots after a rejected credential', (

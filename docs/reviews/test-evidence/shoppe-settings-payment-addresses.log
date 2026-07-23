@@ -1,0 +1,803 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings/settings_payment_routes_test.dart test/feature_settings/settings_payment_controller_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +2: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +3: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +4: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +4: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +5: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +5: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +6: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +6: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +7: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +7: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:02 +8: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:02 +8: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/settings_payment
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/settings_payment/settings_payment_local_data_source_test.dart[0m[0m
+00:00 [32m+0[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once[0m
+00:00 [32m+1[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once[0m
+00:00 [32m+1[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource card mutations stay masked and snapshots are immutable[0m
+00:00 [32m+2[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource card mutations stay masked and snapshots are immutable[0m
+00:00 [32m+2[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource records only supplied checkout receipts and is idempotent[0m
+00:00 [32m+3[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource records only supplied checkout receipts and is idempotent[0m
+00:00 [32m+3[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a new fixture restores the fixed profile and empty history[0m
+00:00 [32m+4[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a new fixture restores the fixed profile and empty history[0m
+00:00 [32m+4[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps rejected mutations to a settings failure[0m
+00:00 [32m+5[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps rejected mutations to a settings failure[0m
+00:00 [32m+5[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource rejects malformed receipt payload before storing it[0m
+00:00 [32m+6[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource rejects malformed receipt payload before storing it[0m
+00:00 [32m+6[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart test/router/checkout_router_test.dart test/router/settings_router_test.dart
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +4: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +5: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +9: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Checkout settlement is visible in Payment History
+00:03 +9: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Checkout settlement is visible in Payment History
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The finder "Found 0 widgets with text "History": []" (used in a call to "tap()") could not find any
+matching widgets.
+
+When the exception was thrown, this was the stack:
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2009:7)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1861:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1041:7)
+#3      main.<anonymous closure> (file://<repo>/app/apps/demo/test/router/account_services_router_test.dart:123:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  Checkout settlement is visible in Payment History
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:03 +9 -1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Checkout settlement is visible in Payment History [E]
+  Test failed. See exception logs above.
+  The test description was: Checkout settlement is visible in Payment History
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/apps/demo/test/router/account_services_router_test.dart -p vm --plain-name 'Checkout settlement is visible in Payment History'
+
+00:03 +10 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +10 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +11 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +11 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +12 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +12 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart test/router/checkout_router_test.dart test/router/settings_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +4: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +5: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +8: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +9: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +9: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Checkout settlement is visible in Payment History
+00:03 +10: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +12: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +12: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:04 +12: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:04 +13: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:04 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/settings_payment test/checkout
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/settings_payment/settings_payment_local_data_source_test.dart[0m[0m
+00:00 [32m+0[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once[0m
+00:00 [32m+1[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once[0m
+00:00 [32m+2[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once[0m
+00:00 [32m+3[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+4[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+5[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+6[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+7[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a Settings-created Demo card completes Checkout[0m
+00:00 [32m+8[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a Settings-created Demo card completes Checkout[0m
+00:00 [32m+9[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a Settings-created Demo card completes Checkout[0m
+00:00 [32m+10[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+11[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+12[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+13[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+14[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource rejects malformed receipt payload before storing it[0m
+00:00 [32m+15[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse[0m
+00:00 [32m+16[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps malformed success payloads to invalidResponse[0m
+00:00 [32m+17[0m: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps malformed success payloads to invalidResponse[0m
+00:00 [32m+17[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings/settings_payment_controller_test.dart test/feature_settings/settings_payment_routes_test.dart test/feature_checkout/checkout_controller_test.dart
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: card input validates and never exposes sensitive fields
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: card input validates and never exposes sensitive fields
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: controller applies external checkout profile snapshots
+00:01 +2: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +3: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +4: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +5: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +6: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +7: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +8: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +9: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +10: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +11: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +12: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +13: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +14: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +15: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:03 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:03 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file://<repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart:141:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file://<repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart line 141
+The test description was:
+  card number and security code stay out of semantics
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:03 +19 -1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics [E]
+  Test failed. See exception logs above.
+  The test description was: card number and security code stay out of semantics
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart -p vm --plain-name 'card number and security code stay out of semantics'
+
+00:03 +19 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings/settings_payment_routes_test.dart --plain-name 'card number and security code stay out of semantics'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: card number and security code stay out of semantics
+00:02 +0: card number and security code stay out of semantics
+00:02 +0: card number and security code stay out of semantics
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: true
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file://<repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart:139:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file://<repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart line 139
+The test description was:
+  card number and security code stay out of semantics
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:02 +0 -1: card number and security code stay out of semantics [E]
+  Test failed. See exception logs above.
+  The test description was: card number and security code stay out of semantics
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart -p vm --plain-name 'card number and security code stay out of semantics'
+
+00:02 +0 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings/settings_payment_routes_test.dart --plain-name 'card number and security code stay out of semantics'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart
+00:01 +0: card number and security code stay out of semantics
+00:02 +0: card number and security code stay out of semantics
+00:02 +1: card number and security code stay out of semantics
+00:02 +1: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_settings/settings_payment_controller_test.dart test/feature_settings/settings_payment_routes_test.dart test/feature_checkout/checkout_controller_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: card input validates and never exposes sensitive fields
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: card input validates and never exposes sensitive fields
+00:01 +1: <repo>/app/packages/app_features/test/feature_settings/settings_payment_controller_test.dart: controller applies external checkout profile snapshots
+00:01 +2: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +3: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +4: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +5: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +6: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +7: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +8: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +9: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +10: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +11: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +12: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +13: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +14: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +15: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:01 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: edits an address and cancel keeps remove dialog harmless
+00:02 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card form remains reachable on a narrow viewport
+00:02 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:03 +20: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: card number and security code stay out of semantics
+00:03 +20: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: guards account service deep links while logged out
+00:02 +0: guards account service deep links while logged out
+00:02 +1: guards account service deep links while logged out
+00:02 +1: Profile opens Rewards and local Support through public routes
+00:02 +2: Profile opens Rewards and local Support through public routes
+00:02 +2: Rewards applies its shared Voucher ID in Checkout
+00:02 +3: Rewards applies its shared Voucher ID in Checkout
+00:02 +3: Settings opens shared payment methods and addresses
+00:03 +3: Settings opens shared payment methods and addresses
+00:03 +4: Settings opens shared payment methods and addresses
+00:03 +4: invalid Settings payment child link shows a stable fallback
+00:03 +5: invalid Settings payment child link shows a stable fallback
+00:03 +5: Checkout settlement is visible in Payment History
+00:03 +6: Checkout settlement is visible in Payment History
+00:03 +6: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

@@ -110,6 +110,22 @@ void main() {
       expect(snapshots.single.sessionUserId, isNull);
       expect(snapshots.single.currentUserId, isNull);
     });
+
+    test('composes an injected reset with the Demo session reset', () {
+      var injectedResetCount = 0;
+      var demoResetCount = 0;
+      final coordinator = AuthStateCoordinator(
+        onSessionReset: () => injectedResetCount += 1,
+      );
+      addTearDown(coordinator.dispose);
+      coordinator.attachSessionReset(() => demoResetCount += 1);
+      coordinator.authenticate(_authResult());
+
+      coordinator.logout();
+
+      expect(injectedResetCount, 1);
+      expect(demoResetCount, 1);
+    });
   });
 }
 

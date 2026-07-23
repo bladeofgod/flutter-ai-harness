@@ -11,7 +11,7 @@ void main() {
     late AuthLocalDataSource dataSource;
 
     setUp(() {
-      transport = FixtureApiTransport();
+      transport = _authTransport();
       dataSource = _dataSource(transport);
     });
 
@@ -35,7 +35,7 @@ void main() {
         EmailAddress('Taylor.Reed@example.com'),
       );
       final rebuilt = await _dataSource(
-        FixtureApiTransport(),
+        _authTransport(),
       ).findAccountByEmail(EmailAddress('taylor.reed@example.com'));
       final other = await dataSource.findAccountByEmail(
         EmailAddress('other@example.com'),
@@ -96,7 +96,7 @@ void main() {
     test(
       'returns submitted profile without seeding subsequent login state',
       () async {
-        final dataSource = _dataSource(FixtureApiTransport());
+        final dataSource = _dataSource(_authTransport());
         final input = _registrationInput();
 
         final registered = await dataSource.register(input);
@@ -123,7 +123,7 @@ void main() {
     );
 
     test('allows repeated registration without storing an account', () async {
-      final dataSource = _dataSource(FixtureApiTransport());
+      final dataSource = _dataSource(_authTransport());
       final input = _registrationInput();
 
       final first = await dataSource.register(input);
@@ -135,11 +135,11 @@ void main() {
     test(
       'transport recreation keeps the same synthetic account rule',
       () async {
-        final first = _dataSource(FixtureApiTransport());
+        final first = _dataSource(_authTransport());
         final input = _registrationInput();
         await first.register(input);
 
-        final rebuilt = _dataSource(FixtureApiTransport());
+        final rebuilt = _dataSource(_authTransport());
 
         final found = await rebuilt.findAccountByEmail(input.email);
         expect(found?.displayName, 'Taylor Reed');
@@ -150,7 +150,7 @@ void main() {
 
     test('round-trips defensive in-memory avatar bytes', () async {
       final sourceBytes = Uint8List.fromList(<int>[10, 20, 30]);
-      final dataSource = _dataSource(FixtureApiTransport());
+      final dataSource = _dataSource(_authTransport());
       final input = RegistrationInput(
         email: EmailAddress('memory@example.com'),
         password: Password('memory01'),
@@ -335,6 +335,10 @@ void main() {
 
 AuthLocalDataSource _dataSource(ApiTransport transport) =>
     AuthLocalDataSource(apiClient: ApiClient(transport: transport));
+
+FixtureApiTransport _authTransport() => FixtureApiTransport(
+  handlers: <FixtureRequestHandler>[AuthFixtureHandler()],
+);
 
 RegistrationInput _registrationInput() => RegistrationInput(
   email: EmailAddress('taylor.reed@example.com'),

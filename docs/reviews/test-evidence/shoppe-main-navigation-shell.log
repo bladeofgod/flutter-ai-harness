@@ -1,0 +1,165 @@
+## Command
+
+```text
+bash -lc 'make analyze && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/shared/main_navigation_shell_test.dart test/feature_profile && TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/demo_router_test.dart && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart
+00:02 +0: loading <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart
+00:02 +0: loading <repo>/app/packages/app_features/test/feature_profile/profile_assets_test.dart
+00:02 +0: <repo>/app/packages/app_features/test/feature_profile/profile_assets_test.dart: bundles and decodes every declared Profile raster asset
+00:02 +1: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:02 +2: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:02 +3: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:02 +4: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:02 +5: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:02 +6: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:03 +6: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:03 +7: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:03 +8: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:03 +9: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:03 +10: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_api_test.dart: Registry returns deterministic Domain-only Profile data
+00:03 +11: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:03 +12: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:03 +12: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:03 +13: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:03 +13: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps Profile categories as single-image gradient cards
+00:03 +14: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps Profile categories as single-image gradient cards
+00:03 +14: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: renders retryable error and recovers
+00:03 +15: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: renders retryable error and recovers
+00:03 +15: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:04 +15: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:04 +16: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:04 +16: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: shows stable empty-section states
+00:04 +17: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: shows stable empty-section states
+00:04 +17: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: reacts to user changes and releases the Provider listener
+00:04 +18: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: reacts to user changes and releases the Provider listener
+00:04 +18: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:04 +20: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:04 +20: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/demo_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/demo_router_test.dart
+00:01 +0: redirects a logged-out profile deep link to Welcome
+00:02 +0: redirects a logged-out profile deep link to Welcome
+00:02 +1: redirects a logged-out profile deep link to Welcome
+00:02 +1: redirects a logged-out Shop deep link to Welcome
+00:02 +2: redirects a logged-out Shop deep link to Welcome
+00:02 +2: keeps an authenticated Shop deep link at the real page
+00:02 +3: keeps an authenticated Shop deep link at the real page
+00:02 +3: navigates all five authenticated branches through the Shell
+00:03 +3: navigates all five authenticated branches through the Shell
+00:03 +4: navigates all five authenticated branches through the Shell
+00:03 +4: preserves branch child stacks and repeats return to branch root
+00:03 +5: preserves branch child stacks and repeats return to branch root
+00:03 +5: guards every main branch deep link while logged out
+00:03 +6: guards every main branch deep link while logged out
+00:03 +6: Back leaves a child branch without returning to Auth and keeps scroll
+00:04 +6: Back leaves a child branch without returning to Auth and keeps scroll
+00:04 +7: Back leaves a child branch without returning to Auth and keeps scroll
+00:04 +7: opens every main branch from an authenticated deep link
+00:04 +8: opens every main branch from an authenticated deep link
+00:04 +8: logout from a child branch returns to Welcome
+00:04 +9: logout from a child branch returns to Welcome
+00:04 +9: redirects an authenticated Welcome location to Profile
+00:04 +10: redirects an authenticated Welcome location to Profile
+00:04 +10: redirects an authenticated Auth deep link to Profile
+00:04 +11: redirects an authenticated Auth deep link to Profile
+00:04 +11: opens registration and cancels back to Welcome
+00:04 +12: opens registration and cancels back to Welcome
+00:04 +12: registration authenticates once and redirects to Profile
+00:05 +12: registration authenticates once and redirects to Profile
+00:05 +13: registration authenticates once and redirects to Profile
+00:05 +13: Profile uses the avatar returned by registration
+00:05 +14: Profile uses the avatar returned by registration
+00:05 +14: direct Password and Recovery links redirect to Login
+00:05 +15: direct Password and Recovery links redirect to Login
+00:05 +15: an unregistered email authenticates once and opens Profile
+00:05 +16: an unregistered email authenticates once and opens Profile
+00:05 +16: the reserved password reaches the recovery entry
+00:05 +17: the reserved password reaches the recovery entry
+00:05 +17: logout redirects Profile back to Welcome
+00:05 +18: logout redirects Profile back to Welcome
+00:05 +18: renders the shell error page for an unknown route
+00:05 +19: renders the shell error page for an unknown route
+00:05 +19: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```

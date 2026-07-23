@@ -1,0 +1,139 @@
+## Command
+
+```text
+bash -lc 'make analyze && TOOL_WORKDIR=app/packages/app_data bash scripts/flutter-tool.sh test test/wishlist && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_wishlist && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart
+00:01 +0: loading <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart
+00:02 +0: loading <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart
+00:02 +0: loading <repo>/app/packages/app_data/test/wishlist/wishlist_models_test.dart
+00:02 +0: <repo>/app/packages/app_data/test/wishlist/wishlist_models_test.dart: WishlistDate validates calendar dates and crosses month boundaries
+00:02 +1: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:02 +2: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:02 +3: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:02 +3: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: removes idempotently until empty
+00:02 +4: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: removes idempotently until empty
+00:02 +4: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: handler instances isolate state and reconstruction restores fixture
+00:02 +5: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: handler instances isolate state and reconstruction restores fixture
+00:02 +5: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: uses stable request keys
+00:02 +6: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: uses stable request keys
+00:02 +6: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: maps malformed payload to invalidResponse
+00:02 +7: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: maps malformed payload to invalidResponse
+00:02 +7: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: rejects invalid mutation payload without changing state
+00:02 +8: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: rejects invalid mutation payload without changing state
+00:02 +8: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart
+00:02 +0: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart
+00:02 +0: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist loads data and removes optimistically once
+00:02 +1: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist loads data and removes optimistically once
+00:02 +2: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist loads data and removes optimistically once
+00:02 +2: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist exposes failure and retry recovery
+00:02 +3: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist exposes failure and retry recovery
+00:02 +3: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist ignores stale full snapshots from concurrent removals
+00:02 +4: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist ignores stale full snapshots from concurrent removals
+00:02 +4: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed filters deterministic dates
+00:02 +5: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed filters deterministic dates
+00:02 +5: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: calendar cancel and Back preserve the committed date
+00:02 +6: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: calendar cancel and Back preserve the committed date
+00:02 +6: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed exposes failure and retry recovery
+00:02 +7: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed exposes failure and retry recovery
+00:02 +7: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_assets_test.dart
+00:02 +7: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_assets_test.dart: Wishlist Figma assets are bundled and decodable
+00:02 +8: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_assets_test.dart: Wishlist Figma assets are bundled and decodable
+00:02 +8: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart
+00:02 +8: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:03 +8: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:03 +9: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:03 +9: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: removing the last item switches to empty recommendations
+00:03 +10: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: removing the last item switches to empty recommendations
+00:03 +10: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty state exposes semantics and remains scrollable
+00:03 +11: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty state exposes semantics and remains scrollable
+00:03 +11: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty recommendations expose explicit public actions
+00:04 +11: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty recommendations expose explicit public actions
+00:04 +12: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty recommendations expose explicit public actions
+00:04 +12: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: route opens date picker, commits and cancels selection
+00:04 +13: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: route opens date picker, commits and cancels selection
+00:04 +13: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+00:05 +13: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+00:05 +14: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+00:05 +14: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```

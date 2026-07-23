@@ -1,0 +1,326 @@
+## Command
+
+```text
+bash -lc 'make analyze && TOOL_WORKDIR=app/packages/app_data bash scripts/flutter-tool.sh test test/search && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_search test/feature_auth && TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/discovery_router_test.dart && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_data/test/search/search_models_test.dart
+00:01 +0: loading <repo>/app/packages/app_data/test/search/search_models_test.dart
+00:01 +0: loading <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart
+00:01 +0: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:01 +1: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:01 +2: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:01 +3: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:01 +4: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:01 +4: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: returns an empty result when text or typed filter does not match
+00:01 +5: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: returns an empty result when text or typed filter does not match
+00:01 +5: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: returns one fixed recognized label and stable products
+00:01 +6: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: returns one fixed recognized label and stable products
+00:01 +6: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: image transport payload contains no bytes or file metadata
+00:01 +7: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: image transport payload contains no bytes or file metadata
+00:01 +7: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: maps malformed fixture output to invalidResponse
+00:01 +8: <repo>/app/packages/app_data/test/search/search_local_data_source_test.dart: maps malformed fixture output to invalidResponse
+00:01 +8: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +1: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +2: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +3: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +4: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +5: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +6: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +7: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +8: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +9: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:01 +10: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +10: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +11: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +12: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +13: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +14: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +15: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +16: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +17: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +18: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:02 +19: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:03 +19: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:03 +20: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:03 +21: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:03 +22: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:03 +23: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:03 +24: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:03 +25: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: handles compact, landscape, scaled text and keyboard insets
+00:03 +26: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: handles compact, landscape, scaled text and keyboard insets
+00:03 +27: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: handles compact, landscape, scaled text and keyboard insets
+00:03 +28: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: handles compact, landscape, scaled text and keyboard insets
+00:03 +29: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: Recovery switches choices and Next has no business effect
+00:03 +30: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: Recovery switches choices and Next has no business effect
+00:03 +30: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: all flow states remain reachable with keyboard constraints
+00:03 +31: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: all flow states remain reachable with keyboard constraints
+00:03 +31: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: (tearDownAll)
+00:03 +31: loading <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart
+00:03 +31: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +32: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +33: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +34: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +35: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +36: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +37: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:03 +38: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +38: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +39: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +40: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +41: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +42: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +43: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +44: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +45: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +46: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +47: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +48: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +49: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:04 +50: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:04 +51: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:04 +52: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:04 +53: <repo>/app/packages/app_features/test/feature_auth/registration_controller_test.dart: defaults to the United Kingdom and exposes the approved countries
+00:04 +54: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +55: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +56: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +57: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +58: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +59: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +60: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +61: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +62: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +63: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:04 +64: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:05 +64: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:05 +65: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:05 +66: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:05 +67: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:05 +68: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:05 +68: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:05 +69: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:05 +69: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: Cancel and system back clear the form through one callback
+00:05 +70: <repo>/app/packages/app_features/test/feature_auth/registration_assets_test.dart: bundles and parses the registration bubbles SVG safely
+00:05 +71: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:05 +72: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:05 +73: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:05 +73: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: (tearDownAll)
+00:05 +73: All tests passed!
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/discovery_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/discovery_router_test.dart
+00:01 +0: guards Search, Promotions and Orders deep links when logged out
+00:01 +1: guards Search, Promotions and Orders deep links when logged out
+00:01 +1: Shop opens Search and Promotions through public routes
+00:02 +1: Shop opens Search and Promotions through public routes
+00:02 +2: Shop opens Search and Promotions through public routes
+00:02 +2: opens authenticated Orders Activity outside the Shell
+00:02 +3: opens authenticated Orders Activity outside the Shell
+00:02 +3: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                             28.7s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Building com.example.demoApp for device (ios)...
+Running Xcode build...
+Xcode build done.                                            0.8s
+Failed to build iOS app
+Uncategorized (Xcode): Unable to find a destination matching the provided destination specifier:
+		{ generic:1, platform:iOS }
+
+	Ineligible destinations for the "Runner" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+
+Encountered error while building for device.
+
+```

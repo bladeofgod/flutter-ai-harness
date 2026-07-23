@@ -1,0 +1,452 @@
+## Command
+
+```text
+make check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/check-prerequisites.sh
+[prerequisites] ripgrep 已就绪。
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 110 files (0 changed) in 1.22 seconds.
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+bash scripts/dart-tool.sh run tool/validate_ui_specs.dart
+[spec-check] 当前没有 UI 行为 Spec，跳过。
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+bash scripts/quality/test-ui-specs.sh
+[spec-test] UI 行为 Spec、静态审计与失败 Fixture 通过。
+bash scripts/quality/test-integration-runner.sh
+[integration-runner-test] Integration Test Runner Fixture 通过。
+bash scripts/git-hooks/test-pre-commit.sh
+[hook-test] Git Hook 安装冲突、pre-commit 与 pre-push 门禁检查通过。
+bash scripts/quality/evidence-lint.sh
+[evidence-lint] 测试证据脱敏检查通过。
+bash scripts/quality/test-evidence.sh
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-test] 证据采集、脱敏和门禁 Fixture 通过。
+bash scripts/quality/test-prerequisites.sh
+[prerequisites-test] ripgrep 前置检查与 Make 依赖边界 Fixture 通过。
+bash scripts/proto/check.sh
+[proto-check] Demo 尚未定义 Proto，跳过同步检查。
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:03 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:03 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:03 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:03 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:03 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:03 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:03 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:03 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:03 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:03 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:03 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:03 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:03 +6: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:03 +6: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:03 +6: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:03 +7: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:03 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:04 +7: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:04 +8: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects a logged-out profile deep link to Welcome
+00:04 +9: <repo>/app/apps/demo/test/demo_app_test.dart: opens registration from the primary welcome action
+00:04 +10: <repo>/app/apps/demo/test/demo_app_test.dart: opens registration from the primary welcome action
+00:04 +11: <repo>/app/apps/demo/test/demo_app_test.dart: opens registration from the primary welcome action
+00:04 +12: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:04 +13: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:04 +14: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:05 +14: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Welcome location to Profile
+00:05 +15: <repo>/app/apps/demo/test/demo_app_test.dart: main reuses the Flutter test binding
+00:05 +16: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Auth deep link to Profile
+00:05 +17: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects an authenticated Auth deep link to Profile
+00:05 +17: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens registration and cancels back to Welcome
+00:05 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: opens registration and cancels back to Welcome
+00:05 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: registration authenticates once and redirects to Profile
+00:06 +18: <repo>/app/apps/demo/test/router/demo_router_test.dart: registration authenticates once and redirects to Profile
+00:06 +19: <repo>/app/apps/demo/test/router/demo_router_test.dart: registration authenticates once and redirects to Profile
+00:06 +19: <repo>/app/apps/demo/test/router/demo_router_test.dart: Profile uses the avatar returned by registration
+00:06 +20: <repo>/app/apps/demo/test/router/demo_router_test.dart: Profile uses the avatar returned by registration
+00:06 +20: <repo>/app/apps/demo/test/router/demo_router_test.dart: direct Password and Recovery links redirect to Login
+00:06 +21: <repo>/app/apps/demo/test/router/demo_router_test.dart: direct Password and Recovery links redirect to Login
+00:06 +21: <repo>/app/apps/demo/test/router/demo_router_test.dart: an unregistered email authenticates once and opens Profile
+00:06 +22: <repo>/app/apps/demo/test/router/demo_router_test.dart: an unregistered email authenticates once and opens Profile
+00:06 +22: <repo>/app/apps/demo/test/router/demo_router_test.dart: the reserved password reaches the recovery entry
+00:06 +23: <repo>/app/apps/demo/test/router/demo_router_test.dart: the reserved password reaches the recovery entry
+00:06 +23: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:06 +24: <repo>/app/apps/demo/test/router/demo_router_test.dart: logout redirects Profile back to Welcome
+00:06 +24: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:06 +25: <repo>/app/apps/demo/test/router/demo_router_test.dart: renders the shell error page for an unknown route
+00:06 +25: All tests passed!
+[test] app_core
+
+00:00 [32m+0[0m: [1m[90mloading test/network/api_client_test.dart[0m[0m
+00:00 [32m+0[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success[0m
+00:00 [32m+1[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient passes through a transport failure response[0m
+00:00 [32m+2[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception[0m
+00:00 [32m+3[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception[0m
+00:00 [32m+4[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions[0m
+00:00 [32m+5[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type[0m
+00:00 [32m+6[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString[0m
+00:00 [32m+7[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload[0m
+00:00 [32m+8[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message[0m
+00:00 [32m+9[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload[0m
+00:00 [32m+10[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes[0m
+00:00 [32m+11[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages[0m
+00:00 [32m+12[0m: All tests passed![0m
+[test] app_data
+
+00:00 [32m+0[0m: [1m[90mloading test/fixture/fixture_api_transport_test.dart[0m[0m
+00:00 [32m+0[0m: test/fixture/fixture_api_transport_test.dart: dispatches requests to the owning handler[0m
+00:00 [32m+1[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+2[0m: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input[0m
+00:00 [32m+3[0m: test/fixture/fixture_api_transport_test.dart: unknown requests keep the transport boundary explicit[0m
+00:00 [32m+4[0m: test/fixture/fixture_api_transport_test.dart: unknown requests keep the transport boundary explicit[0m
+00:00 [32m+4[0m: test/auth/auth_models_test.dart: EmailAddress rejects malformed input without echoing it[0m
+00:00 [32m+5[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+6[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+7[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+8[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+9[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+10[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+11[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+12[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+13[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+14[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+15[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+16[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account[0m
+00:00 [32m+17[0m: test/catalog/catalog_models_test.dart: Shop Dashboard owns immutable ordered groups[0m
+00:00 [32m+18[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+19[0m: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime[0m
+00:00 [32m+19[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture synthesizes stable distinct users for every valid email[0m
+00:00 [32m+20[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture synthesizes stable distinct users for every valid email[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture synthesizes stable distinct users for every valid email[0m
+00:00 [32m+21[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture logs in with the published demo fixture[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture logs in with the published demo fixture[0m
+00:00 [32m+22[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture accepts any non-reserved eight-character password[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture accepts any non-reserved eight-character password[0m
+00:00 [32m+23[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture maps the reserved demo password to a stable failure[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture maps the reserved demo password to a stable failure[0m
+00:00 [32m+24[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture does not expose fixture credentials through diagnostics[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: stateless login fixture does not expose fixture credentials through diagnostics[0m
+00:00 [32m+25[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture returns submitted profile without seeding subsequent login state[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture returns submitted profile without seeding subsequent login state[0m
+00:00 [32m+26[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture allows repeated registration without storing an account[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture allows repeated registration without storing an account[0m
+00:00 [32m+27[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture transport recreation keeps the same synthetic account rule[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture transport recreation keeps the same synthetic account rule[0m
+00:00 [32m+28[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: stateless registration fixture round-trips defensive in-memory avatar bytes[0m
+00:00 [32m+29[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+30[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps malformed fixture payload to invalidResponse[0m
+00:00 [32m+30[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+31[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes value object parsing failures from payloads[0m
+00:00 [32m+31[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+32[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary normalizes inconsistent auth snapshots from payloads[0m
+00:00 [32m+32[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+33[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary rejects out-of-range memory image bytes[0m
+00:00 [32m+33[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+34[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary uses stable keys for lookup, registration, and login[0m
+00:00 [32m+34[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+35[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary maps transport failures and preserves their original stack[0m
+00:00 [32m+35[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+36[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary does not hide unexpected mapper programming errors[0m
+00:00 [32m+36[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+37[0m: test/auth/auth_local_data_source_test.dart: mapper and failure boundary outgoing request diagnostics redact password payloads[0m
+00:00 [32m+37[0m: [1m[90mloading test/catalog/catalog_local_data_source_test.dart[0m[0m
+00:00 [32m+37[0m: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture[0m
+00:00 [32m+38[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+39[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+40[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+41[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+42[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+43[0m: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots[0m
+00:00 [32m+43[0m: test/profile/profile_dashboard_models_test.dart: Flash Sale exposes a static, padded display countdown[0m
+00:00 [32m+44[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+45[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+46[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+47[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order[0m
+00:00 [32m+47[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture is stable across repeated reads[0m
+00:00 [32m+48[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture is stable across repeated reads[0m
+00:00 [32m+48[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture uses only the approved local Profile image keys[0m
+00:00 [32m+49[0m: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture uses only the approved local Profile image keys[0m
+00:00 [32m+49[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps all empty sections without inventing fallback content[0m
+00:00 [32m+50[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps all empty sections without inventing fallback content[0m
+00:00 [32m+50[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes malformed structures to invalidResponse[0m
+00:00 [32m+51[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes malformed structures to invalidResponse[0m
+00:00 [32m+51[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes invalid Domain values from payloads[0m
+00:00 [32m+52[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries normalizes invalid Domain values from payloads[0m
+00:00 [32m+52[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps unavailable rejection to a stable failure[0m
+00:00 [32m+53[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps unavailable rejection to a stable failure[0m
+00:00 [32m+53[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps transport failures and preserves their stack[0m
+00:00 [32m+54[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries maps transport failures and preserves their stack[0m
+00:00 [32m+54[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries does not hide unexpected mapper programming errors[0m
+00:00 [32m+55[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries does not hide unexpected mapper programming errors[0m
+00:00 [32m+55[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries uses the stable Profile Dashboard request key[0m
+00:00 [32m+56[0m: test/profile/profile_dashboard_local_data_source_test.dart: empty and failure boundaries uses the stable Profile Dashboard request key[0m
+00:00 [32m+56[0m: All tests passed![0m
+[test] app_features
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:02 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:03 +0: loading <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart
+00:03 +0: loading <repo>/app/packages/app_features/test/feature_catalog/catalog_api_test.dart
+00:03 +0: <repo>/app/packages/app_features/test/feature_catalog/catalog_api_test.dart: Local Catalog API exposes Domain data from its data source
+00:03 +1: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: (setUpAll)
+00:03 +1: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_controller_test.dart: moves from loading to Shop Domain data
+00:03 +2: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:03 +3: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:04 +4: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:04 +5: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:04 +6: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +6: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +7: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +8: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +9: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +10: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +11: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +12: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +13: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +14: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +15: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:05 +15: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: keeps every designed section in one vertical owner
+00:05 +16: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: keeps every designed section in one vertical owner
+00:05 +16: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: provides bounded horizontal product rails
+00:06 +16: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: provides bounded horizontal product rails
+00:06 +17: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: provides bounded horizontal product rails
+00:06 +17: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: renders stable empty groups and a responsive recommendation grid
+00:06 +18: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: renders stable empty groups and a responsive recommendation grid
+00:06 +18: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: renders retryable error and recovers
+00:06 +19: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: renders retryable error and recovers
+00:06 +19: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: keeps loading stable until Catalog data arrives
+00:06 +20: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: keeps loading stable until Catalog data arrives
+00:06 +20: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: releases the Shop Controller when the page leaves
+00:06 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +22: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +23: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +24: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +25: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +26: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +27: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +28: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:07 +29: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:08 +29: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:08 +30: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:08 +30: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps section order and the bottom navigation fixed
+00:08 +31: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps section order and the bottom navigation fixed
+00:08 +31: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:08 +32: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:08 +33: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:08 +34: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:08 +35: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:08 +36: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:08 +37: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +37: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +38: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +39: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +40: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +41: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:09 +42: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:10 +42: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: matches the email-step reference structure
+00:10 +43: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:10 +44: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:10 +45: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:10 +46: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:10 +47: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: renders the identified user and an intermediate dot state
+00:11 +47: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: renders the identified user and an intermediate dot state
+00:11 +48: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:11 +49: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:11 +50: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:12 +50: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:12 +51: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +51: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +52: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +53: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +54: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +55: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +56: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +57: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +58: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +59: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +59: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +60: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:14 +61: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:14 +62: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:14 +63: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: successful flow only returns one AuthResult to root assembly
+00:14 +64: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: Cancel closes the route Controller exactly once
+00:15 +64: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: Cancel closes the route Controller exactly once
+00:15 +65: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +66: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +67: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +68: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +69: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +70: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +71: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +72: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +73: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +74: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +75: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +76: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +76: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +77: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +78: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +79: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +80: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +81: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +82: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +83: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +84: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +85: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +86: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +87: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +88: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:16 +88: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +89: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +90: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +91: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +91: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +92: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +92: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: Cancel and system back clear the form through one callback
+00:16 +93: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: Cancel and system back clear the form through one callback
+00:16 +93: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:17 +93: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:17 +94: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: keeps Done and Cancel reachable across constrained layouts
+00:17 +94: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: (tearDownAll)
+00:17 +94: All tests passed!
+[test] app_ui
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:01 +0: light theme exposes the Shoppe design tokens
+00:01 +1: light theme exposes the Shoppe design tokens
+00:01 +1: bundles the local Shoppe fonts
+00:01 +2: bundles the local Shoppe fonts
+00:01 +2: All tests passed!
+
+```

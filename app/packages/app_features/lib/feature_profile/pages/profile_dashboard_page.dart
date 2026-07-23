@@ -3,9 +3,12 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../shared/catalog/catalog_asset_image.dart';
+import '../../shared/catalog/catalog_components.dart';
 import '../controllers/profile_dashboard_controller.dart';
-import '../widgets/profile_asset_image.dart';
+import '../controllers/profile_rewards_summary_controller.dart';
 import '../widgets/profile_components.dart';
+import '../widgets/profile_memory_image.dart';
 
 const _contentMaxWidth = 420.0;
 
@@ -40,9 +43,30 @@ TextStyle _nunito({
 );
 
 final class ProfileDashboardPage extends StatelessWidget {
-  const ProfileDashboardPage({required this.controller, super.key});
+  const ProfileDashboardPage({
+    required this.controller,
+    this.onOpenSettings,
+    this.onOpenOrderStatus,
+    this.onOpenActivity,
+    this.onOpenRewards,
+    this.onOpenSupport,
+    this.onOpenProduct,
+    this.onOpenCategory,
+    this.onOpenStory,
+    this.rewardsSummaryController,
+    super.key,
+  });
 
   final ProfileDashboardController controller;
+  final VoidCallback? onOpenSettings;
+  final ValueChanged<OrderStatus>? onOpenOrderStatus;
+  final VoidCallback? onOpenActivity;
+  final VoidCallback? onOpenRewards;
+  final VoidCallback? onOpenSupport;
+  final ValueChanged<String>? onOpenProduct;
+  final ValueChanged<String>? onOpenCategory;
+  final ValueChanged<Story>? onOpenStory;
+  final ProfileRewardsSummaryController? rewardsSummaryController;
 
   @override
   Widget build(BuildContext context) => GetBuilder<ProfileDashboardController>(
@@ -60,6 +84,15 @@ final class ProfileDashboardPage extends StatelessWidget {
             ProfileDashboardData(:final dashboard) => _ProfileDashboardContent(
               controller: managedController,
               dashboard: dashboard,
+              onOpenSettings: onOpenSettings,
+              onOpenOrderStatus: onOpenOrderStatus,
+              onOpenActivity: onOpenActivity,
+              onOpenRewards: onOpenRewards,
+              onOpenSupport: onOpenSupport,
+              onOpenProduct: onOpenProduct,
+              onOpenCategory: onOpenCategory,
+              onOpenStory: onOpenStory,
+              rewardsSummaryController: rewardsSummaryController,
             ),
             ProfileDashboardError(:final failure) => _ProfileError(
               failure: failure,
@@ -68,7 +101,6 @@ final class ProfileDashboardPage extends StatelessWidget {
           };
         }),
       ),
-      bottomNavigationBar: const ProfileBottomNavigationBar(),
     ),
   );
 }
@@ -129,10 +161,28 @@ final class _ProfileDashboardContent extends StatelessWidget {
   const _ProfileDashboardContent({
     required this.controller,
     required this.dashboard,
+    this.onOpenSettings,
+    this.onOpenOrderStatus,
+    this.onOpenActivity,
+    this.onOpenRewards,
+    this.onOpenSupport,
+    this.onOpenProduct,
+    this.onOpenCategory,
+    this.onOpenStory,
+    this.rewardsSummaryController,
   });
 
   final ProfileDashboardController controller;
   final ProfileDashboard dashboard;
+  final VoidCallback? onOpenSettings;
+  final ValueChanged<OrderStatus>? onOpenOrderStatus;
+  final VoidCallback? onOpenActivity;
+  final VoidCallback? onOpenRewards;
+  final VoidCallback? onOpenSupport;
+  final ValueChanged<String>? onOpenProduct;
+  final ValueChanged<String>? onOpenCategory;
+  final ValueChanged<Story>? onOpenStory;
+  final ProfileRewardsSummaryController? rewardsSummaryController;
 
   @override
   Widget build(BuildContext context) => CustomScrollView(
@@ -140,7 +190,15 @@ final class _ProfileDashboardContent extends StatelessWidget {
     slivers: [
       _ProfileSliver(
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-        child: Obx(() => _ProfileHeader(user: controller.currentUser)),
+        child: Obx(
+          () => _ProfileHeader(
+            user: controller.currentUser,
+            onOpenSettings: onOpenSettings,
+            onOpenActivity: onOpenActivity,
+            onOpenRewards: onOpenRewards,
+            onOpenSupport: onOpenSupport,
+          ),
+        ),
       ),
       if (dashboard.announcement case final announcement?) ...[
         _ProfileSliver(
@@ -148,57 +206,92 @@ final class _ProfileDashboardContent extends StatelessWidget {
           child: _AnnouncementCard(announcement: announcement),
         ),
       ],
+      if (rewardsSummaryController case final controller?)
+        _ProfileSliver(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+          child: _ProfileRewardsSummary(
+            controller: controller,
+            onOpenRewards: onOpenRewards,
+          ),
+        ),
       _ProfileSliver(
         key: const ValueKey('profile-section-recently-viewed'),
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const ProfileSectionHeader(title: 'Recently viewed'),
+            const CatalogSectionHeader(title: 'Recently viewed'),
             const SizedBox(height: 10),
-            _RecentlyViewedList(items: dashboard.recentlyViewed),
+            _RecentlyViewedList(
+              items: dashboard.recentlyViewed,
+              onOpenProduct: onOpenProduct,
+            ),
           ],
         ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-orders'),
         padding: const EdgeInsets.fromLTRB(20, 17, 20, 0),
-        child: _OrdersSection(summary: dashboard.orders),
+        child: _OrdersSection(
+          summary: dashboard.orders,
+          onOpenOrderStatus: onOpenOrderStatus,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-stories'),
         padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
-        child: _StoriesSection(stories: dashboard.stories),
+        child: _StoriesSection(
+          stories: dashboard.stories,
+          onOpenStory: onOpenStory,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-new-items'),
         padding: const EdgeInsets.fromLTRB(20, 26, 20, 0),
-        child: _NewItemsSection(products: dashboard.newItems),
+        child: _NewItemsSection(
+          products: dashboard.newItems,
+          onOpenProduct: onOpenProduct,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-most-popular'),
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
-        child: _MostPopularSection(products: dashboard.mostPopular),
+        child: _MostPopularSection(
+          products: dashboard.mostPopular,
+          onOpenProduct: onOpenProduct,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-categories'),
         padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
-        child: _CategoriesSection(categories: dashboard.categories),
+        child: _CategoriesSection(
+          categories: dashboard.categories,
+          onOpenCategory: onOpenCategory,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-flash-sale'),
         padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
-        child: _FlashSaleSection(flashSale: dashboard.flashSale),
+        child: _FlashSaleSection(
+          flashSale: dashboard.flashSale,
+          onOpenProduct: onOpenProduct,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-top-products'),
         padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
-        child: _TopProductsSection(products: dashboard.topProducts),
+        child: _TopProductsSection(
+          products: dashboard.topProducts,
+          onOpenProduct: onOpenProduct,
+        ),
       ),
       _ProfileSliver(
         key: const ValueKey('profile-section-recommendations'),
         padding: const EdgeInsets.fromLTRB(20, 25, 20, 28),
-        child: _RecommendationsSection(products: dashboard.recommendations),
+        child: _RecommendationsSection(
+          products: dashboard.recommendations,
+          onOpenProduct: onOpenProduct,
+        ),
       ),
     ],
   );
@@ -221,10 +314,50 @@ final class _ProfileSliver extends StatelessWidget {
   );
 }
 
+final class _ProfileProductTapTarget extends StatelessWidget {
+  const _ProfileProductTapTarget({
+    required this.productId,
+    required this.onOpenProduct,
+    required this.child,
+  });
+
+  final String productId;
+  final ValueChanged<String>? onOpenProduct;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (onOpenProduct == null) {
+      return child;
+    }
+    return InkWell(
+      key: ValueKey<String>('profile-open-product-$productId'),
+      borderRadius: BorderRadius.circular(9),
+      onTap: () => onOpenProduct!(productId),
+      child: child,
+    );
+  }
+}
+
+String _recentlyViewedProductId(String id) {
+  final number = RegExp(r'\d+$').firstMatch(id)?.group(0);
+  return number == null ? id : 'product-$number';
+}
+
 final class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.user});
+  const _ProfileHeader({
+    required this.user,
+    this.onOpenSettings,
+    this.onOpenActivity,
+    this.onOpenRewards,
+    this.onOpenSupport,
+  });
 
   final UserEntity? user;
+  final VoidCallback? onOpenSettings;
+  final VoidCallback? onOpenActivity;
+  final VoidCallback? onOpenRewards;
+  final VoidCallback? onOpenSupport;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -235,33 +368,52 @@ final class _ProfileHeader extends StatelessWidget {
           _UserAvatar(user: user),
           const SizedBox(width: 12),
           Expanded(
-            child: Container(
-              height: 36,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  'My Activity',
-                  style: _raleway(
-                    size: 16,
-                    weight: FontWeight.w500,
-                    color: Colors.white,
+            child: InkWell(
+              key: const ValueKey('profile-open-activity'),
+              onTap: onOpenActivity,
+              borderRadius: BorderRadius.circular(18),
+              child: Container(
+                height: 36,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'My Activity',
+                    style: _raleway(
+                      size: 16,
+                      weight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 18),
-          const _HeaderIcon(icon: Icons.credit_card_outlined),
+          _HeaderIcon(
+            key: const ValueKey('profile-open-rewards'),
+            icon: Icons.card_giftcard_outlined,
+            tooltip: 'Rewards',
+            onTap: onOpenRewards,
+          ),
           const SizedBox(width: 6),
-          const _HeaderIcon(icon: Icons.chat_bubble_outline),
+          _HeaderIcon(
+            key: const ValueKey('profile-open-support'),
+            icon: Icons.chat_bubble_outline,
+            tooltip: 'Support chat',
+            onTap: onOpenSupport,
+          ),
           const SizedBox(width: 6),
-          const _HeaderIcon(icon: Icons.settings_outlined),
+          _HeaderIcon(
+            key: const ValueKey('profile-open-settings'),
+            icon: Icons.settings_outlined,
+            onTap: onOpenSettings,
+          ),
         ],
       ),
       const SizedBox(height: 20),
@@ -276,22 +428,112 @@ final class _ProfileHeader extends StatelessWidget {
   );
 }
 
-final class _HeaderIcon extends StatelessWidget {
-  const _HeaderIcon({required this.icon});
+final class _ProfileRewardsSummary extends StatelessWidget {
+  const _ProfileRewardsSummary({required this.controller, this.onOpenRewards});
 
-  final IconData icon;
+  final ProfileRewardsSummaryController controller;
+  final VoidCallback? onOpenRewards;
 
   @override
-  Widget build(BuildContext context) => SizedBox.square(
-    dimension: 36,
-    child: DecoratedBox(
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceMuted,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(icon, size: 19, color: AppColors.primary),
-    ),
+  Widget build(
+    BuildContext context,
+  ) => GetBuilder<ProfileRewardsSummaryController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    dispose: (state) => state.controller.onDelete(),
+    builder: (managedController) => Obx(() {
+      final state = managedController.state;
+      return switch (state) {
+        ProfileRewardsSummaryLoading() => const SizedBox(
+          key: ValueKey('profile-rewards-summary-loading'),
+          height: 74,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+        ProfileRewardsSummaryError() => const SizedBox.shrink(),
+        ProfileRewardsSummaryData(:final summary) => Material(
+          key: const ValueKey('profile-rewards-summary'),
+          color: AppColors.primarySurface,
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            onTap: onOpenRewards,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 13, 12, 13),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 19,
+                    backgroundColor: AppColors.primary,
+                    child: Icon(
+                      Icons.card_giftcard_outlined,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${summary.balance.availablePoints} reward points',
+                          style: _raleway(size: 15),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _profileRewardsSummaryLabel(summary),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: _nunito(
+                            size: 12,
+                            color: const Color(0xFF697386),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right, color: AppColors.primary),
+                ],
+              ),
+            ),
+          ),
+        ),
+      };
+    }),
   );
+}
+
+String _profileRewardsSummaryLabel(RewardSummary summary) {
+  final expiringVoucher = summary.expiringVoucher;
+  return expiringVoucher == null
+      ? '${summary.usableVoucherCount} vouchers available'
+      : '${summary.usableVoucherCount} vouchers · '
+            '${expiringVoucher.voucher.title} expires soon';
+}
+
+final class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon({required this.icon, this.onTap, this.tooltip, super.key});
+
+  final IconData icon;
+  final VoidCallback? onTap;
+  final String? tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    final iconButton = IconButton(
+      tooltip: tooltip ?? (icon == Icons.settings_outlined ? 'Settings' : null),
+      onPressed: onTap,
+      icon: Icon(icon, size: 19, color: AppColors.primary),
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+      style: IconButton.styleFrom(
+        backgroundColor: AppColors.surfaceMuted,
+        shape: const CircleBorder(),
+      ),
+    );
+    return SizedBox.square(dimension: 36, child: iconButton);
+  }
 }
 
 final class _UserAvatar extends StatelessWidget {
@@ -303,13 +545,13 @@ final class _UserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final avatar = user?.avatar;
     final image = switch (avatar?.kind) {
-      UserAvatarKind.asset when avatar?.assetKey != null => ProfileAssetImage(
+      UserAvatarKind.asset when avatar?.assetKey != null => CatalogAssetImage(
         assetKey: avatar!.assetKey!,
       ),
       UserAvatarKind.memory when avatar?.bytes != null => ProfileMemoryImage(
         bytes: avatar!.bytes!,
       ),
-      _ => const ProfileImagePlaceholder(),
+      _ => const CatalogImagePlaceholder(),
     };
 
     return Semantics(
@@ -389,14 +631,15 @@ final class _AnnouncementCard extends StatelessWidget {
 }
 
 final class _RecentlyViewedList extends StatelessWidget {
-  const _RecentlyViewedList({required this.items});
+  const _RecentlyViewedList({required this.items, this.onOpenProduct});
 
   final List<RecentlyViewed> items;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const ProfileEmptySection(label: 'No recently viewed items yet.');
+      return const CatalogEmptySection(label: 'No recently viewed items yet.');
     }
     return SizedBox(
       height: 60,
@@ -407,7 +650,7 @@ final class _RecentlyViewedList extends StatelessWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 9),
         itemBuilder: (context, index) {
           final item = items[index];
-          return Semantics(
+          final child = Semantics(
             label: 'Recently viewed item ${index + 1}',
             image: true,
             child: SizedBox.square(
@@ -427,11 +670,16 @@ final class _RecentlyViewedList extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(5),
                   child: ClipOval(
-                    child: ProfileAssetImage(assetKey: item.imageAssetKey),
+                    child: CatalogAssetImage(assetKey: item.imageAssetKey),
                   ),
                 ),
               ),
             ),
+          );
+          return _ProfileProductTapTarget(
+            productId: _recentlyViewedProductId(item.id),
+            onOpenProduct: onOpenProduct,
+            child: child,
           );
         },
       ),
@@ -440,24 +688,32 @@ final class _RecentlyViewedList extends StatelessWidget {
 }
 
 final class _OrdersSection extends StatelessWidget {
-  const _OrdersSection({required this.summary});
+  const _OrdersSection({required this.summary, this.onOpenOrderStatus});
 
   final OrderSummary summary;
+  final ValueChanged<OrderStatus>? onOpenOrderStatus;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'My Orders'),
+      const CatalogSectionHeader(title: 'My Orders'),
       const SizedBox(height: 10),
       if (summary.items.isEmpty)
-        const ProfileEmptySection(label: 'No order updates yet.')
+        const CatalogEmptySection(label: 'No order updates yet.')
       else
         Row(
           children: [
             for (var index = 0; index < summary.items.length; index += 1) ...[
               if (index > 0) const SizedBox(width: 8),
-              Expanded(child: _OrderPill(item: summary.items[index])),
+              Expanded(
+                child: _OrderPill(
+                  item: summary.items[index],
+                  onTap: onOpenOrderStatus == null
+                      ? null
+                      : () => onOpenOrderStatus!(summary.items[index].status),
+                ),
+              ),
             ],
           ],
         ),
@@ -466,9 +722,10 @@ final class _OrdersSection extends StatelessWidget {
 }
 
 final class _OrderPill extends StatelessWidget {
-  const _OrderPill({required this.item});
+  const _OrderPill({required this.item, this.onTap});
 
   final OrderStatusSummary item;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -482,22 +739,27 @@ final class _OrderPill extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            height: 36,
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: AppColors.primarySurface,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: _raleway(
-                  size: 16,
-                  weight: FontWeight.w500,
-                  color: AppColors.primary,
+          InkWell(
+            key: ValueKey<String>('profile-order-${item.status.name}'),
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(18),
+            child: Container(
+              height: 36,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: AppColors.primarySurface,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: _raleway(
+                    size: 16,
+                    weight: FontWeight.w500,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ),
@@ -518,18 +780,19 @@ final class _OrderPill extends StatelessWidget {
 }
 
 final class _StoriesSection extends StatelessWidget {
-  const _StoriesSection({required this.stories});
+  const _StoriesSection({required this.stories, this.onOpenStory});
 
   final List<Story> stories;
+  final ValueChanged<Story>? onOpenStory;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'Stories'),
+      const CatalogSectionHeader(title: 'Stories'),
       const SizedBox(height: 9),
       if (stories.isEmpty)
-        const ProfileEmptySection(label: 'No stories available.')
+        const CatalogEmptySection(label: 'No stories available.')
       else
         SizedBox(
           height: 175,
@@ -538,8 +801,12 @@ final class _StoriesSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: stories.length,
             separatorBuilder: (context, index) => const SizedBox(width: 6),
-            itemBuilder: (context, index) =>
-                ProfileStoryCard(story: stories[index]),
+            itemBuilder: (context, index) => ProfileStoryCard(
+              story: stories[index],
+              onTap: onOpenStory == null
+                  ? null
+                  : () => onOpenStory!(stories[index]),
+            ),
           ),
         ),
     ],
@@ -547,18 +814,19 @@ final class _StoriesSection extends StatelessWidget {
 }
 
 final class _NewItemsSection extends StatelessWidget {
-  const _NewItemsSection({required this.products});
+  const _NewItemsSection({required this.products, this.onOpenProduct});
 
   final List<ProductSummary> products;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'New Items', showSeeAll: true),
+      const CatalogSectionHeader(title: 'New Items', showSeeAll: true),
       const SizedBox(height: 9),
       if (products.isEmpty)
-        const ProfileEmptySection(label: 'No new items available.')
+        const CatalogEmptySection(label: 'No new items available.')
       else
         SizedBox(
           height: 218,
@@ -567,8 +835,11 @@ final class _NewItemsSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
             separatorBuilder: (context, index) => const SizedBox(width: 7),
-            itemBuilder: (context, index) =>
-                ProfileProductCard(product: products[index]),
+            itemBuilder: (context, index) => _ProfileProductTapTarget(
+              productId: products[index].id,
+              onOpenProduct: onOpenProduct,
+              child: CatalogProductCard(product: products[index]),
+            ),
           ),
         ),
     ],
@@ -576,18 +847,19 @@ final class _NewItemsSection extends StatelessWidget {
 }
 
 final class _MostPopularSection extends StatelessWidget {
-  const _MostPopularSection({required this.products});
+  const _MostPopularSection({required this.products, this.onOpenProduct});
 
   final List<ProductSummary> products;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'Most Popular', showSeeAll: true),
+      const CatalogSectionHeader(title: 'Most Popular', showSeeAll: true),
       const SizedBox(height: 9),
       if (products.isEmpty)
-        const ProfileEmptySection(label: 'No popular items available.')
+        const CatalogEmptySection(label: 'No popular items available.')
       else
         SizedBox(
           height: 154,
@@ -596,8 +868,11 @@ final class _MostPopularSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
             separatorBuilder: (context, index) => const SizedBox(width: 7),
-            itemBuilder: (context, index) =>
-                ProfilePopularCard(product: products[index]),
+            itemBuilder: (context, index) => _ProfileProductTapTarget(
+              productId: products[index].id,
+              onOpenProduct: onOpenProduct,
+              child: CatalogPopularCard(product: products[index]),
+            ),
           ),
         ),
     ],
@@ -605,18 +880,19 @@ final class _MostPopularSection extends StatelessWidget {
 }
 
 final class _CategoriesSection extends StatelessWidget {
-  const _CategoriesSection({required this.categories});
+  const _CategoriesSection({required this.categories, this.onOpenCategory});
 
   final List<CategorySummary> categories;
+  final ValueChanged<String>? onOpenCategory;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'Categories', showSeeAll: true),
+      const CatalogSectionHeader(title: 'Categories', showSeeAll: true),
       const SizedBox(height: 9),
       if (categories.isEmpty)
-        const ProfileEmptySection(label: 'No categories available.')
+        const CatalogEmptySection(label: 'No categories available.')
       else
         LayoutBuilder(
           builder: (context, constraints) {
@@ -630,7 +906,12 @@ final class _CategoriesSection extends StatelessWidget {
                   SizedBox(
                     width: width,
                     height: 96,
-                    child: ProfileCategoryCard(category: category),
+                    child: ProfileCategoryCard(
+                      category: category,
+                      onTap: onOpenCategory == null
+                          ? null
+                          : () => onOpenCategory!(category.id),
+                    ),
                   ),
               ],
             );
@@ -641,9 +922,10 @@ final class _CategoriesSection extends StatelessWidget {
 }
 
 final class _FlashSaleSection extends StatelessWidget {
-  const _FlashSaleSection({required this.flashSale});
+  const _FlashSaleSection({required this.flashSale, this.onOpenProduct});
 
   final FlashSale flashSale;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -668,7 +950,7 @@ final class _FlashSaleSection extends StatelessWidget {
       ),
       const SizedBox(height: 9),
       if (flashSale.products.isEmpty)
-        const ProfileEmptySection(label: 'No Flash Sale items available.')
+        const CatalogEmptySection(label: 'No Flash Sale items available.')
       else
         LayoutBuilder(
           builder: (context, constraints) {
@@ -681,7 +963,11 @@ final class _FlashSaleSection extends StatelessWidget {
                 for (final product in flashSale.products)
                   SizedBox.square(
                     dimension: width,
-                    child: ProfileSaleCard(product: product),
+                    child: _ProfileProductTapTarget(
+                      productId: product.id,
+                      onOpenProduct: onOpenProduct,
+                      child: CatalogSaleCard(product: product),
+                    ),
                   ),
               ],
             );
@@ -692,18 +978,19 @@ final class _FlashSaleSection extends StatelessWidget {
 }
 
 final class _TopProductsSection extends StatelessWidget {
-  const _TopProductsSection({required this.products});
+  const _TopProductsSection({required this.products, this.onOpenProduct});
 
   final List<ProductSummary> products;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      const ProfileSectionHeader(title: 'Top Products'),
+      const CatalogSectionHeader(title: 'Top Products'),
       const SizedBox(height: 9),
       if (products.isEmpty)
-        const ProfileEmptySection(label: 'No top products available.')
+        const CatalogEmptySection(label: 'No top products available.')
       else
         SizedBox(
           height: 88,
@@ -712,8 +999,11 @@ final class _TopProductsSection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
             separatorBuilder: (context, index) => const SizedBox(width: 9),
-            itemBuilder: (context, index) =>
-                ProfileTopProductCard(product: products[index]),
+            itemBuilder: (context, index) => _ProfileProductTapTarget(
+              productId: products[index].id,
+              onOpenProduct: onOpenProduct,
+              child: CatalogTopProductCard(product: products[index]),
+            ),
           ),
         ),
     ],
@@ -721,9 +1011,10 @@ final class _TopProductsSection extends StatelessWidget {
 }
 
 final class _RecommendationsSection extends StatelessWidget {
-  const _RecommendationsSection({required this.products});
+  const _RecommendationsSection({required this.products, this.onOpenProduct});
 
   final List<ProductSummary> products;
+  final ValueChanged<String>? onOpenProduct;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -745,7 +1036,7 @@ final class _RecommendationsSection extends StatelessWidget {
       ),
       const SizedBox(height: 9),
       if (products.isEmpty)
-        const ProfileEmptySection(label: 'No recommendations available.')
+        const CatalogEmptySection(label: 'No recommendations available.')
       else
         LayoutBuilder(
           builder: (context, constraints) {
@@ -759,107 +1050,16 @@ final class _RecommendationsSection extends StatelessWidget {
                   SizedBox(
                     width: width,
                     height: 250,
-                    child: ProfileRecommendationCard(product: product),
+                    child: _ProfileProductTapTarget(
+                      productId: product.id,
+                      onOpenProduct: onOpenProduct,
+                      child: CatalogRecommendationCard(product: product),
+                    ),
                   ),
               ],
             );
           },
         ),
     ],
-  );
-}
-
-final class ProfileBottomNavigationBar extends StatelessWidget {
-  const ProfileBottomNavigationBar({super.key});
-
-  @override
-  Widget build(BuildContext context) => DecoratedBox(
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Color(0x29000000),
-          blurRadius: 2,
-          offset: Offset(0, -1),
-        ),
-      ],
-    ),
-    child: SafeArea(
-      top: false,
-      child: SizedBox(
-        key: const ValueKey('profile-bottom-navigation'),
-        height: 50,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _BottomNavigationItem(label: 'Shop', icon: Icons.home_outlined),
-            _BottomNavigationItem(
-              label: 'Wishlist',
-              icon: Icons.favorite_border,
-            ),
-            _BottomNavigationItem(
-              label: 'Categories',
-              icon: Icons.receipt_long_outlined,
-            ),
-            _BottomNavigationItem(
-              label: 'Cart',
-              icon: Icons.shopping_bag_outlined,
-            ),
-            _BottomNavigationItem(
-              label: 'Profile',
-              icon: Icons.person_outline,
-              selected: true,
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-final class _BottomNavigationItem extends StatelessWidget {
-  const _BottomNavigationItem({
-    required this.label,
-    required this.icon,
-    this.selected = false,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) => Semantics(
-    label: label,
-    selected: selected,
-    child: SizedBox(
-      width: 44,
-      height: 40,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ExcludeSemantics(
-            child: Icon(
-              icon,
-              size: 25,
-              color: selected ? AppColors.textPrimary : AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 3),
-          SizedBox(
-            width: 9,
-            height: 3,
-            child: selected
-                ? const DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.textPrimary,
-                      borderRadius: BorderRadius.all(Radius.circular(2)),
-                    ),
-                  )
-                : null,
-          ),
-        ],
-      ),
-    ),
   );
 }

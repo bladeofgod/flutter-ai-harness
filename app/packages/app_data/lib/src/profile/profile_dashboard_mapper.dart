@@ -94,10 +94,24 @@ abstract final class _ProfileDashboardFixtureMapper {
       id: _string(values, 'id'),
       title: _string(values, 'title'),
       imageAssetKey: _string(values, 'imageAssetKey'),
-      displayPrice: _optionalString(values, 'displayPrice'),
+      price: _optionalMoney(values),
       tag: _optionalString(values, 'tag'),
       popularityCount: _optionalInteger(values, 'popularityCount'),
     );
+  }
+
+  static Money? _optionalMoney(Map<String, Object?> values) {
+    final minorUnits = values['priceMinorUnits'];
+    final currency = values['currency'];
+    if (minorUnits == null && currency == null) {
+      return null;
+    }
+    if (minorUnits is! int || currency is! String) {
+      throw const ProfileDashboardFailure(
+        ProfileDashboardFailureCode.invalidResponse,
+      );
+    }
+    return Money(currency: Currency.fromCode(currency), minorUnits: minorUnits);
   }
 
   static CategorySummary _category(Object? payload) {

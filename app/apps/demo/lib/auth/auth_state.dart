@@ -29,16 +29,35 @@ final class UserService {
 /// Commits session and user changes before publishing one consistent snapshot.
 final class AuthStateCoordinator extends ChangeNotifier
     implements CurrentUserProvider {
-  AuthStateCoordinator()
+  AuthStateCoordinator({void Function()? onSessionReset})
     : _authService = AuthService(),
-      _userService = UserService();
+      _userService = UserService(),
+      _onSessionReset = onSessionReset;
+
+  final ChangeNotifier _authRefreshNotifier = ChangeNotifier();
 
   final AuthService _authService;
   final UserService _userService;
+  void Function()? _onSessionReset;
+
+  void attachSessionReset(void Function() reset) {
+    final existing = _onSessionReset;
+    if (existing == null) {
+      _onSessionReset = reset;
+      return;
+    }
+    _onSessionReset = () {
+      existing();
+      reset();
+    };
+  }
 
   AuthSession? get session => _authService.session;
 
   bool get isLoggedIn => _authService.isLoggedIn;
+
+  /// 仅在登录态边界变化时通知 Router，避免资料编辑触发路由重建。
+  Listenable get authRefreshListenable => _authRefreshNotifier;
 
   @override
   UserEntity? get value => _userService.currentUser;
@@ -52,6 +71,7 @@ final class AuthStateCoordinator extends ChangeNotifier
     _userService._replaceCurrentUser(result.user);
     _authService._replaceSession(result.session);
     _assertConsistentState();
+    _authRefreshNotifier.notifyListeners();
     notifyListeners();
   }
 
@@ -76,9 +96,11 @@ final class AuthStateCoordinator extends ChangeNotifier
       return;
     }
 
+    _onSessionReset?.call();
     _authService._replaceSession(null);
     _userService._replaceCurrentUser(null);
     _assertConsistentState();
+    _authRefreshNotifier.notifyListeners();
     notifyListeners();
   }
 
@@ -93,5 +115,11 @@ final class AuthStateCoordinator extends ChangeNotifier
           currentSession.userId == currentUser.id;
       return isLoggedOut || isMatchingLogin;
     }(), 'Auth session and current user must form one consistent snapshot.');
+  }
+
+  @override
+  void dispose() {
+    _authRefreshNotifier.dispose();
+    super.dispose();
   }
 }

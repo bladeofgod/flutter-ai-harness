@@ -2,25 +2,18 @@ import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 
+import '../fixture/fixture_api_transport.dart';
 import 'auth_failure.dart';
 import 'auth_models.dart';
 
-part '../profile/profile_dashboard_fixture.dart';
 part 'auth_local_fixture.dart';
 part 'auth_local_mapper.dart';
 
-/// `app_data` 内部 LocalDataSource 与 Fixture Transport 的稳定请求键。
-///
-/// 根包入口不会导出该类型。
-abstract final class FixtureRequestKeys {
-  static const String profileDashboard = 'profile.dashboard.load';
-}
-
 /// Auth Fixture 支持的确定性、无状态 Transport。
-final class FixtureApiTransport implements ApiTransport {
-  static const String _lookupAccountKey = 'auth.account.lookup';
-  static const String _registerKey = 'auth.register';
-  static const String _loginKey = 'auth.login';
+final class AuthFixtureHandler implements FixtureRequestHandler {
+  static const String lookupAccountKey = 'auth.account.lookup';
+  static const String registerKey = 'auth.register';
+  static const String loginKey = 'auth.login';
   static const String _rominaEmail = 'romina@example.com';
   static const String _invalidDemoPassword = '00000000';
   static const String _defaultCallingCode = '+1';
@@ -31,14 +24,18 @@ final class FixtureApiTransport implements ApiTransport {
   };
 
   @override
-  Future<ApiResponse<Object?>> send(ApiRequest request) async {
+  Set<String> get requestKeys => const <String>{
+    lookupAccountKey,
+    registerKey,
+    loginKey,
+  };
+
+  @override
+  Future<ApiResponse<Object?>> handle(ApiRequest request) async {
     return switch (request.key) {
-      _lookupAccountKey => _lookupAccount(request.payload),
-      _registerKey => _register(request.payload),
-      _loginKey => _login(request.payload),
-      FixtureRequestKeys.profileDashboard => ApiResponse<Object?>.success(
-        _profileDashboardFixturePayload(),
-      ),
+      lookupAccountKey => _lookupAccount(request.payload),
+      registerKey => _register(request.payload),
+      loginKey => _login(request.payload),
       _ => throw UnknownApiRequestException(request.key),
     };
   }
@@ -134,8 +131,7 @@ final class FixtureApiTransport implements ApiTransport {
   }
 
   @override
-  String toString() =>
-      'FixtureApiTransport(mode: stateless, credentials: <redacted>)';
+  String toString() => 'AuthFixtureHandler(credentials: <redacted>)';
 }
 
 /// 通过 [ApiClient] 访问 Auth Fixture，并在本包内完成 Payload 映射。
@@ -148,7 +144,7 @@ final class AuthLocalDataSource {
   Future<UserEntity?> findAccountByEmail(EmailAddress email) async {
     final response = await _apiClient.send<Object?>(
       ApiRequest(
-        key: FixtureApiTransport._lookupAccountKey,
+        key: AuthFixtureHandler.lookupAccountKey,
         payload: <String, Object?>{'email': email.value},
       ),
     );
@@ -162,7 +158,7 @@ final class AuthLocalDataSource {
   Future<AuthResult> register(RegistrationInput input) async {
     final response = await _apiClient.send<Object?>(
       ApiRequest(
-        key: FixtureApiTransport._registerKey,
+        key: AuthFixtureHandler.registerKey,
         payload: <String, Object?>{
           'email': input.email.value,
           'password': input.password.toSecret(),
@@ -178,7 +174,7 @@ final class AuthLocalDataSource {
   Future<AuthResult> login(LoginInput input) async {
     final response = await _apiClient.send<Object?>(
       ApiRequest(
-        key: FixtureApiTransport._loginKey,
+        key: AuthFixtureHandler.loginKey,
         payload: <String, Object?>{
           'email': input.email.value,
           'password': input.password.toSecret(),

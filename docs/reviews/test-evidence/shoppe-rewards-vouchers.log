@@ -1,0 +1,1292 @@
+## Command
+
+```text
+bash -lc 'make analyze && TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards && make lint'
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+
+  error - packages/app_data/lib/src/rewards/rewards_mapper.dart:38:16 - The method 'Voucher' isn't defined for the type '_RewardsFixtureMapper'. Try correcting the name to the name of an existing method, or defining a method named 'Voucher'. - undefined_method
+  error - packages/app_data/lib/src/rewards/rewards_mapper.dart:57:10 - Undefined class 'Money'. Try changing the name to the name of an existing class, or creating a class with the name 'Money'. - undefined_class
+  error - packages/app_data/lib/src/rewards/rewards_mapper.dart:59:12 - The method 'Money' isn't defined for the type '_RewardsFixtureMapper'. Try correcting the name to the name of an existing method, or defining a method named 'Money'. - undefined_method
+  error - packages/app_data/lib/src/rewards/rewards_mapper.dart:60:17 - Undefined name 'Currency'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+  error - packages/app_data/lib/src/settings_payment/settings_payment_fixture_handler.dart:7:54 - Classes and mixins can only implement other classes and mixins. Try specifying a class or mixin, or remove the name from the list. - implements_non_class
+  error - packages/app_data/test/rewards/rewards_local_data_source_test.dart:43:24 - Const variables must be initialized with a constant value. Try changing the initializer to be a constant expression. - const_initialized_with_non_constant_value
+  error - packages/app_data/test/rewards/rewards_local_data_source_test.dart:43:24 - The constructor being called isn't a const constructor. Try removing 'const' from the constructor invocation. - const_with_non_const
+warning - packages/app_data/lib/src/settings_payment/settings_payment_fixture_handler.dart:30:19 - The getter doesn't override an inherited getter. Try updating this class to match the superclass, or removing the override annotation. - override_on_non_overriding_member
+warning - packages/app_data/lib/src/settings_payment/settings_payment_fixture_handler.dart:42:32 - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation. - override_on_non_overriding_member
+
+9 issues found.
+make: *** [analyze] Error 3
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh analyze lib/rewards.dart lib/src/rewards test/rewards && TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards && make lint'
+```
+
+Exit code: 3
+
+## Output
+
+```text
+Analyzing rewards.dart, rewards, rewards...
+
+  error - lib/src/rewards/rewards_mapper.dart:57:10 - Undefined class 'Money'. Try changing the name to the name of an existing class, or creating a class with the name 'Money'. - undefined_class
+  error - lib/src/rewards/rewards_mapper.dart:59:12 - The method 'Money' isn't defined for the type '_RewardsFixtureMapper'. Try correcting the name to the name of an existing method, or defining a method named 'Money'. - undefined_method
+  error - lib/src/rewards/rewards_mapper.dart:60:17 - Undefined name 'Currency'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+
+3 issues found.
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh analyze lib/rewards.dart lib/src/rewards test/rewards && TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards && make lint'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing rewards.dart, rewards, rewards...
+No issues found!
+
+00:00 [32m+0[0m: [1m[90mloading test/rewards/rewards_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/rewards/rewards_models_test.dart: computes validated Reward progress and immutable voucher summaries[0m
+00:00 [32m+1[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+2[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+3[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+3[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+4[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+4[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource consumes a reminder once and rebuilds from handler state[0m
+00:00 [32m+5[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource consumes a reminder once and rebuilds from handler state[0m
+00:00 [32m+5[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+6[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+6[0m: All tests passed![0m
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+No issues found! (ran in 2.6s)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: loads, selects, and consumes a reminder idempotently
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: loads, selects, and consumes a reminder idempotently
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: represents empty and retryable error states
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: represents empty and retryable error states
+00:01 +2: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +6: All tests passed!
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+
+   info • Sort directive sections alphabetically • test/feature_rewards/rewards_routes_test.dart:3:1 • directives_ordering
+
+1 issue found. (ran in 2.1s)
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+No issues found! (ran in 1.6s)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart: exposes a read-only Profile summary and reminder mutation
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Rewards are unavailable": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file://<repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart:137:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file://<repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart line 137
+The test description was:
+  renders empty and retryable error page states
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:02 +7 -1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states [E]
+  Test failed. See exception logs above.
+  The test description was: renders empty and retryable error page states
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart -p vm --plain-name 'renders empty and retryable error page states'
+
+00:02 +7 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+
+   info • The import of 'package:app_data/rewards.dart' is unnecessary because all of the used elements are also provided by the import of 'package:app_data/app_data.dart' • test/feature_rewards/rewards_test_fixtures.dart:3:8 • unnecessary_import
+
+1 issue found. (ran in 2.0s)
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+No issues found! (ran in 2.0s)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart: exposes a read-only Profile summary and reminder mutation
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:03 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:03 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:03 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:03 +8: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:03 +8: All tests passed!
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh analyze lib/rewards.dart lib/src/rewards test/rewards && TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards && make lint'
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Analyzing rewards.dart, rewards, rewards...
+
+   info - test/rewards/rewards_local_data_source_test.dart:3:8 - The import of 'package:app_data/rewards.dart' is unnecessary because all of the used elements are also provided by the import of 'package:app_data/app_data.dart'. Try removing the import directive. - unnecessary_import
+   info - test/rewards/rewards_models_test.dart:2:8 - The import of 'package:app_data/rewards.dart' is unnecessary because all of the used elements are also provided by the import of 'package:app_data/app_data.dart'. Try removing the import directive. - unnecessary_import
+
+2 issues found.
+
+00:00 [32m+0[0m: [1m[90mloading test/rewards/rewards_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/rewards/rewards_models_test.dart: computes validated Reward progress and immutable voucher summaries[0m
+00:00 [32m+1[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+2[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+3[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+3[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+4[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource uses the same Voucher contract and values as Checkout[0m
+00:00 [32m+4[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource consumes a reminder once and rebuilds from handler state[0m
+00:00 [32m+5[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource consumes a reminder once and rebuilds from handler state[0m
+00:00 [32m+5[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+6[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+6[0m: All tests passed![0m
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+No issues found! (ran in 2.3s)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart: exposes a read-only Profile summary and reminder mutation
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: loads, selects, and consumes a reminder idempotently
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 2 widgets with text "Redeemed": [
+            Text("Redeemed", inherit: true, color: Color(alpha: 1.0000, red: 0.1255, green: 0.1255,
+blue: 0.1255, colorSpace: ColorSpace.sRGB), family: packages/app_ui/Nunito Sans, size: 11.0, weight:
+700, letterSpacing: 0.0, textAlign: center, dependencies: [DefaultSelectionStyle, DefaultTextStyle,
+MediaQuery]),
+            Text("Redeemed", inherit: true, color: Color(alpha: 1.0000, red: 0.1255, green: 0.1255,
+blue: 0.1255, colorSpace: ColorSpace.sRGB), family: packages/app_ui/Nunito Sans, size: 11.0, weight:
+700, letterSpacing: 0.0, textAlign: center, dependencies: [DefaultSelectionStyle, DefaultTextStyle,
+MediaQuery]),
+          ]>
+   Which: is too many
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file://<repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart:105:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file://<repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart line 105
+The test description was:
+  keeps vouchers reachable on compact scaled viewports
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:02 +6 -1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports [E]
+  Test failed. See exception logs above.
+  The test description was: keeps vouchers reachable on compact scaled viewports
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart -p vm --plain-name 'keeps vouchers reachable on compact scaled viewports'
+
+00:02 +6 -1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:02 +7 -1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:02 +7 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+bash -lc 'TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh analyze lib/api/rewards_api.dart lib/feature_rewards test/feature_rewards && TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing 3 items...
+No issues found! (ran in 1.9s)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:01 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:01 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:02 +8: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:02 +8: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards test/feature_profile/profile_dashboard_page_test.dart test/feature_checkout/checkout_controller_test.dart test/feature_checkout/checkout_route_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart: exposes a read-only Profile summary and reminder mutation
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_controller_test.dart: loads, selects, and consumes a reminder idempotently
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +5: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +6: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +7: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +8: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +9: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +10: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +11: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +12: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +13: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +14: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +15: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +16: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +17: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +18: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:02 +19: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:03 +19: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:03 +20: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:03 +21: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +22: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +23: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +24: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps Profile categories as single-image gradient cards
+00:03 +25: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:03 +26: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:03 +27: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:03 +28: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps a stable loading layout until data arrives
+00:03 +28: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:03 +29: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:03 +30: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:03 +31: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +31: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +32: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +33: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: direct child links share one Controller and cancel drafts
+00:04 +34: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:04 +35: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: shows a retryable load error without changing the Cart
+00:04 +36: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: shows a retryable load error without changing the Cart
+00:04 +36: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:04 +37: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:04 +37: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:04 +38: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:04 +38: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart test/router/checkout_router_test.dart test/router/settings_router_test.dart
+```
+
+Exit code: 1
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +0: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +4: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +5: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +6: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Rewards applies its shared Voucher ID in Checkout
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test:
+The finder "Found 0 widgets with key [<'voucher-use-voucher-shoppe-five'>]: []" (used in a call to
+"tap()") could not find any matching widgets.
+
+When the exception was thrown, this was the stack:
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2009:7)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1861:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1041:7)
+#3      main.<anonymous closure> (file://<repo>/app/apps/demo/test/router/account_services_router_test.dart:62:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  Rewards applies its shared Voucher ID in Checkout
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:02 +6 -1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Rewards applies its shared Voucher ID in Checkout [E]
+  Test failed. See exception logs above.
+  The test description was: Rewards applies its shared Voucher ID in Checkout
+
+
+To run this test again: <home>/fvm/versions/3.35.7/bin/cache/dart-sdk/bin/dart test <repo>/app/apps/demo/test/router/account_services_router_test.dart -p vm --plain-name 'Rewards applies its shared Voucher ID in Checkout'
+
+00:03 +7 -1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Settings opens shared payment methods and addresses
+00:03 +8 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +9 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +9 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +10 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +10 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +11 -1: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +11 -1: Some tests failed.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart test/router/checkout_router_test.dart test/router/settings_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/checkout_router_test.dart
+00:01 +0: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:02 +0: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:02 +1: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:02 +2: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:02 +3: <repo>/app/apps/demo/test/router/checkout_router_test.dart: opens Checkout from Cart without the main Shell
+00:02 +4: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +5: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:02 +6: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:02 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +7: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +8: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Settings opens shared payment methods and addresses
+00:03 +9: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +10: <repo>/app/apps/demo/test/router/settings_router_test.dart: Delete Cancel keeps login and Confirm redirects to Welcome
+00:03 +10: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens an authenticated Settings deep link in Profile branch
+00:03 +11: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +12: <repo>/app/apps/demo/test/router/settings_router_test.dart: Profile My Activity opens the Orders Activity route
+00:03 +12: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_data bash scripts/dart-tool.sh test test/rewards test/checkout/checkout_local_data_source_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 [32m+0[0m: [1m[90mloading test/rewards/rewards_models_test.dart[0m[0m
+00:00 [32m+0[0m: test/rewards/rewards_models_test.dart: computes validated Reward progress and immutable voucher summaries[0m
+00:00 [32m+1[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+2[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain[0m
+00:00 [32m+3[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+4[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+5[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+6[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher[0m
+00:00 [32m+6[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource rejects consumed and non-expiring reminders consistently[0m
+00:00 [32m+7[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource rejects consumed and non-expiring reminders consistently[0m
+00:00 [32m+8[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource routes address and masked payment mutations through the Store[0m
+00:00 [32m+9[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+10[0m: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource maps missing vouchers and malformed responses to stable failures[0m
+00:00 [32m+10[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+11[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt[0m
+00:00 [32m+11[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse[0m
+00:00 [32m+12[0m: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse[0m
+00:00 [32m+12[0m: All tests passed![0m
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_rewards test/feature_profile/profile_rewards_summary_controller_test.dart test/feature_profile/profile_dashboard_page_test.dart test/feature_checkout/checkout_controller_test.dart test/feature_checkout/checkout_route_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_rewards/rewards_api_test.dart: exposes a read-only Profile summary and reminder mutation
+00:01 +1: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +2: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +3: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +4: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:01 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +5: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:02 +6: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:02 +7: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +8: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +9: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +10: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +11: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +12: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +13: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +14: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +15: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +16: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +17: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +18: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:02 +19: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +20: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:02 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:03 +21: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:03 +22: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:03 +23: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:03 +24: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +25: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +26: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:03 +27: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps Profile categories as single-image gradient cards
+00:03 +28: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:04 +28: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:04 +29: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:04 +30: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: validates and saves an address with keyboard insets
+00:04 +31: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: shows stable empty-section states
+00:04 +32: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:04 +33: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:04 +34: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +35: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:04 +36: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: direct child links share one Controller and cancel drafts
+00:04 +37: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: buildProfileRoutes creates the real Profile destination
+00:04 +38: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: shows a retryable load error without changing the Cart
+00:04 +39: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: shows a retryable load error without changing the Cart
+00:04 +39: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:04 +40: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:04 +40: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:04 +41: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: exposes selected card, total, actions, and progress semantics
+00:04 +41: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh test test/router/account_services_router_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+23 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/router/account_services_router_test.dart
+00:01 +0: guards account service deep links while logged out
+00:02 +0: guards account service deep links while logged out
+00:02 +1: guards account service deep links while logged out
+00:02 +1: Profile opens Rewards and local Support through public routes
+00:03 +1: Profile opens Rewards and local Support through public routes
+00:03 +2: Profile opens Rewards and local Support through public routes
+00:03 +2: Rewards applies its shared Voucher ID in Checkout
+00:03 +3: Rewards applies its shared Voucher ID in Checkout
+00:03 +3: Settings opens shared payment methods and addresses
+00:03 +4: Settings opens shared payment methods and addresses
+00:03 +4: invalid Settings payment child link shows a stable fallback
+00:03 +5: invalid Settings payment child link shows a stable fallback
+00:03 +5: Checkout settlement is visible in Payment History
+00:03 +6: Checkout settlement is visible in Payment History
+00:03 +6: All tests passed!
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

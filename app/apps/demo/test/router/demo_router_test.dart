@@ -22,6 +22,354 @@ void main() {
     expect(find.text('Hello, Romina!'), findsNothing);
   });
 
+  testWidgets('redirects a logged-out Shop deep link to Welcome', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+
+    await tester.pumpWidget(const DemoApp(initialLocation: shopRoutePath));
+    await tester.pump();
+
+    expect(find.text('Shoppe'), findsOneWidget);
+    expect(find.text('Big Sale'), findsNothing);
+  });
+
+  testWidgets('keeps an authenticated Shop deep link at the real page', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+    final registry = FeaturesRegistry.local();
+    final authState = AuthStateCoordinator();
+    addTearDown(authState.dispose);
+    authState.authenticate(await _login(registry));
+
+    await tester.pumpWidget(
+      DemoApp(
+        featuresRegistry: registry,
+        authStateCoordinator: authState,
+        initialLocation: shopRoutePath,
+      ),
+    );
+    await _pumpProfile(tester);
+
+    expect(find.text('Shop'), findsOneWidget);
+    expect(find.text('Big Sale'), findsOneWidget);
+    expect(find.byType(BottomNavigationBar), findsNothing);
+  });
+
+  testWidgets('navigates all five authenticated branches through the Shell', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+    final registry = FeaturesRegistry.local();
+    final authState = AuthStateCoordinator();
+    addTearDown(authState.dispose);
+    authState.authenticate(await _login(registry));
+    final router = createDemoRouter(
+      featuresRegistry: registry,
+      authStateCoordinator: authState,
+      initialLocation: profileRoutePath,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await _pumpProfile(tester);
+    expect(
+      find.byKey(const ValueKey('main-bottom-navigation')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Profile'), findsOneWidget);
+
+    for (final destination in <({String label, String path, String content})>[
+      (label: 'Shop', path: shopRoutePath, content: 'Big Sale'),
+      (label: 'Categories', path: categoriesRoutePath, content: 'All Items'),
+      (label: 'Wishlist', path: wishlistRoutePath, content: 'Wishlist'),
+      (label: 'Cart', path: cartRoutePath, content: 'Cart'),
+      (label: 'Profile', path: profileRoutePath, content: 'Hello, Romina!'),
+    ]) {
+      await tester.tap(
+        find.byKey(
+          ValueKey<String>(
+            'main-navigation-${destination.label.toLowerCase()}',
+          ),
+        ),
+      );
+      await _pumpProfile(tester);
+      expect(router.routeInformationProvider.value.uri.path, destination.path);
+      expect(find.text(destination.content), findsOneWidget);
+      expect(
+        find.byKey(
+          ValueKey<String>(
+            'main-navigation-${destination.label.toLowerCase()}',
+          ),
+        ),
+        findsOneWidget,
+      );
+    }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'preserves branch child stacks and repeats return to branch root',
+    (tester) async {
+      _setPhoneViewport(tester);
+      final registry = FeaturesRegistry.local();
+      final authState = AuthStateCoordinator();
+      addTearDown(authState.dispose);
+      authState.authenticate(await _login(registry));
+      final router = createDemoRouter(
+        featuresRegistry: registry,
+        authStateCoordinator: authState,
+        initialLocation: profileRoutePath,
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await _pumpProfile(tester);
+      await tester.tap(find.byKey(const ValueKey('main-navigation-wishlist')));
+      await _pumpProfile(tester);
+      await tester.tap(find.byKey(const ValueKey('open-recently-viewed')));
+      await tester.pump();
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('recently-viewed-scroll')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('main-navigation-shop')));
+      await _pumpProfile(tester);
+      await tester.tap(find.byKey(const ValueKey('main-navigation-wishlist')));
+      await _pumpProfile(tester);
+      expect(
+        find.byKey(const ValueKey('recently-viewed-scroll')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('main-navigation-wishlist')));
+      await _pumpProfile(tester);
+      expect(find.text('Wishlist'), findsOneWidget);
+      expect(find.byKey(const ValueKey('wishlist-scroll')), findsOneWidget);
+      expect(router.routeInformationProvider.value.uri.path, wishlistRoutePath);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('guards every main branch deep link while logged out', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+    const mainLinks = <String>[
+      shopRoutePath,
+      wishlistRoutePath,
+      categoriesRoutePath,
+      cartRoutePath,
+      profileRoutePath,
+      recentlyViewedRoutePath,
+    ];
+
+    for (final link in mainLinks) {
+      final registry = FeaturesRegistry.local();
+      final authState = AuthStateCoordinator();
+      final router = createDemoRouter(
+        featuresRegistry: registry,
+        authStateCoordinator: authState,
+        initialLocation: link,
+      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pump();
+
+      expect(find.text('Shoppe'), findsOneWidget, reason: link);
+      expect(
+        find.byKey(const ValueKey('main-bottom-navigation')),
+        findsNothing,
+      );
+      expect(find.text('Login'), findsNothing);
+
+      await tester.pumpWidget(const SizedBox());
+      router.dispose();
+      authState.dispose();
+    }
+  });
+
+  testWidgets(
+    'Back leaves a child branch without returning to Auth and keeps scroll',
+    (tester) async {
+      _setPhoneViewport(tester);
+      final registry = FeaturesRegistry.local();
+      final authState = AuthStateCoordinator();
+      addTearDown(authState.dispose);
+      authState.authenticate(await _login(registry));
+      final router = createDemoRouter(
+        featuresRegistry: registry,
+        authStateCoordinator: authState,
+        initialLocation: profileRoutePath,
+      );
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await _pumpProfile(tester);
+      await tester.tap(find.byKey(const ValueKey('main-navigation-shop')));
+      await _pumpProfile(tester);
+
+      final shopScroll = find.byKey(const ValueKey('shop-dashboard-scroll'));
+      final shopScrollable = find
+          .descendant(of: shopScroll, matching: find.byType(Scrollable))
+          .first;
+      final shopState = tester.state<ScrollableState>(shopScrollable);
+      await tester.drag(shopScroll, const Offset(0, -500));
+      await tester.pump();
+      final retainedOffset = shopState.position.pixels;
+      expect(retainedOffset, greaterThan(0));
+
+      await tester.tap(find.byKey(const ValueKey('main-navigation-wishlist')));
+      await _pumpProfile(tester);
+      await tester.tap(find.byKey(const ValueKey('open-recently-viewed')));
+      await _pumpProfile(tester);
+      expect(
+        find.byKey(const ValueKey('recently-viewed-scroll')),
+        findsOneWidget,
+      );
+
+      await tester.binding.handlePopRoute();
+      await tester.pump();
+      expect(find.text('Wishlist'), findsOneWidget);
+      expect(find.text('Login'), findsNothing);
+      expect(find.text('Shoppe'), findsNothing);
+      final wishlistRootPath = router.routeInformationProvider.value.uri.path;
+      await tester.binding.handlePopRoute();
+      await tester.pump();
+      expect(find.text('Login'), findsNothing);
+      expect(find.text('Shoppe'), findsNothing);
+      expect(router.routeInformationProvider.value.uri.path, wishlistRootPath);
+
+      await tester.tap(find.byKey(const ValueKey('main-navigation-shop')));
+      await _pumpProfile(tester);
+      final restoredShopScrollable = find
+          .descendant(
+            of: find.byKey(const ValueKey('shop-dashboard-scroll')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      expect(
+        tester.state<ScrollableState>(restoredShopScrollable).position.pixels,
+        greaterThanOrEqualTo(retainedOffset),
+      );
+      final restoredShopState = tester.state<ScrollableState>(
+        restoredShopScrollable,
+      );
+      restoredShopState.position.jumpTo(
+        restoredShopState.position.maxScrollExtent,
+      );
+      await tester.pump();
+
+      final bar = tester.getRect(
+        find.byKey(const ValueKey('main-bottom-navigation')),
+      );
+      expect(
+        restoredShopState.position.pixels,
+        restoredShopState.position.maxScrollExtent,
+      );
+      expect(bar.top, greaterThan(0));
+      final lastRecommendation = find.byKey(
+        const ValueKey('shop-recommendation-product-5'),
+      );
+      expect(lastRecommendation, findsOneWidget);
+      expect(
+        tester.getRect(lastRecommendation).bottom,
+        lessThanOrEqualTo(bar.top),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('opens every main branch from an authenticated deep link', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+    final semantics = tester.ensureSemantics();
+    const links = <({String path, String label, String content})>[
+      (path: shopRoutePath, label: 'Shop', content: 'Big Sale'),
+      (path: wishlistRoutePath, label: 'Wishlist', content: 'Wishlist'),
+      (path: categoriesRoutePath, label: 'Categories', content: 'All Items'),
+      (path: cartRoutePath, label: 'Cart', content: 'Cart'),
+      (path: profileRoutePath, label: 'Profile', content: 'Hello, Romina!'),
+      (
+        path: recentlyViewedRoutePath,
+        label: 'Wishlist',
+        content: 'Recently viewed',
+      ),
+    ];
+
+    for (final link in links) {
+      final registry = FeaturesRegistry.local();
+      final authState = AuthStateCoordinator();
+      authState.authenticate(await _login(registry));
+      final router = createDemoRouter(
+        featuresRegistry: registry,
+        authStateCoordinator: authState,
+        initialLocation: link.path,
+      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await _pumpProfile(tester);
+
+      expect(find.text(link.content), findsOneWidget, reason: link.path);
+      expect(
+        find.byKey(
+          ValueKey<String>('main-navigation-${link.label.toLowerCase()}'),
+        ),
+        findsOneWidget,
+        reason: link.path,
+      );
+      expect(
+        tester
+            .getSemantics(
+              find.byKey(
+                ValueKey<String>(
+                  'main-navigation-semantics-${link.label.toLowerCase()}',
+                ),
+              ),
+            )
+            .flagsCollection
+            .isSelected,
+        isTrue,
+        reason: link.path,
+      );
+      expect(router.routeInformationProvider.value.uri.path, link.path);
+
+      await tester.pumpWidget(const SizedBox());
+      router.dispose();
+      authState.dispose();
+    }
+    semantics.dispose();
+  });
+
+  testWidgets('logout from a child branch returns to Welcome', (tester) async {
+    _setPhoneViewport(tester);
+    final registry = FeaturesRegistry.local();
+    final authState = AuthStateCoordinator();
+    authState.authenticate(await _login(registry));
+    final router = createDemoRouter(
+      featuresRegistry: registry,
+      authStateCoordinator: authState,
+      initialLocation: recentlyViewedRoutePath,
+    );
+    addTearDown(router.dispose);
+    addTearDown(authState.dispose);
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await _pumpProfile(tester);
+    expect(
+      find.byKey(const ValueKey('recently-viewed-scroll')),
+      findsOneWidget,
+    );
+
+    authState.logout();
+    await _pumpRouterRefresh(tester);
+    expect(find.text('Shoppe'), findsOneWidget);
+    expect(router.routeInformationProvider.value.uri.path, welcomeRoutePath);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('redirects an authenticated Welcome location to Profile', (
     tester,
   ) async {

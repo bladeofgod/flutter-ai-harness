@@ -37,6 +37,9 @@ class _DemoAppState extends State<DemoApp> {
     _ownsAuthStateCoordinator = widget.authStateCoordinator == null;
     _authStateCoordinator =
         widget.authStateCoordinator ?? AuthStateCoordinator();
+    _authStateCoordinator.attachSessionReset(
+      _featuresRegistry.resetUserSession,
+    );
     _router = createDemoRouter(
       featuresRegistry: _featuresRegistry,
       authStateCoordinator: _authStateCoordinator,

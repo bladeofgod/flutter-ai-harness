@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_data/app_data.dart';
 import 'package:app_features/app_features.dart';
 import 'package:app_features/feature_profile/controllers/profile_dashboard_controller.dart';
+import 'package:app_features/feature_profile/controllers/profile_rewards_summary_controller.dart';
 import 'package:app_features/feature_profile/pages/profile_dashboard_page.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
@@ -29,56 +30,98 @@ void main() {
     final avatarRect = tester.getRect(
       find.byKey(const ValueKey('profile-avatar')),
     );
-    final bottomRect = tester.getRect(
-      find.byKey(const ValueKey('profile-bottom-navigation')),
-    );
     expect(avatarRect.size, const Size(44, 44));
-    expect(bottomRect.height, 50);
-    expect(find.bySemanticsLabel('Profile'), findsOneWidget);
+    expect(find.byKey(const ValueKey('main-bottom-navigation')), findsNothing);
   });
 
-  testWidgets('keeps section order and the bottom navigation fixed', (
+  testWidgets('loads the public Rewards summary and opens Rewards', (
+    tester,
+  ) async {
+    final registry = FeaturesRegistry.local();
+    var didOpenRewards = false;
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpProfile(
+      tester,
+      rewardsApi: registry.rewardsApi,
+      onOpenRewards: () => didOpenRewards = true,
+    );
+    await tester.pump();
+
+    expect(find.text('2450 reward points'), findsOneWidget);
+    expect(find.textContaining('expires soon'), findsOneWidget);
+    expect(find.byKey(const ValueKey('profile-open-support')), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('profile-rewards-summary')));
+    expect(didOpenRewards, isTrue);
+  });
+
+  testWidgets('opens Profile cards through their public navigation callbacks', (
+    tester,
+  ) async {
+    final openedProductIds = <String>[];
+    final openedCategoryIds = <String>[];
+    final openedStoryIds = <String>[];
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpProfile(
+      tester,
+      onOpenProduct: openedProductIds.add,
+      onOpenCategory: openedCategoryIds.add,
+      onOpenStory: (story) => openedStoryIds.add(story.id),
+    );
+
+    final scrollView = find.byKey(const ValueKey('profile-dashboard-scroll'));
+    final verticalScrollable = find
+        .descendant(of: scrollView, matching: find.byType(Scrollable))
+        .first;
+    await tester.tap(
+      find.byKey(const ValueKey('profile-open-product-product-1')).first,
+    );
+    expect(openedProductIds, contains('product-1'));
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('profile-open-story-story-1')),
+      450,
+      scrollable: verticalScrollable,
+    );
+    await tester.tap(find.byKey(const ValueKey('profile-open-story-story-1')));
+    expect(openedStoryIds, contains('story-1'));
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('profile-open-category-category-1')),
+      450,
+      scrollable: verticalScrollable,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey('profile-open-category-category-1')),
+    );
+    expect(openedCategoryIds, contains('category-1'));
+
+    await tester.scrollUntilVisible(
+      find.text('Most Popular'),
+      450,
+      scrollable: verticalScrollable,
+    );
+    final popularCard = find.byKey(
+      const ValueKey('profile-open-product-product-6'),
+    );
+    await tester.ensureVisible(popularCard);
+    await tester.tap(popularCard);
+    expect(openedProductIds, contains('product-6'));
+  });
+
+  testWidgets('keeps sections accessible in one vertical scroll owner', (
     tester,
   ) async {
     await _setViewport(tester, const Size(375, 812));
     await _pumpProfile(tester);
     final scrollView = find.byKey(const ValueKey('profile-dashboard-scroll'));
-    final verticalScrollable = find
-        .descendant(of: scrollView, matching: find.byType(Scrollable))
-        .first;
-    final initialBottomRect = tester.getRect(
-      find.byKey(const ValueKey('profile-bottom-navigation')),
-    );
-    const sectionTitles = <String>[
-      'Stories',
-      'New Items',
-      'Most Popular',
-      'Categories',
-      'Flash Sale',
-      'Top Products',
-      'Just for You',
-    ];
-    var previousOffset = 0.0;
-
-    for (final title in sectionTitles) {
-      await tester.scrollUntilVisible(
-        find.text(title),
-        450,
-        scrollable: verticalScrollable,
-      );
-      final scrollableState = tester.state<ScrollableState>(verticalScrollable);
-      expect(
-        scrollableState.position.pixels,
-        greaterThanOrEqualTo(previousOffset),
-      );
-      previousOffset = scrollableState.position.pixels;
+    expect(find.text('Stories'), findsOneWidget);
+    for (var index = 0; index < 4; index += 1) {
+      await tester.drag(scrollView, const Offset(0, -500));
+      await tester.pump();
     }
-
-    final finalBottomRect = tester.getRect(
-      find.byKey(const ValueKey('profile-bottom-navigation')),
-    );
-    expect(finalBottomRect, initialBottomRect);
-    expect(previousOffset, greaterThan(0));
+    expect(find.text('Just for You'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('provides bounded horizontal scrolling for all designed rails', (
@@ -122,6 +165,27 @@ void main() {
     }
   });
 
+  testWidgets('keeps Profile categories as single-image gradient cards', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpProfile(tester);
+    final scrollView = find.byKey(const ValueKey('profile-dashboard-scroll'));
+    await tester.scrollUntilVisible(
+      find.text('Categories'),
+      500,
+      scrollable: find
+          .descendant(of: scrollView, matching: find.byType(Scrollable))
+          .first,
+    );
+
+    expect(
+      find.byKey(const ValueKey('profile-category-image-category-1')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('renders retryable error and recovers', (tester) async {
     final dashboard = profileTestDashboard();
     final api = FakeProfileDashboardApi((loadCount) async {
@@ -153,10 +217,7 @@ void main() {
     await _pumpProfile(tester, api: api);
 
     expect(find.byKey(const ValueKey('profile-loading')), findsOneWidget);
-    expect(
-      find.byKey(const ValueKey('profile-bottom-navigation')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const ValueKey('main-bottom-navigation')), findsNothing);
 
     completer.complete(profileTestDashboard());
     await tester.pump();
@@ -228,8 +289,8 @@ void main() {
 
       expect(tester.takeException(), isNull, reason: '${testCase.size}');
       expect(
-        find.byKey(const ValueKey('profile-bottom-navigation')),
-        findsOneWidget,
+        find.byKey(const ValueKey('main-bottom-navigation')),
+        findsNothing,
       );
     }
   });
@@ -269,6 +330,11 @@ Future<void> _pumpProfile(
   ProfileDashboard? dashboard,
   FakeProfileDashboardApi? api,
   FakeCurrentUserProvider? provider,
+  RewardsApi? rewardsApi,
+  VoidCallback? onOpenRewards,
+  ValueChanged<String>? onOpenProduct,
+  ValueChanged<String>? onOpenCategory,
+  ValueChanged<Story>? onOpenStory,
   double textScale = 1,
 }) async {
   final resolvedApi =
@@ -284,7 +350,16 @@ Future<void> _pumpProfile(
   await tester.pumpWidget(
     MaterialApp(
       theme: AppTheme.light,
-      home: ProfileDashboardPage(controller: controller),
+      home: ProfileDashboardPage(
+        controller: controller,
+        rewardsSummaryController: rewardsApi == null
+            ? null
+            : ProfileRewardsSummaryController(rewardsApi: rewardsApi),
+        onOpenRewards: onOpenRewards,
+        onOpenProduct: onOpenProduct,
+        onOpenCategory: onOpenCategory,
+        onOpenStory: onOpenStory,
+      ),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
           padding: const EdgeInsets.only(top: 44, bottom: 34),

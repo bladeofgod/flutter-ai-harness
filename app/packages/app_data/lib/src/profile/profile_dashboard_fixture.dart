@@ -1,4 +1,23 @@
-part of '../auth/auth_local.dart';
+import 'package:app_core/app_core.dart';
+
+import '../catalog/catalog_fixture.dart';
+import '../fixture/fixture_api_transport.dart';
+
+/// Profile Dashboard 请求与 Fixture Payload 的唯一所有者。
+final class ProfileDashboardFixtureHandler implements FixtureRequestHandler {
+  static const String loadKey = 'profile.dashboard.load';
+
+  @override
+  Set<String> get requestKeys => const <String>{loadKey};
+
+  @override
+  Future<ApiResponse<Object?>> handle(ApiRequest request) async {
+    if (request.key != loadKey) {
+      throw UnknownApiRequestException(request.key);
+    }
+    return ApiResponse<Object?>.success(_profileDashboardFixturePayload());
+  }
+}
 
 Map<String, Object?> _profileDashboardFixturePayload() => <String, Object?>{
   'announcement': <String, Object?>{
@@ -91,13 +110,15 @@ Map<String, Object?> _productPayload(
   String? tag,
   int? popularityCount,
 }) => <String, Object?>{
-  'id': 'product-$number',
-  'title': title,
-  'imageAssetKey': _profileImage('product', number),
-  if (includePrice) 'displayPrice': r'$17,00',
+  ...canonicalCatalogProductPayload('product-$number'),
+  if (title != 'Lorem ipsum dolor sit amet consectetur.') 'title': title,
+  if (!includePrice) ...<String, Object?>{
+    'priceMinorUnits': null,
+    'currency': null,
+  },
   if (tag != null) 'tag': tag,
   if (popularityCount != null) 'popularityCount': popularityCount,
-};
+}..removeWhere((key, value) => value == null);
 
 Map<String, Object?> _categoryPayload(
   int number,
