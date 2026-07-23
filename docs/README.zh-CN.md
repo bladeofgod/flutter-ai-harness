@@ -10,7 +10,7 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 
 ## 提供的能力
 
-- 以 `CLAUDE.md` 为单一权威项目契约，以 `AGENTS.md` 作为 Codex 入口。
+- Harness 原生支持 Claude，并为 Codex 提供由 Claude 事实源生成的适配层。
 - 从同一套 Claude Command、角色和 Skill 事实源生成 Codex 原生 Skill 与 Agent 适配。
 - 提供任务规划、Figma 拆解、任务执行、代码审查和发版检查工作流。
 - 提供架构、实现、测试、原生 Bridge、审查、资源和 App 操作等专业角色。
@@ -33,8 +33,7 @@ flutter-ai-harness/
 ├── .codex/                 生成的 Codex 原生项目 Agent 适配
 ├── docs/                   架构与工作流文档
 ├── scripts/                Git Hooks 和可执行质量门禁
-├── protos/                 随 Demo 加入的公开协议定义
-└── app/                    通过 Demo 迭代形成的 Flutter Workspace
+└── app/                    包含 Ai-Harness Demo 的 Flutter Workspace
 ```
 
 规划的 Package 依赖方向如下，`A -> B` 表示 Package A 可以 import Package B：
@@ -62,7 +61,7 @@ app_core / app_ui -> 不依赖其他 Workspace Package
 归档证据和决策
 ```
 
-可运行 Demo 在中立 Harness 建立后逐步实现。任务卡、Review、App 文档和新增 Memory 都由 Harness 的真实使用过程产生，让仓库展示真实工作流，而不是预先编造的示例历史。
+仓库已经包含一套通过 Harness 实际迭代完成的 Shoppe 风格 `Ai-Harness` Demo。任务卡、Review、App 文档和 Memory 都来自真实使用过程，让仓库展示真实工作流，而不是预先编造的示例历史。
 
 未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。任务卡可以由开发者、Agent、Command 或其他工具创建；文件使用清晰、能概括内容且全局唯一的 lowercase kebab-case slug，无需编号、生产者前缀或指定规划入口。普通任务只负责实现、聚焦测试、只读审查、显式修复和证据归档。UI 自动化由人独立安排：`/plan-spec` 生成独立行为契约，`/execute-ui-spec` 只对人明确选择的平台执行静态审计和 App Operator。Spec、Audit 和 Run 不作为普通任务门禁，也不随任务归档。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
@@ -100,9 +99,9 @@ make setup
 make check
 ```
 
-`make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。当前 Demo 只有中立启动入口，设计来源已经登记并进入架构规划；选定页面级 Figma 节点和行为范围后再开始产品 UI 实现。
+`make setup` 会在 FVM 可用时安装 `app/.fvmrc` 锁定的 Flutter，否则校验系统 Flutter 版本；随后解析 Pub Workspace、Bootstrap Melos Package，并安装仓库内 Git Hooks。首次使用 Marionette 时额外运行 `make marionette-install`。
 
-中立 Demo 已包含 Android/iOS 宿主，可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
+仓库中的 `Ai-Harness` Demo 是一套 Shoppe 风格的本地电商演示，包含 Welcome、Auth、Shop、Categories、Wishlist、Cart、Profile、Settings、Orders、Search、Promotions、Rewards、Support 和 Product Detail 流程。它使用确定性本地 Fixture 与 Mock API，不依赖远程后端，便于展示架构和交互。可通过 `TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh run` 启动。`com.example` 应用标识只是模板占位，发布前必须替换。
 
 Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开设计文件，在 Dev Mode 中启用 Desktop MCP Server，再在 Claude Code 提示时批准项目的 `figma` Server。
 
@@ -110,7 +109,7 @@ Figma 工作流使用项目级 Desktop MCP 配置。先在 Figma Desktop 打开�
 
 ## 当前状态
 
-Harness 基线已经完成。Demo 设计来源已经登记，基础 Service 正在规划；选定页面级 Figma 输入后，产品 UI 和行为通过独立、可追踪的任务卡逐步实现。
+Harness 基线和第一批完整 Demo UI 已经完成。当前 Demo 任务卡均已归档到 `docs/tasks/done/`，Demo 使用本地确定性数据，不代表生产服务。Android Debug 构建和运行验证已具备；iOS 无签名构建及原生权限流程仍依赖可用的 Apple 工具链和设备环境。后续可以继续通过新的 Figma 任务卡扩展 Demo，不需要改变 Harness 契约。
 
 ## 许可证
 
