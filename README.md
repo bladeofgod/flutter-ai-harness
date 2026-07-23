@@ -14,9 +14,18 @@ This project is an engineering harness for building applications with AI agents.
 
 > **Automated development record:** The Demo was completed in one overnight run, with no human intervention in implementation during execution. Human input covered design selection, scope decisions, and environment operations.
 
-[![Ai-Harness Demo recording](docs/media/demo-app-cover.png)](docs/media/demo-app-video.mp4)
+<table>
+  <tr>
+    <td><img src="docs/media/demo-app-preview-01.gif" alt="Ai-Harness Demo preview 01" width="240"></td>
+    <td><img src="docs/media/demo-app-preview-02.gif" alt="Ai-Harness Demo preview 02" width="240"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/media/demo-app-preview-03.gif" alt="Ai-Harness Demo preview 03" width="240"></td>
+    <td><img src="docs/media/demo-app-preview-04.gif" alt="Ai-Harness Demo preview 04" width="240"></td>
+  </tr>
+</table>
 
-`Android Debug · local fixtures and mock APIs · recording duration: 1m 13s`
+`Android Debug · local fixtures and mock APIs · four sequential previews · source recording duration: 1m 13s`
 
 ## What It Provides
 

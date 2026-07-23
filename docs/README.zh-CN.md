@@ -14,9 +14,18 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 
 > **自动化开发记录：** 当前 Demo 在一个通宵内完成，执行阶段没有人工介入代码实现。人工输入仅包括设计稿选择、范围确认和环境操作。
 
-[![Ai-Harness Demo 录制](./media/demo-app-cover.png)](./media/demo-app-video.mp4)
+<table>
+  <tr>
+    <td><img src="./media/demo-app-preview-01.gif" alt="Ai-Harness Demo 预览 01" width="240"></td>
+    <td><img src="./media/demo-app-preview-02.gif" alt="Ai-Harness Demo 预览 02" width="240"></td>
+  </tr>
+  <tr>
+    <td><img src="./media/demo-app-preview-03.gif" alt="Ai-Harness Demo 预览 03" width="240"></td>
+    <td><img src="./media/demo-app-preview-04.gif" alt="Ai-Harness Demo 预览 04" width="240"></td>
+  </tr>
+</table>
 
-`Android Debug · 本地 Fixture 与 Mock API · 录制时长：1 分 13 秒`
+`Android Debug · 本地 Fixture 与 Mock API · 四段连续预览 · 原始录制时长：1 分 13 秒`
 
 ## 提供的能力
 
