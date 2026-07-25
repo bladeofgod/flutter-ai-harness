@@ -29,9 +29,16 @@ argument-hint: "<task-card-path>..."
 3. 通过 `scripts/quality/capture-evidence.sh` 直接执行受影响静态分析、聚焦测试和 `make lint`，把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-slug>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得先裸跑再为留证重复执行，也不得直接重定向原始 stdout/stderr 到入库证据。
 4. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
 5. 运行 `reviewer`，写入 `docs/reviews/execute-<task-slug>.md`；报告 frontmatter 必须包含与任务文件 basename 一致的 `task` slug、`status` 和当前未解决的 `p0`、`p1` 数量。
-6. 使用 `fix-review-findings` 修复 P0/P1，重新验证并由 `reviewer` 复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
-7. 将完成任务卡移入 `docs/tasks/done/`，并更新 Review 和其他仓库内任务引用。UI Spec、Audit、App Operator 报告不属于任务归档产物，不得随任务移动。
-8. 归档完成后重新运行 `make harness-check`；归档任务缺少已完成依赖、通过的 Review 或测试证据时门禁必须失败。
+6. 判断是否需要 Security Review。任务声明 `securityReview: required` 时必须执行；未声明但实际 diff 引入或改变下列任一边界时，先把该字段补入活动任务卡再执行：
+   - 认证、会话、授权、用户数据隔离、凭据、隐私数据或安全存储。
+   - 网络、文件、Deep Link、WebView、不可信输入反序列化或其他攻击者可控输入。
+   - MethodChannel/EventChannel、原生权限、Manifest、Entitlements 或平台安全配置。
+   - 第三方依赖、GitHub Action、构建/安装/生成脚本或依赖来源。
+   - `.claude/settings.json`、MCP、CI 权限，或 Command/Agent/Skill、适配生成器与脚本中会改变读写、命令、网络、凭据、提交或发布能力的执行语义；纯描述修正和未改变能力的生成适配同步不触发。
+7. 需要时由调用工作流运行必要的只读验证，再调用没有 Bash/写入能力的 `security-reviewer`；写入 `docs/reviews/security-<task-slug>.md` 时列出实际审查的 implementationFiles，并用 `implementation_digest.dart` 生成 implementationDigest。其首轮必须与普通 Review 保持独立，不读取普通 Reviewer 结论；不需要时不生成跳过报告。
+8. 使用 `fix-review-findings` 修复全部适用报告中的 P0/P1，重新验证，并由各报告对应的 Reviewer 复审；任一修复改变了另一审查维度的代码时，两类 Reviewer 都必须复审。`execute-tasks` 已包含实现授权；自动修复最多三轮，超过后停止并请求用户决策。
+9. 将完成任务卡移入 `docs/tasks/done/`，并更新 Review 和其他仓库内任务引用。UI Spec、Audit、App Operator 报告不属于任务归档产物，不得随任务移动。
+10. 归档完成后重新运行 `make harness-check`；归档任务缺少已完成依赖、通过的普通 Review、要求的 Security Review、匹配当前实现的安全摘要或测试证据时门禁必须失败。
 
 归档前必须清零 P0/P1。P2 只有在记录负责人或 Follow-up 任务后才可延后。
 
@@ -41,6 +48,7 @@ argument-hint: "<task-card-path>..."
 - 不绕过 hooks。
 - 不手工编辑生成文件。
 - 没有命令证据时不得宣称验证通过。
+- Security Review 只按任务标记或实际安全边界变化触发；不得把普通 UI、文案、格式化或不改变行为的重构升级为安全门禁。
 - 不删除无关文件，不覆盖已有工作。
 - 不自动生成 UI Spec/Audit，不调用 App Operator；这些能力只由人通过独立 UI 自动化流程安排。
 

@@ -10,12 +10,13 @@ argument-hint: "[版本号或发布约束]"
 1. 确认发布范围和基线 Commit。
 2. 确认计划任务已完成或显式延后。
 3. 确认 Review 报告已有完成的复审结论。
-4. 运行 `make check` 和必要的代码生成同步检查。已有 UI Spec 只做 Schema 一致性检查，不要求 Audit 或 Run 齐全。
-5. 只有用户把某个 UI Spec 明确列入本次发布门禁时，才检查其 Audit、实现摘要和用户指定平台的 App Operator 报告；不得从任务卡或 Spec 的存在自动推导该门禁。
-6. 存在完整用户旅程或 Plugin/Bridge 改动时，使用 `make integration-test INTEGRATION_DEVICE=<device-id>` 运行集成测试，并构建受影响平台；CI 的 Android/iOS Debug Job 必须通过。
-7. 检查 Bridge 契约版本和变更日志。
-8. 检查生成产物、依赖锁、发布配置、签名占位和敏感信息扫描。
-9. 检查用户可见变化、已知限制和回滚考虑。
+4. 对声明 `securityReview: required` 的任务确认 `security-<task-slug>.md` 已通过，并由 `make harness-check` 验证 implementationDigest 仍匹配 implementationFiles；Security Review 后相关实现变化时重新审查，独立代码片段审查不能替代任务报告，未涉及安全边界的发布不额外触发。
+5. 运行 `make check` 和必要的代码生成同步检查。已有 UI Spec 只做 Schema 一致性检查，不要求 Audit 或 Run 齐全。
+6. 只有用户把某个 UI Spec 明确列入本次发布门禁时，才检查其 Audit、实现摘要和用户指定平台的 App Operator 报告；不得从任务卡或 Spec 的存在自动推导该门禁。
+7. 存在完整用户旅程或 Plugin/Bridge 改动时，使用 `make integration-test INTEGRATION_DEVICE=<device-id>` 运行集成测试，并构建受影响平台；CI 的 Android/iOS Debug Job 必须通过。
+8. 检查 Bridge 契约版本和变更日志。
+9. 检查生成产物、依赖锁、发布配置、签名占位和敏感信息扫描。
+10. 检查用户可见变化、已知限制和回滚考虑。
 
 ## 产物
 

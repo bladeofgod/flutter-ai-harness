@@ -130,13 +130,24 @@ class CodexAdapterManager {
           'name',
           'description',
           'developer_instructions',
+          'sandbox_mode',
         }).isNotEmpty ||
-        values.length != 3 ||
+        !const {
+          'name',
+          'description',
+          'developer_instructions',
+        }.every(values.containsKey) ||
         values.values.any((value) => value.trim().isEmpty)) {
       errors.add(
-        'Codex Agent 必须声明 name、description 和 developer_instructions：$path',
+        'Codex Agent 必须声明 name、description、developer_instructions，'
+        '并且只能额外声明 sandbox_mode：$path',
       );
       return;
+    }
+    if (values['sandbox_mode'] case final sandboxMode?) {
+      if (sandboxMode != 'read-only') {
+        errors.add('Codex Agent 的 sandbox_mode 只允许 read-only：$path');
+      }
     }
     final pathName = _basename(path).replaceFirst(RegExp(r'\.toml$'), '');
     if (values['name'] != pathName) {
@@ -320,6 +331,7 @@ class CodexAdapterManager {
     requireName: true,
     nameFromParent: false,
     readArgumentHint: false,
+    deriveSandboxModeFromTools: true,
   );
 
   List<_ClaudeAsset> _readFlatAssets(
@@ -328,6 +340,7 @@ class CodexAdapterManager {
     required bool requireName,
     required bool nameFromParent,
     required bool readArgumentHint,
+    bool deriveSandboxModeFromTools = false,
   }) {
     final directory = _directory(relativeDirectory);
     if (!directory.existsSync()) {
@@ -349,6 +362,7 @@ class CodexAdapterManager {
               requireName: requireName,
               nameFromParent: nameFromParent,
               readArgumentHint: readArgumentHint,
+              deriveSandboxModeFromTools: deriveSandboxModeFromTools,
             )
             case final asset?)
           asset,
@@ -361,6 +375,7 @@ class CodexAdapterManager {
     required bool requireName,
     required bool nameFromParent,
     bool readArgumentHint = false,
+    bool deriveSandboxModeFromTools = false,
   }) {
     final relative = _relative(file);
     final lines = file.readAsLinesSync();
@@ -421,7 +436,27 @@ class CodexAdapterManager {
       description: description,
       sourcePath: relative,
       argumentHint: readArgumentHint ? rawArgumentHint as String? : null,
+      sandboxMode: deriveSandboxModeFromTools
+          ? _sandboxModeForTools(metadata['tools'])
+          : null,
     );
+  }
+
+  String? _sandboxModeForTools(Object? rawTools) {
+    final Iterable<String> tools;
+    if (rawTools is String) {
+      tools = rawTools.split(',').map((tool) => tool.trim());
+    } else if (rawTools is YamlList &&
+        rawTools.every((tool) => tool is String)) {
+      tools = rawTools.cast<String>().map((tool) => tool.trim());
+    } else {
+      return null;
+    }
+    final names = tools.where((tool) => tool.isNotEmpty).toSet();
+    return names.isNotEmpty &&
+            names.every(const {'Read', 'Grep', 'Glob'}.contains)
+        ? 'read-only'
+        : null;
   }
 
   Iterable<File> _generatedAdapterFiles(List<String> errors) sync* {
@@ -673,10 +708,13 @@ $hintInstruction
     final instructions =
         '开始工作前，完整读取并严格遵守 `${source.sourcePath}`。'
         '该 Markdown 是角色行为的唯一事实源；本 TOML 只负责 Codex 原生发现。';
+    final sandbox = source.sandboxMode == null
+        ? ''
+        : 'sandbox_mode = ${jsonEncode(source.sandboxMode)}\n';
     return '''# $_generatedMarker
 name = ${jsonEncode(source.name)}
 description = ${jsonEncode(source.description)}
-developer_instructions = ${jsonEncode(instructions)}
+${sandbox}developer_instructions = ${jsonEncode(instructions)}
 ''';
   }
 
@@ -740,12 +778,14 @@ class _ClaudeAsset {
     required this.description,
     required this.sourcePath,
     this.argumentHint,
+    this.sandboxMode,
   });
 
   final String name;
   final String description;
   final String sourcePath;
   final String? argumentHint;
+  final String? sandboxMode;
 }
 
 class _ExpectedFilesResult {

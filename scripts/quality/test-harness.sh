@@ -78,6 +78,12 @@ printf '%s\n' '<manifest />' > "$FIXTURE_ROOT/app/apps/demo/android/app/src/main
 printf '%s\n' '// project' > "$FIXTURE_ROOT/app/apps/demo/ios/Runner.xcodeproj/project.pbxproj"
 printf '%s\n' '<plist />' > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist"
 
+write_security_target() {
+  printf '%s\n' 'const secureValue = true;' \
+    > "$FIXTURE_ROOT/app/lib/security_target.dart"
+}
+write_security_target
+
 cat > "$FIXTURE_ROOT/.claude/agents/sample-agent.md" <<'MARKDOWN'
 ---
 name: sample-agent
@@ -94,6 +100,14 @@ description: Task executor
 tools: Read
 ---
 Task executor.
+MARKDOWN
+cat > "$FIXTURE_ROOT/.claude/agents/security-reviewer.md" <<'MARKDOWN'
+---
+name: security-reviewer
+description: Security reviewer
+tools: Read, Grep, Glob
+---
+Security reviewer.
 MARKDOWN
 cat > "$FIXTURE_ROOT/.claude/commands/sample-command.md" <<'MARKDOWN'
 ---
@@ -155,9 +169,108 @@ Exit code: 0
 LOG
 }
 
+write_valid_security_review() {
+  local digest
+  digest="$(bash "$ROOT/scripts/dart-tool.sh" run \
+    tool/implementation_digest.dart --root "$FIXTURE_ROOT" \
+    app/lib/security_target.dart)"
+  cat > "$FIXTURE_ROOT/docs/reviews/security-complete-task.md" <<MARKDOWN
+---
+task: complete-task
+status: passed
+p0: 0
+p1: 0
+implementationFiles:
+  - app/lib/security_target.dart
+implementationDigest: $digest
+---
+# Security Review
+MARKDOWN
+}
+
+write_task_with_security_review_value() {
+  local value="$1"
+  cat > "$FIXTURE_ROOT/docs/tasks/sample-task.md" <<MARKDOWN
+---
+executor: task-executor
+blockedBy: []
+securityReview: $value
+---
+# Sample task
+MARKDOWN
+}
+
 write_valid_task
 write_valid_done_task
 sync_adapters >/dev/null
+run_check >/dev/null
+
+security_agent_adapter="$FIXTURE_ROOT/.codex/agents/security-reviewer.toml"
+if ! rg -F 'sandbox_mode = "read-only"' "$security_agent_adapter" >/dev/null; then
+  echo "错误：Codex Security Reviewer 适配缺少 read-only sandbox。" >&2
+  exit 1
+fi
+
+sed -i.bak 's/tools: Read, Grep, Glob/tools: Read, Bash, Grep, Glob/' \
+  "$FIXTURE_ROOT/.claude/agents/security-reviewer.md"
+rm -f -- "$FIXTURE_ROOT/.claude/agents/security-reviewer.md.bak"
+sync_adapters >/dev/null
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 Security Reviewer 的 Bash 权限。" >&2
+  exit 1
+fi
+sed -i.bak 's/tools: Read, Bash, Grep, Glob/tools: Read, Grep, Glob/' \
+  "$FIXTURE_ROOT/.claude/agents/security-reviewer.md"
+rm -f -- "$FIXTURE_ROOT/.claude/agents/security-reviewer.md.bak"
+sync_adapters >/dev/null
+run_check >/dev/null
+
+write_task_with_security_review_value required
+run_check >/dev/null
+write_valid_task
+
+sed -i.bak '/blockedBy:/a\
+securityReview: required' \
+  "$FIXTURE_ROOT/docs/tasks/done/complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/tasks/done/complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 Security Review 的归档任务卡。" >&2
+  exit 1
+fi
+write_valid_security_review
+run_check >/dev/null
+
+sed -i.bak \
+  -e '/implementationFiles:/d' \
+  -e '/app\/lib\/security_target.dart/d' \
+  -e '/implementationDigest:/d' \
+  "$FIXTURE_ROOT/docs/reviews/security-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/security-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少实现绑定的 Security Review。" >&2
+  exit 1
+fi
+write_valid_security_review
+
+printf '%s\n' 'const changedAfterReview = true;' \
+  >> "$FIXTURE_ROOT/app/lib/security_target.dart"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝实现摘要过期的 Security Review。" >&2
+  exit 1
+fi
+write_security_target
+write_valid_security_review
+run_check >/dev/null
+
+sed -i.bak 's/status: passed/status: failed/' \
+  "$FIXTURE_ROOT/docs/reviews/security-complete-task.md"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/security-complete-task.md.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝未通过的归档 Security Review。" >&2
+  exit 1
+fi
+rm -f -- "$FIXTURE_ROOT/docs/reviews/security-complete-task.md"
+write_valid_done_task
 run_check >/dev/null
 
 command_adapter="$FIXTURE_ROOT/.agents/skills/sample-command/SKILL.md"
@@ -484,6 +597,15 @@ if run_check >/dev/null 2>&1; then
   echo "错误：Harness Check 未拒绝已废弃的 uiSpec 任务元数据。" >&2
   exit 1
 fi
+write_valid_task
+
+for invalid_security_review in '' true '[]' optional; do
+  write_task_with_security_review_value "$invalid_security_review"
+  if run_check >/dev/null 2>&1; then
+    echo "错误：Harness Check 未拒绝无效的 securityReview 任务元数据：${invalid_security_review:-null}。" >&2
+    exit 1
+  fi
+done
 write_valid_task
 
 sed -i.bak 's/blockedBy: \[\]/blockedBy: [sample-task]/' \

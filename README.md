@@ -33,8 +33,8 @@ Background article (Chinese): [AI 编程的工程化实践：Flutter AI Harness 
 
 - Native Claude support with a generated Codex adaptation layer; Claude assets remain the single source of truth.
 - Generated Codex-native Skill and Agent adapters backed by the same Claude command, role, and skill sources.
-- Structured workflows for planning, Figma decomposition, task execution, review, and release checks.
-- Focused agent roles for architecture, implementation, testing, native bridges, review, assets, and app operation.
+- Structured workflows for planning, Figma decomposition, task execution, risk-triggered security review, and release checks.
+- Focused agent roles for architecture, implementation, testing, native bridges, general and security review, assets, and app operation.
 - On-demand Flutter skills covering Dart, GetX, go_router, testing, Protobuf, UI implementation, performance, and platform workflows.
 - Repository-owned Git hooks and lint gates that turn architectural rules into executable checks.
 - A layered Flutter workspace model that prevents protocol and persistence types from leaking across package boundaries.
@@ -77,14 +77,16 @@ Execute one task card
         ↓
 Analyze and test
         ↓
-Read-only review → explicit fix → re-review
+Read-only review + risk-triggered security review
+        ↓
+Explicit fix → independent re-review
         ↓
 Archive evidence and decisions
 ```
 
 The repository includes a working Shoppe-inspired `Ai-Harness` demo built through this workflow. Its task cards, reviews, app documentation, and memories were produced while exercising the harness, so the repository demonstrates a real workflow rather than a prewritten example history.
 
-Active task cards live directly under `docs/tasks/` and move to `docs/tasks/done/` when complete. They may be created by a developer, an agent, a command, or another tool. Each filename uses a clear, descriptive, globally unique lowercase kebab-case slug; no sprint number, task sequence, producer prefix, or specific planning entry point is required. Normal task execution covers implementation, focused tests, read-only review, explicit fixes, and evidence archival. UI automation is separate and human-scheduled: `/plan-spec` creates an independent behavior contract, and `/execute-ui-spec` runs static audit and App Operator only for explicitly selected platforms. Spec, Audit, and Run artifacts never gate or move with ordinary tasks. Implementation evidence and review findings are archived with the task, while only durable project knowledge belongs in `.claude/memories/`.
+Active task cards live directly under `docs/tasks/` and move to `docs/tasks/done/` when complete. They may be created by a developer, an agent, a command, or another tool. Each filename uses a clear, descriptive, globally unique lowercase kebab-case slug; no sprint number, task sequence, producer prefix, or specific planning entry point is required. Normal task execution covers implementation, focused tests, read-only review, explicit fixes, and evidence archival. Tasks that change trust boundaries, sensitive data, external inputs, native permissions, supply-chain inputs, or Agent capabilities additionally receive an independent Security Review whose task report is bound to the reviewed implementation; low-risk changes do not gain another gate or manual approval. Standalone reviews of supplied code can remain file-independent and do not satisfy task archival. UI automation is separate and human-scheduled: `/plan-spec` creates an independent behavior contract, and `/execute-ui-spec` runs static audit and App Operator only for explicitly selected platforms. Spec, Audit, and Run artifacts never gate or move with ordinary tasks. Implementation evidence and review findings are archived with the task, while only durable project knowledge belongs in `.claude/memories/`.
 
 ## Quality Gates
 

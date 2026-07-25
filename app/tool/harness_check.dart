@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 
 import 'codex_adapters.dart';
+import 'implementation_digest.dart';
 
 void main(List<String> arguments) {
   final root = _parseRoot(arguments);
@@ -232,6 +233,7 @@ class _HarnessChecker {
       _requireString(file, metadata, 'description');
       _requireStringOrList(file, metadata, 'tools');
       _validateAgentSkillReferences(file, metadata);
+      _validateSecurityReviewerTools(file, metadata);
     });
     _validateDefinitions('.claude/commands', _commands, (file, metadata) {
       _requireString(file, metadata, 'description');
@@ -260,6 +262,35 @@ class _HarnessChecker {
         errors.add('${_relative(file)} 引用不存在的 Skill：$name');
       }
     }
+  }
+
+  void _validateSecurityReviewerTools(File file, YamlMap metadata) {
+    if (metadata['name'] != 'security-reviewer') {
+      return;
+    }
+    final tools = _toolNames(metadata['tools']);
+    if (tools == null ||
+        tools.isEmpty ||
+        tools.any((tool) => !const {'Read', 'Grep', 'Glob'}.contains(tool))) {
+      errors.add(
+        '${_relative(file)} 只能使用 Read、Grep、Glob，'
+        '不得获得 Bash 或写入工具',
+      );
+    }
+  }
+
+  Set<String>? _toolNames(Object? rawTools) {
+    if (rawTools is String) {
+      return rawTools
+          .split(',')
+          .map((tool) => tool.trim())
+          .where((tool) => tool.isNotEmpty)
+          .toSet();
+    }
+    if (rawTools is YamlList && rawTools.every((tool) => tool is String)) {
+      return rawTools.cast<String>().map((tool) => tool.trim()).toSet();
+    }
+    return null;
   }
 
   void _validateDefinitions(
@@ -447,8 +478,17 @@ class _HarnessChecker {
       if (metadata.containsKey('uiSpec')) {
         errors.add('$relative 不得声明 uiSpec；UI 自动化由人独立安排');
       }
+      final hasSecurityReview = metadata.containsKey('securityReview');
+      final securityReview = metadata['securityReview'];
+      if (hasSecurityReview && securityReview != 'required') {
+        errors.add('$relative 的 securityReview 只允许 required，低风险任务应省略该字段');
+      }
       if (completedMatch != null) {
-        _validateCompletedTaskArtifacts(file, slug);
+        _validateCompletedTaskArtifacts(
+          file,
+          slug,
+          requiresSecurityReview: securityReview == 'required',
+        );
       }
 
       final blockedBy = metadata['blockedBy'];
@@ -500,24 +540,26 @@ class _HarnessChecker {
     _validateTaskDependencyCycles(dependencyGraph);
   }
 
-  void _validateCompletedTaskArtifacts(File task, String slug) {
+  void _validateCompletedTaskArtifacts(
+    File task,
+    String slug, {
+    required bool requiresSecurityReview,
+  }) {
     final basename = _basename(task.path).replaceFirst(RegExp(r'\.md$'), '');
-    final reviewPath = 'docs/reviews/execute-$basename.md';
-    final review = _file(reviewPath);
-    if (!review.existsSync()) {
-      errors.add('${_relative(task)} 归档前缺少 Review：$reviewPath');
-    } else {
-      final metadata = _frontmatter(review);
-      if (metadata != null) {
-        if (metadata['task'] != slug) {
-          errors.add('$reviewPath 的 task 必须是 $slug');
-        }
-        if (metadata['status'] != 'passed' ||
-            metadata['p0'] != 0 ||
-            metadata['p1'] != 0) {
-          errors.add('$reviewPath 必须声明 passed 且 P0/P1 为 0');
-        }
-      }
+    _validatePassedTaskReview(
+      task,
+      slug,
+      'docs/reviews/execute-$basename.md',
+      label: 'Review',
+    );
+    if (requiresSecurityReview) {
+      _validatePassedTaskReview(
+        task,
+        slug,
+        'docs/reviews/security-$basename.md',
+        label: 'Security Review',
+        requireImplementationBinding: true,
+      );
     }
 
     final evidencePath = 'docs/reviews/test-evidence/$basename.log';
@@ -529,6 +571,72 @@ class _HarnessChecker {
       multiLine: true,
     ).hasMatch(evidence.readAsStringSync())) {
       errors.add('$evidencePath 缺少命令退出码');
+    }
+  }
+
+  void _validatePassedTaskReview(
+    File task,
+    String slug,
+    String reviewPath, {
+    required String label,
+    bool requireImplementationBinding = false,
+  }) {
+    final review = _file(reviewPath);
+    if (!review.existsSync()) {
+      errors.add('${_relative(task)} 归档前缺少 $label：$reviewPath');
+    } else {
+      final metadata = _frontmatter(review);
+      if (metadata != null) {
+        if (metadata['task'] != slug) {
+          errors.add('$reviewPath 的 task 必须是 $slug');
+        }
+        if (metadata['status'] != 'passed' ||
+            metadata['p0'] != 0 ||
+            metadata['p1'] != 0) {
+          errors.add('$reviewPath 必须声明 passed 且 P0/P1 为 0');
+        }
+        if (requireImplementationBinding) {
+          _validateSecurityReviewBinding(reviewPath, metadata);
+        }
+      }
+    }
+  }
+
+  void _validateSecurityReviewBinding(String reviewPath, YamlMap metadata) {
+    final rawFiles = metadata['implementationFiles'];
+    if (rawFiles is! YamlList ||
+        rawFiles.isEmpty ||
+        rawFiles.any((path) => path is! String || path.trim().isEmpty)) {
+      errors.add('$reviewPath 的任务门禁报告必须声明非空 implementationFiles');
+      return;
+    }
+
+    final files = rawFiles.cast<String>();
+    if (files.toSet().length != files.length) {
+      errors.add('$reviewPath 的 implementationFiles 不得重复');
+      return;
+    }
+    if (files.any((path) => path.startsWith('docs/reviews/'))) {
+      errors.add('$reviewPath 的 implementationFiles 不得包含 Review 报告自身');
+      return;
+    }
+
+    final declaredDigest = metadata['implementationDigest'];
+    if (declaredDigest is! String ||
+        !RegExp(r'^[0-9a-f]{64}$').hasMatch(declaredDigest)) {
+      errors.add('$reviewPath 必须声明小写 SHA-256 implementationDigest');
+      return;
+    }
+
+    try {
+      final calculatedDigest = calculateImplementationDigest(root, files);
+      if (calculatedDigest != declaredDigest) {
+        errors.add('$reviewPath 的 implementationDigest 与当前实现不一致');
+      }
+    } on FileSystemException catch (error) {
+      errors.add('$reviewPath 无法计算实现摘要：${error.message}');
+    } on FormatException catch (error) {
+      errors.add('$reviewPath 无法计算实现摘要：${error.message}');
     }
   }
 

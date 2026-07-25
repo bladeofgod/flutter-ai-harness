@@ -15,6 +15,6 @@ argument-hint: "<review-report-path> [问题范围]"
 
 ## 复审
 
-每轮修复和验证后必须使用独立 `reviewer` 重新审查修复 diff，并在原报告追加“复审”章节；报告属于 `execute-<task-slug>.md` 时同步更新 frontmatter 的 `status`、`p0`、`p1`。修复执行者的自审不能作为最终结论。最多自动修复三轮；P0/P1 仍未清零或需要外部决策时停止并报告，不继续扩大修改。
+每轮修复和验证后必须使用独立 Reviewer 重新审查修复 diff，并在原报告追加“复审”章节：`security-*.md` 使用 `security-reviewer`，其他报告使用 `reviewer`。任务报告同步更新 frontmatter 的 `status`、`p0`、`p1`；安全修复同时改变普通业务行为、架构或契约时，还要重新运行普通 Reviewer。普通修复引入或改变认证、敏感数据、攻击者可控输入、原生权限、供应链或 Agent 执行能力时，必须运行 Security Review；存在活动任务卡时先补 `securityReview: required`。修复执行者的自审不能作为最终结论。最多自动修复三轮；P0/P1 仍未清零或需要外部决策时停止并报告，不继续扩大修改。
 
 用户未明确要求时不 commit、不 push。交付报告路径、已修复项、验证结果、延后问题和剩余风险。

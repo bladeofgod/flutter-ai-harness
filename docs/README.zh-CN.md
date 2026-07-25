@@ -33,8 +33,8 @@ Flutter AI Harness 是一套仓库模板，适用于希望让 AI 编码 Agent �
 
 - Harness 原生支持 Claude，并为 Codex 提供由 Claude 事实源生成的适配层。
 - 从同一套 Claude Command、角色和 Skill 事实源生成 Codex 原生 Skill 与 Agent 适配。
-- 提供任务规划、Figma 拆解、任务执行、代码审查和发版检查工作流。
-- 提供架构、实现、测试、原生 Bridge、审查、资源和 App 操作等专业角色。
+- 提供任务规划、Figma 拆解、任务执行、按风险触发的安全审查和发版检查工作流。
+- 提供架构、实现、测试、原生 Bridge、普通与安全审查、资源和 App 操作等专业角色。
 - 按任务加载 Dart、GetX、go_router、测试、Protobuf、UI、性能和平台相关 Skill。
 - 用仓库内 Git hooks 和 lint 脚本把架构规则变成可执行门禁。
 - 通过分层 Flutter Workspace 阻止 Proto Message 和数据库 Row 泄漏到公共接口。
@@ -77,14 +77,16 @@ app_core / app_ui -> 不依赖其他 Workspace Package
         ↓
 静态分析与测试
         ↓
-只读审查 → 显式修复 → 复审
+只读审查 + 按风险触发的安全审查
+        ↓
+显式修复 → 独立复审
         ↓
 归档证据和决策
 ```
 
 仓库已经包含一套通过 Harness 实际迭代完成的 Shoppe 风格 `Ai-Harness` Demo。任务卡、Review、App 文档和 Memory 都来自真实使用过程，让仓库展示真实工作流，而不是预先编造的示例历史。
 
-未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。任务卡可以由开发者、Agent、Command 或其他工具创建；文件使用清晰、能概括内容且全局唯一的 lowercase kebab-case slug，无需编号、生产者前缀或指定规划入口。普通任务只负责实现、聚焦测试、只读审查、显式修复和证据归档。UI 自动化由人独立安排：`/plan-spec` 生成独立行为契约，`/execute-ui-spec` 只对人明确选择的平台执行静态审计和 App Operator。Spec、Audit 和 Run 不作为普通任务门禁，也不随任务归档。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
+未完成任务卡直接放在 `docs/tasks/`，完成后移动到 `docs/tasks/done/`。任务卡可以由开发者、Agent、Command 或其他工具创建；文件使用清晰、能概括内容且全局唯一的 lowercase kebab-case slug，无需编号、生产者前缀或指定规划入口。普通任务只负责实现、聚焦测试、只读审查、显式修复和证据归档。改变信任边界、敏感数据、外部输入、原生权限、供应链输入或 Agent 能力的任务会额外接受独立 Security Review，任务报告通过实现摘要绑定被审查代码；低风险改动不增加额外门禁或人工审批。直接提供代码片段的独立审查可以不绑定文件，但不能替代任务归档报告。UI 自动化由人独立安排：`/plan-spec` 生成独立行为契约，`/execute-ui-spec` 只对人明确选择的平台执行静态审计和 App Operator。Spec、Audit 和 Run 不作为普通任务门禁，也不随任务归档。实现证据和 Review 结论随任务归档，只有长期有效的项目知识才写入 `.claude/memories/`。
 
 ## 质量门禁
 
