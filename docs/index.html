@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b2638">
+    <meta
+      name="description"
+      content="A detailed guide to Flutter AI Harness: project contracts, specialized agents, task workflows, security review, executable gates, and adaptation paths."
+    >
+    <meta property="og:title" content="Flutter AI Harness Guide">
+    <meta
+      property="og:description"
+      content="An AI-native engineering harness for production Flutter and hybrid mobile repositories."
+    >
+    <meta property="og:type" content="website">
+    <meta
+      property="og:url"
+      content="https://bladeofgod.github.io/flutter-ai-harness/"
+    >
+    <meta
+      property="og:image"
+      content="https://bladeofgod.github.io/flutter-ai-harness/media/demo-app-preview-02.gif"
+    >
+    <title>Flutter AI Harness | Design and Adoption Guide</title>
+    <link rel="stylesheet" href="assets/harness-guide.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="Flutter AI Harness home">
+          <span class="brand-mark" aria-hidden="true">FAH</span>
+          <span class="brand-name">Flutter AI Harness</span>
+        </a>
+        <nav class="header-nav" aria-label="Primary navigation">
+          <a href="#model">System model</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#adoption">Adoption</a>
+          <a
+            class="github-link"
+            href="https://github.com/bladeofgod/flutter-ai-harness"
+          >GitHub</a>
+          <a class="language-link" href="zh-CN/" lang="zh-CN">中文</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="content">
+      <section class="hero" id="top">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Engineering guide / reference implementation</p>
+            <h1>Make AI-generated code fit an engineering system.</h1>
+            <p class="hero-lead">
+              Flutter AI Harness turns project constraints, specialized roles,
+              task artifacts, review loops, and quality gates into repository-owned
+              infrastructure for Flutter and long-lived native hosts.
+            </p>
+            <div class="hero-actions">
+              <a
+                class="button button-primary"
+                href="https://github.com/bladeofgod/flutter-ai-harness"
+              >Explore the repository</a>
+              <a class="button button-secondary" href="#adoption">
+                Choose an adoption path
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-metrics" aria-label="Project facts">
+            <div class="metric">
+              <strong>1 source</strong>
+              <span>Claude project assets remain authoritative</span>
+            </div>
+            <div class="metric">
+              <strong>2 hosts</strong>
+              <span>Android and iOS stay first-class build targets</span>
+            </div>
+            <div class="metric">
+              <strong>1 overnight</strong>
+              <span>The reference Demo completed without implementation intervention</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="not-sdk" aria-label="Project positioning">
+        <div class="not-sdk-inner">
+          <strong>Not a runtime SDK</strong>
+          <p>
+            Clone it, study it, or adapt its engineering pattern. Do not treat it
+            as a package or a versioned application dependency.
+          </p>
+        </div>
+      </aside>
+
+      <div class="page-layout">
+        <nav class="toc" aria-label="On this page">
+          <p class="toc-title">On this page</p>
+          <ol>
+            <li><a href="#overview">01 / Why it exists</a></li>
+            <li><a href="#model">02 / System model</a></li>
+            <li><a href="#roles">03 / Specialized roles</a></li>
+            <li><a href="#workflow">04 / Delivery loop</a></li>
+            <li><a href="#security">05 / Security review</a></li>
+            <li><a href="#demo">06 / Reference Demo</a></li>
+            <li><a href="#adoption">07 / Adoption paths</a></li>
+            <li><a href="#boundaries">08 / Boundaries</a></li>
+            <li><a href="#resources">09 / Source documents</a></li>
+          </ol>
+        </nav>
+
+        <article class="article">
+          <section class="section" id="overview">
+            <p class="section-kicker">01 / Why it exists</p>
+            <h2>Code generation is only one part of delivery.</h2>
+            <p class="section-lead">
+              AI can produce a page, an API client, or a test quickly. Production
+              quality still depends on where that code is allowed to live, which
+              contracts it must preserve, what evidence proves it works, and who
+              independently reviews the result.
+            </p>
+
+            <div class="principle">
+              A Harness is the repository-owned environment that gives an Agent
+              enough context to act, enough tools to verify, and enough boundaries
+              to keep the result reviewable.
+            </div>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>Without a Harness</h3>
+                <p>
+                  Project knowledge lives in chat history and individual memory.
+                  The Agent can generate code, but package boundaries, test scope,
+                  native parity, and completion criteria remain implicit.
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>With a Harness</h3>
+                <p>
+                  Durable contracts live beside the code. Tasks carry executable
+                  scope, roles stay narrow, checks produce evidence, and review
+                  findings feed the implementation loop before archival.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="model">
+            <p class="section-kicker">02 / System model</p>
+            <h2>One contract, multiple execution surfaces.</h2>
+            <p class="section-lead">
+              The repository is Claude-first. Claude Commands, Agents, Skills,
+              and Memories under <code>.claude/</code> are the source of truth.
+              Codex-native Skills and custom Agents are generated from those same
+              assets and checked for drift.
+            </p>
+
+            <div class="source-model" aria-label="Source and adapter model">
+              <div class="source-block authoritative">
+                <h3>Authoritative layer</h3>
+                <p>
+                  <code>CLAUDE.md</code> defines project invariants.
+                  <code>.claude/</code> owns workflows, roles, focused skills, and
+                  durable low-frequency knowledge.
+                </p>
+              </div>
+              <div class="source-arrow">Generated and checked</div>
+              <div class="source-block generated">
+                <h3>Codex adaptation</h3>
+                <p>
+                  <code>AGENTS.md</code>, <code>.agents/skills/</code>, and
+                  <code>.codex/agents/</code> provide native discovery without
+                  becoming a second contract.
+                </p>
+              </div>
+            </div>
+
+            <div class="flow" aria-label="Harness layers">
+              <div class="flow-step">
+                <span class="flow-number">Layer 01</span>
+                <strong>Contract</strong>
+                <p>Architecture, package direction, native rules, safety policy.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Layer 02</span>
+                <strong>Context</strong>
+                <p>Task cards, Figma context, focused Skills, app documentation.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Layer 03</span>
+                <strong>Execution</strong>
+                <p>Specialized Agents implement, test, review, and operate the app.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Layer 04</span>
+                <strong>Evidence</strong>
+                <p>Checks, reports, sanitized logs, and archived decisions.</p>
+              </div>
+            </div>
+
+            <pre class="code-block" aria-label="Workspace dependency direction"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui
+<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui
+<span class="accent">app_data / app_im</span> -&gt; app_core
+<span class="accent">app_core / app_ui</span> -&gt; no other workspace packages</code></pre>
+          </section>
+
+          <section class="section" id="roles">
+            <p class="section-kicker">03 / Specialized roles</p>
+            <h2>Narrow roles create independent judgment.</h2>
+            <p class="section-lead">
+              A role is not a decorative persona. Each Agent has an explicit
+              responsibility, tool surface, stopping condition, and output contract.
+              Reviewers do not share the executor's assumptions.
+            </p>
+
+            <div class="role-list">
+              <div class="role">
+                <div class="role-kind">Planning</div>
+                <div>
+                  <h3>Architect</h3>
+                  <p>Turns product, design, and repository evidence into executable tasks.</p>
+                </div>
+                <div class="role-boundary">Does not implement application code.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Implementation</div>
+                <div>
+                  <h3>Task Executor</h3>
+                  <p>Implements one approved task with focused tests and validation.</p>
+                </div>
+                <div class="role-boundary">Does not redefine the architecture or self-approve.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Native boundary</div>
+                <div>
+                  <h3>Bridge Engineer</h3>
+                  <p>Owns contract-first MethodChannel and EventChannel work across hosts.</p>
+                </div>
+                <div class="role-boundary">Must preserve Android and iOS parity.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Correctness</div>
+                <div>
+                  <h3>Reviewer</h3>
+                  <p>Checks behavior, architecture, lifecycle, contracts, and test gaps.</p>
+                </div>
+                <div class="role-boundary">Read-only on the first review pass.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Security</div>
+                <div>
+                  <h3>Security Reviewer</h3>
+                  <p>Traces trust boundaries, sensitive data, untrusted input, and capabilities.</p>
+                </div>
+                <div class="role-boundary">No Bash or write tools; Codex runs read-only.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Runtime evidence</div>
+                <div>
+                  <h3>App Operator</h3>
+                  <p>Runs an approved UI behavior Spec against a Debug app through Marionette.</p>
+                </div>
+                <div class="role-boundary">Human-scheduled and separate from task completion.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="workflow">
+            <p class="section-kicker">04 / Delivery loop</p>
+            <h2>Artifacts move with the work, not around it.</h2>
+            <p class="section-lead">
+              The normal loop is intentionally compact. Human review is reserved
+              for decisions and high-risk boundaries; Agents run focused checks and
+              independent reviews as part of execution.
+            </p>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <h3>Normalize input</h3>
+                <p>
+                  Read product rules, repository contracts, and Figma nodes. Record
+                  uncertainty instead of inventing behavior.
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>Plan tasks</h3>
+                <p>
+                  Create uniquely named task cards with dependency order, executor,
+                  implementation scope, tests, and conditional security review.
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>Implement and verify</h3>
+                <p>
+                  Change the smallest valid surface, write tests in the same batch,
+                  and capture sanitized command evidence once.
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>Review independently</h3>
+                <p>
+                  The general Reviewer always checks correctness. Security Review
+                  joins only when the task or actual diff changes a trust boundary.
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>Fix and re-review</h3>
+                <p>
+                  P0 and P1 findings block completion. Fixes return to the originating
+                  Reviewer, and cross-cutting fixes trigger both review dimensions.
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>Archive evidence</h3>
+                <p>
+                  Completed tasks move to <code>docs/tasks/done/</code> only after
+                  checks, reports, dependencies, and required digests are valid.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="security">
+            <p class="section-kicker">05 / Security review</p>
+            <h2>Security is conditional, independent, and evidence-bound.</h2>
+            <p class="section-lead">
+              Low-risk UI and documentation work does not gain another gate.
+              Security Review activates when a task changes trust, data, native,
+              supply-chain, or Agent capability boundaries.
+            </p>
+
+            <ul class="trigger-grid">
+              <li>Authentication, sessions, authorization, or user isolation</li>
+              <li>Credentials, private data, logs, or secure storage</li>
+              <li>Network, files, Deep Links, WebViews, or untrusted deserialization</li>
+              <li>Platform channels, native permissions, or host configuration</li>
+              <li>Dependencies, Actions, build scripts, or generated toolchains</li>
+              <li>Agent tools, MCP access, CI permissions, commit, or release capability</li>
+            </ul>
+
+            <div class="security-band">
+              <h3>Two review modes</h3>
+              <p>
+                A task-gating report lists reviewed repository files and stores an
+                implementation digest. Any later file change invalidates that report.
+                A standalone review can inspect supplied code without a file binding,
+                but it cannot satisfy task archival.
+              </p>
+            </div>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>Deterministic controls</h3>
+                <p>
+                  Schema checks reject invalid task metadata, missing reports, stale
+                  digests, unsafe reviewer tools, and drifted Codex adapters.
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>Agentic judgment</h3>
+                <p>
+                  The Reviewer must show the attacker-controlled entry, affected
+                  asset, path to a dangerous operation, concrete evidence, and a fix.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="demo">
+            <div class="demo-band">
+              <p class="section-kicker">06 / Reference Demo</p>
+              <h2>The repository contains evidence, not a placeholder.</h2>
+              <p class="section-lead">
+                The Shoppe-inspired Flutter Demo exercises authentication, catalog,
+                search, product, cart, checkout, profile, settings, rewards, orders,
+                and support flows with deterministic local data.
+              </p>
+
+              <div class="demo-grid">
+                <figure class="demo-frame">
+                  <img
+                    src="media/demo-app-preview-01.gif"
+                    alt="Ai-Harness authentication and profile flow"
+                    loading="lazy"
+                  >
+                  <figcaption>Authentication, profile, and entry flows</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="media/demo-app-preview-02.gif"
+                    alt="Ai-Harness shop and product flow"
+                    loading="lazy"
+                  >
+                  <figcaption>Shop, discovery, and product detail</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="media/demo-app-preview-03.gif"
+                    alt="Ai-Harness cart and checkout flow"
+                    loading="lazy"
+                  >
+                  <figcaption>Wishlist, cart, and checkout states</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="media/demo-app-preview-04.gif"
+                    alt="Ai-Harness orders and support flow"
+                    loading="lazy"
+                  >
+                  <figcaption>Orders, rewards, settings, and support</figcaption>
+                </figure>
+              </div>
+
+              <p class="proof-note">
+                Development record: the Demo implementation completed in one
+                overnight run without human intervention during execution. Human
+                input selected the design, set scope, and handled environment access.
+              </p>
+            </div>
+          </section>
+
+          <section class="section" id="adoption">
+            <p class="section-kicker">07 / Adoption paths</p>
+            <h2>Reuse the pattern, not necessarily the directory tree.</h2>
+            <p class="section-lead">
+              This repository is intentionally adaptable. The goal is to preserve
+              explicit contracts and feedback loops while allowing the host project
+              to keep its own stack, package boundaries, CI, and team conventions.
+            </p>
+
+            <div class="adoption-paths">
+              <div class="adoption-path">
+                <div class="path-number">01</div>
+                <div><h3>Run the reference</h3></div>
+                <p>
+                  Clone the repository, run the Demo, inspect its task history and
+                  gates, and use it as a working example of the complete model.
+                </p>
+              </div>
+              <div class="adoption-path">
+                <div class="path-number">02</div>
+                <div><h3>Adapt an existing project</h3></div>
+                <p>
+                  Ask an Agent to compare this Harness with the target repository,
+                  identify conflicts, and produce an adaptation plan before copying
+                  selected contracts, roles, commands, skills, and checks.
+                </p>
+              </div>
+              <div class="adoption-path">
+                <div class="path-number">03</div>
+                <div><h3>Own the result</h3></div>
+                <p>
+                  Once adapted, the target repository's contract becomes authoritative.
+                  Future upstream changes are inputs to evaluate, not dependency updates
+                  that must be applied mechanically.
+                </p>
+              </div>
+            </div>
+
+            <h3>Adaptation checklist</h3>
+            <ul class="checklist">
+              <li>Map package and feature boundaries</li>
+              <li>Identify native host responsibilities</li>
+              <li>Choose the authoritative Agent source</li>
+              <li>Separate generated adapters from facts</li>
+              <li>Keep only roles with real consumers</li>
+              <li>Convert critical rules into checks</li>
+              <li>Define evidence and archival paths</li>
+              <li>Preserve human control at external boundaries</li>
+            </ul>
+          </section>
+
+          <section class="section" id="boundaries">
+            <p class="section-kicker">08 / Boundaries</p>
+            <h2>What the Harness deliberately does not promise.</h2>
+            <p class="section-lead">
+              Clear non-goals prevent a reference architecture from turning into a
+              universal framework that carries unnecessary complexity.
+            </p>
+
+            <div class="boundary-list">
+              <div class="boundary">
+                <strong>No runtime AI</strong>
+                <div>
+                  <h3>It does not add AI features to a Flutter app.</h3>
+                  <p>The Harness operates on the engineering repository and workflow.</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>No package contract</strong>
+                <div>
+                  <h3>It is not consumed through a dependency version.</h3>
+                  <p>Teams inspect, extract, and adapt the pattern to their own project.</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>No automatic product truth</strong>
+                <div>
+                  <h3>Agents do not invent missing product decisions.</h3>
+                  <p>Ambiguity that changes behavior is surfaced for a human decision.</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>No universal automation</strong>
+                <div>
+                  <h3>UI operation remains independently scheduled.</h3>
+                  <p>App Operator reports do not silently become normal task gates.</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>No false platform parity</strong>
+                <div>
+                  <h3>Static checks do not replace native builds.</h3>
+                  <p>Android and iOS hosts remain explicit build and contract targets.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="resources">
+            <p class="section-kicker">09 / Source documents</p>
+            <h2>Continue with the repository facts.</h2>
+            <p class="section-lead">
+              This page explains the model for people. The linked repository files
+              remain the precise source for Agent behavior and engineering rules.
+            </p>
+
+            <div class="link-list">
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/CLAUDE.md"
+              >
+                <strong>Project contract</strong>
+                <span>Authoritative invariants, safety policy, and workflows</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/architecture.md"
+              >
+                <strong>Architecture</strong>
+                <span>Packages, data flow, feature boundaries, and assembly</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/tree/main/.claude"
+              >
+                <strong>Claude assets</strong>
+                <span>Commands, Agents, Skills, and durable Memories</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/tree/main/scripts"
+              >
+                <strong>Executable gates</strong>
+                <span>Hooks, lint rules, evidence capture, and fixtures</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://www.figma.com/community/file/1321464360558173342/shoppe-ecommerce-clothing-fashion-store-multi-purpose-ui-mobile-app-design"
+              >
+                <strong>Demo design source</strong>
+                <span>Shoppe Community design used by the reference app</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA"
+              >
+                <strong>Background article</strong>
+                <span>Chinese discussion of the design and implementation</span>
+              </a>
+            </div>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <strong>Flutter AI Harness</strong>
+          <p>Repository-owned structure for AI-native application engineering.</p>
+        </div>
+        <a href="https://github.com/bladeofgod/flutter-ai-harness">
+          github.com/bladeofgod/flutter-ai-harness
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>

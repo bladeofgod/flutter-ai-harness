@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b2638">
+    <meta
+      name="description"
+      content="Flutter AI Harness 详细指南：项目契约、专业 Agent、任务工作流、安全审查、可执行门禁与工程适配路径。"
+    >
+    <meta property="og:title" content="Flutter AI Harness 详细指南">
+    <meta
+      property="og:description"
+      content="面向生产级 Flutter 与混合移动应用仓库的 AI 原生工程 Harness。"
+    >
+    <meta property="og:type" content="website">
+    <meta
+      property="og:url"
+      content="https://bladeofgod.github.io/flutter-ai-harness/zh-CN/"
+    >
+    <meta
+      property="og:image"
+      content="https://bladeofgod.github.io/flutter-ai-harness/media/demo-app-preview-02.gif"
+    >
+    <title>Flutter AI Harness | 设计与采用指南</title>
+    <link rel="stylesheet" href="../assets/harness-guide.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#content">跳转到正文</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="Flutter AI Harness 首页">
+          <span class="brand-mark" aria-hidden="true">FAH</span>
+          <span class="brand-name">Flutter AI Harness</span>
+        </a>
+        <nav class="header-nav" aria-label="主导航">
+          <a href="#model">系统模型</a>
+          <a href="#workflow">工作流</a>
+          <a href="#adoption">采用方式</a>
+          <a
+            class="github-link"
+            href="https://github.com/bladeofgod/flutter-ai-harness"
+          >GitHub</a>
+          <a class="language-link" href="../" lang="en">English</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="content">
+      <section class="hero" id="top">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">工程指南 / 参考实现</p>
+            <h1>让 AI 生成的代码进入工程系统。</h1>
+            <p class="hero-lead">
+              Flutter AI Harness 将项目约束、专业角色、任务产物、审查闭环和质量门禁
+              变成仓库自身的基础设施，面向 Flutter 与长期维护的原生宿主工程。
+            </p>
+            <div class="hero-actions">
+              <a
+                class="button button-primary"
+                href="https://github.com/bladeofgod/flutter-ai-harness"
+              >查看代码仓库</a>
+              <a class="button button-secondary" href="#adoption">
+                选择采用方式
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-metrics" aria-label="项目事实">
+            <div class="metric">
+              <strong>1 个事实源</strong>
+              <span>Claude 项目资产保持权威</span>
+            </div>
+            <div class="metric">
+              <strong>2 个原生宿主</strong>
+              <span>Android 与 iOS 始终是一等构建目标</span>
+            </div>
+            <div class="metric">
+              <strong>1 个通宵</strong>
+              <span>参考 Demo 在执行阶段无人干预完成</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="not-sdk" aria-label="项目定位">
+        <div class="not-sdk-inner">
+          <strong>不是运行时 SDK</strong>
+          <p>
+            可以 Clone、研究或改造成自己的工程模式，但不要把它理解为 Package，
+            也不要把它当成按版本依赖的应用组件。
+          </p>
+        </div>
+      </aside>
+
+      <div class="page-layout">
+        <nav class="toc" aria-label="本文目录">
+          <p class="toc-title">本文目录</p>
+          <ol>
+            <li><a href="#overview">01 / 为什么需要</a></li>
+            <li><a href="#model">02 / 系统模型</a></li>
+            <li><a href="#roles">03 / 专业角色</a></li>
+            <li><a href="#workflow">04 / 交付闭环</a></li>
+            <li><a href="#security">05 / 安全审查</a></li>
+            <li><a href="#demo">06 / 参考 Demo</a></li>
+            <li><a href="#adoption">07 / 采用方式</a></li>
+            <li><a href="#boundaries">08 / 能力边界</a></li>
+            <li><a href="#resources">09 / 事实文档</a></li>
+          </ol>
+        </nav>
+
+        <article class="article">
+          <section class="section" id="overview">
+            <p class="section-kicker">01 / 为什么需要</p>
+            <h2>代码生成只是交付过程的一部分。</h2>
+            <p class="section-lead">
+              AI 可以很快生成页面、API Client 或测试，但生产质量依然取决于代码应该放在哪里、
+              必须保护哪些契约、什么证据能够证明它有效，以及由谁独立审查最终结果。
+            </p>
+
+            <div class="principle">
+              Harness 是归仓库所有的工程环境：为 Agent 提供足够的上下文和验证工具，
+              同时保留清晰边界，让结果能够执行、审查和追溯。
+            </div>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>缺少 Harness 时</h3>
+                <p>
+                  项目知识散落在对话历史和个人记忆中。Agent 可以生成代码，但 Package 边界、
+                  测试范围、原生端一致性和完成条件仍然是隐含的。
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>具备 Harness 后</h3>
+                <p>
+                  长期契约与代码一起维护。任务承载可执行范围，角色保持聚焦，检查产生证据，
+                  Review 问题在归档前返回实现闭环。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="model">
+            <p class="section-kicker">02 / 系统模型</p>
+            <h2>一套项目契约，适配多个执行工具。</h2>
+            <p class="section-lead">
+              仓库以 Claude 为优先事实源。<code>.claude/</code> 下的 Command、Agent、
+              Skill 与 Memory 保持权威；Codex 原生 Skill 和自定义 Agent 由同一套资产生成，
+              并通过门禁检查漂移。
+            </p>
+
+            <div class="source-model" aria-label="事实源与适配关系">
+              <div class="source-block authoritative">
+                <h3>权威事实层</h3>
+                <p>
+                  <code>CLAUDE.md</code> 定义项目不变量；<code>.claude/</code>
+                  维护工作流、角色、聚焦 Skill 与低频长期经验。
+                </p>
+              </div>
+              <div class="source-arrow">确定性生成并校验</div>
+              <div class="source-block generated">
+                <h3>Codex 适配层</h3>
+                <p>
+                  <code>AGENTS.md</code>、<code>.agents/skills/</code> 和
+                  <code>.codex/agents/</code> 提供原生发现能力，但不成为第二份项目契约。
+                </p>
+              </div>
+            </div>
+
+            <div class="flow" aria-label="Harness 层次">
+              <div class="flow-step">
+                <span class="flow-number">第 01 层</span>
+                <strong>契约</strong>
+                <p>架构、依赖方向、原生规则和安全策略。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">第 02 层</span>
+                <strong>上下文</strong>
+                <p>任务卡、Figma 上下文、按需 Skill 和 App 文档。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">第 03 层</span>
+                <strong>执行</strong>
+                <p>专业 Agent 负责实现、测试、审查和运行 App。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">第 04 层</span>
+                <strong>证据</strong>
+                <p>质量检查、Review 报告、脱敏日志和归档决策。</p>
+              </div>
+            </div>
+
+            <pre class="code-block" aria-label="Workspace 依赖方向"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui
+<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui
+<span class="accent">app_data / app_im</span> -&gt; app_core
+<span class="accent">app_core / app_ui</span> -&gt; 不依赖其他 Workspace Package</code></pre>
+          </section>
+
+          <section class="section" id="roles">
+            <p class="section-kicker">03 / 专业角色</p>
+            <h2>职责越聚焦，独立判断越可靠。</h2>
+            <p class="section-lead">
+              角色不是装饰性的身份设定。每个 Agent 都有明确职责、工具范围、停止条件和输出契约，
+              Reviewer 不继承执行者的上下文偏见。
+            </p>
+
+            <div class="role-list">
+              <div class="role">
+                <div class="role-kind">任务规划</div>
+                <div>
+                  <h3>Architect</h3>
+                  <p>将产品、设计和仓库证据转成可独立执行的任务。</p>
+                </div>
+                <div class="role-boundary">不实现应用代码。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">功能实现</div>
+                <div>
+                  <h3>Task Executor</h3>
+                  <p>按已批准的单张任务卡实现功能、测试和聚焦验证。</p>
+                </div>
+                <div class="role-boundary">不重新定义架构，也不自我批准。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">原生边界</div>
+                <div>
+                  <h3>Bridge Engineer</h3>
+                  <p>按契约优先方式维护 MethodChannel 和 EventChannel。</p>
+                </div>
+                <div class="role-boundary">必须保持 Android 与 iOS 行为一致。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">正确性</div>
+                <div>
+                  <h3>Reviewer</h3>
+                  <p>检查行为、架构、生命周期、契约漂移和测试缺口。</p>
+                </div>
+                <div class="role-boundary">首轮审查只读，不修改实现。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">安全性</div>
+                <div>
+                  <h3>Security Reviewer</h3>
+                  <p>追踪信任边界、敏感数据、不可信输入和执行能力。</p>
+                </div>
+                <div class="role-boundary">没有 Bash 或写入工具，Codex 使用只读沙箱。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">运行证据</div>
+                <div>
+                  <h3>App Operator</h3>
+                  <p>通过 Marionette 对批准的 UI 行为 Spec 执行运行态验证。</p>
+                </div>
+                <div class="role-boundary">由人独立安排，不属于任务默认门禁。</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="workflow">
+            <p class="section-kicker">04 / 交付闭环</p>
+            <h2>产物跟随任务流动，而不是围绕任务堆积。</h2>
+            <p class="section-lead">
+              常规闭环保持紧凑。人工参与集中在产品决策和高风险边界，Agent 在执行过程中
+              自动选择聚焦检查并完成独立审查。
+            </p>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <h3>标准化输入</h3>
+                <p>
+                  读取产品规则、仓库契约和 Figma 节点。无法确认的行为明确记录，
+                  不通过猜测补全。
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>拆分任务</h3>
+                <p>
+                  创建命名唯一的任务卡，声明依赖、执行角色、实现范围、测试，
+                  并按风险标记 Security Review。
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>实现与验证</h3>
+                <p>
+                  修改最小有效范围，在同一批次补充测试，并通过证据采集器一次性保存
+                  已脱敏的命令输出。
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>独立审查</h3>
+                <p>
+                  普通 Reviewer 始终检查正确性；只有任务或实际 diff 改变安全边界时，
+                  Security Review 才加入流程。
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>修复与复审</h3>
+                <p>
+                  P0、P1 阻断任务完成。修复返回原 Reviewer，跨维度修改会同时触发
+                  普通与安全复审。
+                </p>
+              </div>
+              <div class="timeline-item">
+                <h3>归档证据</h3>
+                <p>
+                  只有检查、Review、依赖关系和必要摘要全部有效后，任务才移动到
+                  <code>docs/tasks/done/</code>。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="security">
+            <p class="section-kicker">05 / 安全审查</p>
+            <h2>按风险触发、保持独立、绑定证据。</h2>
+            <p class="section-lead">
+              普通 UI 和说明文档不会增加额外门禁。只有任务改变信任、数据、原生、
+              供应链或 Agent 执行能力边界时，Security Review 才会启动。
+            </p>
+
+            <ul class="trigger-grid">
+              <li>认证、会话、授权或用户数据隔离</li>
+              <li>凭据、隐私数据、日志或安全存储</li>
+              <li>网络、文件、Deep Link、WebView 或不可信反序列化</li>
+              <li>平台通道、原生权限或宿主配置</li>
+              <li>第三方依赖、Action、构建脚本或生成链路</li>
+              <li>Agent 工具、MCP、CI 权限、提交或发布能力</li>
+            </ul>
+
+            <div class="security-band">
+              <h3>两种审查模式</h3>
+              <p>
+                任务门禁报告记录审查过的仓库文件并保存实现摘要，文件发生变化后旧报告自动失效。
+                独立审查可以直接检查用户提供的代码而不绑定文件，但不能作为任务归档凭据。
+              </p>
+            </div>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>确定性控制</h3>
+                <p>
+                  Schema 检查会拒绝非法任务元数据、缺失报告、过期摘要、不安全 Reviewer 工具
+                  和发生漂移的 Codex 适配。
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>Agent 判断</h3>
+                <p>
+                  每条发现都必须给出攻击者可控入口、受影响资产、危险操作路径、具体证据
+                  和最小修法。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="demo">
+            <div class="demo-band">
+              <p class="section-kicker">06 / 参考 Demo</p>
+              <h2>仓库提供真实证据，而不是空白占位。</h2>
+              <p class="section-lead">
+                Shoppe 风格 Flutter Demo 使用确定性本地数据，覆盖认证、商品目录、搜索、
+                商品详情、购物车、结算、个人中心、设置、奖励、订单和客服流程。
+              </p>
+
+              <div class="demo-grid">
+                <figure class="demo-frame">
+                  <img
+                    src="../media/demo-app-preview-01.gif"
+                    alt="Ai-Harness 认证与个人中心流程"
+                    loading="lazy"
+                  >
+                  <figcaption>认证、个人中心与入口流程</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="../media/demo-app-preview-02.gif"
+                    alt="Ai-Harness 商店与商品流程"
+                    loading="lazy"
+                  >
+                  <figcaption>商店、发现与商品详情</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="../media/demo-app-preview-03.gif"
+                    alt="Ai-Harness 购物车与结算流程"
+                    loading="lazy"
+                  >
+                  <figcaption>心愿单、购物车与结算状态</figcaption>
+                </figure>
+                <figure class="demo-frame">
+                  <img
+                    src="../media/demo-app-preview-04.gif"
+                    alt="Ai-Harness 订单与客服流程"
+                    loading="lazy"
+                  >
+                  <figcaption>订单、奖励、设置与客服</figcaption>
+                </figure>
+              </div>
+
+              <p class="proof-note">
+                开发记录：Demo 在一个通宵内完成，执行阶段没有人工介入实现。人工输入仅负责
+                选择设计稿、确认范围和处理环境授权。
+              </p>
+            </div>
+          </section>
+
+          <section class="section" id="adoption">
+            <p class="section-kicker">07 / 采用方式</p>
+            <h2>复用工程模式，不必复刻目录结构。</h2>
+            <p class="section-lead">
+              这套仓库刻意保持可改造性。采用目标是保留明确契约和反馈闭环，同时允许目标工程
+              延续自己的技术栈、Package 边界、CI 和团队约定。
+            </p>
+
+            <div class="adoption-paths">
+              <div class="adoption-path">
+                <div class="path-number">01</div>
+                <div><h3>运行参考工程</h3></div>
+                <p>
+                  Clone 仓库并运行 Demo，检查任务历史和质量门禁，把它作为完整工程模式的
+                  可执行示例。
+                </p>
+              </div>
+              <div class="adoption-path">
+                <div class="path-number">02</div>
+                <div><h3>改造现有项目</h3></div>
+                <p>
+                  先让 Agent 对比 Harness 和目标仓库，识别冲突并生成适配方案，再选择性迁移
+                  契约、角色、Command、Skill 与检查工具。
+                </p>
+              </div>
+              <div class="adoption-path">
+                <div class="path-number">03</div>
+                <div><h3>拥有最终结果</h3></div>
+                <p>
+                  完成适配后，目标仓库自己的项目契约成为权威。上游后续变化只是可评估输入，
+                  不是必须机械升级的版本依赖。
+                </p>
+              </div>
+            </div>
+
+            <h3>适配检查清单</h3>
+            <ul class="checklist">
+              <li>映射 Package 与 Feature 边界</li>
+              <li>识别原生宿主职责</li>
+              <li>选择权威 Agent 事实源</li>
+              <li>区分生成适配与工程事实</li>
+              <li>只保留存在真实消费者的角色</li>
+              <li>把关键规则转换为可执行检查</li>
+              <li>定义证据和归档路径</li>
+              <li>在外部边界保留人工控制</li>
+            </ul>
+          </section>
+
+          <section class="section" id="boundaries">
+            <p class="section-kicker">08 / 能力边界</p>
+            <h2>Harness 明确不承诺什么。</h2>
+            <p class="section-lead">
+              清晰的非目标可以避免参考架构演变成携带大量无效复杂度的万能框架。
+            </p>
+
+            <div class="boundary-list">
+              <div class="boundary">
+                <strong>不是运行时 AI</strong>
+                <div>
+                  <h3>不会给 Flutter App 增加 AI 功能。</h3>
+                  <p>Harness 作用于工程仓库和开发流程。</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>不是 Package 契约</strong>
+                <div>
+                  <h3>不通过依赖版本接入。</h3>
+                  <p>团队需要阅读、抽取并改造成自己的工程模式。</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>不编造产品事实</strong>
+                <div>
+                  <h3>Agent 不会补全缺失的产品决策。</h3>
+                  <p>会改变用户行为的歧义必须回到人工确认。</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>不默认自动化一切</strong>
+                <div>
+                  <h3>UI 操作由人独立安排。</h3>
+                  <p>App Operator 报告不会被静默加入普通任务门禁。</p>
+                </div>
+              </div>
+              <div class="boundary">
+                <strong>不伪造平台一致性</strong>
+                <div>
+                  <h3>静态检查不能替代原生构建。</h3>
+                  <p>Android 和 iOS 始终是明确的契约与构建目标。</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="resources">
+            <p class="section-kicker">09 / 事实文档</p>
+            <h2>继续阅读仓库中的真实契约。</h2>
+            <p class="section-lead">
+              本页面面向人解释整体模式。下面的仓库文件仍然是 Agent 行为与工程规则的
+              精确事实来源。
+            </p>
+
+            <div class="link-list">
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/CLAUDE.md"
+              >
+                <strong>项目契约</strong>
+                <span>权威不变量、安全策略和工作流</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/architecture.md"
+              >
+                <strong>架构说明</strong>
+                <span>Package、数据流、Feature 边界和装配</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/tree/main/.claude"
+              >
+                <strong>Claude 工程资产</strong>
+                <span>Command、Agent、Skill 与长期 Memory</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/tree/main/scripts"
+              >
+                <strong>可执行门禁</strong>
+                <span>Git Hook、Lint、证据采集与失败 Fixture</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://www.figma.com/community/file/1321464360558173342/shoppe-ecommerce-clothing-fashion-store-multi-purpose-ui-mobile-app-design"
+              >
+                <strong>Demo 设计稿</strong>
+                <span>参考应用采用的 Shoppe Community 设计</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA"
+              >
+                <strong>项目背景文章</strong>
+                <span>关于设计思路与工程落地的中文介绍</span>
+              </a>
+            </div>
+          </section>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <strong>Flutter AI Harness</strong>
+          <p>归仓库所有的 AI 原生应用工程结构。</p>
+        </div>
+        <a href="https://github.com/bladeofgod/flutter-ai-harness">
+          github.com/bladeofgod/flutter-ai-harness
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>
