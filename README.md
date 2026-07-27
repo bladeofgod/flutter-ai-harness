@@ -1,12 +1,12 @@
 # Flutter AI Harness
 
-**[Read the detailed guide](https://bladeofgod.github.io/flutter-ai-harness/)** · [中文 README](docs/README.zh-CN.md)
+**[Read the detailed guide](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/index.html)** · [中文 README](docs/README.zh-CN.md)
 
 An AI-native engineering harness for production Flutter and hybrid mobile application repositories.
 
 Flutter AI Harness helps coding agents work inside explicit, testable engineering boundaries. It combines repository-owned project contracts, focused agent roles, task artifacts, review loops, and executable quality gates. It is an engineering system for building applications with AI agents, not an SDK for adding AI features to a Flutter app.
 
-This README is a project preview and quick start. The [detailed guide](https://bladeofgod.github.io/flutter-ai-harness/) covers the system model, delivery workflow, security review, reference implementation, adoption paths, and future extensions.
+This README is a project preview and quick start. The [detailed guide](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/index.html) covers the system model, delivery workflow, security review, reference implementation, adoption paths, and future extensions.
 
 ## Demo Preview
 
@@ -81,7 +81,7 @@ flutter-ai-harness/
 
 ## Continue Reading
 
-- [Detailed design and adoption guide](https://bladeofgod.github.io/flutter-ai-harness/)
+- [Detailed design and adoption guide](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/index.html)
 - [Authoritative project contract](CLAUDE.md)
 - [Application architecture](docs/architecture.md)
 - [Background article: AI 编程的工程化实践](https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA) (Chinese)

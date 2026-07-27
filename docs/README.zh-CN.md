@@ -1,12 +1,12 @@
 # Flutter AI Harness
 
-**[阅读详细指南](https://bladeofgod.github.io/flutter-ai-harness/zh-CN/)** · [English README](../README.md)
+**[阅读详细指南](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/zh-CN/index.html)** · [English README](../README.md)
 
 面向生产级 Flutter 与混合移动应用仓库的 AI 原生工程 Harness。
 
 Flutter AI Harness 帮助编码 Agent 在明确、可测试的工程边界内工作。它将仓库内的项目契约、聚焦的 Agent 角色、任务产物、审查闭环和可执行质量门禁组合成一套工程系统。本项目用于通过 AI Agent 构建应用，不是在 Flutter App 内增加 AI 功能的运行时 SDK。
 
-这份 README 只提供项目预览和最短上手路径。[详细指南](https://bladeofgod.github.io/flutter-ai-harness/zh-CN/)将持续承载系统模型、交付流程、安全审查、参考实现、采用方式和后续扩展内容。
+这份 README 只提供项目预览和最短上手路径。[详细指南](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/zh-CN/index.html)将持续承载系统模型、交付流程、安全审查、参考实现、采用方式和后续扩展内容。
 
 ## Demo 预览
 
@@ -81,7 +81,7 @@ flutter-ai-harness/
 
 ## 继续了解
 
-- [设计与采用详细指南](https://bladeofgod.github.io/flutter-ai-harness/zh-CN/)
+- [设计与采用详细指南](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/zh-CN/index.html)
 - [权威项目契约](../CLAUDE.md)
 - [应用架构](./architecture.md)
 - [背景文章：AI 编程的工程化实践](https://mp.weixin.qq.com/s/XAV8U9SfvbGgsAC5Tj2GEA)
