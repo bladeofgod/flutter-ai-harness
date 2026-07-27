@@ -1,6 +1,6 @@
 # Flutter AI Harness
 
-**[阅读详细指南](https://bladeofgod.github.io/flutter-ai-harness/zh-CN/)** · [English README](../README.md) · [English Guide](https://bladeofgod.github.io/flutter-ai-harness/)
+**[阅读详细指南](https://bladeofgod.github.io/flutter-ai-harness/zh-CN/)** · [English README](../README.md)
 
 面向生产级 Flutter 与混合移动应用仓库的 AI 原生工程 Harness。
 
