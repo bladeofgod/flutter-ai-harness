@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:app_core/app_core.dart';
 import 'package:app_data/app_data.dart'
     show FixtureApiTransport, FixtureRequestHandler;
@@ -44,6 +47,89 @@ void main() {
     conversation = await source.submitRating(5);
     expect(conversation.stage, SupportConversationStage.rated);
     expect(conversation.rating?.score, 5);
+  });
+
+  test('round-trips image and video Support messages defensively', () async {
+    final source = _source(SupportFixtureHandler());
+    await source.startConversation();
+    await source.selectQuestion('return-item');
+    await source.advanceTransition();
+    await source.advanceTransition();
+
+    final imageId = MediaResourceId('mr_00000000000000000000000000000001');
+    var conversation = await source.sendMedia(
+      SupportMediaContent(
+        resourceId: imageId,
+        type: SupportMediaType.image,
+        label: 'damaged-item.jpg',
+      ),
+    );
+    var media = conversation.messages.last.content as SupportMediaContent;
+    expect(media.type, SupportMediaType.image);
+    expect(media.resourceId, imageId);
+    expect(media.poster, isNull);
+
+    conversation = await source.receiveReply();
+    final videoId = MediaResourceId('mr_00000000000000000000000000000002');
+    conversation = await source.sendMedia(
+      SupportMediaContent(
+        resourceId: videoId,
+        type: SupportMediaType.video,
+        label: 'unboxing.mp4',
+        duration: const Duration(seconds: 8),
+      ),
+    );
+    media = conversation.messages.last.content as SupportMediaContent;
+    expect(media.type, SupportMediaType.video);
+    expect(media.resourceId, videoId);
+    expect(media.duration, const Duration(seconds: 8));
+
+    conversation = await source.receiveReply();
+    conversation = await source.sendMedia(
+      SupportMediaContent(
+        resourceId: MediaResourceId('mr_00000000000000000000000000000003'),
+        type: SupportMediaType.image,
+        label: 'camera-photo.jpg',
+      ),
+    );
+    media = conversation.messages.last.content as SupportMediaContent;
+    expect(media.type, SupportMediaType.image);
+    expect(media.poster, isNull);
+    expect(media.toString(), isNot(contains(media.resourceId.value)));
+  });
+
+  test('fixture payload contains only opaque ID and light metadata', () async {
+    final handler = SupportFixtureHandler();
+    final transport = _CapturingTransport(
+      FixtureApiTransport(handlers: <FixtureRequestHandler>[handler]),
+    );
+    final source = SupportLocalDataSource(
+      apiClient: ApiClient(transport: transport),
+    );
+    await source.startConversation();
+    await source.selectQuestion('return-item');
+    await source.advanceTransition();
+    await source.advanceTransition();
+
+    await source.sendMedia(
+      SupportMediaContent(
+        resourceId: MediaResourceId('mr_00000000000000000000000000000004'),
+        type: SupportMediaType.video,
+        label: 'proof.mov',
+        duration: const Duration(seconds: 3),
+      ),
+    );
+
+    final payload = transport.lastPayload! as Map<String, Object?>;
+    expect(payload.keys, <String>{
+      'resourceId',
+      'mediaType',
+      'label',
+      'durationMillis',
+    });
+    expect(payload.toString(), isNot(contains('file:')));
+    expect(payload.toString(), isNot(contains('handle')));
+    expect(() => MediaResourceId('invalid'), throwsA(isA<FormatException>()));
   });
 
   test(
@@ -141,6 +227,23 @@ void main() {
       throwsArgumentError,
     );
   });
+
+  test('Support poster accepts only bounded sanitized PNG bytes', () {
+    final bytes = _onePixelPng();
+    final poster = SupportMediaPoster(bytes: bytes, width: 1, height: 1);
+    bytes.fillRange(0, bytes.length, 0);
+
+    expect(poster.bytes, _onePixelPng());
+    expect(poster.toString(), 'SupportMediaPoster(<redacted>)');
+    expect(
+      () => SupportMediaPoster(
+        bytes: Uint8List.fromList(<int>[137, 80, 78, 71, 13, 10, 26, 10]),
+        width: 1,
+        height: 1,
+      ),
+      throwsArgumentError,
+    );
+  });
 }
 
 SupportLocalDataSource _source(SupportFixtureHandler handler) =>
@@ -159,3 +262,21 @@ final class _MalformedTransport implements ApiTransport {
   Future<ApiResponse<Object?>> send(ApiRequest request) async =>
       const ApiResponse<Object?>.success(<String, Object?>{});
 }
+
+final class _CapturingTransport implements ApiTransport {
+  _CapturingTransport(this.delegate);
+
+  final ApiTransport delegate;
+  Object? lastPayload;
+
+  @override
+  Future<ApiResponse<Object?>> send(ApiRequest request) {
+    lastPayload = request.payload;
+    return delegate.send(request);
+  }
+}
+
+Uint8List _onePixelPng() => base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8A'
+  'AQUBAScY42YAAAAASUVORK5CYII=',
+);

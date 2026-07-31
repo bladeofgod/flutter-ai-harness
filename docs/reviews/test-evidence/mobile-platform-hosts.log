@@ -64,14 +64,14 @@ Building com.example.demoApp for device (ios)...
 Warning: Missing build name (CFBundleShortVersionString).
 Warning: Missing build number (CFBundleVersion).
 Action Required: You must set a build name and number in the pubspec.yaml file version field before submitting to the App Store.
-Running Xcode build...                                          
+Running Xcode build...
 Xcode build done.                                            2.4s
 Failed to build iOS app
 Uncategorized (Xcode): Unable to find a destination matching the provided destination specifier:
 		{ generic:1, platform:iOS }
 
 	Ineligible destinations for the "Runner" scheme:
-		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+		{ platform:iOS, id:<redacted-device-id>, name:<redacted-device-name>, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
 
 Encountered error while building for device.
 
@@ -107,7 +107,18 @@ Downloading packages...
 Got dependencies in `<repo>/app`!
 12 packages have newer versions incompatible with dependency constraints.
 Try `flutter pub outdated` for more information.
-00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:03 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:04 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart                                                                                                        00:04 +0: renders the neutral harness shell                                                                                                                                                            00:05 +0: renders the neutral harness shell                                                                                                                                                            00:05 +1: renders the neutral harness shell                                                                                                                                                            00:05 +1: main reuses the Flutter test binding                                                                                                                                                         00:05 +2: main reuses the Flutter test binding                                                                                                                                                         00:05 +2: All tests passed!                                                                                                                                                                            
+
+00:00 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:01 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:02 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:03 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:04 +0: loading <repo>/app/apps/demo/test/demo_app_test.dart
+00:04 +0: renders the neutral harness shell
+00:05 +0: renders the neutral harness shell
+00:05 +1: renders the neutral harness shell
+00:05 +1: main reuses the Flutter test binding
+00:05 +2: main reuses the Flutter test binding
+00:05 +2: All tests passed!
 
 ```
 
@@ -141,14 +152,14 @@ Got dependencies in `<repo>/app`!
 Try `flutter pub outdated` for more information.
 Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
 Building com.example.demoApp for device (ios)...
-Running Xcode build...                                          
+Running Xcode build...
 Xcode build done.                                            4.6s
 Failed to build iOS app
 Uncategorized (Xcode): Unable to find a destination matching the provided destination specifier:
 		{ generic:1, platform:iOS }
 
 	Ineligible destinations for the "Runner" scheme:
-		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+		{ platform:iOS, id:<redacted-device-id>, name:<redacted-device-name>, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
 
 Encountered error while building for device.
 

@@ -17,7 +17,18 @@ mkdir -p \
   "$FEATURE_ROOT/feature_beta/controllers" \
   "$FIXTURE_ROOT/app/packages/app_data/lib/generated" \
   "$FIXTURE_ROOT/app/packages/app_data/lib/mappers" \
+  "$FIXTURE_ROOT/app/packages/app_media" \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" \
+  "$FIXTURE_ROOT/app/apps/demo" \
   "$FIXTURE_ROOT/app/apps/demo/lib"
+
+printf '%s\n' 'name: app_media_capture_bridge' \
+  > "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/pubspec.yaml"
+printf '%s\n' 'name: app_media' \
+  > "$FIXTURE_ROOT/app/packages/app_media/pubspec.yaml"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" \
+  > "$FIXTURE_ROOT/app/apps/demo/.flutter-plugins-dependencies"
 
 valid_dependencies="$FIXTURE_ROOT/valid-dependencies.json"
 cat > "$valid_dependencies" <<'JSON'
@@ -27,8 +38,10 @@ cat > "$valid_dependencies" <<'JSON'
   {"name":"app_ui","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
   {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
   {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_ui"],"devDependencies":[]}
+  {"name":"app_media","kind":"root","source":"root","directDependencies":["app_core","app_ui"],"devDependencies":[]},
+  {"name":"app_media_capture_bridge","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]}
 ]}
 JSON
 
@@ -88,12 +101,14 @@ invalid_dependencies="$FIXTURE_ROOT/invalid-dependencies.json"
 cat > "$invalid_dependencies" <<'JSON'
 {"root":"workspace","packages":[
   {"name":"workspace","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
-  {"name":"app_core","kind":"root","source":"root","directDependencies":["app_features"],"devDependencies":[]},
-  {"name":"app_ui","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
-  {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
+  {"name":"app_core","kind":"root","source":"root","directDependencies":["app_features","app_media_capture_bridge"],"devDependencies":[]},
+  {"name":"app_ui","kind":"root","source":"root","directDependencies":["app_media_capture_bridge"],"devDependencies":[]},
+  {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core","app_media","app_media_capture_bridge"],"devDependencies":[]},
   {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_ui"],"devDependencies":[]}
+  {"name":"app_media","kind":"root","source":"root","directDependencies":["app_core","app_features","app_media_capture_bridge","app_ui"],"devDependencies":[]},
+  {"name":"app_media_capture_bridge","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]}
 ]}
 JSON
 
@@ -105,11 +120,81 @@ fi
 
 for expected in double_quote.dart relative_export.dart direct_api.dart app_data.dart \
   bad_controller.dart app_features.dart bad_shell.dart \
-  'app_core 不得依赖 app_features'; do
+  'app_core 不得依赖 app_features, app_media_capture_bridge' \
+  'app_ui 不得依赖 app_media_capture_bridge' \
+  'app_data 不得依赖 app_media, app_media_capture_bridge' \
+  'app_media 不得依赖 app_features, app_media_capture_bridge' \
+  'app_media_capture_bridge 不得依赖 app_core'; do
   if [[ "$output" != *"$expected"* ]]; then
     echo "错误：仓库边界 lint 未报告 $expected。" >&2
     exit 1
   fi
 done
+
+assert_discovery_rejected() {
+  local input="$1"
+  local label="$2"
+  if bash "$ROOT/scripts/dart-tool.sh" run tool/check_flutter_plugin_discovery.dart \
+    --input "$input" \
+    --workspace-root "$FIXTURE_ROOT/app" \
+    >/dev/null 2>&1; then
+    echo "错误：Plugin discovery 门禁未拒绝 $label。" >&2
+    exit 1
+  fi
+}
+
+invalid_discovery="$FIXTURE_ROOT/invalid-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":true}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" > "$invalid_discovery"
+assert_discovery_rejected "$invalid_discovery" "dev dependency"
+
+duplicate_discovery="$FIXTURE_ROOT/duplicate-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false},{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" > "$duplicate_discovery"
+assert_discovery_rejected "$duplicate_discovery" "duplicate plugin entry"
+
+non_native_discovery="$FIXTURE_ROOT/non-native-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":false,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" > "$non_native_discovery"
+assert_discovery_rejected "$non_native_discovery" "non-native plugin"
+
+wrong_path_discovery="$FIXTURE_ROOT/wrong-path-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$FIXTURE_ROOT/app/apps/demo" > "$wrong_path_discovery"
+assert_discovery_rejected "$wrong_path_discovery" "unexpected plugin path"
+
+missing_graph_discovery="$FIXTURE_ROOT/missing-graph-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[]}\n' \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge" > "$missing_graph_discovery"
+assert_discovery_rejected "$missing_graph_discovery" "missing dependency graph entry"
+
+inside_workspace="$FIXTURE_ROOT/inside-symlink-workspace"
+mkdir -p "$inside_workspace/packages" "$inside_workspace/reviewed-alternative"
+ln -s "$inside_workspace/reviewed-alternative" \
+  "$inside_workspace/packages/app_media_capture_bridge"
+inside_symlink_discovery="$FIXTURE_ROOT/inside-symlink-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$inside_workspace/packages/app_media_capture_bridge" > "$inside_symlink_discovery"
+if bash "$ROOT/scripts/dart-tool.sh" run tool/check_flutter_plugin_discovery.dart \
+  --input "$inside_symlink_discovery" --workspace-root "$inside_workspace" \
+  >/dev/null 2>&1; then
+  echo "错误：Plugin discovery 门禁未拒绝仓库内 Package 符号链接。" >&2
+  exit 1
+fi
+
+outside_workspace="$FIXTURE_ROOT/outside-symlink-workspace"
+outside_plugin="$FIXTURE_ROOT/outside-plugin"
+mkdir -p "$outside_workspace/packages" "$outside_plugin"
+ln -s "$outside_plugin" "$outside_workspace/packages/app_media_capture_bridge"
+outside_symlink_discovery="$FIXTURE_ROOT/outside-symlink-plugin-discovery.json"
+printf '{"plugins":{"android":[{"name":"app_media_capture_bridge","path":"%s/","native_build":true,"dependencies":[],"dev_dependency":false}]},"dependencyGraph":[{"name":"app_media_capture_bridge","dependencies":[]}]}\n' \
+  "$outside_workspace/packages/app_media_capture_bridge" > "$outside_symlink_discovery"
+if bash "$ROOT/scripts/dart-tool.sh" run tool/check_flutter_plugin_discovery.dart \
+  --input "$outside_symlink_discovery" --workspace-root "$outside_workspace" \
+  >/dev/null 2>&1; then
+  echo "错误：Plugin discovery 门禁未拒绝仓库外 Package 符号链接。" >&2
+  exit 1
+fi
 
 echo "[lint-test] 仓库边界 Fixture 通过。"

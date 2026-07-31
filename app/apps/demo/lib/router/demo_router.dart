@@ -78,6 +78,7 @@ GoRouter createDemoRouter({
       ),
       ...buildSearchRoutes(
         searchApi: featuresRegistry.searchApi,
+        imagePicker: featuresRegistry.searchImagePicker,
         openProduct: (context, productId) =>
             unawaited(context.push(productDetailLocation(productId))),
       ),
@@ -94,6 +95,8 @@ GoRouter createDemoRouter({
       ),
       ...buildSupportRoutes(
         supportChatApi: featuresRegistry.supportChatApi,
+        supportMediaPicker: featuresRegistry.supportMediaPicker,
+        mediaResourceStore: featuresRegistry.mediaResourceStore,
         onOpenVoucher: (context, voucher) =>
             unawaited(context.push(vouchersRoutePath)),
       ),
@@ -117,6 +120,7 @@ GoRouter createDemoRouter({
       ),
       ...buildOrdersRoutes(
         ordersApi: featuresRegistry.ordersApi,
+        mediaApi: featuresRegistry.orderReviewMediaApi,
         currentUserProvider: authStateCoordinator,
       ),
       StatefulShellRoute.indexedStack(

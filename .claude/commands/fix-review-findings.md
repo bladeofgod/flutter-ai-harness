@@ -8,10 +8,14 @@ argument-hint: "<review-report-path> [问题范围]"
 ## 修复
 
 1. 按 P0、P1、用户明确选择的 P2 顺序处理。
-2. 小范围问题直接修复；跨文件实现使用 `task-executor`，缺测试使用 `test-writer`，架构不明确时先使用 `architect`。
-3. 保护无关工作树改动，不扩大 Review 已确认的范围。
-4. 不采纳或需要外部决策的问题必须在报告中记录原因。
-5. 每轮修复后运行与影响面相符的格式、分析、测试和仓库门禁。
+2. 优先回到原任务 frontmatter 指定的 Executor；Android/iOS 单平台修复分别使用
+   `android-engineer`、`ios-engineer`，Dart/Flutter 修复使用 `task-executor`，缺测试可以由
+   `test-writer` 补充，架构不明确时先使用 `architect`。
+3. 修复同时跨越 Wire Contract 或多个 Runtime 时由 `bridge-engineer` 协调，并保持各平台实现
+   所有权和独立复审；不得让协调者取代平台 Agent。
+4. 保护无关工作树改动，不扩大 Review 已确认的范围。
+5. 不采纳或需要外部决策的问题必须在报告中记录原因。
+6. 每轮修复后运行与影响面相符的格式、分析、测试和仓库门禁。
 
 ## 复审
 

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:app_core/app_core.dart';
 import 'package:app_data/app_data.dart';
 import 'package:app_features/api/current_user_provider.dart';
+import 'package:app_features/api/order_review_media_api.dart';
 import 'package:app_features/api/orders_api.dart';
 import 'package:app_features/feature_orders/api/local_orders_api.dart';
 import 'package:flutter/foundation.dart';
@@ -102,6 +105,75 @@ final class TestCurrentUserProvider implements CurrentUserProvider {
   @override
   void removeListener(VoidCallback listener) => _listeners.remove(listener);
 }
+
+final class FakeOrderReviewMediaApi implements OrderReviewMediaApi {
+  OrderReviewMediaCaptureOutcome captureOutcome =
+      const OrderReviewMediaCancelled();
+  OrderReviewMediaReleaseOutcome releaseOutcome =
+      const OrderReviewMediaReleased();
+  Future<OrderReviewMediaCaptureOutcome>? pendingCapture;
+  Future<OrderReviewMediaReleaseOutcome>? pendingRelease;
+
+  final List<OrderReviewMediaAttachment> releasedAttachments =
+      <OrderReviewMediaAttachment>[];
+  final List<String> operationLog = <String>[];
+  var captureCount = 0;
+  var clearCount = 0;
+  var disposeCount = 0;
+
+  @override
+  Future<OrderReviewMediaCaptureOutcome> capture() async {
+    captureCount += 1;
+    operationLog.add('capture');
+    return pendingCapture ?? captureOutcome;
+  }
+
+  @override
+  Future<OrderReviewMediaReleaseOutcome> release(
+    OrderReviewMediaAttachment attachment,
+  ) async {
+    operationLog.add('release');
+    releasedAttachments.add(attachment);
+    return pendingRelease ?? releaseOutcome;
+  }
+
+  @override
+  Future<void> clearDrafts() async {
+    clearCount += 1;
+  }
+
+  @override
+  Future<void> dispose() async {
+    disposeCount += 1;
+  }
+}
+
+OrderReviewMediaAttachment testMediaAttachment({
+  OrderReviewMediaType type = OrderReviewMediaType.photo,
+}) => OrderReviewMediaAttachment(
+  type: type,
+  thumbnailBytes: validOrderReviewJpeg(),
+  thumbnailPixelWidth: 1,
+  thumbnailPixelHeight: 1,
+  duration: type == OrderReviewMediaType.video
+      ? const Duration(seconds: 7)
+      : null,
+);
+
+const String _onePixelJpegBase64 =
+    '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////'
+    '////////////////////////////////////////////////////////2wBDAf//'
+    '////////////////////////////////////////////////////////////////////'
+    '////////////////wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAA'
+    'AAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAF//8QAFBAB'
+    'AAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABBQJ//8QAFBEBAAAAAAAAAAAAAAAAAAAA'
+    'AP/aAAgBAwEBPwF//8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAgBAgEBPwF//8QA'
+    'FBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQAGPwJ//8QAFBABAAAAAAAAAAAAAAAA'
+    'AAAAAP/aAAgBAQABPyF//9oADAMBAAIAAwAAABD/xAAUEQEAAAAAAAAAAAAAAAAA'
+    'AAAA/9oACAEDAQE/EH//xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAECAQE/EH//'
+    'xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/EH//2Q==';
+
+Uint8List validOrderReviewJpeg() => base64Decode(_onePixelJpegBase64);
 
 Order testOrder({
   String id = 'order-test',

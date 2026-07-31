@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:app_data/app_data.dart' show ProductReview;
 import 'package:app_data/orders.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
+import '../../api/order_review_media_api.dart';
 import '../../shared/catalog/catalog_asset_image.dart';
+import '../controllers/orders_controller.dart';
 import '../widgets/orders_components.dart';
 
 final class OrderReviewPage extends StatefulWidget {
@@ -12,9 +16,15 @@ final class OrderReviewPage extends StatefulWidget {
     required this.rating,
     required this.isSubmitting,
     required this.validationMessage,
+    required this.mediaState,
     required this.onSelectRating,
     required this.onCommentChanged,
     required this.onSubmit,
+    required this.onCaptureMedia,
+    required this.onRetakeMedia,
+    required this.onRemoveMedia,
+    required this.onRetryMedia,
+    required this.onThumbnailDecodeFailure,
     required this.onDone,
     super.key,
   });
@@ -23,9 +33,15 @@ final class OrderReviewPage extends StatefulWidget {
   final int rating;
   final bool isSubmitting;
   final String? validationMessage;
+  final OrderReviewMediaDraftState mediaState;
   final ValueChanged<int> onSelectRating;
   final ValueChanged<String> onCommentChanged;
   final VoidCallback onSubmit;
+  final VoidCallback onCaptureMedia;
+  final VoidCallback onRetakeMedia;
+  final VoidCallback onRemoveMedia;
+  final VoidCallback onRetryMedia;
+  final ValueChanged<OrderReviewMediaAttachment> onThumbnailDecodeFailure;
   final ValueChanged<Order> onDone;
 
   @override
@@ -52,6 +68,9 @@ final class _OrderReviewPageState extends State<OrderReviewPage> {
         },
       );
     }
+    final isMediaBusy =
+        widget.mediaState is OrderReviewMediaLaunching ||
+        widget.mediaState is OrderReviewMediaRemoving;
     return OrdersPageScaffold(
       title: 'Review',
       child: ListView(
@@ -106,7 +125,7 @@ final class _OrderReviewPageState extends State<OrderReviewPage> {
                   child: IconButton(
                     key: ValueKey('order-review-rating-$value'),
                     tooltip: '$value star${value == 1 ? '' : 's'}',
-                    onPressed: widget.isSubmitting
+                    onPressed: widget.isSubmitting || isMediaBusy
                         ? null
                         : () => widget.onSelectRating(value),
                     icon: Icon(
@@ -123,7 +142,7 @@ final class _OrderReviewPageState extends State<OrderReviewPage> {
           TextField(
             key: const ValueKey('order-review-comment'),
             controller: _commentController,
-            enabled: !widget.isSubmitting,
+            enabled: !widget.isSubmitting && !isMediaBusy,
             maxLines: 5,
             maxLength: 500,
             textCapitalization: TextCapitalization.sentences,
@@ -142,16 +161,365 @@ final class _OrderReviewPageState extends State<OrderReviewPage> {
             ),
           ),
           const SizedBox(height: 18),
+          _OrderReviewMediaSection(
+            state: widget.mediaState,
+            isEnabled: !widget.isSubmitting,
+            onCapture: widget.onCaptureMedia,
+            onRetake: widget.onRetakeMedia,
+            onRemove: widget.onRemoveMedia,
+            onRetry: widget.onRetryMedia,
+            onThumbnailDecodeFailure: widget.onThumbnailDecodeFailure,
+          ),
+          const SizedBox(height: 18),
           OrdersPrimaryButton(
             key: const ValueKey('order-submit-review'),
             label: widget.isSubmitting ? 'Submitting...' : 'Submit review',
             icon: Icons.check,
-            onPressed: widget.isSubmitting ? null : widget.onSubmit,
+            onPressed: widget.isSubmitting || isMediaBusy
+                ? null
+                : widget.onSubmit,
           ),
         ],
       ),
     );
   }
+}
+
+final class _OrderReviewMediaSection extends StatelessWidget {
+  const _OrderReviewMediaSection({
+    required this.state,
+    required this.isEnabled,
+    required this.onCapture,
+    required this.onRetake,
+    required this.onRemove,
+    required this.onRetry,
+    required this.onThumbnailDecodeFailure,
+  });
+
+  final OrderReviewMediaDraftState state;
+  final bool isEnabled;
+  final VoidCallback onCapture;
+  final VoidCallback onRetake;
+  final VoidCallback onRemove;
+  final VoidCallback onRetry;
+  final ValueChanged<OrderReviewMediaAttachment> onThumbnailDecodeFailure;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (state) {
+      OrderReviewMediaEmpty() || OrderReviewMediaDraftReleased() => Align(
+        alignment: Alignment.centerLeft,
+        child: OutlinedButton.icon(
+          key: const ValueKey('order-review-media-add'),
+          onPressed: isEnabled ? onCapture : null,
+          icon: const Icon(Icons.photo_camera_outlined),
+          label: const Text('Add photo or video'),
+        ),
+      ),
+      OrderReviewMediaLaunching() => const _MediaStatus(
+        key: ValueKey('order-review-media-launching'),
+        label: 'Opening camera...',
+      ),
+      OrderReviewMediaReady(:final attachment) => _MediaAttachment(
+        key: const ValueKey('order-review-media-ready'),
+        attachment: attachment,
+        onRetake: isEnabled ? onRetake : null,
+        onRemove: isEnabled ? onRemove : null,
+        onThumbnailDecodeFailure: onThumbnailDecodeFailure,
+      ),
+      OrderReviewMediaRemoving() => const _MediaStatus(
+        key: ValueKey('order-review-media-removing'),
+        label: 'Removing attachment...',
+      ),
+      OrderReviewMediaDraftFailure(
+        :final message,
+        :final retainedAttachment,
+        :final showRetainedThumbnail,
+      ) =>
+        _MediaFailure(
+          message: message,
+          retainedAttachment: retainedAttachment,
+          showRetainedThumbnail: showRetainedThumbnail,
+          onRetry: isEnabled ? onRetry : null,
+          onRemove: retainedAttachment == null || !isEnabled ? null : onRemove,
+          onThumbnailDecodeFailure: onThumbnailDecodeFailure,
+        ),
+    };
+  }
+}
+
+final class _MediaStatus extends StatelessWidget {
+  const _MediaStatus({required this.label, super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    liveRegion: true,
+    child: Container(
+      constraints: const BoxConstraints(minHeight: 72),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceMuted,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          const SizedBox.square(
+            dimension: 22,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: Text(label, style: ordersBody())),
+        ],
+      ),
+    ),
+  );
+}
+
+final class _MediaAttachment extends StatelessWidget {
+  const _MediaAttachment({
+    required this.attachment,
+    required this.onRetake,
+    required this.onRemove,
+    required this.onThumbnailDecodeFailure,
+    super.key,
+  });
+
+  final OrderReviewMediaAttachment attachment;
+  final VoidCallback? onRetake;
+  final VoidCallback? onRemove;
+  final ValueChanged<OrderReviewMediaAttachment> onThumbnailDecodeFailure;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(minHeight: 112),
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: AppColors.surfaceMuted,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      children: [
+        _MediaThumbnail(
+          attachment: attachment,
+          onDecodeFailure: onThumbnailDecodeFailure,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                attachment.type == OrderReviewMediaType.photo
+                    ? 'Photo attached'
+                    : 'Video attached',
+                style: ordersHeading(size: 16),
+              ),
+              if (attachment.duration case final duration?) ...[
+                const SizedBox(height: 4),
+                Text(_formatDuration(duration), style: ordersBody()),
+              ],
+            ],
+          ),
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Semantics(
+              key: const ValueKey('order-review-media-retake'),
+              label: 'Retake',
+              button: true,
+              onTap: onRetake,
+              excludeSemantics: true,
+              child: IconButton(
+                tooltip: 'Retake',
+                onPressed: onRetake,
+                icon: const Icon(Icons.refresh),
+              ),
+            ),
+            Semantics(
+              key: const ValueKey('order-review-media-remove'),
+              label: 'Remove attachment',
+              button: true,
+              onTap: onRemove,
+              excludeSemantics: true,
+              child: IconButton(
+                tooltip: 'Remove attachment',
+                onPressed: onRemove,
+                icon: const Icon(Icons.delete_outline),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+final class _MediaThumbnail extends StatefulWidget {
+  const _MediaThumbnail({
+    required this.attachment,
+    required this.onDecodeFailure,
+  });
+
+  final OrderReviewMediaAttachment attachment;
+  final ValueChanged<OrderReviewMediaAttachment> onDecodeFailure;
+
+  @override
+  State<_MediaThumbnail> createState() => _MediaThumbnailState();
+}
+
+final class _MediaThumbnailState extends State<_MediaThumbnail> {
+  late MemoryImage _imageProvider;
+  bool _reportedFailure = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageProvider = MemoryImage(widget.attachment.thumbnailBytes);
+  }
+
+  @override
+  void didUpdateWidget(covariant _MediaThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.attachment, widget.attachment)) {
+      _evict(_imageProvider);
+      _imageProvider = MemoryImage(widget.attachment.thumbnailBytes);
+      _reportedFailure = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    _evict(_imageProvider);
+    super.dispose();
+  }
+
+  void _evict(MemoryImage provider) {
+    unawaited(
+      provider.obtainKey(const ImageConfiguration()).then((key) {
+        PaintingBinding.instance.imageCache.evict(key, includeLive: true);
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(8),
+    child: SizedBox.square(
+      dimension: 96,
+      child: Image(
+        image: _imageProvider,
+        fit: BoxFit.cover,
+        gaplessPlayback: true,
+        semanticLabel: widget.attachment.type == OrderReviewMediaType.photo
+            ? 'Captured photo thumbnail'
+            : 'Captured video thumbnail',
+        errorBuilder: (context, error, stackTrace) {
+          if (!_reportedFailure) {
+            _reportedFailure = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                widget.onDecodeFailure(widget.attachment);
+              }
+            });
+          }
+          return const ColoredBox(
+            color: AppColors.primarySurface,
+            child: Center(
+              child: Icon(
+                Icons.broken_image_outlined,
+                color: AppColors.primary,
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
+final class _MediaFailure extends StatelessWidget {
+  const _MediaFailure({
+    required this.message,
+    required this.retainedAttachment,
+    required this.showRetainedThumbnail,
+    required this.onRetry,
+    required this.onRemove,
+    required this.onThumbnailDecodeFailure,
+  });
+
+  final String message;
+  final OrderReviewMediaAttachment? retainedAttachment;
+  final bool showRetainedThumbnail;
+  final VoidCallback? onRetry;
+  final VoidCallback? onRemove;
+  final ValueChanged<OrderReviewMediaAttachment> onThumbnailDecodeFailure;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    liveRegion: true,
+    child: Container(
+      key: const ValueKey('order-review-media-failure'),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceMuted,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (retainedAttachment case final attachment?
+              when showRetainedThumbnail) ...[
+            Row(
+              children: [
+                _MediaThumbnail(
+                  attachment: attachment,
+                  onDecodeFailure: onThumbnailDecodeFailure,
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(message, style: ordersBody())),
+              ],
+            ),
+          ] else
+            Row(
+              children: [
+                const Icon(Icons.error_outline, color: AppColors.primary),
+                const SizedBox(width: 10),
+                Expanded(child: Text(message, style: ordersBody())),
+              ],
+            ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              TextButton.icon(
+                key: const ValueKey('order-review-media-retry'),
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+              if (onRemove case final remove?)
+                IconButton(
+                  key: const ValueKey('order-review-media-remove'),
+                  tooltip: 'Remove attachment',
+                  onPressed: remove,
+                  icon: const Icon(Icons.delete_outline),
+                ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+String _formatDuration(Duration duration) {
+  final minutes = duration.inMinutes;
+  final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
 }
 
 final class _ReviewComplete extends StatelessWidget {

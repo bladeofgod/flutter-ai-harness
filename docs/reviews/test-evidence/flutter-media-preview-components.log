@@ -1,0 +1,347 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media bash scripts/flutter-tool.sh test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart
+00:01 +0: loading <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart
+00:01 +0: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +1: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +2: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +3: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +4: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +5: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +6: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +7: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +8: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +9: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +10: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +11: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +12: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +13: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +14: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +15: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +16: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +17: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +18: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +19: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +20: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +21: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +22: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +23: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +24: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +25: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +26: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +27: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +28: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +29: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +30: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +31: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +32: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +33: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +34: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +35: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +36: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +37: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +38: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +38: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: input boundary rejects a symbolic-link source without leaking its target
+00:01 +39: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +40: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +41: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +42: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +43: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +44: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: lease lifecycle retains cleanup ownership until a failed delete can be retried
+00:01 +45: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... late resolve after unmount only releases the retained lease
+00:01 +46: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... late resolve after unmount only releases the retained lease
+00:01 +47: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: lease lifecycle rejects foreign leases without decrementing valid ownership
+00:01 +48: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail missing media has an explicit accessible error
+00:01 +49: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail missing media has an explicit accessible error
+00:01 +50: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: store lifecycle cleans previous-process files before accepting resources
+00:01 +51: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail rejects oversized decoded dimensions before image decode
+00:01 +52: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail rejects oversized decoded dimensions before image decode
+00:01 +53: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail rejects oversized decoded dimensions before image decode
+00:01 +53: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: store lifecycle dispose cancels a late import and leaves no committed file
+00:01 +54: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +55: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +56: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +56: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... late image inspection after unmount only releases its lease
+00:01 +57: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... late image inspection after unmount only releases its lease
+00:01 +57: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail image decode failure releases the retained resource
+00:01 +58: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail image decode failure releases the retained resource
+00:01 +58: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail poster decode failure releases the retained resource
+00:01 +59: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail poster decode failure releases the retained resource
+00:01 +59: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail a replacement poster recovers the same video resource
+00:01 +60: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail a replacement poster recovers the same video resource
+00:01 +60: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail store replacement releases each lease through its owner
+00:01 +61: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail store replacement releases each lease through its owner
+00:01 +61: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image real inspector reads canonical dimensions without decoding
+00:01 +62: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image real inspector reads canonical dimensions without decoding
+00:01 +62: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image uses InteractiveViewer with bounded zoom and releases once
+00:02 +62: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image uses InteractiveViewer with bounded zoom and releases once
+00:02 +63: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image uses InteractiveViewer with bounded zoom and releases once
+00:02 +63: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image updates viewer decode target after rotation and DPR changes
+00:02 +64: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... image updates viewer decode target after rotation and DPR changes
+00:02 +64: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image decode failure unloads the image lease
+00:02 +65: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image decode failure unloads the image lease
+00:02 +65: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image viewer rejects oversized source dimensions before decode
+00:02 +66: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image viewer rejects oversized source dimensions before decode
+00:02 +66: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video starts paused and supports play pause seek and replay
+00:02 +67: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video starts paused and supports play pause seek and replay
+00:02 +67: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses on lifecycle loss and does not auto resume
+00:02 +68: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses on lifecycle loss and does not auto resume
+00:02 +68: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses when another route covers the default viewer
+00:02 +69: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses when another route covers the default viewer
+00:02 +69: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video runtime playback failure unloads player and lease
+00:02 +70: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video runtime playback failure unloads player and lease
+00:02 +70: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video late initialization after dispose cleans driver and lease once
+00:02 +71: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video late initialization after dispose cleans driver and lease once
+00:02 +71: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video new viewer waits for previous player disposal
+00:02 +72: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video new viewer waits for previous player disposal
+00:02 +72: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video a new viewer disposes the previous global player
+00:02 +73: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video a new viewer disposes the previous global player
+00:02 +73: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video stacked viewer revokes a late initializing previous owner
+00:02 +74: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video stacked viewer revokes a late initializing previous owner
+00:02 +74: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video restores the previous viewer after a stacked viewer pops
+00:02 +75: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video restores the previous viewer after a stacked viewer pops
+00:02 +75: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video fits compact portrait landscape safe areas and large text
+00:02 +76: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: ... video fits compact portrait landscape safe areas and large text
+00:02 +76: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media bash scripts/flutter-tool.sh analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing app_media...
+No issues found! (ran in 1.2s)
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                              3.2s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-flutter-media-resource-foundation.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-flutter-package-registration.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-android-bridge-adapter.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```

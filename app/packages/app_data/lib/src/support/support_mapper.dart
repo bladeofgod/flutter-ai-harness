@@ -38,6 +38,21 @@ abstract final class _SupportFixtureMapper {
           description: _string(content, 'description'),
           voucher: _voucher(content['voucher']),
         ),
+        'media' => SupportMediaContent(
+          resourceId: MediaResourceId(_string(content, 'resourceId')),
+          type: switch (_string(content, 'mediaType')) {
+            'image' => SupportMediaType.image,
+            'video' => SupportMediaType.video,
+            final value => throw FormatException(
+              'Unknown Support media type: $value',
+            ),
+          },
+          label: _string(content, 'label'),
+          duration: switch (content['durationMillis']) {
+            null => null,
+            final value => Duration(milliseconds: _intValue(value)),
+          },
+        ),
         final value => throw FormatException('Unknown content type: $value'),
       },
     );

@@ -9,6 +9,7 @@ final class SupportFixtureHandler implements FixtureRequestHandler {
   static const String selectQuestionKey = 'support.question.select';
   static const String advanceTransitionKey = 'support.transition.advance';
   static const String sendMessageKey = 'support.message.send';
+  static const String sendMediaKey = 'support.media.send';
   static const String receiveReplyKey = 'support.reply.receive';
   static const String requestRatingKey = 'support.rating.request';
   static const String submitRatingKey = 'support.rating.submit';
@@ -27,6 +28,7 @@ final class SupportFixtureHandler implements FixtureRequestHandler {
     selectQuestionKey,
     advanceTransitionKey,
     sendMessageKey,
+    sendMediaKey,
     receiveReplyKey,
     requestRatingKey,
     submitRatingKey,
@@ -39,6 +41,7 @@ final class SupportFixtureHandler implements FixtureRequestHandler {
         selectQuestionKey => _selectQuestion(request.payload),
         advanceTransitionKey => _advanceTransition(),
         sendMessageKey => _sendMessage(request.payload),
+        sendMediaKey => _sendMedia(request.payload),
         receiveReplyKey => _receiveReply(),
         requestRatingKey => _requestRating(),
         submitRatingKey => _submitRating(request.payload),
@@ -106,6 +109,34 @@ final class SupportFixtureHandler implements FixtureRequestHandler {
       );
     }
     _messages.add(_textMessage(participant: 'customer', text: text.trim()));
+    _stage = 'typing';
+    return ApiResponse<Object?>.success(_conversationPayload());
+  }
+
+  ApiResponse<Object?> _sendMedia(Object? payload) {
+    if (_stage != 'active' || payload is! Map<String, Object?>) {
+      return _invalidState();
+    }
+    final resourceId = payload['resourceId'];
+    final mediaType = payload['mediaType'];
+    final label = payload['label'];
+    final durationMillis = payload['durationMillis'];
+    if (resourceId is! String ||
+        MediaResourceId.tryParse(resourceId) == null ||
+        (mediaType != 'image' && mediaType != 'video') ||
+        label is! String ||
+        label.trim().isEmpty ||
+        (durationMillis != null && durationMillis is! int)) {
+      return _invalidState();
+    }
+    _messages.add(
+      _mediaMessage(
+        resourceId: resourceId,
+        mediaType: mediaType as String,
+        label: label.trim(),
+        durationMillis: durationMillis as int?,
+      ),
+    );
     _stage = 'typing';
     return ApiResponse<Object?>.success(_conversationPayload());
   }
@@ -198,6 +229,23 @@ final class SupportFixtureHandler implements FixtureRequestHandler {
             shoppeFiveVoucherFixture.minimumSpend.minorUnits,
         'currency': shoppeFiveVoucherFixture.discount.currency.code,
       },
+    },
+  };
+
+  Map<String, Object?> _mediaMessage({
+    required String resourceId,
+    required String mediaType,
+    required String label,
+    required int? durationMillis,
+  }) => <String, Object?>{
+    'id': 'support-message-${_messageSequence++}',
+    'participant': 'customer',
+    'content': <String, Object?>{
+      'type': 'media',
+      'resourceId': resourceId,
+      'mediaType': mediaType,
+      'label': label,
+      'durationMillis': durationMillis,
     },
   };
 }

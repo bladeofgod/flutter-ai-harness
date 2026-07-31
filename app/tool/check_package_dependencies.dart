@@ -6,8 +6,25 @@ const _allowedDependencies = <String, Set<String>>{
   'app_ui': {},
   'app_data': {'app_core'},
   'app_im': {'app_core'},
-  'app_features': {'app_core', 'app_data', 'app_im', 'app_ui'},
-  'demo_app': {'app_core', 'app_data', 'app_features', 'app_im', 'app_ui'},
+  'app_media': {'app_core', 'app_ui'},
+  'app_media_capture_bridge': {},
+  'app_features': {
+    'app_core',
+    'app_data',
+    'app_im',
+    'app_media',
+    'app_media_capture_bridge',
+    'app_ui',
+  },
+  'demo_app': {
+    'app_core',
+    'app_data',
+    'app_features',
+    'app_im',
+    'app_media',
+    'app_media_capture_bridge',
+    'app_ui',
+  },
 };
 
 void main(List<String> arguments) {

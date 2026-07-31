@@ -30,6 +30,16 @@ final class SupportLocalDataSource {
     payload: <String, Object?>{'text': text},
   );
 
+  Future<SupportConversation> sendMedia(SupportMediaContent media) => _request(
+    SupportFixtureHandler.sendMediaKey,
+    payload: <String, Object?>{
+      'resourceId': media.resourceId.value,
+      'mediaType': media.type.name,
+      'label': media.label,
+      'durationMillis': media.duration?.inMilliseconds,
+    },
+  );
+
   Future<SupportConversation> receiveReply() =>
       _request(SupportFixtureHandler.receiveReplyKey);
 

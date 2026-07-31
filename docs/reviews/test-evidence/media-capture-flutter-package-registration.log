@@ -1,0 +1,201 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app bash scripts/flutter-tool.sh pub get
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.2.6 available)
+  vector_math 2.2.0 (2.4.1 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+24 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+```
+
+## Command
+
+```text
+bash scripts/dart-tool.sh run tool/check_flutter_plugin_discovery.dart --input apps/demo/.flutter-plugins-dependencies --workspace-root .
+```
+
+Exit code: 0
+
+## Output
+
+```text
+[lint] Media Capture Android plugin discovery 检查通过。
+
+```
+
+## Command
+
+```text
+bash scripts/lint/test-repository-boundaries.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+[lint-test] 仓库边界 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 339 files (0 changed) in 2.38 seconds.
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-dart-client.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 必须声明小写 SHA-256 implementationDigest
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```

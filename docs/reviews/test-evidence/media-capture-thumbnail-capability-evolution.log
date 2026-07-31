@@ -1,0 +1,317 @@
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.99 seconds.
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-bridge-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.98 seconds.
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-bridge-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.90 seconds.
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-bridge-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.93 seconds.
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-bridge-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

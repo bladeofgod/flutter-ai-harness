@@ -1,0 +1,580 @@
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+tool/harness_check.dart:3686:58: Error: The getter 'id' isn't defined for the type '_HarnessChecker'.
+ - '_HarnessChecker' is from 'tool/harness_check.dart'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'id'.
+      errors.add('$path 必须使用固定 Draft 2020-12 Schema 与稳定 $id');
+                                                         ^^
+make: *** [harness-check] Error 254
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+错误：docs/bridge/contracts/media-capture.wire.json payload start_session_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json payload session_action_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json payload flash_mode_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json payload focus_point_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json payload zoom_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json payload media_handle_request_payload 必须从 Capability shape 确定性派生并拒绝未知字段
+错误：docs/bridge/contracts/media-capture.wire.json method start_session 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method take_photo 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method start_recording 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method stop_recording 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method switch_camera 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method set_flash_mode 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method set_focus_point 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method set_zoom 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method retake 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method confirm 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method cancel 的 Capability/Payload/Error/完成映射不一致
+错误：docs/bridge/contracts/media-capture.wire.json method release_media 的 Capability/Payload/Error/完成映射不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.87 seconds.
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+错误：Harness Check 未拒绝 error detail version 超出 signed-64。
+make: *** [harness-test] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.83 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.72 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+tool/harness_check.dart:3726:69: Error: The getter 'defs' isn't defined for the type '_HarnessChecker'.
+ - '_HarnessChecker' is from 'tool/harness_check.dart'.
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'defs'.
+    final definitions = _capabilityObject(schema[r'$defs'], '$path $defs');
+                                                                    ^^^^
+make: *** [harness-check] Error 254
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.82 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 329 files (0 changed) in 1.82 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/test-harness.sh
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```

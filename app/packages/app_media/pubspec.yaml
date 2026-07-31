@@ -1,0 +1,23 @@
+name: app_media
+description: App private media resource lifecycle and preview infrastructure
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  app_core: any
+  app_ui: any
+  crypto: ^3.0.6
+  flutter:
+    sdk: flutter
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  video_player: ^2.10.1
+  flutter_video_thumbnail_plus: 1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

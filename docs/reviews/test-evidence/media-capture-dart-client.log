@@ -1,0 +1,249 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/flutter-tool.sh pub get
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.16.0 (1.19.0 available)
+  test_api 0.7.6 (0.7.13 available)
+  vector_math 2.2.0 (2.4.1 available)
+Got dependencies!
+6 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/flutter-tool.sh analyze --fatal-infos
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Analyzing app_media_capture_bridge...
+No issues found! (ran in 1.2s)
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/flutter-tool.sh test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+00:00 +0: loading <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart
+00:01 +0: loading <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart
+00:01 +0: loading <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart
+00:01 +0: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... allowlists matches every method-specific Wire errorCodes set
+00:01 +1: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... allowlists matches every method-specific Wire errorCodes set
+00:01 +1: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... requires details.operation to match the invoked method
+00:01 +2: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... requires details.operation to match the invoked method
+00:01 +2: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... uses an independent and matching Capability failure set
+00:01 +3: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... uses an independent and matching Capability failure set
+00:01 +3: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... allowlists accepts transferable signed-64 detail boundaries
+00:01 +4: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +5: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +6: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +7: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +8: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +9: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +10: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +11: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +12: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +13: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +14: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +15: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_session decodes its exact success result
+00:01 +16: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client sends a strict request envelope with a secure requestId
+00:01 +17: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client sends a strict request envelope with a secure requestId
+00:01 +18: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts take_photo decodes its exact success result
+00:01 +19: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts take_photo decodes its exact success result
+00:01 +20: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts take_photo decodes its exact success result
+00:01 +21: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client exposes direct operation PlatformException as typed failure
+00:01 +22: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client exposes direct operation PlatformException as typed failure
+00:01 +23: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client exposes direct operation PlatformException as typed failure
+00:01 +24: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts start_recording decodes its exact success result
+00:01 +25: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... thumbnail boundaries rejects thumbnail EXIF metadata segment
+00:01 +26: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client rejects malicious PlatformException details
+00:01 +27: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts stop_recording decodes its exact success result
+00:01 +28: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts stop_recording decodes its exact success result
+00:01 +29: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client presentCaptureFlow returns the three closed terminal outcomes
+00:01 +30: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client presentCaptureFlow returns the three closed terminal outcomes
+00:01 +31: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client presentCaptureFlow returns the three closed terminal outcomes
+00:01 +32: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client presentCaptureFlow returns the three closed terminal outcomes
+00:01 +33: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client presentCaptureFlow returns the three closed terminal outcomes
+00:01 +34: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts set_flash_mode decodes its exact success result
+00:01 +35: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... contracts set_flash_mode decodes its exact success result
+00:01 +36: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +37: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +38: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +39: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +40: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +41: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client validates bounded thumbnail bytes and returns a defensive copy
+00:01 +42: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts set_zoom decodes its exact success result
+00:01 +43: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: ... and thumbnail boundaries rejects thumbnail wrong content type
+00:01 +44: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client settles pending preview before completing dispose
+00:01 +45: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client settles pending preview before completing dispose
+00:01 +46: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client settles pending preview before completing dispose
+00:01 +47: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client settles pending preview before completing dispose
+00:01 +48: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts confirm decodes its exact success result
+00:01 +49: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts confirm decodes its exact success result
+00:01 +50: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client rejects duplicate pending and completed requestIds locally
+00:01 +51: <repo>/app/packages/app_media_capture_bridge/test/media_capture_wire_contract_test.dart: SessionReady owns defensive immutable sets
+00:01 +52: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... success contracts cancel decodes its exact success result
+00:01 +53: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client allows requestId reuse only after the 300 second tombstone
+00:01 +54: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client allows requestId reuse only after the 300 second tombstone
+00:01 +55: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client allows requestId reuse only after the 300 second tombstone
+00:01 +55: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... read_media_thumbnail decodes its exact success result
+00:01 +56: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client reserves at most 32 pending requests before native invocation
+00:01 +57: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client reserves at most 32 pending requests before native invocation
+00:01 +58: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client reserves at most 32 pending requests before native invocation
+00:01 +58: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... present_capture_flow decodes the cancelled success result
+00:01 +59: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +60: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +61: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +62: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +63: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +64: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +65: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +66: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +67: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +68: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: ... client does not evict completed tombstones before capacity is full
+00:01 +69: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:01 +70: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +70: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +71: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +72: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +73: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +74: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +75: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +76: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +77: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +78: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +79: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +80: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +81: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +82: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +83: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +84: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +85: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +86: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +87: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +88: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +89: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +90: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +91: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... retries malformed and failed cleanup acknowledgements
+00:02 +91: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... failed disposal retains cleanup ownership for a later retry
+00:03 +91: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... failed disposal retains cleanup ownership for a later retry
+00:03 +92: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: ... failed disposal retains cleanup ownership for a later retry
+00:03 +92: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: public client surface remains fully typed
+00:03 +93: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: public client surface remains fully typed
+00:03 +93: All tests passed!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/dart-tool.sh format --output=none --set-exit-if-changed lib test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Formatted 9 files (0 changed) in 0.38 seconds.
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 338 files (0 changed) in 2.05 seconds.
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```

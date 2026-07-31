@@ -202,10 +202,18 @@
               </div>
             </div>
 
-            <pre class="code-block" aria-label="Workspace dependency direction"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui
-<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui
+            <pre class="code-block" aria-label="Workspace dependency direction"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+<span class="accent">app_media</span> -&gt; app_core, app_ui
+<span class="accent">app_media_capture_bridge</span> -&gt; no other workspace packages
 <span class="accent">app_data / app_im</span> -&gt; app_core
 <span class="accent">app_core / app_ui</span> -&gt; no other workspace packages</code></pre>
+            <p>
+              The focused <code>app_media</code> layer owns process-scoped media
+              imports and reusable image/video previews. Business messages keep an
+              opaque <code>MediaResourceId</code>, while file locators and native
+              capture leases remain inside their infrastructure boundaries.
+            </p>
           </section>
 
           <section class="section" id="roles">

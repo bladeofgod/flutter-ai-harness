@@ -1,0 +1,4905 @@
+{
+  "$schema": "./wire.schema.json",
+  "contractId": "media_capture_wire",
+  "wireVersion": 3,
+  "capability": {
+    "contractId": "media_capture",
+    "contractPath": "../../infrastructure/contracts/media-capture.capability.json",
+    "compatibleCapabilityVersions": [
+      4
+    ]
+  },
+  "payloadKeyStyle": "lower_camel_case",
+  "channels": [
+    {
+      "id": "commands",
+      "kind": "method_channel",
+      "name": "com.example.media_capture.commands"
+    },
+    {
+      "id": "events",
+      "kind": "event_channel",
+      "name": "com.example.media_capture.events"
+    }
+  ],
+  "fieldMappings": [
+    {
+      "capabilityFieldId": "active_camera",
+      "key": "activeCamera",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "rear",
+        "front"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "audio_enabled",
+      "key": "audioEnabled",
+      "wireType": "bool",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "audio_included",
+      "key": "audioIncluded",
+      "wireType": "bool",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "available_cameras",
+      "key": "availableCameras",
+      "wireType": "list_string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "rear",
+        "front"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": 1,
+        "maxItems": 2,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "byte_length",
+      "key": "byteLength",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "byte_length",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "content_type",
+      "key": "contentType",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "mime_type",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "duration_millis",
+      "key": "durationMillis",
+      "wireType": "int",
+      "required": true,
+      "nullable": true,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": 60000,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "duration_millis",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": [
+          {
+            "whenFieldId": "media_type",
+            "operator": "equals",
+            "value": "photo",
+            "effect": "must_be_null"
+          },
+          {
+            "whenFieldId": "media_type",
+            "operator": "equals",
+            "value": "video",
+            "effect": "must_be_non_null"
+          }
+        ]
+      }
+    },
+    {
+      "capabilityFieldId": "enabled_media_types",
+      "key": "enabledMediaTypes",
+      "wireType": "list_string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "photo",
+        "video"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": 1,
+        "maxItems": 2,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "expires_at",
+      "key": "expiresAt",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "unix_epoch_millis",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "export_handle",
+      "key": "exportHandle",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "opaque_handle",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "file_uri",
+      "key": "fileUri",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "canonical_file_uri",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "presentation_request_id",
+      "key": "presentationRequestId",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "opaque_request_id",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "integrity_sha256",
+      "key": "integritySha256",
+      "wireType": "string",
+      "required": false,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "lowercase_sha256_hex",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "flash_mode",
+      "key": "flashMode",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "off",
+        "on",
+        "auto",
+        "torch"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "focus_point_supported",
+      "key": "focusPointSupported",
+      "wireType": "bool",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "lease_expires_at",
+      "key": "leaseExpiresAt",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "unix_epoch_millis",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "max_pixel_edge",
+      "key": "maxPixelEdge",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 64,
+        "maximum": 512,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "pixel_dimension",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "max_video_duration_millis",
+      "key": "maxVideoDurationMillis",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": 60000,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "duration_millis",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "max_zoom_factor",
+      "key": "maxZoomFactor",
+      "wireType": "double",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0.01,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "zoom_bound",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "media_handle",
+      "key": "mediaHandle",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "opaque_handle",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "media_type",
+      "key": "mediaType",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "photo",
+        "video"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "min_zoom_factor",
+      "key": "minZoomFactor",
+      "wireType": "double",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0.01,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "zoom_bound",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "normalized_x",
+      "key": "normalizedX",
+      "wireType": "double",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0,
+        "maximum": 1,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "normalized_coordinate",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "normalized_y",
+      "key": "normalizedY",
+      "wireType": "double",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0,
+        "maximum": 1,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "normalized_coordinate",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "orientation_degrees",
+      "key": "orientationDegrees",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [
+          0,
+          90,
+          180,
+          270
+        ],
+        "minItems": null,
+        "maxItems": null,
+        "format": "orientation_degrees",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "pixel_height",
+      "key": "pixelHeight",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "pixel_dimension",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "pixel_width",
+      "key": "pixelWidth",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "pixel_dimension",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "poster_frame_millis",
+      "key": "posterFrameMillis",
+      "wireType": "int",
+      "required": true,
+      "nullable": true,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 0,
+        "maximum": 60000,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "duration_millis",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": [
+          {
+            "whenFieldId": "media_type",
+            "operator": "equals",
+            "value": "photo",
+            "effect": "must_be_null"
+          },
+          {
+            "whenFieldId": "media_type",
+            "operator": "equals",
+            "value": "video",
+            "effect": "must_be_non_null"
+          }
+        ]
+      }
+    },
+    {
+      "capabilityFieldId": "preferred_camera",
+      "key": "preferredCamera",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "rear",
+        "front"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "session_handle",
+      "key": "sessionHandle",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "opaque_handle",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "supported_flash_modes",
+      "key": "supportedFlashModes",
+      "wireType": "list_string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "off",
+        "on",
+        "auto",
+        "torch"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": 1,
+        "maxItems": 4,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "switch_camera_supported",
+      "key": "switchCameraSupported",
+      "wireType": "bool",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "terminal_failure_id",
+      "key": "terminalFailureId",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "encoding_failed",
+        "system_interrupted",
+        "session_timeout"
+      ],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "none",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_byte_length",
+      "key": "thumbnailByteLength",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": 524288,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "byte_length",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_content_type",
+      "key": "thumbnailContentType",
+      "wireType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "image_jpeg_content_type",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_copy",
+      "key": "thumbnailCopy",
+      "wireType": "bytes",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": false,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "caller_owned_bounded_copy",
+        "boundarySource": null,
+        "outOfRangePolicy": "not_applicable",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_orientation_degrees",
+      "key": "thumbnailOrientationDegrees",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [
+          0
+        ],
+        "minItems": null,
+        "maxItems": null,
+        "format": "orientation_degrees",
+        "boundarySource": null,
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_pixel_height",
+      "key": "thumbnailPixelHeight",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": 512,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "pixel_dimension",
+        "boundarySource": "max_pixel_edge",
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "thumbnail_pixel_width",
+      "key": "thumbnailPixelWidth",
+      "wireType": "int",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": 1,
+        "maximum": 512,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "pixel_dimension",
+        "boundarySource": "max_pixel_edge",
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    },
+    {
+      "capabilityFieldId": "zoom_factor",
+      "key": "zoomFactor",
+      "wireType": "double",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {
+        "finite": true,
+        "minimum": null,
+        "maximum": null,
+        "allowedIntegers": [],
+        "minItems": null,
+        "maxItems": null,
+        "format": "zoom_factor",
+        "boundarySource": "session_zoom_range",
+        "outOfRangePolicy": "reject",
+        "conditionalRules": []
+      }
+    }
+  ],
+  "transportConstraints": {
+    "signedInteger": {
+      "wireType": "int",
+      "bits": 64,
+      "minimum": -9223372036854775808,
+      "maximum": 9223372036854775807,
+      "inboundOutOfRange": "invalid_wire_payload",
+      "outboundOutOfRange": "wire_encoding_failed"
+    },
+    "opaqueHandles": [
+      {
+        "capabilityFieldId": "session_handle",
+        "capabilityHandlePolicyId": "session_handle_policy",
+        "wireType": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "format": "opaque_string",
+        "inboundOutOfRange": "invalid_wire_payload",
+        "outboundOutOfRange": "wire_encoding_failed"
+      },
+      {
+        "capabilityFieldId": "media_handle",
+        "capabilityHandlePolicyId": "media_handle_policy",
+        "wireType": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "format": "opaque_string",
+        "inboundOutOfRange": "invalid_wire_payload",
+        "outboundOutOfRange": "wire_encoding_failed"
+      },
+      {
+        "capabilityFieldId": "export_handle",
+        "capabilityHandlePolicyId": "export_handle_policy",
+        "wireType": "string",
+        "minLength": 22,
+        "maxLength": 64,
+        "format": "opaque_string",
+        "inboundOutOfRange": "invalid_wire_payload",
+        "outboundOutOfRange": "wire_encoding_failed"
+      }
+    ]
+  },
+  "payloads": [
+    {
+      "id": "start_session_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "start_session_request",
+      "fieldIds": [
+        "enabled_media_types",
+        "preferred_camera",
+        "audio_enabled",
+        "max_video_duration_millis"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "session_action_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "session_action_request",
+      "fieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "flash_mode_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "flash_mode_request",
+      "fieldIds": [
+        "session_handle",
+        "flash_mode"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "focus_point_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "focus_point_request",
+      "fieldIds": [
+        "session_handle",
+        "normalized_x",
+        "normalized_y"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "zoom_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "zoom_request",
+      "fieldIds": [
+        "session_handle",
+        "zoom_factor"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_handle_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "media_handle_request",
+      "fieldIds": [
+        "media_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_thumbnail_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "media_thumbnail_request",
+      "fieldIds": [
+        "media_handle",
+        "max_pixel_edge"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "session_created_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "session_created",
+      "fieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "control_applied_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "control_applied",
+      "fieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "recording_started_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "recording_started",
+      "fieldIds": [
+        "session_handle",
+        "audio_included"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_preview_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "media_preview",
+      "fieldIds": [
+        "media_handle",
+        "media_type",
+        "pixel_width",
+        "pixel_height",
+        "duration_millis",
+        "orientation_degrees",
+        "byte_length"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "retake_ready_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "retake_ready",
+      "fieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "confirmed_media_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "confirmed_media",
+      "fieldIds": [
+        "media_handle",
+        "media_type",
+        "pixel_width",
+        "pixel_height",
+        "duration_millis",
+        "orientation_degrees",
+        "byte_length",
+        "lease_expires_at"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "session_cancelled_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "session_cancelled",
+      "fieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_released_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "media_released",
+      "fieldIds": [
+        "media_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_thumbnail_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "media_thumbnail",
+      "fieldIds": [
+        "media_handle",
+        "thumbnail_copy",
+        "thumbnail_byte_length",
+        "thumbnail_pixel_width",
+        "thumbnail_pixel_height",
+        "thumbnail_content_type",
+        "thumbnail_orientation_degrees",
+        "media_type",
+        "poster_frame_millis"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "session_ready_event_payload",
+      "kind": "event",
+      "capabilityShapeId": "session_ready",
+      "fieldIds": [
+        "session_handle",
+        "active_camera",
+        "available_cameras",
+        "switch_camera_supported",
+        "supported_flash_modes",
+        "focus_point_supported",
+        "min_zoom_factor",
+        "max_zoom_factor"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "session_failed_event_payload",
+      "kind": "event",
+      "capabilityShapeId": "session_failed",
+      "fieldIds": [
+        "session_handle",
+        "terminal_failure_id"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_preview_ready_event_payload",
+      "kind": "event",
+      "capabilityShapeId": "media_preview_ready",
+      "fieldIds": [
+        "session_handle",
+        "media_handle",
+        "media_type",
+        "pixel_width",
+        "pixel_height",
+        "duration_millis",
+        "orientation_degrees",
+        "byte_length"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_lease_expired_event_payload",
+      "kind": "event",
+      "capabilityShapeId": "media_lease_expired",
+      "fieldIds": [
+        "media_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "media_read_revoked_event_payload",
+      "kind": "event",
+      "capabilityShapeId": "media_read_revoked",
+      "fieldIds": [
+        "media_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "materialize_media_resource_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "materialize_media_resource_request",
+      "fieldIds": [
+        "media_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "materialized_media_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "materialized_media_resource",
+      "fieldIds": [
+        "export_handle",
+        "file_uri",
+        "media_type",
+        "content_type",
+        "byte_length",
+        "duration_millis",
+        "expires_at",
+        "integrity_sha256"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "release_materialized_media_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "release_materialized_media_request",
+      "fieldIds": [
+        "export_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "materialized_media_released_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "materialized_media_released",
+      "fieldIds": [],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "dismiss_capture_flow_request_payload",
+      "kind": "request",
+      "capabilityShapeId": "dismiss_capture_flow_request",
+      "fieldIds": [
+        "presentation_request_id"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    {
+      "id": "capture_flow_dismissed_result_payload",
+      "kind": "result",
+      "capabilityShapeId": "capture_flow_dismissed",
+      "fieldIds": [],
+      "unknownFieldPolicy": "reject"
+    }
+  ],
+  "failurePayloads": [
+    {
+      "id": "session_timeout_failure_payload",
+      "capabilityFailureId": "session_timeout",
+      "contextFieldIds": [
+        "session_handle"
+      ],
+      "unknownFieldPolicy": "reject"
+    }
+  ],
+  "methods": [
+    {
+      "id": "start_session",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "start_session",
+      "requestPayloadId": "start_session_request_payload",
+      "resultPayloadId": "session_created_result_payload",
+      "resultType": "session_created",
+      "errorCodes": [
+        "invalid_argument",
+        "unsupported_capability",
+        "session_conflict",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "take_photo",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "take_photo",
+      "requestPayloadId": "session_action_request_payload",
+      "resultPayloadId": "media_preview_result_payload",
+      "resultType": "media_preview",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "storage_full",
+        "encoding_failed",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "start_recording",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "start_recording",
+      "requestPayloadId": "session_action_request_payload",
+      "resultPayloadId": "recording_started_result_payload",
+      "resultType": "recording_started",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "encoding_failed",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "stop_recording",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "stop_recording",
+      "requestPayloadId": "session_action_request_payload",
+      "resultPayloadId": "media_preview_result_payload",
+      "resultType": "media_preview",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "encoding_failed",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "switch_camera",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "switch_camera",
+      "requestPayloadId": "session_action_request_payload",
+      "resultPayloadId": "control_applied_result_payload",
+      "resultType": "control_applied",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "resource_in_use",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "set_flash_mode",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "set_flash_mode",
+      "requestPayloadId": "flash_mode_request_payload",
+      "resultPayloadId": "control_applied_result_payload",
+      "resultType": "control_applied",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "set_focus_point",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "set_focus_point",
+      "requestPayloadId": "focus_point_request_payload",
+      "resultPayloadId": "control_applied_result_payload",
+      "resultType": "control_applied",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "set_zoom",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "set_zoom",
+      "requestPayloadId": "zoom_request_payload",
+      "resultPayloadId": "control_applied_result_payload",
+      "resultType": "control_applied",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "retake",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "retake",
+      "requestPayloadId": "media_handle_request_payload",
+      "resultPayloadId": "retake_ready_result_payload",
+      "resultType": "retake_ready",
+      "errorCodes": [
+        "session_invalid",
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "confirm",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "confirm",
+      "requestPayloadId": "media_handle_request_payload",
+      "resultPayloadId": "confirmed_media_result_payload",
+      "resultType": "confirmed_media",
+      "errorCodes": [
+        "session_invalid",
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "cancel",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "cancel",
+      "requestPayloadId": "session_action_request_payload",
+      "resultPayloadId": "session_cancelled_result_payload",
+      "resultType": "session_cancelled",
+      "errorCodes": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "release_media",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "release_media",
+      "requestPayloadId": "media_handle_request_payload",
+      "resultPayloadId": "media_released_result_payload",
+      "resultType": "media_released",
+      "errorCodes": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "read_media_thumbnail",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "read_media_thumbnail",
+      "requestPayloadId": "media_thumbnail_request_payload",
+      "resultPayloadId": "media_thumbnail_result_payload",
+      "resultType": "media_thumbnail",
+      "errorCodes": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "thumbnail_generation_failed",
+        "thumbnail_generation_cancelled",
+        "thumbnail_overloaded",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "materialize_media_resource",
+      "kind": "direct_operation",
+      "channelId": "commands",
+      "capabilityOperationId": "copy_confirmed_media_to_sink",
+      "requestPayloadId": "materialize_media_resource_request_payload",
+      "resultPayloadId": "materialized_media_result_payload",
+      "resultType": "materialized_media_resource",
+      "errorCodes": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "system_interrupted",
+        "media_export_conflict",
+        "media_export_overloaded",
+        "media_export_too_large",
+        "media_export_sink_rejected",
+        "media_export_read_failed",
+        "media_export_write_failed",
+        "media_export_cancelled",
+        "media_export_timed_out",
+        "transfer_store_overloaded",
+        "transfer_store_unavailable",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "release_materialized_media",
+      "kind": "adapter_operation",
+      "channelId": "commands",
+      "requestPayloadId": "release_materialized_media_request_payload",
+      "resultPayloadId": "materialized_media_released_result_payload",
+      "resultType": "materialized_media_released",
+      "errorCodes": [
+        "materialized_media_invalid",
+        "transfer_store_overloaded",
+        "transfer_store_unavailable",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "present_capture_flow",
+      "kind": "presentation",
+      "channelId": "commands",
+      "capabilityOperationId": null,
+      "requestPayloadId": "start_session_request_payload",
+      "orchestratedCapabilityOperationIds": [
+        "start_session",
+        "take_photo",
+        "start_recording",
+        "stop_recording",
+        "switch_camera",
+        "set_flash_mode",
+        "set_focus_point",
+        "set_zoom",
+        "retake",
+        "confirm",
+        "cancel"
+      ],
+      "nativeOnlyCapabilityOperationIds": [
+        "attach_live_preview",
+        "detach_live_preview",
+        "attach_unconfirmed_preview_render",
+        "detach_unconfirmed_preview_render"
+      ],
+      "presentationPolicy": {
+        "mode": "full_screen",
+        "ownerScope": "current_attached_ui_owner",
+        "ownerGeneration": "monotonic_per_attachment",
+        "maxConcurrentPerOwner": 1,
+        "capabilityEventRouting": "consume_in_presentation_do_not_emit_to_flutter",
+        "slotPolicy": {
+          "coordinatorId": "bridge_lifecycle_coordinator",
+          "scope": "attached_ui_owner_identity",
+          "capacity": 1,
+          "generationTransition": "preserve_owner_identity_slot_across_fresh_generation",
+          "terminalMachineOrderId": "presentation_callback_terminal_machine",
+          "reservationOrder": [
+            "owner_generation_open_recheck",
+            "reserve_active_presentation_slot",
+            "create_capability_session"
+          ],
+          "conflictOutcome": "presentation_conflict_once_without_session",
+          "releaseTriggerIds": [
+            "confirmed_terminal",
+            "cancelled_terminal",
+            "failure_terminal",
+            "presentation_failed",
+            "engine_detach",
+            "ui_owner_destroy"
+          ],
+          "releaseOrder": [
+            "revoke_dismiss_cleanup_session_preview",
+            "settle_confirmed_or_undelivered_lease",
+            "release_active_presentation_slot",
+            "complete_flutter_once"
+          ]
+        },
+        "presentOrder": [
+          "validate_request",
+          "reserve_completion",
+          "capture_owner_generation",
+          "coordinator_owner_generation_open_recheck",
+          "coordinator_reserve_active_presentation_slot",
+          "create_capability_session",
+          "present_native_ui"
+        ],
+        "dismissOrder": [
+          "revoke_native_render_scopes",
+          "dismiss_native_ui",
+          "cleanup_session_and_unconfirmed_media",
+          "settle_confirmed_or_undelivered_lease",
+          "release_active_presentation_slot",
+          "complete_flutter_once"
+        ],
+        "ownerLifecyclePolicies": [
+          {
+            "id": "background_owner_alive",
+            "triggerId": "app_backgrounded",
+            "ownerState": "alive",
+            "actions": [
+              "revoke_render_scopes",
+              "detach_render_targets",
+              "suspend_presentation",
+              "preserve_attached_owner_slot",
+              "allocate_strictly_higher_generation_on_foreground",
+              "explicit_reattach"
+            ],
+            "generationPolicy": "strictly_higher_than_retired_generation",
+            "reattachPolicy": "explicit_after_foreground",
+            "terminalOutcome": null
+          },
+          {
+            "id": "rotation_owner_alive",
+            "triggerId": "display_rotation_changed",
+            "ownerState": "alive",
+            "actions": [
+              "revoke_render_scopes",
+              "detach_render_targets",
+              "preserve_attached_owner_slot",
+              "allocate_strictly_higher_generation_after_rotation",
+              "explicit_reattach"
+            ],
+            "generationPolicy": "strictly_higher_than_retired_generation",
+            "reattachPolicy": "explicit_after_rotation",
+            "terminalOutcome": null
+          },
+          {
+            "id": "rotation_owner_destroyed",
+            "triggerId": "display_rotation_changed",
+            "ownerState": "destroyed",
+            "actions": [
+              "revoke_render_scopes",
+              "dismiss_native_ui",
+              "interrupt_session_cleanup_preview",
+              "release_undelivered_lease",
+              "release_active_presentation_slot",
+              "complete_failure_once"
+            ],
+            "generationPolicy": "no_new_generation",
+            "reattachPolicy": "forbidden",
+            "terminalOutcome": "failure"
+          }
+        ],
+        "ownerDestroy": "cleanup_session_preview_and_undelivered_lease_release_slot_then_bridge_unavailable",
+        "engineDetach": "cleanup_session_preview_and_leases_release_slot_then_bridge_unavailable"
+      },
+      "terminalOutcomes": [
+        {
+          "id": "confirmed",
+          "delivery": "result",
+          "resultType": "capture_flow_confirmed",
+          "resultPayloadId": "confirmed_media_result_payload",
+          "resourceAdoptionPolicyId": "capture_flow_confirmed_adoption",
+          "completionMachineOrderId": "presentation_callback_terminal_machine",
+          "cleanupPolicyId": "cleanup_session_preview_settle_delivered_lease_release_slot_then_complete"
+        },
+        {
+          "id": "cancelled",
+          "delivery": "result",
+          "resultType": "capture_flow_cancelled",
+          "resultPayloadId": null,
+          "resourceAdoptionPolicyId": null,
+          "completionMachineOrderId": "presentation_callback_terminal_machine",
+          "cleanupPolicyId": "cleanup_session_preview_no_lease_release_slot_then_complete"
+        },
+        {
+          "id": "failure",
+          "delivery": "error",
+          "resultType": null,
+          "resultPayloadId": null,
+          "resourceAdoptionPolicyId": null,
+          "completionMachineOrderId": "presentation_callback_terminal_machine",
+          "cleanupPolicyId": "cleanup_session_preview_release_undelivered_lease_release_slot_then_complete"
+        }
+      ],
+      "errorCodes": [
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "encoding_failed",
+        "media_invalid",
+        "session_invalid",
+        "unsupported_capability",
+        "system_interrupted",
+        "session_conflict",
+        "invalid_state",
+        "invalid_argument",
+        "session_timeout",
+        "presentation_conflict",
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "dismiss_capture_flow",
+      "kind": "adapter_operation",
+      "channelId": "commands",
+      "requestPayloadId": "dismiss_capture_flow_request_payload",
+      "resultPayloadId": "capture_flow_dismissed_result_payload",
+      "resultType": "capture_flow_dismissed",
+      "errorCodes": [
+        "incompatible_wire_version",
+        "invalid_wire_payload",
+        "duplicate_request",
+        "bridge_unavailable",
+        "bridge_overloaded",
+        "wire_encoding_failed"
+      ],
+      "completion": "exactly_once",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "unsupported"
+      }
+    }
+  ],
+  "failureDelivery": [
+    {
+      "capabilityOperationId": "start_session",
+      "directFailureIds": [
+        "invalid_argument",
+        "unsupported_capability",
+        "session_conflict"
+      ],
+      "deferredEventId": "session_failed",
+      "deferredFailureIds": [
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "system_interrupted"
+      ]
+    },
+    {
+      "capabilityOperationId": "take_photo",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "storage_full",
+        "encoding_failed",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "start_recording",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "encoding_failed",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "stop_recording",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "encoding_failed",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "switch_camera",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "resource_in_use",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "set_flash_mode",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "set_focus_point",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "set_zoom",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "unsupported_capability",
+        "system_interrupted"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "retake",
+      "directFailureIds": [
+        "session_invalid",
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "confirm",
+      "directFailureIds": [
+        "session_invalid",
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "cancel",
+      "directFailureIds": [
+        "session_invalid",
+        "invalid_state",
+        "invalid_argument"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "release_media",
+      "directFailureIds": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "read_media_thumbnail",
+      "directFailureIds": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "thumbnail_generation_failed",
+        "thumbnail_generation_cancelled",
+        "thumbnail_overloaded"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    },
+    {
+      "capabilityOperationId": "copy_confirmed_media_to_sink",
+      "directFailureIds": [
+        "media_invalid",
+        "invalid_state",
+        "invalid_argument",
+        "system_interrupted",
+        "media_export_conflict",
+        "media_export_overloaded",
+        "media_export_too_large",
+        "media_export_sink_rejected",
+        "media_export_read_failed",
+        "media_export_write_failed",
+        "media_export_cancelled",
+        "media_export_timed_out"
+      ],
+      "deferredEventId": null,
+      "deferredFailureIds": []
+    }
+  ],
+  "events": [
+    {
+      "id": "session_ready",
+      "channelId": "events",
+      "capabilityEventId": "session_ready",
+      "payloadId": "session_ready_event_payload",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "session_failed",
+      "channelId": "events",
+      "capabilityEventId": "session_failed",
+      "payloadId": "session_failed_event_payload",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "media_preview_ready",
+      "channelId": "events",
+      "capabilityEventId": "media_preview_ready",
+      "payloadId": "media_preview_ready_event_payload",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "media_lease_expired",
+      "channelId": "events",
+      "capabilityEventId": "media_lease_expired",
+      "payloadId": "media_lease_expired_event_payload",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    },
+    {
+      "id": "media_read_revoked",
+      "channelId": "events",
+      "capabilityEventId": "media_read_revoked",
+      "payloadId": "media_read_revoked_event_payload",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    }
+  ],
+  "asyncFailures": [
+    {
+      "id": "session_timeout",
+      "channelId": "events",
+      "capabilityFailureId": "session_timeout",
+      "capabilityStateMachineId": "session",
+      "capabilityTriggerId": "preview_timed_out",
+      "payloadId": "session_timeout_failure_payload",
+      "failureType": "session_timeout",
+      "callbackThread": "platform_ui_thread",
+      "sinkBehavior": "continue",
+      "platformSupport": {
+        "android": "supported",
+        "ios": "supported"
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": "bridge_overloaded",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capacity"
+      ]
+    },
+    {
+      "code": "bridge_unavailable",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "lifecycleReason"
+      ]
+    },
+    {
+      "code": "duplicate_request",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation"
+      ]
+    },
+    {
+      "code": "encoding_failed",
+      "source": "capability_failure",
+      "capabilityFailureId": "encoding_failed",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "incompatible_wire_version",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": false,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "actualWireVersion",
+        "expectedWireVersion"
+      ]
+    },
+    {
+      "code": "invalid_argument",
+      "source": "capability_failure",
+      "capabilityFailureId": "invalid_argument",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "invalid_state",
+      "source": "capability_failure",
+      "capabilityFailureId": "invalid_state",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "invalid_wire_payload",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "field",
+        "reason"
+      ]
+    },
+    {
+      "code": "listener_already_active",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": []
+    },
+    {
+      "code": "materialized_media_invalid",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation"
+      ]
+    },
+    {
+      "code": "media_export_cancelled",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_cancelled",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_conflict",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_conflict",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_overloaded",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_overloaded",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_read_failed",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_read_failed",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_sink_rejected",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_sink_rejected",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_timed_out",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_timed_out",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_too_large",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_too_large",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_export_write_failed",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_export_write_failed",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "media_invalid",
+      "source": "capability_failure",
+      "capabilityFailureId": "media_invalid",
+      "recoverable": false,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "permission_denied",
+      "source": "capability_failure",
+      "capabilityFailureId": "permission_denied",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "permission_permanently_denied",
+      "source": "capability_failure",
+      "capabilityFailureId": "permission_permanently_denied",
+      "recoverable": false,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "permission_restricted",
+      "source": "capability_failure",
+      "capabilityFailureId": "permission_restricted",
+      "recoverable": false,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "presentation_conflict",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capacity"
+      ]
+    },
+    {
+      "code": "resource_in_use",
+      "source": "capability_failure",
+      "capabilityFailureId": "resource_in_use",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "session_conflict",
+      "source": "capability_failure",
+      "capabilityFailureId": "session_conflict",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "session_invalid",
+      "source": "capability_failure",
+      "capabilityFailureId": "session_invalid",
+      "recoverable": false,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "session_timeout",
+      "source": "capability_failure",
+      "capabilityFailureId": "session_timeout",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "storage_full",
+      "source": "capability_failure",
+      "capabilityFailureId": "storage_full",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "system_interrupted",
+      "source": "capability_failure",
+      "capabilityFailureId": "system_interrupted",
+      "recoverable": true,
+      "terminal": true,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "thumbnail_generation_cancelled",
+      "source": "capability_failure",
+      "capabilityFailureId": "thumbnail_generation_cancelled",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "thumbnail_generation_failed",
+      "source": "capability_failure",
+      "capabilityFailureId": "thumbnail_generation_failed",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "thumbnail_overloaded",
+      "source": "capability_failure",
+      "capabilityFailureId": "thumbnail_overloaded",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "transfer_store_overloaded",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capacity"
+      ]
+    },
+    {
+      "code": "transfer_store_unavailable",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "lifecycleReason"
+      ]
+    },
+    {
+      "code": "unsupported_capability",
+      "source": "capability_failure",
+      "capabilityFailureId": "unsupported_capability",
+      "recoverable": true,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "capabilityFailureId"
+      ]
+    },
+    {
+      "code": "wire_encoding_failed",
+      "source": "wire_protocol",
+      "capabilityFailureId": null,
+      "recoverable": false,
+      "terminal": false,
+      "messagePolicy": "static_redacted",
+      "detailsAllowedKeys": [
+        "operation",
+        "field",
+        "reason"
+      ]
+    }
+  ],
+  "errorDetailFields": [
+    {
+      "key": "operation",
+      "wireType": "string",
+      "source": "method_id_or_unknown",
+      "enumValues": [
+        "start_session",
+        "take_photo",
+        "start_recording",
+        "stop_recording",
+        "switch_camera",
+        "set_flash_mode",
+        "set_focus_point",
+        "set_zoom",
+        "retake",
+        "confirm",
+        "cancel",
+        "release_media",
+        "read_media_thumbnail",
+        "present_capture_flow",
+        "unknown_operation",
+        "materialize_media_resource",
+        "release_materialized_media",
+        "dismiss_capture_flow"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "capabilityFailureId",
+      "wireType": "string",
+      "source": "capability_failure_id",
+      "enumValues": [
+        "permission_denied",
+        "permission_restricted",
+        "permission_permanently_denied",
+        "resource_in_use",
+        "storage_full",
+        "encoding_failed",
+        "media_invalid",
+        "session_invalid",
+        "unsupported_capability",
+        "system_interrupted",
+        "session_conflict",
+        "invalid_state",
+        "invalid_argument",
+        "session_timeout",
+        "thumbnail_generation_failed",
+        "thumbnail_generation_cancelled",
+        "thumbnail_overloaded",
+        "attachment_generation_retired",
+        "attachment_target_conflict",
+        "media_export_conflict",
+        "media_export_overloaded",
+        "media_export_too_large",
+        "media_export_sink_rejected",
+        "media_export_read_failed",
+        "media_export_write_failed",
+        "media_export_cancelled",
+        "media_export_timed_out"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "actualWireVersion",
+      "wireType": "int",
+      "source": "request_wire_version",
+      "enumValues": [],
+      "minLength": null,
+      "maxLength": null,
+      "minimum": -9223372036854775808,
+      "maximum": 9223372036854775807,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "expectedWireVersion",
+      "wireType": "int",
+      "source": "contract_wire_version",
+      "enumValues": [],
+      "minLength": null,
+      "maxLength": null,
+      "minimum": -9223372036854775808,
+      "maximum": 9223372036854775807,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "field",
+      "wireType": "string",
+      "source": "declared_field_key_or_unknown",
+      "enumValues": [
+        "wireVersion",
+        "requestId",
+        "payload",
+        "resultType",
+        "eventType",
+        "failureType",
+        "enabledMediaTypes",
+        "preferredCamera",
+        "audioEnabled",
+        "maxVideoDurationMillis",
+        "sessionHandle",
+        "flashMode",
+        "normalizedX",
+        "normalizedY",
+        "zoomFactor",
+        "mediaHandle",
+        "activeCamera",
+        "availableCameras",
+        "switchCameraSupported",
+        "supportedFlashModes",
+        "focusPointSupported",
+        "minZoomFactor",
+        "maxZoomFactor",
+        "audioIncluded",
+        "mediaType",
+        "pixelWidth",
+        "pixelHeight",
+        "durationMillis",
+        "orientationDegrees",
+        "byteLength",
+        "leaseExpiresAt",
+        "terminalFailureId",
+        "maxPixelEdge",
+        "thumbnailCopy",
+        "thumbnailByteLength",
+        "thumbnailPixelWidth",
+        "thumbnailPixelHeight",
+        "thumbnailContentType",
+        "thumbnailOrientationDegrees",
+        "posterFrameMillis",
+        "unknown_field",
+    "contentType",
+    "exportHandle",
+    "fileUri",
+    "expiresAt",
+    "integritySha256",
+    "presentationRequestId"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "reason",
+      "wireType": "string",
+      "source": "closed_reason_code",
+      "enumValues": [
+        "missing_required_field",
+        "unknown_field",
+        "type_mismatch",
+        "null_not_allowed",
+        "non_finite",
+        "out_of_range",
+        "invalid_enum",
+        "invalid_format",
+        "integer_overflow",
+        "result_type_mismatch",
+        "native_value_unencodable"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "lifecycleReason",
+      "wireType": "string",
+      "source": "closed_lifecycle_reason",
+      "enumValues": [
+        "engine_detached",
+        "activity_destroyed",
+        "view_controller_destroyed",
+        "adapter_disposed"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    },
+    {
+      "key": "capacity",
+      "wireType": "string",
+      "source": "closed_capacity_code",
+      "enumValues": [
+        "active_export_bytes",
+        "active_exports",
+        "active_presentation",
+        "completed_request_tombstones",
+        "pending_requests",
+        "release_tombstones"
+      ],
+      "minLength": 1,
+      "maxLength": 64,
+      "minimum": null,
+      "maximum": null,
+      "redaction": "allowlisted_value_only"
+    }
+  ],
+  "coverage": {
+    "operations": [
+      {
+        "capabilityId": "start_session",
+        "disposition": "exposed_method",
+        "wireId": "start_session",
+        "reason": null
+      },
+      {
+        "capabilityId": "take_photo",
+        "disposition": "exposed_method",
+        "wireId": "take_photo",
+        "reason": null
+      },
+      {
+        "capabilityId": "start_recording",
+        "disposition": "exposed_method",
+        "wireId": "start_recording",
+        "reason": null
+      },
+      {
+        "capabilityId": "stop_recording",
+        "disposition": "exposed_method",
+        "wireId": "stop_recording",
+        "reason": null
+      },
+      {
+        "capabilityId": "switch_camera",
+        "disposition": "exposed_method",
+        "wireId": "switch_camera",
+        "reason": null
+      },
+      {
+        "capabilityId": "set_flash_mode",
+        "disposition": "exposed_method",
+        "wireId": "set_flash_mode",
+        "reason": null
+      },
+      {
+        "capabilityId": "set_focus_point",
+        "disposition": "exposed_method",
+        "wireId": "set_focus_point",
+        "reason": null
+      },
+      {
+        "capabilityId": "set_zoom",
+        "disposition": "exposed_method",
+        "wireId": "set_zoom",
+        "reason": null
+      },
+      {
+        "capabilityId": "retake",
+        "disposition": "exposed_method",
+        "wireId": "retake",
+        "reason": null
+      },
+      {
+        "capabilityId": "confirm",
+        "disposition": "exposed_method",
+        "wireId": "confirm",
+        "reason": null
+      },
+      {
+        "capabilityId": "cancel",
+        "disposition": "exposed_method",
+        "wireId": "cancel",
+        "reason": null
+      },
+      {
+        "capabilityId": "open_media_read",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Callback-scoped native read access cannot cross a Channel without adding bytes, a path, a URI, or a new capability operation."
+      },
+      {
+        "capabilityId": "release_media",
+        "disposition": "exposed_method",
+        "wireId": "release_media",
+        "reason": null
+      },
+      {
+        "capabilityId": "attach_live_preview",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "RenderTarget Adapter and owner generation are callback resource scope values that cannot be encoded or mapped to Channel fields."
+      },
+      {
+        "capabilityId": "detach_live_preview",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Live preview detach consumes the same non-encodable Native RenderTarget Adapter identity and remains inside the Adapter UI flow."
+      },
+      {
+        "capabilityId": "attach_unconfirmed_preview_render",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Unconfirmed preview rendering binds a Native RenderTarget Adapter and owner generation without exporting bytes, paths, URIs, or SDK objects."
+      },
+      {
+        "capabilityId": "detach_unconfirmed_preview_render",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Unconfirmed preview detach remains a Native UI cleanup operation because its target identity is not Channel-encodable."
+      },
+      {
+        "capabilityId": "read_media_thumbnail",
+        "disposition": "exposed_method",
+        "wireId": "read_media_thumbnail",
+        "reason": null
+      },
+      {
+        "capabilityId": "copy_confirmed_media_to_sink",
+        "disposition": "exposed_method",
+        "wireId": "materialize_media_resource",
+        "reason": null
+      }
+    ],
+    "results": [
+      {
+        "capabilityId": "session_created",
+        "disposition": "mapped_payload",
+        "wireId": "session_created_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "control_applied",
+        "disposition": "mapped_payload",
+        "wireId": "control_applied_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "recording_started",
+        "disposition": "mapped_payload",
+        "wireId": "recording_started_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_preview",
+        "disposition": "mapped_payload",
+        "wireId": "media_preview_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "retake_ready",
+        "disposition": "mapped_payload",
+        "wireId": "retake_ready_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "confirmed_media",
+        "disposition": "mapped_payload",
+        "wireId": "confirmed_media_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "session_cancelled",
+        "disposition": "mapped_payload",
+        "wireId": "session_cancelled_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "scoped_media_read",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "The result contains callback-scoped read_access and is owned by native consumers only."
+      },
+      {
+        "capabilityId": "media_released",
+        "disposition": "mapped_payload",
+        "wireId": "media_released_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "render_attachment_attached",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Attachment results carry Native-only render scope generation and are consumed within the platform UI flow."
+      },
+      {
+        "capabilityId": "render_attachment_detached",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Detach results are Native-only cleanup acknowledgements and never become a Channel payload."
+      },
+      {
+        "capabilityId": "media_thumbnail",
+        "disposition": "mapped_payload",
+        "wireId": "media_thumbnail_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_result",
+        "disposition": "mapped_payload",
+        "wireId": "materialized_media_result_payload",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "capabilityId": "session_ready",
+        "disposition": "mapped_event",
+        "wireId": "session_ready",
+        "reason": null
+      },
+      {
+        "capabilityId": "session_failed",
+        "disposition": "mapped_event",
+        "wireId": "session_failed",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_preview_ready",
+        "disposition": "mapped_event",
+        "wireId": "media_preview_ready",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_lease_expired",
+        "disposition": "mapped_event",
+        "wireId": "media_lease_expired",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_read_revoked",
+        "disposition": "mapped_event",
+        "wireId": "media_read_revoked",
+        "reason": null
+      },
+      {
+        "capabilityId": "render_attachment_revoked",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Render revocation targets a Native callback generation and must be consumed before platform UI cleanup without crossing the Channel."
+      }
+    ],
+    "failures": [
+      {
+        "capabilityId": "permission_denied",
+        "disposition": "mapped_error",
+        "wireId": "permission_denied",
+        "reason": null
+      },
+      {
+        "capabilityId": "permission_restricted",
+        "disposition": "mapped_error",
+        "wireId": "permission_restricted",
+        "reason": null
+      },
+      {
+        "capabilityId": "permission_permanently_denied",
+        "disposition": "mapped_error",
+        "wireId": "permission_permanently_denied",
+        "reason": null
+      },
+      {
+        "capabilityId": "resource_in_use",
+        "disposition": "mapped_error",
+        "wireId": "resource_in_use",
+        "reason": null
+      },
+      {
+        "capabilityId": "storage_full",
+        "disposition": "mapped_error",
+        "wireId": "storage_full",
+        "reason": null
+      },
+      {
+        "capabilityId": "encoding_failed",
+        "disposition": "mapped_error",
+        "wireId": "encoding_failed",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_invalid",
+        "disposition": "mapped_error",
+        "wireId": "media_invalid",
+        "reason": null
+      },
+      {
+        "capabilityId": "session_invalid",
+        "disposition": "mapped_error",
+        "wireId": "session_invalid",
+        "reason": null
+      },
+      {
+        "capabilityId": "unsupported_capability",
+        "disposition": "mapped_error",
+        "wireId": "unsupported_capability",
+        "reason": null
+      },
+      {
+        "capabilityId": "system_interrupted",
+        "disposition": "mapped_error",
+        "wireId": "system_interrupted",
+        "reason": null
+      },
+      {
+        "capabilityId": "session_conflict",
+        "disposition": "mapped_error",
+        "wireId": "session_conflict",
+        "reason": null
+      },
+      {
+        "capabilityId": "invalid_state",
+        "disposition": "mapped_error",
+        "wireId": "invalid_state",
+        "reason": null
+      },
+      {
+        "capabilityId": "invalid_argument",
+        "disposition": "mapped_error",
+        "wireId": "invalid_argument",
+        "reason": null
+      },
+      {
+        "capabilityId": "session_timeout",
+        "disposition": "mapped_error",
+        "wireId": "session_timeout",
+        "reason": null
+      },
+      {
+        "capabilityId": "thumbnail_generation_failed",
+        "disposition": "mapped_error",
+        "wireId": "thumbnail_generation_failed",
+        "reason": null
+      },
+      {
+        "capabilityId": "thumbnail_generation_cancelled",
+        "disposition": "mapped_error",
+        "wireId": "thumbnail_generation_cancelled",
+        "reason": null
+      },
+      {
+        "capabilityId": "thumbnail_overloaded",
+        "disposition": "mapped_error",
+        "wireId": "thumbnail_overloaded",
+        "reason": null
+      },
+      {
+        "capabilityId": "attachment_generation_retired",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The failure belongs only to a Native render owner generation and cannot originate from a Flutter method."
+      },
+      {
+        "capabilityId": "attachment_target_conflict",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The failure compares Native RenderTarget Adapter identity and cannot be represented at the Channel boundary."
+      },
+      {
+        "capabilityId": "media_export_conflict",
+        "disposition": "mapped_error",
+        "wireId": "media_export_conflict",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_overloaded",
+        "disposition": "mapped_error",
+        "wireId": "media_export_overloaded",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_too_large",
+        "disposition": "mapped_error",
+        "wireId": "media_export_too_large",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_sink_rejected",
+        "disposition": "mapped_error",
+        "wireId": "media_export_sink_rejected",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_read_failed",
+        "disposition": "mapped_error",
+        "wireId": "media_export_read_failed",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_write_failed",
+        "disposition": "mapped_error",
+        "wireId": "media_export_write_failed",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_cancelled",
+        "disposition": "mapped_error",
+        "wireId": "media_export_cancelled",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_timed_out",
+        "disposition": "mapped_error",
+        "wireId": "media_export_timed_out",
+        "reason": null
+      }
+    ],
+    "resources": [
+      {
+        "capabilityId": "capture_session",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "The Native Module owns the Session resource; only its opaque handle and mapped lifecycle results cross the Channel."
+      },
+      {
+        "capabilityId": "captured_media",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "The Native Module retains physical media ownership; the Channel carries only an opaque lease handle and bounded thumbnail copy."
+      },
+      {
+        "capabilityId": "live_preview_attachment",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live RenderTarget attachment is a Native callback resource tied to one UI owner generation and is not Channel-encodable."
+      },
+      {
+        "capabilityId": "unconfirmed_preview_render_attachment",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed RenderTarget attachment remains inside Native UI and exposes no bytes, path, URI, descriptor, or SDK object."
+      },
+      {
+        "capabilityId": "live_platform_render_surface",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The module-defined concrete live surface is owned and consumed by the Native UI lifecycle and has no Channel representation."
+      },
+      {
+        "capabilityId": "unconfirmed_platform_render_surface",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The module-defined unconfirmed preview surface remains a Native UI lifecycle resource and never becomes a payload."
+      },
+      {
+        "capabilityId": "thumbnail_generation_job",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "The managed thumbnail job remains internal until a sanitized copy commits."
+      },
+      {
+        "capabilityId": "thumbnail_generation_buffer",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Decoded pixels and partial encoding buffers are wiped inside the Native Module and never cross the Channel."
+      },
+      {
+        "capabilityId": "thumbnail_copy",
+        "disposition": "mapped_payload",
+        "wireId": "media_thumbnail_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_export_job",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Export job ownership remains in the Native Module and Adapter transfer coordinator until terminal cleanup."
+      },
+      {
+        "capabilityId": "media_export_buffer",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Streaming buffers are Native-owned bounded working memory and never cross the Channel."
+      }
+    ],
+    "ownershipScopes": [
+      {
+        "capabilityId": "session_active",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Active Session ownership remains in the Native Module and is represented only by mapped operations and an opaque handle."
+      },
+      {
+        "capabilityId": "session_tombstone",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Session tombstones remain in the Native registry for idempotency and are not transport resources."
+      },
+      {
+        "capabilityId": "media_preview",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Unconfirmed media remains Native-owned until confirm, retake, cancel, failure, or timeout."
+      },
+      {
+        "capabilityId": "media_consumer_lease",
+        "disposition": "mapped_payload",
+        "wireId": "confirmed_media_result_payload",
+        "reason": null
+      },
+      {
+        "capabilityId": "media_read_grace",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Read grace is enforced inside the Native Module and does not create Channel read access."
+      },
+      {
+        "capabilityId": "media_tombstone",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Deleted-media tombstones remain internal registry state."
+      },
+      {
+        "capabilityId": "live_preview_render_scope",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live preview scope binds a Native RenderTarget Adapter to one owner generation and cannot cross the Channel."
+      },
+      {
+        "capabilityId": "unconfirmed_preview_render_scope",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed preview scope is a Native-only callback/render lifetime and cannot be encoded as bytes, path, URI, or SDK value."
+      },
+      {
+        "capabilityId": "live_render_surface_owner_scope",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live concrete surface owner scope belongs to the current Native consumer generation and is not transferable."
+      },
+      {
+        "capabilityId": "unconfirmed_render_surface_owner_scope",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed concrete surface owner scope remains inside the Native UI and cannot be serialized."
+      },
+      {
+        "capabilityId": "thumbnail_generation_job_scope",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Thumbnail job registration and source access remain Native-only until terminal commit."
+      },
+      {
+        "capabilityId": "thumbnail_generation_buffer_scope",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Thumbnail generation buffers are Native-owned transient sensitive memory and never cross the Channel."
+      },
+      {
+        "capabilityId": "media_export_job_scope",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Export job scope is bounded to one active media export and is not serializable."
+      },
+      {
+        "capabilityId": "media_export_buffer_scope",
+        "disposition": "intentionally_not_exposed",
+        "wireId": null,
+        "reason": "Export buffer scope is Native-only working memory and is released before any late result is dropped."
+      }
+    ],
+    "nativeInputs": [
+      {
+        "capabilityId": "media_copy_sink",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "bindingKind": "adapter_native_sink",
+        "fixedIntegerValue": null,
+        "reason": "The Adapter creates the bounded native sink; Flutter cannot provide, serialize, register or retain it."
+      },
+      {
+        "capabilityId": "media_export_max_length",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "bindingKind": "fixed_integer",
+        "fixedIntegerValue": 52428800,
+        "reason": "The Adapter injects the fixed 52428800-byte Capability request bound; Flutter cannot override it."
+      }
+    ],
+    "nativeArtifacts": [
+      {
+        "capabilityId": "live_platform_render_surface_policy",
+        "artifactKind": "surface_policy",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live surface policy is consumed only by the Native Module and UI owner."
+      },
+      {
+        "capabilityId": "live_platform_render_surface_policy",
+        "artifactKind": "factory",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The module factory creates a concrete Native surface and cannot be invoked or represented over Channel."
+      },
+      {
+        "capabilityId": "surface_lifecycle_owner",
+        "artifactKind": "factory_input",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live factory lifecycle owner input is a Native ownership binding."
+      },
+      {
+        "capabilityId": "owner_generation",
+        "artifactKind": "factory_input",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live factory owner generation input is a Native lifecycle value."
+      },
+      {
+        "capabilityId": "surface_instance",
+        "artifactKind": "factory_output",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The concrete live factory output remains a Native surface instance."
+      },
+      {
+        "capabilityId": "render_target_adapter",
+        "artifactKind": "target_identity",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live render target identity is a callback resource and cannot cross Channel."
+      },
+      {
+        "capabilityId": "owner_generation",
+        "artifactKind": "owner_generation",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live owner generation is used only for Native stale-callback rejection."
+      },
+      {
+        "capabilityId": "live_render_surface_diagnostic_policy",
+        "artifactKind": "diagnostic",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Render diagnostics remain structured and redacted inside the Native Module."
+      },
+      {
+        "capabilityId": "live_camera_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The live camera source remains module-private and is never encoded."
+      },
+      {
+        "capabilityId": "live_platform_render_surface_policy",
+        "artifactKind": "platform_surface",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android concrete surface is constructed and consumed only in the Native runtime."
+      },
+      {
+        "capabilityId": "android_live_render_target_conformance",
+        "artifactKind": "target_conformance",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Android closed target conformance is a Native implementation contract."
+      },
+      {
+        "capabilityId": "android_live_render_target_conformance",
+        "artifactKind": "mount_binding",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android mount endpoint and binding stay module-internal."
+      },
+      {
+        "capabilityId": "android_preview_view",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview backing target is a platform object and cannot cross Channel."
+      },
+      {
+        "capabilityId": "android_surface_provider",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android surface provider is owned by the Native renderer pipeline."
+      },
+      {
+        "capabilityId": "android_live_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android live source remains module-private."
+      },
+      {
+        "capabilityId": "android_preview_renderer",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview renderer remains module-private."
+      },
+      {
+        "capabilityId": "android_render_binding",
+        "artifactKind": "binding",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android live render binding remains module-private."
+      },
+      {
+        "capabilityId": "live_platform_render_surface_policy",
+        "artifactKind": "platform_surface",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS concrete surface is constructed and consumed only in the Native runtime."
+      },
+      {
+        "capabilityId": "ios_live_render_target_conformance",
+        "artifactKind": "target_conformance",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "iOS closed target conformance is a Native implementation contract."
+      },
+      {
+        "capabilityId": "ios_live_render_target_conformance",
+        "artifactKind": "mount_binding",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS mount endpoint and binding stay module-internal."
+      },
+      {
+        "capabilityId": "ios_capture_video_preview_layer",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview layer target is a platform object and cannot cross Channel."
+      },
+      {
+        "capabilityId": "ios_surface_backing_target",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS backing target is owned by the Native renderer pipeline."
+      },
+      {
+        "capabilityId": "ios_live_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS live source remains module-private."
+      },
+      {
+        "capabilityId": "ios_preview_renderer",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview renderer remains module-private."
+      },
+      {
+        "capabilityId": "ios_render_binding",
+        "artifactKind": "binding",
+        "ownerPolicyId": "live_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS live render binding remains module-private."
+      },
+      {
+        "capabilityId": "unconfirmed_platform_render_surface_policy",
+        "artifactKind": "surface_policy",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed surface policy is consumed only by the Native Module and UI owner."
+      },
+      {
+        "capabilityId": "unconfirmed_platform_render_surface_policy",
+        "artifactKind": "factory",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The module preview factory creates a concrete Native surface and cannot cross Channel."
+      },
+      {
+        "capabilityId": "surface_lifecycle_owner",
+        "artifactKind": "factory_input",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The preview factory lifecycle owner input is a Native ownership binding."
+      },
+      {
+        "capabilityId": "owner_generation",
+        "artifactKind": "factory_input",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The preview factory owner generation input is a Native lifecycle value."
+      },
+      {
+        "capabilityId": "surface_instance",
+        "artifactKind": "factory_output",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The concrete preview factory output remains a Native surface instance."
+      },
+      {
+        "capabilityId": "render_target_adapter",
+        "artifactKind": "target_identity",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The preview render target identity is a callback resource and cannot cross Channel."
+      },
+      {
+        "capabilityId": "owner_generation",
+        "artifactKind": "owner_generation",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The preview owner generation is used only for Native stale-callback rejection."
+      },
+      {
+        "capabilityId": "unconfirmed_render_surface_diagnostic_policy",
+        "artifactKind": "diagnostic",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Preview render diagnostics remain structured and redacted inside the Native Module."
+      },
+      {
+        "capabilityId": "unconfirmed_photo_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed photo source stays module-private."
+      },
+      {
+        "capabilityId": "unconfirmed_video_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": null,
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The unconfirmed video source stays module-private."
+      },
+      {
+        "capabilityId": "unconfirmed_platform_render_surface_policy",
+        "artifactKind": "platform_surface",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview surface is constructed and consumed only in the Native runtime."
+      },
+      {
+        "capabilityId": "android_unconfirmed_render_target_conformance",
+        "artifactKind": "target_conformance",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "Android preview target conformance remains Native-only."
+      },
+      {
+        "capabilityId": "android_unconfirmed_render_target_conformance",
+        "artifactKind": "mount_binding",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview mount binding stays module-internal."
+      },
+      {
+        "capabilityId": "android_photo_content_target",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android photo target is a Native backing object."
+      },
+      {
+        "capabilityId": "android_video_player_surface",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android video player surface remains Native-only."
+      },
+      {
+        "capabilityId": "android_file_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview file source remains module-private."
+      },
+      {
+        "capabilityId": "android_photo_renderer",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android photo renderer remains module-private."
+      },
+      {
+        "capabilityId": "android_video_player",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android video player remains module-private."
+      },
+      {
+        "capabilityId": "android_render_binding",
+        "artifactKind": "binding",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "android",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The Android preview render binding remains module-private."
+      },
+      {
+        "capabilityId": "unconfirmed_platform_render_surface_policy",
+        "artifactKind": "platform_surface",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview surface is constructed and consumed only in the Native runtime."
+      },
+      {
+        "capabilityId": "ios_unconfirmed_render_target_conformance",
+        "artifactKind": "target_conformance",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "iOS preview target conformance remains Native-only."
+      },
+      {
+        "capabilityId": "ios_unconfirmed_render_target_conformance",
+        "artifactKind": "mount_binding",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview mount binding stays module-internal."
+      },
+      {
+        "capabilityId": "ios_photo_content_target",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS photo content target remains Native-only."
+      },
+      {
+        "capabilityId": "ios_player_layer",
+        "artifactKind": "mount_target",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS player layer remains a module-owned Native target."
+      },
+      {
+        "capabilityId": "ios_file_source",
+        "artifactKind": "source",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview file source remains module-private."
+      },
+      {
+        "capabilityId": "ios_photo_renderer",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS photo renderer remains module-private."
+      },
+      {
+        "capabilityId": "ios_video_player",
+        "artifactKind": "renderer",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS video player remains module-private."
+      },
+      {
+        "capabilityId": "ios_render_binding",
+        "artifactKind": "binding",
+        "ownerPolicyId": "unconfirmed_platform_render_surface_policy",
+        "platform": "ios",
+        "disposition": "native_consumer_only",
+        "wireId": null,
+        "reason": "The iOS preview render binding remains module-private."
+      }
+    ]
+  },
+  "platform": {
+    "supported": [
+      "android",
+      "ios"
+    ],
+    "semanticParity": "required",
+    "differences": [
+      {
+        "platform": "android",
+        "id": "android_ui_thread_dispatch",
+        "description": "The Android Adapter dispatches Channel results and events through the Android main thread."
+      },
+      {
+        "platform": "ios",
+        "id": "ios_main_actor_dispatch",
+        "description": "The iOS Adapter dispatches Channel results and events through the main actor or main queue."
+      },
+      {
+        "platform": "android",
+        "id": "android_private_cache_transfer_root",
+        "description": "The Android Adapter creates transfer files under a plugin-owned application-private cache transfer root."
+      },
+      {
+        "platform": "ios",
+        "id": "ios_private_cache_transfer_root",
+        "description": "The iOS Adapter creates transfer files under a plugin-owned application-private cache transfer root."
+      }
+    ]
+  },
+  "lifecycle": {
+    "requestEnvelope": {
+      "requiredKeys": [
+        "wireVersion",
+        "requestId",
+        "payload"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    "resultEnvelope": {
+      "requiredKeys": [
+        "wireVersion",
+        "requestId",
+        "resultType",
+        "payload"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    "eventListenEnvelope": {
+      "requiredKeys": [
+        "wireVersion"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    "eventEnvelope": {
+      "requiredKeys": [
+        "wireVersion",
+        "eventType",
+        "payload"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    "failureEnvelope": {
+      "requiredKeys": [
+        "wireVersion",
+        "failureType",
+        "payload"
+      ],
+      "unknownFieldPolicy": "reject"
+    },
+    "requestIdPolicy": {
+      "wireType": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_-]{1,128}$",
+      "format": "ascii_token",
+      "logging": "redact"
+    },
+    "duplicateRequests": {
+      "key": "requestId",
+      "scope": "engine_attachment",
+      "pending": "reject_duplicate_request",
+      "maxPendingRequests": 32,
+      "completedTombstoneSeconds": 300,
+      "completed": "reject_duplicate_request",
+      "maxCompletedRequestTombstones": 4096,
+      "completionSlotReservation": "reserve_before_invoking_capability",
+      "overflow": "reject_bridge_overloaded_without_invoking_capability",
+      "pendingEviction": "forbidden",
+      "completedEvictionBeforeTtl": "forbidden",
+      "extendsCapabilityLifetime": false
+    },
+    "methodCompletion": "exactly_once",
+    "callbackThread": "platform_ui_thread",
+    "sessionFailedEventCorrelation": "independent_session_terminal_notification_never_method_completion",
+    "listenerPolicy": {
+      "maxActiveSinks": 1,
+      "secondListen": "reject_new_listener_keep_existing_sink",
+      "secondListenErrorCode": "listener_already_active",
+      "cancel": "remove_current_sink",
+      "relisten": "allow_after_cancel_or_terminal_error",
+      "generation": "monotonic_per_successful_listen",
+      "lateEvent": "drop_generation_mismatch"
+    },
+    "boundaries": [
+      {
+        "id": "engine_detach",
+        "description": "Flutter Engine attachment ended and cannot retain Bridge-owned native resources.",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "actions": [
+          {
+            "order": 1,
+            "resourceId": "attachment_generation",
+            "actionId": "close_generation_reject_new_calls"
+          },
+          {
+            "order": 2,
+            "resourceId": "ui_owner_generation",
+            "actionId": "close_generation_reject_new_calls"
+          },
+          {
+            "order": 3,
+            "resourceId": "active_presentation_flow",
+            "actionId": "revoke_render_scopes_and_dismiss"
+          },
+          {
+            "order": 4,
+            "resourceId": "active_sessions",
+            "actionId": "capability_failure_system_interrupted"
+          },
+          {
+            "order": 5,
+            "resourceId": "unconfirmed_previews",
+            "actionId": "detach_revoke_and_cleanup"
+          },
+          {
+            "order": 6,
+            "resourceId": "pending_presentation_leases",
+            "actionId": "release_before_drop"
+          },
+          {
+            "order": 7,
+            "resourceId": "confirmed_media_leases",
+            "actionId": "release_attachment_leases"
+          },
+          {
+            "order": 8,
+            "resourceId": "inflight_transfer_exports",
+            "actionId": "cancel_sink_delete_partial_file_release_capacity"
+          },
+          {
+            "order": 9,
+            "resourceId": "active_transfer_exports",
+            "actionId": "delete_registered_transfer_files"
+          },
+          {
+            "order": 10,
+            "resourceId": "event_sink",
+            "actionId": "cancel"
+          },
+          {
+            "order": 11,
+            "resourceId": "active_presentation_slot",
+            "actionId": "release_after_cleanup_if_owned"
+          },
+          {
+            "order": 12,
+            "resourceId": "pending_requests",
+            "actionId": "complete_bridge_unavailable_if_unsettled"
+          },
+          {
+            "order": 13,
+            "resourceId": "late_callbacks",
+            "actionId": "cleanup_resource_before_drop"
+          },
+          {
+            "order": 14,
+            "resourceId": "new_attachment",
+            "actionId": "start_generation_no_inheritance"
+          }
+        ]
+      },
+      {
+        "id": "ui_owner_destroy",
+        "description": "Activity or ViewController owner ended while the Engine attachment may remain alive.",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "actions": [
+          {
+            "order": 1,
+            "resourceId": "ui_owner_generation",
+            "actionId": "close_generation_reject_new_calls"
+          },
+          {
+            "order": 2,
+            "resourceId": "active_presentation_flow",
+            "actionId": "revoke_render_scopes_and_dismiss"
+          },
+          {
+            "order": 3,
+            "resourceId": "active_sessions",
+            "actionId": "capability_failure_system_interrupted"
+          },
+          {
+            "order": 4,
+            "resourceId": "unconfirmed_previews",
+            "actionId": "detach_revoke_and_cleanup"
+          },
+          {
+            "order": 5,
+            "resourceId": "pending_presentation_leases",
+            "actionId": "release_before_drop"
+          },
+          {
+            "order": 6,
+            "resourceId": "confirmed_media_leases",
+            "actionId": "retain_engine_attachment_leases"
+          },
+          {
+            "order": 7,
+            "resourceId": "inflight_transfer_exports",
+            "actionId": "retain_engine_attachment_exports"
+          },
+          {
+            "order": 8,
+            "resourceId": "active_transfer_exports",
+            "actionId": "retain_engine_attachment_exports"
+          },
+          {
+            "order": 9,
+            "resourceId": "event_sink",
+            "actionId": "retain_for_engine_attachment"
+          },
+          {
+            "order": 10,
+            "resourceId": "active_presentation_slot",
+            "actionId": "release_after_cleanup_if_owned"
+          },
+          {
+            "order": 11,
+            "resourceId": "pending_requests",
+            "actionId": "complete_bridge_unavailable_if_unsettled"
+          },
+          {
+            "order": 12,
+            "resourceId": "late_callbacks",
+            "actionId": "cleanup_resource_before_drop"
+          },
+          {
+            "order": 13,
+            "resourceId": "new_ui_owner",
+            "actionId": "start_generation_no_session_inheritance"
+          }
+        ]
+      }
+    ],
+    "linearizationPolicy": {
+      "coordinatorId": "bridge_lifecycle_coordinator",
+      "participants": [
+        "generation_open_check",
+        "owner_generation_open_recheck",
+        "presentation_slot_reservation",
+        "presentation_cleanup",
+        "presentation_lease_settlement",
+        "presentation_slot_release",
+        "resource_adoption",
+        "non_resource_result_decision",
+        "exactly_once_completion_decision",
+        "boundary_close",
+        "boundary_resource_scan",
+        "late_result_cleanup"
+      ],
+      "callbackWinOrderId": "presentation_callback_terminal_machine",
+      "callbackWinOrder": [
+        "generation_open_recheck",
+        "presentation_cleanup_complete_if_owned",
+        "resource_adoption_if_required",
+        "presentation_lease_settlement_if_owned",
+        "presentation_slot_release_if_owned",
+        "exactly_once_success_completion"
+      ],
+      "boundaryWinOrder": [
+        "boundary_close_generation",
+        "boundary_revoke_and_cleanup_presentation_resources",
+        "boundary_settle_undelivered_lease",
+        "boundary_release_presentation_slot",
+        "exactly_once_bridge_unavailable_completion",
+        "boundary_scan_registered_resources",
+        "late_result_cleanup_before_drop"
+      ]
+    },
+    "resourceAdoptionPolicies": [
+      {
+        "id": "session_created_adoption",
+        "resultType": "session_created",
+        "resourceId": "active_session",
+        "adoptionActionId": "register_active_session_before_flutter_completion",
+        "coordinatorId": "bridge_lifecycle_coordinator"
+      },
+      {
+        "id": "confirmed_media_adoption",
+        "resultType": "confirmed_media",
+        "resourceId": "attachment_media_lease",
+        "adoptionActionId": "register_attachment_lease_before_flutter_completion",
+        "coordinatorId": "bridge_lifecycle_coordinator"
+      },
+      {
+        "id": "capture_flow_confirmed_adoption",
+        "resultType": "capture_flow_confirmed",
+        "resourceId": "attachment_media_lease",
+        "adoptionActionId": "register_attachment_lease_before_flutter_completion",
+        "coordinatorId": "bridge_lifecycle_coordinator"
+      },
+      {
+        "id": "materialized_media_resource_adoption",
+        "resultType": "materialized_media_resource",
+        "resourceId": "active_transfer_export",
+        "adoptionActionId": "atomic_commit_register_export_before_flutter_completion",
+        "coordinatorId": "bridge_lifecycle_coordinator"
+      }
+    ],
+    "resultCompletionPolicies": [
+      {
+        "resultType": "session_created",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": "session_created_adoption",
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "adopt_resource_then_complete_flutter",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "control_applied",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "recording_started",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "media_preview",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "retake_ready",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "confirmed_media",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": "confirmed_media_adoption",
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "adopt_resource_then_complete_flutter",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "session_cancelled",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "media_released",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "media_thumbnail",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "capture_flow_confirmed",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": "capture_flow_confirmed_adoption",
+        "callbackWinOrderId": "presentation_callback_terminal_machine",
+        "callbackWinActionId": "run_presentation_callback_terminal_machine",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "capture_flow_cancelled",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": "presentation_callback_terminal_machine",
+        "callbackWinActionId": "run_presentation_callback_terminal_machine",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "materialized_media_resource",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": "materialized_media_resource_adoption",
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "adopt_resource_then_complete_flutter",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      },
+      {
+        "resultType": "materialized_media_released",
+        "coordinatorId": "bridge_lifecycle_coordinator",
+        "resourceAdoptionPolicyId": null,
+        "callbackWinOrderId": null,
+        "callbackWinActionId": "complete_flutter_once_without_resource_adoption",
+        "boundaryWinActionId": "cleanup_by_late_result_policy_then_drop_without_flutter_completion"
+      }
+    ],
+    "lateResultPolicies": [
+      {
+        "resultType": "session_created",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "returned_session",
+        "cleanupActionId": "capability_failure_system_interrupted_returned_session",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "control_applied",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "request_session",
+        "cleanupActionId": "capability_failure_system_interrupted_request_session_if_active",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "recording_started",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "request_session",
+        "cleanupActionId": "capability_failure_system_interrupted_request_session_if_active",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "media_preview",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "request_session_and_preview",
+        "cleanupActionId": "capability_failure_system_interrupted_request_session_cleanup_preview",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "retake_ready",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "request_session",
+        "cleanupActionId": "capability_failure_system_interrupted_request_session_if_active",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "confirmed_media",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "returned_media_lease",
+        "cleanupActionId": "release_media_returned_lease",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "session_cancelled",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "no_live_resource",
+        "cleanupActionId": "verify_terminal_then_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "media_released",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "no_live_resource",
+        "cleanupActionId": "verify_terminal_then_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "media_thumbnail",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "returned_thumbnail_copy",
+        "cleanupActionId": "wipe_thumbnail_copy_before_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "capture_flow_confirmed",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "returned_flow_lease_session_and_preview",
+        "cleanupActionId": "release_lease_interrupt_session_cleanup_preview_then_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "capture_flow_cancelled",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "flow_session_and_preview",
+        "cleanupActionId": "verify_cancel_cleanup_then_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "materialized_media_resource",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "returned_transfer_file",
+        "cleanupActionId": "delete_transfer_file_before_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      },
+      {
+        "resultType": "materialized_media_released",
+        "boundaryIds": [
+          "engine_detach",
+          "ui_owner_destroy"
+        ],
+        "resourceId": "no_live_resource",
+        "cleanupActionId": "verify_transfer_tombstone_then_drop",
+        "cleanupBeforeDrop": true,
+        "flutterCompletion": "none_pending_already_bridge_unavailable"
+      }
+    ],
+    "lateCallbackBehavior": "cleanup_result_then_drop_generation_mismatch",
+    "eventEncodingFailureBehavior": "terminate_sink_wire_encoding_failed_keep_capability_owned",
+    "cancelBehavior": "capability_result_not_platform_exception"
+  },
+  "security": {
+    "dataClassifications": [
+      {
+        "id": "opaque_handles",
+        "description": "Capability-created Session and Media registry identifiers.",
+        "fieldIds": [
+          "session_handle",
+          "media_handle"
+        ],
+        "wireKeys": [],
+        "classification": "sensitive_identifier",
+        "transferPolicy": "capability_created_opaque_only"
+      },
+      {
+        "id": "capture_configuration",
+        "description": "Operation-scoped capture settings and controls.",
+        "fieldIds": [
+          "enabled_media_types",
+          "preferred_camera",
+          "audio_enabled",
+          "max_video_duration_millis",
+          "flash_mode",
+          "normalized_x",
+          "normalized_y",
+          "zoom_factor"
+        ],
+        "wireKeys": [],
+        "classification": "user_configuration",
+        "transferPolicy": "operation_scoped"
+      },
+      {
+        "id": "capability_snapshot",
+        "description": "Current camera and control support reported by the module.",
+        "fieldIds": [
+          "active_camera",
+          "available_cameras",
+          "switch_camera_supported",
+          "supported_flash_modes",
+          "focus_point_supported",
+          "min_zoom_factor",
+          "max_zoom_factor"
+        ],
+        "wireKeys": [],
+        "classification": "operational_metadata",
+        "transferPolicy": "minimal_metadata_only"
+      },
+      {
+        "id": "media_metadata",
+        "description": "Minimum metadata for captured media and its lease.",
+        "fieldIds": [
+          "audio_included",
+          "media_type",
+          "pixel_width",
+          "pixel_height",
+          "duration_millis",
+          "orientation_degrees",
+          "byte_length",
+          "lease_expires_at"
+        ],
+        "wireKeys": [],
+        "classification": "media_metadata",
+        "transferPolicy": "minimal_metadata_only"
+      },
+      {
+        "id": "thumbnail_request",
+        "description": "Explicit bounded thumbnail request limit.",
+        "fieldIds": [
+          "max_pixel_edge"
+        ],
+        "wireKeys": [],
+        "classification": "user_configuration",
+        "transferPolicy": "operation_scoped"
+      },
+      {
+        "id": "sanitized_thumbnail_copy",
+        "description": "Bounded upright JPEG bytes and the minimum metadata required to display and validate them.",
+        "fieldIds": [
+          "thumbnail_copy",
+          "thumbnail_byte_length",
+          "thumbnail_pixel_width",
+          "thumbnail_pixel_height",
+          "thumbnail_content_type",
+          "thumbnail_orientation_degrees",
+          "poster_frame_millis"
+        ],
+        "wireKeys": [],
+        "classification": "sanitized_bounded_media_copy",
+        "transferPolicy": "confirmed_active_lease_only"
+      },
+      {
+        "id": "failure_metadata",
+        "description": "Stable terminal Capability failure identifier.",
+        "fieldIds": [
+          "terminal_failure_id"
+        ],
+        "wireKeys": [],
+        "classification": "failure_metadata",
+        "transferPolicy": "allowlisted_only"
+      },
+      {
+        "id": "protocol_metadata",
+        "description": "Wire envelope correlation and discriminator fields.",
+        "fieldIds": [],
+        "wireKeys": [
+          "wireVersion",
+          "requestId",
+          "resultType",
+          "eventType",
+          "failureType"
+        ],
+        "classification": "protocol_metadata",
+        "transferPolicy": "allowlisted_only"
+      },
+      {
+        "id": "native_render_artifacts",
+        "description": "Capability V3 surfaces, factories, targets, sources, renderers, bindings, ownership and diagnostics are Native lifecycle artifacts, not Wire data.",
+        "fieldIds": [],
+        "wireKeys": [],
+        "classification": "native_lifecycle_resource",
+        "transferPolicy": "native_consumer_only"
+      },
+      {
+        "id": "transfer_locator",
+        "description": "Adapter-created export handle, temporary file URI and expiry for one scoped materialized transfer.",
+        "fieldIds": [
+          "export_handle",
+          "file_uri",
+          "expires_at"
+        ],
+        "wireKeys": [],
+        "classification": "sensitive_local_locator",
+        "transferPolicy": "immediate_infrastructure_import_only"
+      },
+      {
+        "id": "transfer_metadata",
+        "description": "Bounded metadata for the materialized media file copied by the Adapter-owned sink.",
+      "fieldIds": [
+        "content_type",
+        "integrity_sha256"
+        ],
+        "wireKeys": [],
+        "classification": "media_metadata",
+        "transferPolicy": "minimal_metadata_only"
+      },
+      {
+        "id": "presentation_control",
+        "description": "Opaque request correlation used only by the originating Flutter client to dismiss its active native presentation.",
+        "fieldIds": [
+          "presentation_request_id"
+        ],
+        "wireKeys": [],
+        "classification": "sensitive_identifier",
+        "transferPolicy": "originating_client_cancel_only"
+      }
+    ],
+    "policies": [
+      {
+        "id": "metadata_opaque_handle_and_bounded_thumbnail_only",
+        "description": "Media transfer is limited to classified metadata, opaque handles, and the declared sanitized bounded thumbnail copy."
+      },
+      {
+        "id": "capability_created_opaque_handle_only",
+        "description": "Only Capability-created opaque handles may cross the Channel."
+      },
+      {
+        "id": "free_form_payload_forbidden",
+        "description": "Every Map and field is declared by the Wire Contract."
+      },
+      {
+        "id": "unknown_fields_rejected",
+        "description": "Unknown envelope, payload, and error detail fields are rejected."
+      },
+      {
+        "id": "error_details_allowlisted",
+        "description": "Error details use typed closed value sets and never echo unknown input."
+      },
+      {
+        "id": "sensitive_logging_redacted",
+        "description": "Logs redact handles, paths, bytes, metadata, payloads, request IDs, owner generations, and exceptions."
+      },
+      {
+        "id": "native_render_scope_channel_forbidden",
+        "description": "RenderTarget Adapter, owner generation, attachment result, revocation event, SDK object, and native preview scope are never encoded in a method, event, payload, or field mapping."
+      },
+      {
+        "id": "native_render_surface_artifacts_channel_forbidden",
+        "description": "Capability V3 surface factories, conformances, mount endpoints, backing targets, sources, renderers, bindings and owner scopes never receive a Wire field, payload, method, event or fallback."
+      },
+      {
+        "id": "native_render_diagnostics_redacted_no_projection",
+        "description": "Native render diagnostics remain allowlisted and redacted inside the module; surface, target, source, renderer, binding, owner generation, path and raw exception content never cross Channel or enter logs."
+      },
+      {
+        "id": "no_native_render_path_bytes_fallback",
+        "description": "A Native render surface or internal source cannot be replaced by media bytes, path, URI, descriptor, platform object, opaque token or untyped payload fallback."
+      },
+      {
+        "id": "thumbnail_uint8list_only",
+        "description": "thumbnailCopy uses only the Channel byte-array representation corresponding to Dart Uint8List."
+      },
+      {
+        "id": "thumbnail_length_matches_bytes",
+        "description": "thumbnailByteLength is 1 through 524288 and equals the actual thumbnailCopy byte length."
+      },
+      {
+        "id": "thumbnail_upright_jpeg_only",
+        "description": "Thumbnail output is image/jpeg with physically upright pixels and thumbnailOrientationDegrees equal to zero."
+      },
+      {
+        "id": "thumbnail_exif_and_source_metadata_stripped",
+        "description": "The bounded copy contains no EXIF, location, device, source filename, or other non-display source metadata."
+      },
+      {
+        "id": "thumbnail_confirmed_active_lease_only",
+        "description": "Thumbnail reads require a confirmed active lease, do not refresh lease/grace/TTL/tombstone, and never expose original media."
+      },
+      {
+        "id": "thumbnail_video_poster_deterministic",
+        "description": "Photo posterFrameMillis is null; video returns the actual frame chosen by the Capability target/after/before/tie policy."
+      },
+      {
+        "id": "no_media_path_uri_fallback",
+        "description": "No source bytes, path, URI, file descriptor, untyped Map, SDK object, or fallback representation may replace the bounded thumbnail bytes."
+      },
+      {
+        "id": "caller_path_forbidden",
+        "description": "Dart never supplies a path, URI, filename, descriptor, remote URL, shared-storage locator, or target directory for transfer materialization."
+      },
+      {
+        "id": "scoped_transfer_file_uri_only",
+        "description": "fileUri is Adapter-created under the plugin-owned app-private transfer root, has a fixed TTL, and is consumed only for immediate infrastructure import."
+      },
+      {
+        "id": "transfer_locator_redacted",
+        "description": "fileUri and exportHandle are sensitive local locators and never enter logs, error details, events, messages, fixtures, routes, analytics, or persistence."
+      },
+      {
+        "id": "transfer_capacity_bounded",
+        "description": "Each Engine attachment permits at most four active exports and 104857600 active bytes; each file is capped at 52428800 bytes and overload does not invoke Capability."
+      },
+      {
+        "id": "transfer_cleanup_exactly_once",
+        "description": "Release, detach, restart, TTL, cancel, completion failure, and late Capability result delete or tombstone transfer files exactly once before drop."
+      },
+      {
+        "id": "source_media_release_order",
+        "description": "Dart imports the materialized transfer before releasing the export and releases source media only after import succeeds."
+      },
+      {
+        "id": "no_raw_media_channel_transfer",
+        "description": "Raw media bytes, chunks, descriptors, source paths, and caller-provided sinks never cross the Channel."
+      }
+    ]
+  },
+  "changeLog": [
+    {
+      "wireVersion": 1,
+      "compatibleCapabilityVersions": [
+        1
+      ],
+      "description": "Initial typed Media Capture mapping with bounded transport, typed error details, listener and host lifecycle policy, and direct Capability failure-emission coverage; callback-scoped native media reads are intentionally not exposed."
+    },
+    {
+      "wireVersion": 2,
+      "compatibleCapabilityVersions": [
+        2,
+        3
+      ],
+      "description": "Adds a full-screen presentation method and sanitized bounded thumbnail bytes; Capability V3 module-defined render surfaces and internals remain Native-only, so the existing Version 2 Channel shape is unchanged while supporting Capability Versions 2 and 3."
+    },
+    {
+      "wireVersion": 3,
+      "compatibleCapabilityVersions": [
+        4
+      ],
+      "description": "Adds scoped one-time materialize and release methods for Capability V4 bounded export using an Adapter-owned private cache store, plus a request-correlated Adapter presentation dismiss method for Flutter lifecycle cleanup. Transfer uses 128-bit CSPRNG export handles, fixed native sink and length bindings, canonical short-lived file URI locators, closed media metadata, optional SHA-256 integrity, bounded tombstones, and ordered cleanup while preserving Wire V1/V2 history; dismiss is Android-supported and explicitly deferred on iOS."
+    }
+  ],
+  "transferStore": {
+    "owner": "adapter_owned_app_private_cache_transfer_root",
+    "locatorClassification": "sensitive_local_locator",
+    "exportHandlePolicy": {
+      "ownerScope": "engine_attachment",
+      "generator": "cryptographically_secure_random",
+      "minimumEntropyBits": 128,
+      "format": "base64url_no_padding",
+      "minLength": 22,
+      "maxLength": 64,
+      "lookup": "strict_registry_lookup",
+      "reuse": "forbidden",
+      "crossAttachmentUse": "reject_materialized_media_invalid",
+      "logging": "redact"
+    },
+    "fileUriPolicy": {
+      "scheme": "file",
+      "serialization": "ascii_percent_encoded",
+      "lengthUnit": "ascii_code_units",
+      "percentEncodingHexCase": "uppercase",
+      "maxLength": 4096,
+      "absolutePath": true,
+      "normalizedPath": true,
+      "emptyHostOnly": true,
+      "rejectUserInfo": true,
+      "rejectPort": true,
+      "rejectQuery": true,
+      "rejectFragment": true,
+      "rejectDotSegments": true,
+      "rejectUnescapedNonAscii": true,
+      "rejectIllegalOrOverlongPercentEncoding": true
+    },
+    "resultPolicy": {
+      "maxByteLength": 52428800,
+      "photoContentType": "image/jpeg",
+      "videoContentType": "video/mp4",
+      "durationFieldId": "duration_millis",
+      "integrityFieldId": "integrity_sha256",
+      "integrityAlgorithm": "sha256",
+      "integrityEncoding": "lowercase_hex_64",
+      "integrityRequired": false
+    },
+    "limits": {
+      "maxFileBytes": 52428800,
+      "ttlSeconds": 300,
+      "maxActiveExportsPerEngineAttachment": 4,
+      "maxActiveBytesPerEngineAttachment": 104857600,
+      "releaseTombstoneSeconds": 300,
+      "maxReleaseTombstones": 4096,
+      "releaseTombstoneOverflow": "reject_transfer_store_overloaded_without_eviction"
+    },
+    "lifecycle": {
+      "materializeOrder": [
+        "validate_request",
+        "reserve_transfer_capacity",
+        "create_random_temp_target",
+        "invoke_capability_with_adapter_sink",
+        "atomic_commit_file",
+        "register_export_before_flutter_completion"
+      ],
+      "releaseOrder": [
+        "validate_export_handle",
+        "atomically_claim_cleanup_and_reserve_release_tombstone",
+        "delete_transfer_file",
+        "remove_export_registry_entry",
+        "release_transfer_capacity",
+        "record_release_tombstone",
+        "complete_flutter_once"
+      ],
+      "inflightCleanupOrder": [
+        "close_transfer_generation",
+        "cancel_capability_export_and_sink",
+        "delete_partial_transfer_file",
+        "release_transfer_capacity",
+        "complete_flutter_once"
+      ],
+      "activeExportCleanupOrder": [
+        "mark_export_cleanup_pending",
+        "delete_transfer_file",
+        "remove_export_registry_entry",
+        "release_transfer_capacity"
+      ],
+      "restartSweepOrder": [
+        "close_transfer_generation",
+        "delete_all_files_under_private_transfer_root",
+        "reset_transfer_registry_and_capacity",
+        "open_transfer_generation"
+      ],
+      "cleanupTriggers": [
+        "flutter_completion_failed",
+        "engine_detach",
+        "app_restart",
+        "ttl_expired",
+        "cancel",
+        "late_capability_result"
+      ],
+      "releasePendingDuplicatePolicy": "join_claimed_cleanup_without_new_reservation_or_side_effects",
+      "releaseTombstoneHitOutcome": "materialized_media_released",
+      "releaseUnknownOrExpiredOutcome": "materialized_media_invalid",
+      "deleteFailurePolicy": "retain_registry_entry_active_capacity_and_tombstone_reservation_retry_same_claim_bounded_without_success",
+      "sourceLeasePolicy": "materialize_and_release_export_do_not_release_source_media"
+    },
+    "redaction": {
+      "forbiddenSinks": [
+        "logs",
+        "error_details",
+        "event_payloads",
+        "messages",
+        "fixtures",
+        "routes",
+        "analytics",
+        "persistent_storage"
+      ],
+      "forbiddenDetailKeys": [
+        "fileUri",
+        "exportHandle",
+        "path",
+        "uri",
+        "handle",
+        "underlyingError"
+      ]
+    },
+    "fileUriGoldenVectors": [
+      {
+        "id": "absolute_no_authority",
+        "uri": "file:///var/mobile/Containers/Data/Application/app/Library/Caches/media-transfer/a.bin",
+        "valid": true,
+        "reason": "absolute_normalized_empty_host"
+      },
+      {
+        "id": "localhost_authority_rejected",
+        "uri": "file://localhost/var/mobile/Containers/Data/Application/app/Library/Caches/media-transfer/a.bin",
+        "valid": false,
+        "reason": "non_empty_host"
+      },
+      {
+        "id": "relative_path_rejected",
+        "uri": "file:media-transfer/a.bin",
+        "valid": false,
+        "reason": "not_absolute"
+      },
+      {
+        "id": "single_slash_absolute_rejected",
+        "uri": "file:/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false,
+        "reason": "non_canonical_authority_form"
+      },
+      {
+        "id": "port_rejected",
+        "uri": "file://:123/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false,
+        "reason": "port"
+      },
+      {
+        "id": "dot_segment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/../a.bin",
+        "valid": false,
+        "reason": "dot_segment"
+      },
+      {
+        "id": "encoded_dot_segment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%2E%2E/a.bin",
+        "valid": false,
+        "reason": "encoded_dot_segment"
+      },
+      {
+        "id": "query_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a.bin?x=1",
+        "valid": false,
+        "reason": "query"
+      },
+      {
+        "id": "fragment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a.bin#x",
+        "valid": false,
+        "reason": "fragment"
+      },
+      {
+        "id": "userinfo_rejected",
+        "uri": "file://user@/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false,
+        "reason": "userinfo"
+      },
+      {
+        "id": "overlong_percent_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%C0%AF.bin",
+        "valid": false,
+        "reason": "illegal_percent_encoding"
+      },
+      {
+        "id": "invalid_percent_triplet_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%GG.bin",
+        "valid": false,
+        "reason": "illegal_percent_encoding"
+      },
+      {
+        "id": "encoded_slash_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%2Fb.bin",
+        "valid": false,
+        "reason": "encoded_path_separator"
+      },
+      {
+        "id": "encoded_backslash_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%5Cb.bin",
+        "valid": false,
+        "reason": "encoded_path_separator"
+      },
+      {
+        "id": "nul_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%00.bin",
+        "valid": false,
+        "reason": "control_character"
+      },
+      {
+        "id": "control_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%0A.bin",
+        "valid": false,
+        "reason": "control_character"
+      },
+      {
+        "id": "raw_unicode_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/照片.jpg",
+        "valid": false,
+        "reason": "unescaped_non_ascii"
+      },
+      {
+        "id": "percent_encoded_unicode_accepted",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%E7%85%A7%E7%89%87.jpg",
+        "valid": true,
+        "reason": "ascii_percent_encoded_unicode"
+      }
+    ],
+    "fileUriLengthGoldenVectors": [
+      {
+        "id": "maximum_length_accepted",
+        "totalLength": 4096,
+        "valid": true,
+        "reason": "maximum_length"
+      },
+      {
+        "id": "over_maximum_length_rejected",
+        "totalLength": 4097,
+        "valid": false,
+        "reason": "over_maximum_length"
+      }
+    ]
+  }
+}

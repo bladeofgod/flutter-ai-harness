@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:app_data/search.dart';
+import 'package:app_features/api/search_image_picker.dart';
 import 'package:app_features/feature_search/controllers/search_controller.dart';
-import 'package:app_features/feature_search/media/search_image_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'search_test_fixtures.dart';
@@ -106,6 +106,21 @@ void main() {
     },
   );
 
+  test('camera capture uses the dedicated picker action', () async {
+    final picker = FakeSearchImagePicker(
+      const <SearchImagePickResult>[],
+      cameraResults: <SearchImagePickResult>[successfulImagePick()],
+    );
+    final controller = _controller(picker: picker);
+    addTearDown(controller.onClose);
+
+    await controller.capturePhoto();
+
+    expect(picker.callCount, 0);
+    expect(picker.cameraCallCount, 1);
+    expect(controller.state, SearchViewState.imageRecognized);
+  });
+
   test(
     'filter draft cancels cleanly and apply reruns an active query',
     () async {
@@ -176,11 +191,12 @@ void main() {
 
   test('ignores a recognition result delivered after disposal', () async {
     final completer = Completer<SearchImageResult>();
+    final picker = FakeSearchImagePicker(<SearchImagePickResult>[
+      successfulImagePick(),
+    ]);
     final controller = _controller(
       api: FakeSearchApi(imageHandler: (_) => completer.future),
-      picker: FakeSearchImagePicker(<SearchImagePickResult>[
-        successfulImagePick(),
-      ]),
+      picker: picker,
     );
 
     final pending = controller.pickImage();
@@ -188,9 +204,11 @@ void main() {
     controller.onClose();
     completer.complete(searchImageResult());
     await pending;
+    await Future<void>.delayed(Duration.zero);
 
     expect(controller.imageResult, isNull);
     expect(controller.selectedImageBytes, isNull);
+    expect(picker.clearCount, 1);
   });
 }
 

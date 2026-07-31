@@ -193,10 +193,17 @@
               </div>
             </div>
 
-            <pre class="code-block" aria-label="Workspace 依赖方向"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui
-<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui
+            <pre class="code-block" aria-label="Workspace 依赖方向"><code><span class="accent">apps/demo</span> -&gt; app_features, app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+<span class="accent">app_features</span> -&gt; app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+<span class="accent">app_media</span> -&gt; app_core, app_ui
+<span class="accent">app_media_capture_bridge</span> -&gt; 不依赖其他 Workspace Package
 <span class="accent">app_data / app_im</span> -&gt; app_core
 <span class="accent">app_core / app_ui</span> -&gt; 不依赖其他 Workspace Package</code></pre>
+            <p>
+              聚焦的 <code>app_media</code> 层负责进程级媒体导入和可复用的图片/视频预览。
+              业务消息只保存 opaque <code>MediaResourceId</code>，文件 locator 与原生拍摄 lease
+              继续留在各自基础设施边界内。
+            </p>
           </section>
 
           <section class="section" id="roles">

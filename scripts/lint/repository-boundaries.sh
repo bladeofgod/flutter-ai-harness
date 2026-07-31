@@ -123,6 +123,16 @@ else
   fi
 fi
 
+if [[ -f "$ROOT/app/packages/app_media_capture_bridge/pubspec.yaml" ]]; then
+  echo "[lint] 检查 Media Capture Android plugin discovery"
+  if ! bash "$TOOL_ROOT/scripts/dart-tool.sh" run \
+    tool/check_flutter_plugin_discovery.dart \
+    --input "$ROOT/app/apps/demo/.flutter-plugins-dependencies" \
+    --workspace-root "$ROOT/app"; then
+    fail=1
+  fi
+fi
+
 if [[ "$fail" -ne 0 ]]; then
   exit 1
 fi

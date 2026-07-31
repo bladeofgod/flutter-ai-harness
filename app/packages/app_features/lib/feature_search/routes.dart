@@ -2,8 +2,9 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../api/search_api.dart';
+import '../api/search_image_picker.dart';
+import 'api/shared_media_search_image_picker.dart';
 import 'controllers/search_controller.dart';
-import 'media/search_image_picker.dart';
 import 'pages/search_page.dart';
 
 const searchRoutePath = '/search';

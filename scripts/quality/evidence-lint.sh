@@ -35,6 +35,18 @@ for file in "${targets[@]}"; do
     fail=1
   fi
 
+  xcode_destination_hits="$(rg -n '^[[:space:]]*\{[^}]*platform:[^}]*(id:[^<,}]|name:[^<,}])' "$file" || true)"
+  if [[ -n "$xcode_destination_hits" ]]; then
+    echo "错误：测试证据包含未脱敏的 Xcode 设备标识：$file" >&2
+    fail=1
+  fi
+
+  temporary_path_hits="$(rg -n '/var/folders/[^[:space:]]+' "$file" || true)"
+  if [[ -n "$temporary_path_hits" ]]; then
+    echo "错误：测试证据包含未脱敏的本机临时路径：$file" >&2
+    fail=1
+  fi
+
   secret_hits="$(rg -n -i '(authorization[[:space:]]*:[[:space:]]*bearer[[:space:]]+[^<[:space:]]|(?:access[_-]?token|refresh[_-]?token|api[_-]?key|password|secret|token)[[:space:]]*[:=][[:space:]]*[^<[:space:],;]|BEGIN [^-]*PRIVATE KEY|gh[pousr]_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,}|sk-[A-Za-z0-9]{20,})' "$file" || true)"
   if [[ -n "$secret_hits" ]]; then
     echo "错误：测试证据包含未脱敏的凭据形态：$file" >&2

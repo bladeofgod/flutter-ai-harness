@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:app_data/search.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../../api/search_api.dart';
-import '../media/search_image_picker.dart';
+import '../../api/search_image_picker.dart';
 
 enum SearchViewState {
   initial,
@@ -127,7 +128,13 @@ base class SearchFlowController extends GetxController {
     }
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImage() => _selectImage(_imagePicker.pickFromGallery);
+
+  Future<void> capturePhoto() => _selectImage(_imagePicker.capturePhoto);
+
+  Future<void> _selectImage(
+    Future<SearchImagePickResult> Function() select,
+  ) async {
     if (_isDisposed || _isPickingImage || _state == SearchViewState.searching) {
       return;
     }
@@ -138,7 +145,7 @@ base class SearchFlowController extends GetxController {
     final generation = ++_operationGeneration;
     update();
     try {
-      final pickResult = await _imagePicker.pickFromGallery();
+      final pickResult = await select();
       if (_isDisposed || generation != _operationGeneration) {
         return;
       }
@@ -149,7 +156,9 @@ base class SearchFlowController extends GetxController {
           _imagePickFailure = failure;
           return;
         case SearchImagePickSuccess(:final bytes):
+          _selectedImageBytes?.fillRange(0, _selectedImageBytes!.length, 0);
           _selectedImageBytes = Uint8List.fromList(bytes);
+          bytes.fillRange(0, bytes.length, 0);
       }
 
       _state = SearchViewState.imageRecognizing;
@@ -293,11 +302,35 @@ base class SearchFlowController extends GetxController {
   void onClose() {
     _isDisposed = true;
     _operationGeneration += 1;
+    _selectedImageBytes?.fillRange(0, _selectedImageBytes!.length, 0);
     _selectedImageBytes = null;
     _imageResult = null;
     _failedOperation = null;
     queryController.clear();
     queryController.dispose();
+    unawaited(_clearImageDraftsOnClose());
     super.onClose();
   }
+
+  Future<void> _clearImageDraftsOnClose() async {
+    try {
+      await _imagePicker.clearDrafts();
+    } on Object catch (_, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: const _SearchMediaCleanupFailure(),
+          stack: stackTrace,
+          library: 'app_features',
+          context: ErrorDescription('while clearing Search media drafts'),
+        ),
+      );
+    }
+  }
+}
+
+final class _SearchMediaCleanupFailure implements Exception {
+  const _SearchMediaCleanupFailure();
+
+  @override
+  String toString() => 'SearchMediaCleanupFailure(<redacted>)';
 }

@@ -1,0 +1,17 @@
+<resources>
+    <string name="media_capture_cancel">Cancel capture</string>
+    <string name="media_capture_switch_camera">Switch camera</string>
+    <string name="media_capture_flash">Flash</string>
+    <string name="media_capture_flash_mode">Flash %1$s</string>
+    <string name="media_capture_flash_off">off</string>
+    <string name="media_capture_flash_on">on</string>
+    <string name="media_capture_flash_auto">auto</string>
+    <string name="media_capture_flash_torch">torch</string>
+    <string name="media_capture_retake">Retake</string>
+    <string name="media_capture_confirm">Confirm</string>
+    <string name="media_capture_capture">Capture</string>
+    <string name="media_capture_stop_recording">Stop recording</string>
+    <string name="media_capture_recording_timer">%1$02d:%2$02d</string>
+    <string name="media_capture_flash_enabled">Flash is on</string>
+    <string name="media_capture_send">send</string>
+</resources>

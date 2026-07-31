@@ -81,6 +81,19 @@ void main() {
     expect(selectedProductId, 'product-1');
   });
 
+  testWidgets('does not expose a camera action in the Shop header', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpCategories(tester);
+
+    expect(
+      find.byKey(const ValueKey('categories-camera-search')),
+      findsNothing,
+    );
+    expect(find.byTooltip('Search with camera'), findsNothing);
+  });
+
   testWidgets('shows empty and retryable error states', (tester) async {
     await _setViewport(tester, const Size(375, 812));
     await _pumpCategories(tester, empty: true);

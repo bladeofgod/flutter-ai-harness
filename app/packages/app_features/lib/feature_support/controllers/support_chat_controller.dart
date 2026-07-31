@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import 'package:app_data/support.dart';
+import 'package:app_data/support.dart' hide SupportMediaType;
+import 'package:app_data/support.dart' as app_data show SupportMediaType;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../api/support_chat_api.dart';
+import '../../api/support_media_picker.dart';
 
 typedef SupportTransitionDelay = Future<void> Function(Duration duration);
 
@@ -28,17 +30,38 @@ final class SupportChatError extends SupportChatViewState {
   final SupportFailure failure;
 }
 
+sealed class SupportMediaSendResult {
+  const SupportMediaSendResult();
+}
+
+final class SupportMediaSent extends SupportMediaSendResult {
+  const SupportMediaSent();
+}
+
+final class SupportMediaSendCanceled extends SupportMediaSendResult {
+  const SupportMediaSendCanceled();
+}
+
+final class SupportMediaSendFailed extends SupportMediaSendResult {
+  const SupportMediaSendFailed(this.code);
+
+  final SupportMediaPickFailureCode code;
+}
+
 /// 编排单条确定性本地会话，并在 Route 释放时取消待执行转场。
 final class SupportChatController extends GetxController {
   SupportChatController({
     required SupportChatApi supportChatApi,
+    required SupportMediaPicker supportMediaPicker,
     SupportTransitionDelay transitionDelay = _defaultTransitionDelay,
   }) : _supportChatApi = supportChatApi,
+       _supportMediaPicker = supportMediaPicker,
        _transitionDelay = transitionDelay;
 
   static const Duration transitionDuration = Duration(milliseconds: 450);
 
   final SupportChatApi _supportChatApi;
+  final SupportMediaPicker _supportMediaPicker;
   final SupportTransitionDelay _transitionDelay;
   final Rx<SupportChatViewState> _viewState = Rx<SupportChatViewState>(
     const SupportChatLoading(),
@@ -46,6 +69,7 @@ final class SupportChatController extends GetxController {
   final RxString _draft = ''.obs;
   final RxInt _selectedRating = 0.obs;
   final RxInt _scrollRequest = 0.obs;
+  final RxBool _isSendingMedia = false.obs;
 
   bool _isLoading = false;
   bool _isTransitioning = false;
@@ -58,6 +82,7 @@ final class SupportChatController extends GetxController {
   String get draft => _draft.value;
   int get selectedRating => _selectedRating.value;
   int get scrollRequest => _scrollRequest.value;
+  bool get isSendingMedia => _isSendingMedia.value;
 
   @override
   void onInit() {
@@ -72,15 +97,26 @@ final class SupportChatController extends GetxController {
     _isLoading = true;
     _viewState.value = const SupportChatLoading();
     try {
+      await _supportMediaPicker.clearDrafts();
+      if (_isDisposed) {
+        return;
+      }
       final conversation = await _supportChatApi.startConversation();
       if (!_isDisposed) {
         _draft.value = '';
         _selectedRating.value = 0;
         _viewState.value = SupportChatData(conversation);
+        await _releaseRetiredMedia();
       }
     } on SupportFailure catch (failure) {
       if (!_isDisposed) {
         _viewState.value = SupportChatError(failure);
+      }
+    } on SupportMediaPickerDisposalException {
+      if (!_isDisposed) {
+        _viewState.value = const SupportChatError(
+          SupportFailure(SupportFailureCode.transportUnavailable),
+        );
       }
     } finally {
       _isLoading = false;
@@ -180,6 +216,112 @@ final class SupportChatController extends GetxController {
       if (_isCurrent(generation)) {
         _isSending = false;
       }
+    }
+  }
+
+  Future<SupportMediaSendResult> sendMedia(SupportMediaSource source) async {
+    final state = _viewState.value;
+    if (_isSending ||
+        _isDisposed ||
+        state is! SupportChatData ||
+        state.conversation.stage != SupportConversationStage.active) {
+      return const SupportMediaSendFailed(
+        SupportMediaPickFailureCode.unavailable,
+      );
+    }
+    _isSending = true;
+    _isSendingMedia.value = true;
+    final generation = ++_transitionGeneration;
+    SupportMediaAttachment? attachment;
+    try {
+      final pickResult = await _supportMediaPicker.pick(source);
+      switch (pickResult) {
+        case SupportMediaPickCanceled():
+          return const SupportMediaSendCanceled();
+        case SupportMediaPickFailed(:final failure):
+          return SupportMediaSendFailed(failure.code);
+        case SupportMediaPickSuccess(attachment: final pickedAttachment):
+          attachment = pickedAttachment;
+      }
+      if (!_isCurrent(generation)) {
+        return const SupportMediaSendFailed(
+          SupportMediaPickFailureCode.unavailable,
+        );
+      }
+
+      final poster = attachment.poster;
+      final receipt = await _supportChatApi.sendMedia(
+        SupportMediaContent(
+          resourceId: attachment.resource.resourceId,
+          type: switch (attachment.type) {
+            SupportMediaType.image => app_data.SupportMediaType.image,
+            SupportMediaType.video => app_data.SupportMediaType.video,
+          },
+          label: attachment.label,
+          poster: poster == null
+              ? null
+              : SupportMediaPoster(
+                  bytes: poster.bytes,
+                  width: poster.width,
+                  height: poster.height,
+                ),
+          duration: attachment.duration,
+        ),
+      );
+      if (!_isCurrent(generation)) {
+        return const SupportMediaSendFailed(
+          SupportMediaPickFailureCode.unavailable,
+        );
+      }
+      _publish(receipt.conversation, requestScroll: true);
+      await _transitionDelay(transitionDuration);
+      if (!_isCurrent(generation)) {
+        return const SupportMediaSendFailed(
+          SupportMediaPickFailureCode.unavailable,
+        );
+      }
+      _publish(await _supportChatApi.receiveReply(), requestScroll: true);
+      return const SupportMediaSent();
+    } on SupportFailure catch (failure) {
+      if (_isCurrent(generation)) {
+        _viewState.value = SupportChatError(failure);
+      }
+      return const SupportMediaSendFailed(
+        SupportMediaPickFailureCode.unavailable,
+      );
+    } on Object catch (error, stackTrace) {
+      _reportUnexpected(error, stackTrace, 'while sending Support media');
+      return const SupportMediaSendFailed(
+        SupportMediaPickFailureCode.unavailable,
+      );
+    } finally {
+      if (attachment case final attachment?) {
+        try {
+          await _supportMediaPicker.release(attachment);
+        } on Object catch (error, stackTrace) {
+          _reportUnexpected(
+            error,
+            stackTrace,
+            'while releasing a Support media draft',
+          );
+        }
+      }
+      _isSending = false;
+      if (!_isDisposed) {
+        _isSendingMedia.value = false;
+      }
+    }
+  }
+
+  Future<void> _releaseRetiredMedia() async {
+    try {
+      await _supportChatApi.releaseRetiredMedia();
+    } on Object catch (error, stackTrace) {
+      _reportUnexpected(
+        error,
+        stackTrace,
+        'while releasing replaced Support media',
+      );
     }
   }
 
@@ -293,8 +435,32 @@ final class SupportChatController extends GetxController {
     _isDisposed = true;
     _transitionGeneration += 1;
     _draft.value = '';
+    _isSendingMedia.value = false;
+    unawaited(_clearMediaDraftsOnClose());
     super.onClose();
   }
+
+  Future<void> _clearMediaDraftsOnClose() async {
+    try {
+      await _supportMediaPicker.clearDrafts();
+    } on Object catch (_, stackTrace) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: const _SupportMediaCleanupFailure(),
+          stack: stackTrace,
+          library: 'app_features',
+          context: ErrorDescription('while clearing Support media drafts'),
+        ),
+      );
+    }
+  }
+}
+
+final class _SupportMediaCleanupFailure implements Exception {
+  const _SupportMediaCleanupFailure();
+
+  @override
+  String toString() => 'SupportMediaCleanupFailure(<redacted>)';
 }
 
 Future<void> _defaultTransitionDelay(Duration duration) =>

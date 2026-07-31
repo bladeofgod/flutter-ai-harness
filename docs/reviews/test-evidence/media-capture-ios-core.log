@@ -1,0 +1,141 @@
+## Command
+
+```text
+bash -lc 'mkdir -p /private/tmp/flutter-ai-harness-swift-cache /private/tmp/flutter-ai-harness-clang-cache && cd app/native/ios/MediaCapture && SWIFTPM_CACHE_PATH=/private/tmp/flutter-ai-harness-swift-cache CLANG_MODULE_CACHE_PATH=/private/tmp/flutter-ai-harness-clang-cache swift package clean && SWIFTPM_CACHE_PATH=/private/tmp/flutter-ai-harness-swift-cache CLANG_MODULE_CACHE_PATH=/private/tmp/flutter-ai-harness-clang-cache swift build --build-tests --triple arm64-apple-ios13.0-simulator --sdk "$(xcrun --sdk iphonesimulator --show-sdk-path)"'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Building for debugging...
+[0/10] <repo>/app/native/ios/MediaCapture/.build/arm64-apple-ios-simulator/debug/MediaCapturePackageTests.derived/runner.swift
+[1/10] Write sources
+[7/10] Write swift-version--58304C5D6DBC2206.txt
+[9/17] Compiling MediaCapture MediaCaptureCore.swift
+[10/17] Compiling MediaCapture InternalDependencies.swift
+[11/17] Compiling MediaCapture AppleMediaStorage.swift
+[12/17] Emitting module MediaCapture
+[13/17] Compiling MediaCapture AVFoundationCapturePlatform.swift
+[14/17] Compiling MediaCapture MediaCaptureRenderBoundary.swift
+[15/17] Compiling MediaCapture MediaCaptureModels.swift
+[16/19] Compiling MediaCaptureAppleRendering MediaCaptureRenderView.swift
+[17/19] Emitting module MediaCaptureAppleRendering
+[18/30] Emitting module MediaCaptureTests
+[19/30] Emitting module MediaCapturePublicConsumerTests
+[20/30] Compiling MediaCapturePublicConsumerTests PublicConsumerTests.swift
+[21/30] Emitting module MediaCaptureAppleRenderingTests
+[22/30] Compiling MediaCaptureAppleRenderingTests MediaCaptureRenderViewTests.swift
+[23/30] Compiling MediaCaptureTests ThumbnailTests.swift
+[24/30] Compiling MediaCaptureTests MediaCaptureCoreTests.swift
+[25/30] Compiling MediaCaptureTests TestSupport.swift
+[26/30] Compiling MediaCaptureTests RenderAttachmentTests.swift
+[27/30] Compiling MediaCaptureTests PackageSmokeTests.swift
+[28/30] Compiling MediaCaptureTests ReviewFixRegressionTests.swift
+[29/32] Compiling MediaCapturePackageTests runner.swift
+[30/32] Emitting module MediaCapturePackageTests
+[30/32] Write Objects.LinkFileList
+clang: warning: using sysroot for 'MacOSX' but targeting 'iPhone' [-Wincompatible-sysroot]
+[31/32] Linking MediaCapturePackageTests
+Build complete! (11.28s)
+
+```
+
+## Command
+
+```text
+bash -o pipefail -lc 'mkdir -p /private/tmp/flutter-ai-harness-derived /private/tmp/flutter-ai-harness-clang-cache && cd app/native/ios/MediaCapture && CLANG_MODULE_CACHE_PATH=/private/tmp/flutter-ai-harness-clang-cache xcodebuild -scheme MediaCapture -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/flutter-ai-harness-derived CODE_SIGNING_ALLOWED=NO build 2>&1 | sed -E "s/^[[:space:]]*\{ platform:.*\}$/        <destination redacted>/"'
+```
+
+Exit code: 70
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme MediaCapture -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/flutter-ai-harness-derived CODE_SIGNING_ALLOWED=NO build
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+Resolve Package Graph
+2026-07-30 13:33:26.755 xcodebuild[27597:10128710] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+2026-07-30 13:33:26.786 xcodebuild[27597:10128710] Writing error result bundle to <temporary-path>
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+		{ generic:1, platform:iOS Simulator }
+
+	Available destinations for the "MediaCapture" scheme:
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+
+	Ineligible destinations for the "MediaCapture" scheme:
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+
+```
+
+## Command
+
+```text
+bash -o pipefail -lc 'mkdir -p /private/tmp/flutter-ai-harness-derived-rendering /private/tmp/flutter-ai-harness-clang-cache && cd app/native/ios/MediaCapture && CLANG_MODULE_CACHE_PATH=/private/tmp/flutter-ai-harness-clang-cache xcodebuild -scheme MediaCaptureAppleRendering -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/flutter-ai-harness-derived-rendering CODE_SIGNING_ALLOWED=NO build 2>&1 | sed -E "s/^[[:space:]]*\{ platform:.*\}$/        <destination redacted>/"'
+```
+
+Exit code: 70
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme MediaCaptureAppleRendering -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/flutter-ai-harness-derived-rendering CODE_SIGNING_ALLOWED=NO build
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+Resolve Package Graph
+2026-07-30 13:34:31.784 xcodebuild[28438:10130904] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+2026-07-30 13:34:31.816 xcodebuild[28438:10130904] Writing error result bundle to <temporary-path>
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+		{ generic:1, platform:iOS Simulator }
+
+	Available destinations for the "MediaCaptureAppleRendering" scheme:
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+
+	Ineligible destinations for the "MediaCaptureAppleRendering" scheme:
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+        <destination redacted>
+
+```

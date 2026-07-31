@@ -2,7 +2,7 @@
 
 > 状态：维护中。基础能力只在真实业务任务触发后逐项实现。
 
-本文件只用于发现能力和路由详情。开始新功能前先查下表；找到相关能力时只读取对应子文档，不批量加载 `docs/infrastructure/`。包职责见 [`architecture.md`](./architecture.md)，数据链路见 [`api-contracts.md`](./api-contracts.md)。
+本文件用于发现 Flutter 与原生基础能力并路由详情。开始新功能前先查下表；找到相关能力时只读取对应子文档，不批量加载 `docs/infrastructure/`。原生基础能力同样通过本索引发现，并统一遵守 [`native-architecture.md`](./native-architecture.md)；是否进入本索引仍由真实复用或治理需求决定。Flutter 包职责见 [`architecture.md`](./architecture.md)，数据链路见 [`api-contracts.md`](./api-contracts.md)。
 
 ## 状态
 
@@ -24,6 +24,9 @@
 | Drift 数据库生命周期 | 待首个实现确定 | `app_data` | 延后 | 未实现 | 结构化数据需要跨重启保留、Schema 和迁移 | [storage.md](./infrastructure/storage.md) |
 | 网络状态 | `NetworkService` | `app_core` 契约、`apps/demo` 装配 | 延后 | 未实现 | 引入真实远程请求或明确联网差异行为 | [network.md](./infrastructure/network.md) |
 | 全局 Service 初始化 | `ServiceInitializer` | `apps/demo` | 延后 | 未实现 | 多个已存在 Service 确需按顺序执行启动初始化 | [app-runtime.md](./infrastructure/app-runtime.md) |
+| Flutter 媒体资源存储 | `app/packages/app_media/lib/app_media.dart` | `app_media` | 已批准 | 已实现 | Customer Support 媒体消息 | [media-resources.md](./infrastructure/media-resources.md) |
+| Flutter 媒体预览 | `app/packages/app_media/lib/app_media.dart` | `app_media` | 已批准 | 已实现 | Customer Support 图片/视频消息预览；订单评价附件预览复用需求 | [media-resources.md](./infrastructure/media-resources.md) |
+| 原生媒体拍摄 | Android `app/native/android/media_capture/`；iOS `app/native/ios/MediaCapture/` | Android/iOS Media Capture Native Module | 已批准 | 未实现 | Shoppe 订单评价；用户批准归类为项目基础能力 | [media-capture.md](./infrastructure/media-capture.md) |
 
 ## 维护规则
 

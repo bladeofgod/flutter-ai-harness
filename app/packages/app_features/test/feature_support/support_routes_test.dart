@@ -1,5 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:app_data/support.dart';
+import 'package:app_features/api/support_chat_api.dart';
+import 'package:app_features/api/support_media_picker.dart' as support_media;
 import 'package:app_features/feature_support/routes.dart';
+import 'package:app_media/app_media.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -97,6 +104,131 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('sends media again after returning from attachment preview', (
+    tester,
+  ) async {
+    final mediaStore = TestSupportMediaResourceStore();
+    final poster = MediaPoster.png(bytes: _onePixelPng(), width: 1, height: 1);
+    final mediaPicker = FakeSupportMediaPicker(
+      mediaResourceStore: mediaStore,
+      result: support_media.SupportMediaPickSuccess(
+        support_media.SupportMediaAttachment(
+          resource: mediaStore.seedOwned(
+            kind: MediaResourceKind.video,
+            duration: const Duration(seconds: 3),
+            fileUri: Uri.file('/temporary/test-video.mp4'),
+          ),
+          label: 'return-proof.mp4',
+          poster: poster,
+          duration: const Duration(seconds: 3),
+        ),
+      ),
+    );
+    final fixture = await _pumpSupport(
+      tester,
+      supportMediaPicker: mediaPicker,
+      mediaResourceStore: mediaStore,
+    );
+    addTearDown(fixture.dispose);
+    await tester.tap(
+      find.byKey(const ValueKey('support-question-return-item')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('support-add-media')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('support-media-source-sheet')),
+      findsOneWidget,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey('support-media-source-gallery')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(mediaPicker.lastSource, support_media.SupportMediaSource.gallery);
+    expect(
+      find.bySemanticsLabel(RegExp('Open video attachment')),
+      findsOneWidget,
+    );
+    expect(find.byType(MediaResourceThumbnail), findsOneWidget);
+    expect(find.byIcon(Icons.play_circle_fill), findsOneWidget);
+
+    final openPreview = find.byKey(
+      const ValueKey('support-open-media-preview'),
+    );
+    await tester.ensureVisible(openPreview);
+    await tester.pump();
+    await tester.tap(openPreview);
+    await tester.pumpAndSettle();
+    expect(find.byTooltip('Close preview'), findsOneWidget);
+    await tester.tap(find.byTooltip('Close preview'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('support-message-input')), findsOneWidget);
+
+    mediaPicker.result = support_media.SupportMediaPickSuccess(
+      support_media.SupportMediaAttachment(
+        resource: mediaStore.seedOwned(),
+        label: 'Camera photo',
+      ),
+    );
+    await tester.tap(find.byKey(const ValueKey('support-add-media')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('support-media-source-camera')));
+    await tester.pumpAndSettle();
+
+    expect(mediaPicker.pickCount, 2);
+    expect(mediaPicker.lastSource, support_media.SupportMediaSource.camera);
+    expect(find.text('The media picker is unavailable.'), findsNothing);
+    expect(
+      find.bySemanticsLabel(RegExp('Open image attachment')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('shows an image bubble when a camera preview is unavailable', (
+    tester,
+  ) async {
+    final directory = Directory.systemTemp.createTempSync(
+      'support-media-route-',
+    );
+    addTearDown(() => directory.deleteSync(recursive: true));
+    final image = File('${directory.path}/camera.png')
+      ..writeAsBytesSync(_onePixelPng(), flush: true);
+    final mediaStore = TestSupportMediaResourceStore();
+    final mediaPicker = FakeSupportMediaPicker(
+      mediaResourceStore: mediaStore,
+      result: support_media.SupportMediaPickSuccess(
+        support_media.SupportMediaAttachment(
+          resource: mediaStore.seedOwned(fileUri: image.uri),
+          label: 'Camera photo',
+        ),
+      ),
+    );
+    final fixture = await _pumpSupport(
+      tester,
+      supportMediaPicker: mediaPicker,
+      mediaResourceStore: mediaStore,
+    );
+    addTearDown(fixture.dispose);
+    await tester.tap(
+      find.byKey(const ValueKey('support-question-return-item')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('support-add-media')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('support-media-source-camera')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.bySemanticsLabel(RegExp('Open image attachment')),
+      findsOneWidget,
+    );
+    expect(find.byType(MediaResourceThumbnail), findsOneWidget);
+    expect(find.byIcon(Icons.broken_image_outlined), findsNothing);
+  });
+
   testWidgets('supports landscape and scaled starting content', (tester) async {
     const cases = <({Size size, double textScale})>[
       (size: Size(812, 375), textScale: 1),
@@ -110,8 +242,23 @@ void main() {
       await tester.pump();
       expect(find.text('How can we help?'), findsOneWidget);
       expect(tester.takeException(), isNull, reason: '${testCase.size}');
-      fixture.dispose();
+      await fixture.dispose();
     }
+  });
+
+  testWidgets('invalid preview extra shows a closable stable error', (
+    tester,
+  ) async {
+    final fixture = await _pumpSupport(
+      tester,
+      initialLocation: supportMediaPreviewRoutePath,
+    );
+    addTearDown(fixture.dispose);
+
+    expect(find.bySemanticsLabel('Media preview unavailable'), findsOneWidget);
+    await tester.tap(find.byTooltip('Close preview'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('support-starting')), findsOneWidget);
   });
 
   testWidgets('Back disposes the draft and re-entry starts a new session', (
@@ -178,7 +325,14 @@ Future<_SupportRouteFixture> _pumpSupport(
   double textScale = 1,
   double keyboardInset = 0,
   String initialLocation = supportRoutePath,
+  support_media.SupportMediaPicker? supportMediaPicker,
+  TestSupportMediaResourceStore? mediaResourceStore,
 }) async {
+  final resolvedMediaStore =
+      mediaResourceStore ?? TestSupportMediaResourceStore();
+  final supportChatApi = createSupportApi(
+    mediaResourceStore: resolvedMediaStore,
+  );
   final router = GoRouter(
     initialLocation: initialLocation,
     routes: <RouteBase>[
@@ -196,7 +350,9 @@ Future<_SupportRouteFixture> _pumpSupport(
         ),
       ),
       ...buildSupportRoutes(
-        supportChatApi: createSupportApi(),
+        supportChatApi: supportChatApi,
+        supportMediaPicker: supportMediaPicker ?? FakeSupportMediaPicker(),
+        mediaResourceStore: resolvedMediaStore,
         transitionDelay: immediateSupportDelay,
         onOpenVoucher: (context, voucher) => onOpenVoucher?.call(voucher),
       ),
@@ -216,7 +372,7 @@ Future<_SupportRouteFixture> _pumpSupport(
     ),
   );
   await tester.pumpAndSettle();
-  return _SupportRouteFixture(router);
+  return _SupportRouteFixture(router, supportChatApi);
 }
 
 Future<void> _setViewport(
@@ -230,9 +386,18 @@ Future<void> _setViewport(
 }
 
 final class _SupportRouteFixture {
-  const _SupportRouteFixture(this.router);
+  const _SupportRouteFixture(this.router, this.supportChatApi);
 
   final GoRouter router;
+  final SupportChatApi supportChatApi;
 
-  void dispose() => router.dispose();
+  Future<void> dispose() async {
+    router.dispose();
+    await supportChatApi.dispose();
+  }
 }
+
+Uint8List _onePixelPng() => base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8A'
+  'AQUBAScY42YAAAAASUVORK5CYII=',
+);

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_features/feature_search/media/search_image_picker.dart';
+import 'package:app_features/api/search_image_picker.dart';
 import 'package:app_features/feature_search/routes.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';

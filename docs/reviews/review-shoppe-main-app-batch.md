@@ -69,9 +69,9 @@
 
 ### 2. iOS Photo Library 用途文案仍只声明头像用途
 
-- 位置：[Info.plist](../../app/apps/demo/ios/Runner/Info.plist#L27)、[search_image_picker.dart](../../app/packages/app_features/lib/feature_search/media/search_image_picker.dart#L11)
+- 位置：[Info.plist](../../app/apps/demo/ios/Runner/Info.plist#L27)、[shared_media_search_image_picker.dart](../../app/packages/app_features/lib/feature_search/api/shared_media_search_image_picker.dart#L5)
 - 影响：Search 已复用系统图库做商品图片搜索，但 iOS 权限弹窗仍只说明“choose a profile picture”。用户授权说明与实际用途不一致，真实发版时存在隐私披露和审核风险。
-- 证据：Search 的生产 Adapter 明确调用共享 Gallery picker（[search_image_picker.dart](../../app/packages/app_features/lib/feature_search/media/search_image_picker.dart#L11)），而 plist 文案只覆盖 profile picture（[Info.plist](../../app/apps/demo/ios/Runner/Info.plist#L27)）。
+- 证据：Search 的生产 Adapter 明确调用共享 Gallery picker（[shared_media_search_image_picker.dart](../../app/packages/app_features/lib/feature_search/api/shared_media_search_image_picker.dart#L5)），而 plist 文案只覆盖 profile picture（[Info.plist](../../app/apps/demo/ios/Runner/Info.plist#L27)）。
 - 修法：把用途文案改为同时准确覆盖头像与本地商品图片搜索，不声称上传或 ML；在 iOS 真机验证首次授权、拒绝、受限、取消和成功选择。
 
 ## 验证

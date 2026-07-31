@@ -44,7 +44,9 @@ app/
     ├── app_data/
     ├── app_ui/
     ├── app_im/
-    └── app_features/
+    ├── app_features/
+    ├── app_media/
+    └── app_media_capture_bridge/
 ```
 
 工作区随 Demo 实施逐步形成。不得为了填充目录而预先创建没有真实需求的业务抽象。
@@ -52,13 +54,15 @@ app/
 ## 架构不变量
 
 1. Domain Entity 或明确的 Value Object 是数据适配层进入业务层以及业务公共 API 之间唯一允许传递的数据类型。
-2. `app_core` 只能定义并处理传输中立的 Request、Response、Failure 和不透明 Payload，不得定义、import 或解析具体 Fixture Payload、Proto Message 或数据库 Row；这些具体类型及其解析必须留在 `app_data`，不得进入 Feature、Controller 或 UI。
+2. `app_core` 只能定义并处理传输中立的 Request、Response、Failure 和不透明 Payload，不得定义、import 或解析具体 Fixture Payload、Proto Message 或数据库 Row；这些具体类型及其解析必须留在 `app_data`，不得进入 Feature、Controller 或 UI。`MediaResourceId` 是唯一批准的聚焦基础设施 ID 例外：它只提供传输中立的闭合格式校验，不包含路径、URI、Native handle、文件行为或业务规则；Store、Resolver、媒体 metadata 和预览 API 不得继续下沉到 `app_core`。
 3. 每个包只定义自己需要的接口，不建立中央万能契约包。
 4. 依赖方向保持单向。下图中 `A -> B` 表示 Package A 可以 import Package B：
 
    ```text
-   apps/demo -> app_features, app_data, app_im, app_core, app_ui
-   app_features -> app_data, app_im, app_core, app_ui
+   apps/demo -> app_features, app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+   app_features -> app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+   app_media -> app_core, app_ui
+   app_media_capture_bridge -> 不依赖其他 Workspace Package
    app_data / app_im -> app_core
    app_core / app_ui -> 不依赖其他 Workspace Package
    ```
@@ -69,6 +73,7 @@ app/
 8. 壳工程只负责模块与回调装配，不得 import Feature 实现类。
 9. Controller 通过构造函数接收必需 API。服务定位器只允许出现在装配点或显式全局服务中。
 10. 只有在确实降低复杂度或保护真实边界时才新增抽象。
+11. Native Consumer 直接依赖对应 Native Module；Flutter Consumer 通过聚焦的 Dart Client 和 Android/iOS Bridge Adapter 委托同一 Module。Host 只负责装配和注册，Native Module 不依赖 Flutter。
 
 详细规则见 `docs/architecture.md` 和当前任务相关的 Skill。
 
@@ -165,7 +170,19 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
 - 任务卡是生产者无关的仓库产物，可以由用户、Agent、Command 或外部工具创建；不要求经过特定角色或工作流。
 - `docs/tasks/*.md` 保存未完成任务卡。文件 basename 应清晰概括任务内容，并在活动与归档任务中保持唯一；为保证跨平台和工具兼容，使用 lowercase kebab-case，不要求编号、固定前缀或生产者标识。
 - `docs/tasks/done/` 保存已完成任务卡；`docs/tasks/` 下只允许该子目录，不创建批次或输入快照目录。
-- 无论由谁创建，任务卡都必须包含非空一级标题，以及 `executor`、`blockedBy` frontmatter；正文应提供足以执行和验收当前任务的事实来源、范围、要求、验证与限制，但不强制无意义的固定章节。任务引入或改变安全边界时额外声明 `securityReview: required`，执行阶段发现遗漏时必须补标；其他任务省略该字段。任务卡不得声明 `uiSpec` 或把 App Operator 作为默认执行、Review、归档门禁。
+- 无论由谁创建，活动任务卡都必须包含非空一级标题，以及 `executor`、`platforms`、
+  `workKinds`、`blockedBy` frontmatter。`platforms` 只允许无重复的 `flutter`、`android`、`ios`；
+  只有纯 `documentation`、`planning` 或 `harness` 工作可以使用 `[]`。`workKinds` 必须是非空
+  无重复列表，其允许值和 Executor 路由由 Harness Validator 统一校验。历史归档任务缺少新增
+  范围字段时继续兼容，已经声明的字段仍必须合法。正文应提供足以执行和验收当前任务的事实
+  来源、范围、要求、验证与限制，但不强制无意义的固定章节。任务引入或改变安全边界时额外
+  声明 `securityReview: required`，执行阶段发现遗漏时必须补标；其他任务省略该字段。任务卡
+  不得声明 `uiSpec` 或把 App Operator 作为默认执行、Review、归档门禁。
+- Task Executor 路由固定为：Dart/Flutter、文档、规划、Harness 和传输中立 Capability Contract
+  使用 `task-executor`；Android/iOS 单平台 Native Module、Bridge Adapter 和平台门禁分别使用
+  `android-engineer`、`ios-engineer`；结构化 Wire Contract 与多 Runtime 最终集成使用
+  `bridge-engineer`。多端需求在规划阶段拆卡，执行阶段只依据 frontmatter 选 Agent，Reviewer
+  负责核对声明范围与正文、diff 是否一致。
 - `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。用于任务归档的 Security Review 必须用实现文件清单与摘要绑定当前实现；直接审查代码片段等无文件输入时可以不绑定文件，但该结论不能替代任务门禁报告。
 - `docs/app-operator/specs/` 保存人工独立安排的 UI 行为 Spec 及同名静态 Audit；它们不随任务卡移动或归档。
 - `docs/app-operator/runs/` 保存人工执行 Spec 后按平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
@@ -229,6 +246,7 @@ Dart 改动：
 ## 重要参考
 
 - **架构设计**：[`docs/architecture.md`](./docs/architecture.md)（包职责、类型边界、Feature 边界、装配与路由）。
+- **原生架构**：[`docs/native-architecture.md`](./docs/native-architecture.md)（Native Module、Dart Client、双端 Bridge Adapter、Host、生命周期与验证边界）。
 - **IM 架构**：[`docs/im-architecture.md`](./docs/im-architecture.md)（占位；随 Demo 的首个 IM 任务补充 Engine、事件和生命周期设计）。
 - **基础模块索引**：[`docs/infrastructure-modules.md`](./docs/infrastructure-modules.md)（能力速查与详情路由；先读索引，只按当前任务加载相关子文档）。
 - **API 与数据契约**：[`docs/api-contracts.md`](./docs/api-contracts.md)（当前本地数据策略、业务 API 边界和未来远程协议启用条件）。

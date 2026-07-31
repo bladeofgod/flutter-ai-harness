@@ -12,6 +12,8 @@ workspace:
   - packages/app_ui
   - packages/app_im
   - packages/app_features
+  - packages/app_media
+  - packages/app_media_capture_bridge
 
 dev_dependencies:
   crypto: ^3.0.6

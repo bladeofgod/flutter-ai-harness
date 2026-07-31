@@ -31,7 +31,13 @@ argument-hint: "[需求、文档路径和额外约束]"
 每张任务卡必须包含：
 
 - 准确概括任务内容的一级标题。
-- `executor` frontmatter，只允许 `task-executor` 或 `bridge-engineer`。
+- `executor` frontmatter，只允许 `task-executor`、`android-engineer`、`ios-engineer` 或
+  `bridge-engineer`，并与 `platforms`、`workKinds` 的确定性路由一致。
+- `platforms` frontmatter 是无重复列表，元素限定为 `flutter`、`android`、`ios`。只有纯
+  `documentation`、`planning` 或 `harness` 可以是 `[]`，其他实现工作至少声明一个平台。
+- `workKinds` frontmatter 是非空无重复列表，元素限定为 `documentation`、`planning`、
+  `harness`、`flutter`、`dart-client`、`capability-contract`、`native`、`bridge-adapter`、
+  `bridge-contract`、`integration`、`quality-gate`。
 - `blockedBy` frontmatter，使用任务 slug 列表，无依赖时为 `[]`；禁止重复、自依赖和循环依赖，全部任务必须构成可拓扑排序的 DAG。
 - 可选 `securityReview: required` frontmatter。任务引入或改变认证/授权、敏感数据、网络或文件等外部输入、Deep Link/WebView、不可信输入反序列化、平台通道或原生权限、第三方依赖与执行脚本，或者 CI/MCP/Agent 的权限与执行能力时必须声明；普通 DTO 序列化、UI、文案、格式化、纯描述修正和不改变能力或行为的重构不声明。
 - 输入和事实来源。
@@ -42,6 +48,11 @@ argument-hint: "[需求、文档路径和额外约束]"
 - 平台或环境限制。
 
 适用时按以下顺序安排基础契约与消费者：协议或持久化 Adapter、Domain Entity、Mapper、API、Controller、装配、Route、UI、集成验证。
+
+涉及多个 Runtime 时，按所有权拆卡：Android Native Module、Android Bridge Adapter 和单平台
+门禁使用 `android-engineer`；对应 iOS 工作使用 `ios-engineer`；Dart Client 与 Flutter Feature
+使用 `task-executor`；Wire Contract 与多 Runtime 最终集成使用 `bridge-engineer`。不得让一个
+平台 Agent 包办 Android、iOS 和 Dart，也不得把 Capability Contract 反向依赖 Wire Contract。
 
 任务卡不得声明 `uiSpec`，也不得默认安排 Spec Auditor 或 App Operator。UI 自动化由人在普通任务流程之外单独调用 `/plan-spec` 与 `/execute-ui-spec`。
 

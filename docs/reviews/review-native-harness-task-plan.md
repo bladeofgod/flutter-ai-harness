@@ -19,14 +19,14 @@
 
 ### 1. Native Capability 与 Wire Contract 合并在 `bridge-engineer` 任务中，Core 又反向依赖 Bridge Contract
 
-- 位置：[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L2)、首轮任务 `media-capture-android-core.md`、首轮任务 `media-capture-ios-core.md`、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L49)
+- 位置：[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L2)、首轮任务 `media-capture-android-core.md`、首轮任务 `media-capture-ios-core.md`、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L49)
 - 影响：Native 公共 API 容易被 Flutter Wire 形态反向塑形，未来原生消费者会成为次级消费者；Core 演进也会被 Channel 兼容性不必要地约束。这与任务卡已经声明的“Bridge 不拥有 Native Capability”矛盾。
 - 证据：`media-capture-capability-contract` 同时由 `bridge-engineer` 定义 Native 公共能力和 Wire Contract；Android/iOS Core 又把 `docs/bridge/media-capture.contract.yaml` 作为实现输入。
 - 修法：拆成两个任务。先由 transport-neutral 的 Capability 任务定义 `docs/infrastructure/media-capture.md` 和两端 Native 公共语义；再由 `bridge-engineer` 从 Capability 派生 Wire Contract。Android/iOS Core 只依赖 Capability 文档，不依赖 Bridge Contract。
 
 ### 2. Flutter Bridge Adapter 被错误地与 Figma UI 一起延期
 
-- 位置：[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L14)、首轮任务 `native-harness-quality-gates.md`
+- 位置：[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L14)、首轮任务 `native-harness-quality-gates.md`
 - 影响：当前 6 张任务卡最终不会实现或验证 `Flutter Bridge Adapter -> Native Module` 这一核心依赖方向，原生 Harness 最关键的跨 Runtime 边界仍停留在文档中；Bridge DTO、注册和错误映射也被一个只影响视觉与交互的 Figma 前置条件不必要地阻塞。
 - 证据：质量门禁任务把 `app_media_capture_bridge` 与 Android/iOS Native UI、Shoppe 页面一起延期到 `plan-figma`，但现有任务已明确 Figma 缺失只影响布局、视觉 Token 和未确认交互。
 - 修法：新增非 UI 的 `bridge-engineer` 任务，依赖 Capability/Wire Contract 与两端 Core，实现 Dart Client、Android/iOS Bridge Adapter、DTO/Native Model 映射、注册、Contract Test 和 Host Build。只有 Native UI 与 Shoppe 页面接入等待 Figma。
@@ -40,7 +40,7 @@
 
 ### 4. Media Capture 基础能力归类缺少任务内可审查的项目决策依据
 
-- 位置：[native-harness-architecture-foundation.md](../tasks/native-harness-architecture-foundation.md#L30)、[native-harness-architecture-foundation.md](../tasks/native-harness-architecture-foundation.md#L55)、[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L45)
+- 位置：[native-harness-architecture-foundation.md](../tasks/done/native-harness-architecture-foundation.md#L30)、[native-harness-architecture-foundation.md](../tasks/done/native-harness-architecture-foundation.md#L55)、[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L45)
 - 影响：任务一边声明 Harness 不决定模块业务归属、基础索引依赖真实复用，另一边直接要求把只有一个已记录消费者的 Media Capture 标记为已批准基础能力。后续实现者无法从任务事实区分这是明确的项目决策，还是 Harness 自动分类。
 - 证据：当前任务只记录 Shoppe 订单评价为首个消费者；“Flutter 与未来原生业务复用”没有作为用户已批准的分类决定和预期消费者边界写入事实来源。
 - 修法：在 Capability 任务中明确记录用户已经批准其作为基础能力的决策，以及 Flutter/原生直接复用的目标；或者在第二个真实消费者确定前使用分类中立的 Native Module 索引，不提前写入基础模块索引。

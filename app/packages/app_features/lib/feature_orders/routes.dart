@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 import '../api/current_user_provider.dart';
+import '../api/order_review_media_api.dart';
 import '../api/orders_api.dart';
 import 'controllers/orders_controller.dart';
 import 'pages/activity_page.dart';
@@ -25,6 +26,7 @@ String orderReviewRoutePath(String orderId) =>
 
 List<RouteBase> buildOrdersRoutes({
   required OrdersApi ordersApi,
+  required OrderReviewMediaApi mediaApi,
   required CurrentUserProvider currentUserProvider,
 }) => <RouteBase>[
   GoRoute(
@@ -59,9 +61,10 @@ List<RouteBase> buildOrdersRoutes({
         builder: (context, state) {
           final orderId = state.pathParameters['orderId']!;
           return _OrdersRoutePage(
-            controller: OrdersController.order(
+            controller: OrdersController.review(
               ordersApi: ordersApi,
               currentUserProvider: currentUserProvider,
+              mediaApi: mediaApi,
               orderId: orderId,
             ),
             mode: _OrdersRouteMode.review,
@@ -133,9 +136,27 @@ final class _OrdersRoutePageState extends State<_OrdersRoutePage> {
           rating: widget.controller.rating,
           isSubmitting: widget.controller.isSubmittingReview,
           validationMessage: widget.controller.reviewValidationMessage,
+          mediaState: widget.controller.mediaState,
           onSelectRating: widget.controller.selectRating,
           onCommentChanged: widget.controller.updateReviewComment,
           onSubmit: widget.controller.submitReviewFromUi,
+          onCaptureMedia: () {
+            unawaited(widget.controller.captureMedia());
+          },
+          onRetakeMedia: () {
+            unawaited(widget.controller.retakeMedia());
+          },
+          onRemoveMedia: () {
+            unawaited(widget.controller.removeMedia());
+          },
+          onRetryMedia: () {
+            unawaited(widget.controller.retryMediaOperation());
+          },
+          onThumbnailDecodeFailure: (attachment) {
+            unawaited(
+              widget.controller.reportThumbnailDecodeFailure(attachment),
+            );
+          },
           onDone: (order) => context.go(orderDetailRoutePath(order.id)),
         ),
         _OrdersRouteMode.detail || _OrdersRouteMode.activity => OrderDetailPage(

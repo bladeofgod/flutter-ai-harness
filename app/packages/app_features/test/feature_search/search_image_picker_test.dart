@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:app_features/feature_search/media/search_image_picker.dart';
+import 'package:app_features/api/search_image_picker.dart';
+import 'package:app_features/feature_search/api/shared_media_search_image_picker.dart';
 import 'package:app_features/shared/media/gallery_media_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -37,6 +38,19 @@ void main() {
       }
     },
   );
+
+  test('forwards camera capture and lifecycle to the camera adapter', () async {
+    final camera = _FakeCameraPicker();
+    final adapter = SharedMediaSearchImagePicker(cameraPicker: camera);
+
+    expect(await adapter.capturePhoto(), isA<SearchImagePickCanceled>());
+    await adapter.clearDrafts();
+    await adapter.dispose();
+
+    expect(camera.captureCount, 1);
+    expect(camera.clearCount, 1);
+    expect(camera.disposeCount, 1);
+  });
 }
 
 final class _FakeGalleryPicker implements GalleryMediaPicker {
@@ -47,4 +61,26 @@ final class _FakeGalleryPicker implements GalleryMediaPicker {
 
   @override
   Future<GalleryMediaPickResult> pickImage() async => _results.removeAt(0);
+}
+
+final class _FakeCameraPicker implements SearchCameraMediaPicker {
+  var captureCount = 0;
+  var clearCount = 0;
+  var disposeCount = 0;
+
+  @override
+  Future<SearchImagePickResult> capturePhoto() async {
+    captureCount += 1;
+    return const SearchImagePickCanceled();
+  }
+
+  @override
+  Future<void> clearDrafts() async {
+    clearCount += 1;
+  }
+
+  @override
+  Future<void> dispose() async {
+    disposeCount += 1;
+  }
 }

@@ -319,7 +319,7 @@ Uncategorized (Xcode): Unable to find a destination matching the provided destin
 		{ generic:1, platform:iOS }
 
 	Ineligible destinations for the "Runner" scheme:
-		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+		{ platform:iOS, id:<redacted-device-id>, name:<redacted-device-name>, error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
 
 Encountered error while building for device.
 

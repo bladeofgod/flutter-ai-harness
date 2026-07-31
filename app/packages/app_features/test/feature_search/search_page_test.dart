@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:app_data/search.dart';
+import 'package:app_features/api/search_image_picker.dart';
 import 'package:app_features/feature_search/controllers/search_controller.dart';
-import 'package:app_features/feature_search/media/search_image_picker.dart';
 import 'package:app_features/feature_search/pages/search_page.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +87,13 @@ void main() {
     await _setViewport(tester, const Size(375, 812));
     await _pumpSearch(tester, api: api, picker: picker);
 
-    await tester.tap(find.byKey(const ValueKey('search-image-entry')));
+    await tester.tap(find.byKey(const ValueKey('search-image-button')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('search-image-source-sheet')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey('search-image-source-gallery')));
     await tester.pump();
     expect(find.byKey(const ValueKey('search-recognizing')), findsOneWidget);
     expect(
@@ -107,6 +113,58 @@ void main() {
     expect(find.text('Demo visual match'), findsOneWidget);
   });
 
+  testWidgets('image button lets the user choose camera or gallery', (
+    tester,
+  ) async {
+    final picker = FakeSearchImagePicker(
+      const <SearchImagePickResult>[],
+      cameraResults: <SearchImagePickResult>[const SearchImagePickCanceled()],
+    );
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpSearch(tester, picker: picker);
+
+    await tester.tap(find.byKey(const ValueKey('search-image-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Take a photo'), findsOneWidget);
+    expect(find.text('Choose from gallery'), findsOneWidget);
+    expect(picker.cameraCallCount, 0);
+    expect(picker.callCount, 0);
+
+    await tester.tap(find.byKey(const ValueKey('search-image-source-camera')));
+    await tester.pump();
+
+    expect(picker.cameraCallCount, 1);
+    expect(picker.callCount, 0);
+    expect(find.byKey(const ValueKey('search-initial')), findsOneWidget);
+  });
+
+  testWidgets('header image entry shares the chooser and cancel is inert', (
+    tester,
+  ) async {
+    final picker = FakeSearchImagePicker(const <SearchImagePickResult>[]);
+    await _setViewport(tester, const Size(375, 812));
+    await _pumpSearch(tester, picker: picker);
+
+    await tester.tap(find.byKey(const ValueKey('search-image-entry')));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('search-image-source-sheet')),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('search-image-source-cancel')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('search-image-source-sheet')),
+      findsNothing,
+    );
+    expect(picker.cameraCallCount, 0);
+    expect(picker.callCount, 0);
+    expect(find.byKey(const ValueKey('search-initial')), findsOneWidget);
+  });
+
   testWidgets('picker cancel stays on the current page and failure is stable', (
     tester,
   ) async {
@@ -119,11 +177,11 @@ void main() {
     await _setViewport(tester, const Size(375, 812));
     await _pumpSearch(tester, picker: picker);
 
-    await tester.tap(find.byKey(const ValueKey('search-image-entry')));
+    await _chooseGallery(tester);
     await tester.pump();
     expect(find.byKey(const ValueKey('search-initial')), findsOneWidget);
 
-    await tester.tap(find.byKey(const ValueKey('search-image-entry')));
+    await _chooseGallery(tester);
     await tester.pump();
     expect(find.byKey(const ValueKey('search-image-error')), findsOneWidget);
     expect(find.text('Choose a photo smaller than 2 MB.'), findsOneWidget);
@@ -189,6 +247,12 @@ void main() {
       expect(tester.takeException(), isNull, reason: '${testCase.size} result');
     }
   });
+}
+
+Future<void> _chooseGallery(WidgetTester tester) async {
+  await tester.tap(find.byKey(const ValueKey('search-image-button')));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(const ValueKey('search-image-source-gallery')));
 }
 
 Future<void> _pumpSearch(

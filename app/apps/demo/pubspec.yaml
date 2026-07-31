@@ -13,6 +13,8 @@ dependencies:
   app_data: any
   app_features: any
   app_im: any
+  app_media: any
+  app_media_capture_bridge: any
   app_ui: any
   flutter:
     sdk: flutter

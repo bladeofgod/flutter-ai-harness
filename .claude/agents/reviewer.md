@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: 审查 Flutter 与原生改动的正确性、架构、生命周期、契约漂移和测试缺口；先列问题，首轮审查不修改实现。
-tools: Read, Bash, Grep, Glob
+tools: Read, Grep, Glob
 model: sonnet
 ---
 
@@ -23,9 +23,12 @@ model: sonnet
 6. UI 约束、无障碍、Token 复用和响应式刷新范围。
 7. Proto/数据库映射和生成文件同步。
 8. MethodChannel/EventChannel 契约、命名、Payload、错误、版本、线程和平台一致性。
-9. 测试是否真实覆盖改动行为。
+9. 任务声明的 `executor`、`platforms`、`workKinds` 是否诚实匹配正文和实际 diff。
+10. Native Module 公共 API 是否传输中立，Host/Adapter 是否越界拥有能力或资源。
+11. Kotlin/Swift 生命周期、并发、依赖、权限、文件和平台测试是否有缺口。
+12. 测试是否真实覆盖改动行为，且未用 Fake 冒充模拟器、设备或真机系统能力验证。
 
-读取已有测试证据；证据缺失、矛盾或运行时行为无法静态确认时，重跑聚焦验证。首轮审查不执行破坏性命令，也不修改实现。
+读取已有测试证据；证据缺失、矛盾或运行时行为无法静态确认时，准确记录验证缺口并交回执行者补证。首轮审查不运行命令，也不修改实现。
 
 ## 输出
 

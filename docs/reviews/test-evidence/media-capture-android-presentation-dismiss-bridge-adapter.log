@@ -1,0 +1,1999 @@
+## Command
+
+```text
+bash scripts/quality/media-capture-android.sh
+```
+
+Exit code: 1
+
+## Output
+
+```text
+
+[media-capture-android] Validate locked toolchain
+[media-capture-android] error: JAVA_HOME does not contain bin/java
+
+```
+
+## Command
+
+```text
+env 'JAVA_HOME=<home>/Library/Java/JavaVirtualMachines/jbr-17.0.12/Contents/Home' 'ANDROID_HOME=<home>/Library/Android/sdk' bash scripts/quality/media-capture-android.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+[media-capture-android] Validate locked toolchain
+
+[media-capture-android] Validate dependency direction and reproducibility
+
+[media-capture-android] Validate Wire V3 transfer Adapter, private cache and plugin registration
+
+[media-capture-android] Core: clean, Debug/Release tests, lint, AAR assembly and resolved dependency graph
+> Task :media_capture_core:clean
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_core:checkDebugUnitTestAarMetadata
+> Task :media_capture_core:generateDebugUnitTestResValues
+> Task :media_capture_core:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_core:generateDebugUnitTestResources
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_core:javaPreCompileDebugUnitTest
+> Task :media_capture_core:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:mergeDebugUnitTestResources
+> Task :media_capture_core:processDebugUnitTestManifest
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_core:mergeDebugUnitTestAssets
+> Task :media_capture_core:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:generateReleaseResValues
+> Task :media_capture_core:generateReleaseResources
+> Task :media_capture_core:packageReleaseResources
+> Task :media_capture_core:preReleaseUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileRelease
+> Task :media_capture_core:writeReleaseAarMetadata
+> Task :media_capture_core:parseReleaseLocalResources
+> Task :media_capture_core:compileReleaseLibraryResources
+> Task :media_capture_core:generateReleaseRFile
+> Task :media_capture_core:checkReleaseUnitTestAarMetadata
+> Task :media_capture_core:generateReleaseUnitTestResValues
+> Task :media_capture_core:mapReleaseUnitTestSourceSetPaths
+> Task :media_capture_core:generateReleaseUnitTestResources
+> Task :media_capture_core:extractDeepLinksRelease
+> Task :media_capture_core:processReleaseManifest
+> Task :media_capture_core:processReleaseUnitTestManifest
+> Task :media_capture_core:generateReleaseUnitTestAssets UP-TO-DATE
+> Task :media_capture_core:javaPreCompileReleaseUnitTest
+> Task :media_capture_core:mergeReleaseShaders
+> Task :media_capture_core:compileReleaseShaders NO-SOURCE
+> Task :media_capture_core:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_core:mergeReleaseAssets
+> Task :media_capture_core:mergeReleaseUnitTestResources
+> Task :media_capture_core:mergeReleaseUnitTestAssets
+> Task :media_capture_core:mergeDebugJniLibFolders
+> Task :media_capture_core:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_core:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_core:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_core:extractDeepLinksForAarDebug
+> Task :media_capture_core:prepareDebugArtProfile
+> Task :media_capture_core:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:prepareLintJarForPublish
+> Task :media_capture_core:generateDebugAndroidTestResValues
+> Task :media_capture_core:writeDebugLintModelMetadata
+> Task :media_capture_core:extractProguardFiles
+> Task :media_capture_core:mergeReleaseJniLibFolders
+> Task :media_capture_core:mergeReleaseNativeLibs NO-SOURCE
+> Task :media_capture_core:stripReleaseDebugSymbols NO-SOURCE
+> Task :media_capture_core:copyReleaseJniLibsProjectAndLocalJars
+> Task :media_capture_core:extractDeepLinksForAarRelease
+> Task :media_capture_core:prepareReleaseArtProfile
+> Task :media_capture_core:mapReleaseSourceSetPaths
+> Task :media_capture_core:mergeReleaseResources
+> Task :media_capture_core:processDebugUnitTestResources
+> Task :media_capture_core:processReleaseUnitTestResources
+> Task :media_capture_core:packageDebugUnitTestForUnitTest
+> Task :media_capture_core:packageReleaseUnitTestForUnitTest
+
+> Task :media_capture_core:dependencies
+
+------------------------------------------------------------
+Project ':media_capture_core'
+------------------------------------------------------------
+
+debugRuntimeClasspath - Runtime classpath of '/debug'.
++--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0
+|    \--- org.jetbrains:annotations:13.0 -> 23.0.0
++--- androidx.camera:camera-camera2:1.5.1
+|    +--- androidx.annotation:annotation:1.8.1
+|    |    \--- androidx.annotation:annotation-jvm:1.8.1
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -> 2.1.0 (*)
+|    +--- androidx.annotation:annotation-experimental:1.4.1
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -> 2.1.0 (*)
+|    +--- androidx.arch.core:core-common:2.2.0
+|    |    \--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    +--- androidx.camera:camera-core:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    +--- androidx.concurrent:concurrent-futures:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    \--- com.google.guava:listenablefuture:1.0
+|    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0
+|    |    |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.3.71 -> 2.1.0 (*)
+|    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4 -> 1.9.0
+|    |    |         \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0
+|    |    |              +--- org.jetbrains:annotations:23.0.0
+|    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0
+|    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (c)
+|    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (c)
+|    |    |              |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0 (c)
+|    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.3.2
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.0.0 -> 2.1.0
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.3.1
+|    |    |    |    |    \--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |    +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |    |    \--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |    \--- androidx.collection:collection:1.0.0 -> 1.1.0
+|    |    |    |         \--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    \--- androidx.collection:collection:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.exifinterface:exifinterface:1.3.2 -> 1.4.2
+|    |    |    +--- androidx.annotation:annotation:1.8.1 (*)
+|    |    |    \--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.3.1 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata:2.1.0 -> 2.3.1
+|    |    |    +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |    +--- androidx.arch.core:core-runtime:2.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |    \--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata-core:2.3.1
+|    |    |         +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |         +--- androidx.arch.core:core-runtime:2.1.0 (*)
+|    |    |         \--- androidx.lifecycle:lifecycle-common:2.3.1 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 (*)
+|    |    +--- androidx.tracing:tracing:1.2.0
+|    |    |    +--- androidx.annotation:annotation:1.2.0 -> 1.8.1 (*)
+|    |    |    \--- androidx.tracing:tracing-ktx:1.2.0 (c)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    +--- androidx.camera:camera-view:1.5.1 (c)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    +--- androidx.camera.featurecombinationquery:featurecombinationquery:1.5.1
+|    |    +--- androidx.annotation:annotation:1.7.0 -> 1.8.1 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    \--- org.jspecify:jspecify:1.0.0
+|    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    +--- androidx.lifecycle:lifecycle-common:2.3.1 (*)
+|    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 (*)
+|    +--- androidx.tracing:tracing:1.2.0 (*)
+|    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    +--- com.google.guava:listenablefuture:1.0
+|    +--- org.jspecify:jspecify:1.0.0
+|    +--- androidx.camera:camera-core:1.5.1 (c)
+|    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    +--- androidx.camera:camera-video:1.5.1 (c)
+|    \--- androidx.camera:camera-view:1.5.1 (c)
++--- androidx.camera:camera-lifecycle:1.5.1
+|    +--- androidx.annotation:annotation:1.7.0 -> 1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    +--- androidx.camera:camera-core:1.5.1 (*)
+|    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.3.1 (*)
+|    +--- androidx.tracing:tracing-ktx:1.2.0
+|    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.21 -> 2.1.0 (*)
+|    |    \--- androidx.tracing:tracing:1.2.0 (c)
+|    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    +--- com.google.guava:listenablefuture:1.0
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    +--- org.jspecify:jspecify:1.0.0
+|    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    +--- androidx.camera:camera-core:1.5.1 (c)
+|    +--- androidx.camera:camera-video:1.5.1 (c)
+|    \--- androidx.camera:camera-view:1.5.1 (c)
++--- androidx.camera:camera-video:1.5.1
+|    +--- androidx.annotation:annotation:1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    +--- androidx.camera:camera-core:1.5.1 (*)
+|    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    +--- com.google.guava:listenablefuture:1.0
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    +--- org.jspecify:jspecify:1.0.0
+|    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    +--- androidx.camera:camera-core:1.5.1 (c)
+|    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    \--- androidx.camera:camera-view:1.5.1 (c)
++--- androidx.camera:camera-view:1.5.1
+|    +--- androidx.annotation:annotation:1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    +--- androidx.appcompat:appcompat:1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    |    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    +--- androidx.fragment:fragment:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    |    |    +--- androidx.collection:collection:1.1.0 (*)
+|    |    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.0 -> 1.3.2 (*)
+|    |    |    |    \--- androidx.customview:customview:1.0.0
+|    |    |    |         +--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    |    |         \--- androidx.core:core:1.0.0 -> 1.3.2 (*)
+|    |    |    +--- androidx.loader:loader:1.0.0
+|    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.0 -> 1.3.2 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -> 2.3.1 (*)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.1.0
+|    |    |    |         \--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.activity:activity:1.0.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.1.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.1.0 (*)
+|    |    |    |    \--- androidx.savedstate:savedstate:1.0.0
+|    |    |    |         +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |         +--- androidx.arch.core:core-common:2.0.1 -> 2.2.0 (*)
+|    |    |    |         \--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.3.1 (*)
+|    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.1.0 (*)
+|    |    +--- androidx.appcompat:appcompat-resources:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.1 -> 1.3.2 (*)
+|    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.8.1 (*)
+|    |    |    |    +--- androidx.core:core:1.1.0 -> 1.3.2 (*)
+|    |    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    |    \--- androidx.collection:collection:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.drawerlayout:drawerlayout:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -> 1.3.2 (*)
+|    |    |    \--- androidx.customview:customview:1.0.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -> 1.1.0 (*)
+|    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    +--- androidx.camera:camera-core:1.5.1 (*)
+|    +--- androidx.camera:camera-lifecycle:1.5.1 (*)
+|    +--- androidx.camera:camera-video:1.5.1 (*)
+|    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    +--- androidx.core:core:1.3.2 (*)
+|    +--- androidx.fragment:fragment:1.1.0 (*)
+|    +--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.3.1 (*)
+|    +--- androidx.lifecycle:lifecycle-livedata:2.3.1 (*)
+|    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 (*)
+|    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    +--- com.google.guava:listenablefuture:1.0
+|    +--- org.jspecify:jspecify:1.0.0
+|    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    +--- androidx.camera:camera-core:1.5.1 (c)
+|    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    \--- androidx.camera:camera-video:1.5.1 (c)
++--- androidx.exifinterface:exifinterface:1.4.2 (*)
+\--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+> Task :media_capture_core:generateReleaseUnitTestConfig
+> Task :media_capture_core:generateDebugUnitTestConfig
+> Task :media_capture_core:verifyReleaseResources
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:extractDebugAnnotations
+> Task :media_capture_core:compileReleaseKotlin
+> Task :media_capture_core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processReleaseJavaRes
+> Task :media_capture_core:mergeDebugGeneratedProguardFiles
+> Task :media_capture_core:mergeDebugConsumerProguardFiles
+> Task :media_capture_core:bundleLibRuntimeToJarRelease
+> Task :media_capture_core:mergeDebugJavaResource
+> Task :media_capture_core:bundleLibCompileToJarRelease
+> Task :media_capture_core:createFullJarDebug
+> Task :media_capture_core:syncDebugLibJars
+> Task :media_capture_core:bundleDebugLocalLintAar
+> Task :media_capture_core:generateDebugAndroidTestLintModel
+> Task :media_capture_core:generateDebugLintReportModel
+> Task :media_capture_core:generateDebugUnitTestLintModel
+> Task :media_capture_core:bundleDebugAar
+> Task :media_capture_core:assembleDebug
+> Task :media_capture_core:extractReleaseAnnotations
+> Task :media_capture_core:mergeReleaseGeneratedProguardFiles
+> Task :media_capture_core:mergeReleaseConsumerProguardFiles
+> Task :media_capture_core:mergeReleaseJavaResource
+> Task :media_capture_core:syncReleaseLibJars
+> Task :media_capture_core:bundleReleaseAar
+> Task :media_capture_core:assembleRelease
+> Task :media_capture_core:lintAnalyzeDebugAndroidTest
+> Task :media_capture_core:compileDebugUnitTestKotlin
+> Task :media_capture_core:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugUnitTestJavaRes
+> Task :media_capture_core:compileReleaseUnitTestKotlin
+> Task :media_capture_core:lintAnalyzeDebugUnitTest
+> Task :media_capture_core:testDebugUnitTest
+> Task :media_capture_core:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processReleaseUnitTestJavaRes
+> Task :media_capture_core:lintAnalyzeDebug
+> Task :media_capture_core:testReleaseUnitTest
+> Task :media_capture_core:test
+> Task :media_capture_core:lintReportDebug
+> Task :media_capture_core:lintDebug
+> Task :media_capture_core:lint
+
+BUILD SUCCESSFUL in 19s
+99 actionable tasks: 99 executed
+[media-capture-android] Core Debug: 88 tests, 0 skipped, 0 failures, 0 errors
+[media-capture-android] Core Release: 88 tests, 0 skipped, 0 failures, 0 errors
+
+[media-capture-android] Native UI: clean, Debug/Release tests, lint, AAR assembly and resolved dependency graph
+> Task :media_capture_ui:clean
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_ui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_ui:preBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_ui:generateDebugResValues
+> Task :media_capture_ui:generateDebugResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_ui:packageDebugResources
+> Task :media_capture_ui:javaPreCompileDebug
+> Task :media_capture_ui:parseDebugLocalResources
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_ui:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_ui:generateDebugRFile
+> Task :media_capture_ui:writeDebugAarMetadata
+> Task :media_capture_ui:compileDebugLibraryResources
+> Task :media_capture_ui:generateDebugUnitTestResValues
+> Task :media_capture_ui:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_ui:generateDebugUnitTestResources
+> Task :media_capture_ui:checkDebugUnitTestAarMetadata
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_ui:extractDeepLinksDebug
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_ui:javaPreCompileDebugUnitTest
+> Task :media_capture_ui:processDebugManifest
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_ui:mergeDebugUnitTestResources
+> Task :media_capture_ui:processDebugUnitTestManifest
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_ui:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugShaders
+> Task :media_capture_ui:compileDebugShaders NO-SOURCE
+> Task :media_capture_ui:generateDebugAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugAssets
+> Task :media_capture_ui:mergeDebugUnitTestAssets
+> Task :media_capture_core:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:generateReleaseResValues
+> Task :media_capture_core:generateReleaseResources
+> Task :media_capture_core:packageReleaseResources
+> Task :media_capture_ui:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:parseReleaseLocalResources
+> Task :media_capture_ui:generateReleaseResValues
+> Task :media_capture_core:javaPreCompileRelease
+> Task :media_capture_ui:generateReleaseResources
+> Task :media_capture_core:generateReleaseRFile
+> Task :media_capture_ui:packageReleaseResources
+> Task :media_capture_ui:parseReleaseLocalResources
+> Task :media_capture_ui:javaPreCompileRelease
+> Task :media_capture_ui:preReleaseUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:compileReleaseLibraryResources
+> Task :media_capture_core:writeReleaseAarMetadata
+> Task :media_capture_ui:writeReleaseAarMetadata
+> Task :media_capture_ui:compileReleaseLibraryResources
+> Task :media_capture_ui:generateReleaseRFile
+> Task :media_capture_ui:checkReleaseUnitTestAarMetadata
+> Task :media_capture_ui:generateReleaseUnitTestResValues
+> Task :media_capture_ui:mapReleaseUnitTestSourceSetPaths
+> Task :media_capture_ui:generateReleaseUnitTestResources
+> Task :media_capture_ui:processDebugUnitTestResources
+> Task :media_capture_ui:packageDebugUnitTestForUnitTest
+> Task :media_capture_core:extractDeepLinksRelease
+> Task :media_capture_ui:extractDeepLinksRelease
+> Task :media_capture_ui:generateDebugUnitTestConfig
+> Task :media_capture_core:processReleaseManifest
+> Task :media_capture_core:mergeReleaseShaders
+> Task :media_capture_core:compileReleaseShaders NO-SOURCE
+> Task :media_capture_core:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_ui:javaPreCompileReleaseUnitTest
+> Task :media_capture_ui:processReleaseManifest
+> Task :media_capture_core:mergeReleaseAssets
+> Task :media_capture_ui:processReleaseUnitTestManifest
+> Task :media_capture_ui:generateReleaseUnitTestAssets UP-TO-DATE
+> Task :media_capture_ui:mergeReleaseShaders
+> Task :media_capture_ui:compileReleaseShaders NO-SOURCE
+> Task :media_capture_ui:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_ui:mergeReleaseAssets
+> Task :media_capture_ui:mergeReleaseUnitTestAssets
+> Task :media_capture_core:mergeDebugJniLibFolders
+> Task :media_capture_core:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_core:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_core:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_core:extractDeepLinksForAarDebug
+> Task :media_capture_ui:mergeReleaseUnitTestResources
+> Task :media_capture_core:prepareDebugArtProfile
+> Task :media_capture_core:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:prepareLintJarForPublish
+> Task :media_capture_core:generateDebugAndroidTestResValues
+> Task :media_capture_core:writeDebugLintModelMetadata
+> Task :media_capture_core:extractProguardFiles
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_ui:mergeDebugJniLibFolders
+> Task :media_capture_ui:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_ui:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_ui:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_ui:extractDeepLinksForAarDebug
+> Task :media_capture_ui:prepareDebugArtProfile
+> Task :media_capture_ui:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_ui:prepareLintJarForPublish
+> Task :media_capture_ui:generateDebugAndroidTestResValues
+> Task :media_capture_ui:writeDebugLintModelMetadata
+> Task :media_capture_ui:extractProguardFiles
+> Task :media_capture_ui:mergeReleaseJniLibFolders
+> Task :media_capture_ui:mergeReleaseNativeLibs NO-SOURCE
+> Task :media_capture_ui:stripReleaseDebugSymbols NO-SOURCE
+> Task :media_capture_ui:copyReleaseJniLibsProjectAndLocalJars
+> Task :media_capture_ui:extractDeepLinksForAarRelease
+> Task :media_capture_ui:prepareReleaseArtProfile
+> Task :media_capture_ui:mapReleaseSourceSetPaths
+> Task :media_capture_ui:processReleaseUnitTestResources
+> Task :media_capture_ui:mergeReleaseResources
+> Task :media_capture_ui:packageReleaseUnitTestForUnitTest
+> Task :media_capture_ui:generateReleaseUnitTestConfig
+
+> Task :media_capture_ui:dependencies
+
+------------------------------------------------------------
+Project ':media_capture_ui'
+------------------------------------------------------------
+
+debugRuntimeClasspath - Runtime classpath of '/debug'.
++--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0
+|    \--- org.jetbrains:annotations:13.0 -> 23.0.0
++--- project :media_capture_core
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0 (*)
+|    +--- androidx.camera:camera-camera2:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1
+|    |    |    \--- androidx.annotation:annotation-jvm:1.9.1
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.24 -> 2.1.0 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -> 2.1.0 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0
+|    |    |    \--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1
+|    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    |    +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |    +--- androidx.concurrent:concurrent-futures:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    \--- com.google.guava:listenablefuture:1.0
+|    |    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0
+|    |    |    |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.3.71 -> 2.1.0 (*)
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4 -> 1.9.0
+|    |    |    |         \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0
+|    |    |    |              +--- org.jetbrains:annotations:23.0.0
+|    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0
+|    |    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (c)
+|    |    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (c)
+|    |    |    |              |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0 (c)
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0
+|    |    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    |    |    +--- androidx.collection:collection:1.4.2
+|    |    |    |    |    \--- androidx.collection:collection-jvm:1.4.2
+|    |    |    |    |         +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (*)
+|    |    |    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    |    |    +--- androidx.core:core-viewtree:1.0.0
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 -> 2.9.2
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-runtime-android:2.9.2
+|    |    |    |    |         +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-runtime:2.2.0
+|    |    |    |    |         |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         |    \--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |         +--- androidx.core:core-viewtree:1.0.0 (*)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-common:2.9.2
+|    |    |    |    |         |    \--- androidx.lifecycle:lifecycle-common-jvm:2.9.2
+|    |    |    |    |         |         +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |         |         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |         |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |         |         +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |         |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    |         +--- androidx.profileinstaller:profileinstaller:1.4.0
+|    |    |    |    |         |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    |         |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    |    |    |         |    +--- androidx.startup:startup-runtime:1.1.1
+|    |    |    |    |         |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         |    |    \--- androidx.tracing:tracing:1.0.0 -> 1.2.0
+|    |    |    |    |         |    |         +--- androidx.annotation:annotation:1.2.0 -> 1.9.1 (*)
+|    |    |    |    |         |    |         \--- androidx.tracing:tracing-ktx:1.2.0 (c)
+|    |    |    |    |         |    \--- com.google.guava:listenablefuture:1.0
+|    |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0
+|    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (*)
+|    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0 (*)
+|    |    |    |    |         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    |    |    |         +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.1
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    +--- androidx.core:core-ktx:1.16.0 (c)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
+|    |    |    +--- androidx.exifinterface:exifinterface:1.3.2 -> 1.4.2
+|    |    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    \--- org.jspecify:jspecify:1.0.0
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.9.2 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.1.0 -> 2.9.2
+|    |    |    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    +--- androidx.arch.core:core-runtime:2.2.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2
+|    |    |    |    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |    +--- androidx.arch.core:core-runtime:2.2.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (*)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (*)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    |    +--- com.google.guava:listenablefuture:1.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-view:1.5.1 (c)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    +--- androidx.camera.featurecombinationquery:featurecombinationquery:1.5.1
+|    |    |    +--- androidx.annotation:annotation:1.7.0 -> 1.9.1 (*)
+|    |    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    |    \--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-lifecycle:1.5.1
+|    |    +--- androidx.annotation:annotation:1.7.0 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.9.2 (*)
+|    |    +--- androidx.tracing:tracing-ktx:1.2.0
+|    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.21 -> 2.1.0 (*)
+|    |    |    \--- androidx.tracing:tracing:1.2.0 (c)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-video:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-view:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.appcompat:appcompat:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    +--- androidx.fragment:fragment:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    |    \--- androidx.customview:customview:1.0.0
+|    |    |    |    |         +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |         \--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.loader:loader:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -> 2.9.2 (*)
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.9.2
+|    |    |    |    |         \--- androidx.lifecycle:lifecycle-viewmodel-android:2.9.2
+|    |    |    |    |              +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |              +--- androidx.core:core-viewtree:1.0.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.activity:activity:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.1.0 -> 2.9.2 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.1.0 -> 2.9.2 (*)
+|    |    |    |    |    \--- androidx.savedstate:savedstate:1.0.0
+|    |    |    |    |         +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-common:2.0.1 -> 2.2.0 (*)
+|    |    |    |    |         \--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.9.2 (*)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.9.2 (*)
+|    |    |    +--- androidx.appcompat:appcompat-resources:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.1 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    |    |    +--- androidx.interpolator:interpolator:1.0.0 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    |    +--- androidx.drawerlayout:drawerlayout:1.0.0
+|    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    \--- androidx.customview:customview:1.0.0 (*)
+|    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (*)
+|    |    +--- androidx.camera:camera-video:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.core:core:1.3.2 -> 1.16.0 (*)
+|    |    +--- androidx.fragment:fragment:1.1.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    \--- androidx.camera:camera-video:1.5.1 (c)
+|    +--- androidx.exifinterface:exifinterface:1.4.2 (*)
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
++--- androidx.core:core-ktx:1.16.0
+|    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    +--- androidx.core:core:1.16.0 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    +--- androidx.core:core:1.16.0 (c)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
++--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2
+|    \--- androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.2
+|         +--- androidx.annotation:annotation:1.9.1 (*)
+|         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (*)
+|         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|         +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|         +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|         +--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|         \--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+\--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+> Task :media_capture_ui:verifyReleaseResources
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:extractDebugAnnotations
+> Task :media_capture_core:mergeDebugGeneratedProguardFiles
+> Task :media_capture_core:mergeDebugConsumerProguardFiles
+> Task :media_capture_core:mergeDebugJavaResource
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_core:createFullJarDebug
+> Task :media_capture_core:syncDebugLibJars
+> Task :media_capture_core:bundleDebugLocalLintAar
+> Task :media_capture_core:generateDebugAndroidTestLintModel
+> Task :media_capture_core:generateDebugLintModel
+> Task :media_capture_core:generateDebugUnitTestLintModel
+> Task :media_capture_core:compileReleaseKotlin
+> Task :media_capture_core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processReleaseJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarRelease
+> Task :media_capture_core:bundleLibCompileToJarRelease
+> Task :media_capture_core:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileDebugKotlin
+> Task :media_capture_ui:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processDebugJavaRes
+> Task :media_capture_ui:bundleLibRuntimeToJarDebug
+> Task :media_capture_ui:extractDebugAnnotations
+> Task :media_capture_ui:bundleLibCompileToJarDebug
+> Task :media_capture_ui:mergeDebugGeneratedProguardFiles
+> Task :media_capture_ui:mergeDebugConsumerProguardFiles
+> Task :media_capture_ui:mergeDebugJavaResource
+> Task :media_capture_ui:createFullJarDebug
+> Task :media_capture_ui:syncDebugLibJars
+> Task :media_capture_ui:bundleDebugLocalLintAar
+> Task :media_capture_ui:generateDebugAndroidTestLintModel
+> Task :media_capture_ui:generateDebugLintReportModel
+> Task :media_capture_ui:generateDebugUnitTestLintModel
+> Task :media_capture_ui:bundleDebugAar
+> Task :media_capture_ui:assembleDebug
+> Task :media_capture_ui:compileReleaseKotlin
+> Task :media_capture_ui:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processReleaseJavaRes
+> Task :media_capture_ui:bundleLibRuntimeToJarRelease
+> Task :media_capture_ui:extractReleaseAnnotations
+> Task :media_capture_ui:mergeReleaseGeneratedProguardFiles
+> Task :media_capture_ui:bundleLibCompileToJarRelease
+> Task :media_capture_ui:mergeReleaseConsumerProguardFiles
+> Task :media_capture_ui:mergeReleaseJavaResource
+> Task :media_capture_ui:syncReleaseLibJars
+> Task :media_capture_ui:bundleReleaseAar
+> Task :media_capture_ui:assembleRelease
+> Task :media_capture_ui:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileDebugUnitTestKotlin
+> Task :media_capture_ui:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processDebugUnitTestJavaRes
+> Task :media_capture_ui:compileReleaseUnitTestKotlin
+> Task :media_capture_core:lintAnalyzeDebugUnitTest
+> Task :media_capture_ui:lintAnalyzeDebugUnitTest
+> Task :media_capture_core:lintAnalyzeDebug
+> Task :media_capture_ui:testDebugUnitTest
+> Task :media_capture_ui:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processReleaseUnitTestJavaRes
+> Task :media_capture_ui:testReleaseUnitTest
+> Task :media_capture_ui:test
+> Task :media_capture_ui:lintAnalyzeDebug
+> Task :media_capture_ui:lintReportDebug
+> Task :media_capture_ui:lintDebug
+> Task :media_capture_ui:lint
+
+BUILD SUCCESSFUL in 19s
+152 actionable tasks: 152 executed
+[media-capture-android] Native UI Debug: 42 tests, 0 skipped, 0 failures, 0 errors
+[media-capture-android] Native UI Release: 42 tests, 0 skipped, 0 failures, 0 errors
+
+[media-capture-android] Bridge Adapter: clean, Debug/Release tests, lint, AAR assembly and resolved dependency graph
+> Task :media_capture_bridge:clean
+> Task :media_capture_bridge:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_bridge:preBuild UP-TO-DATE
+> Task :media_capture_bridge:preDebugBuild UP-TO-DATE
+> Task :media_capture_bridge:generateDebugResValues
+> Task :media_capture_bridge:generateDebugResources
+> Task :media_capture_bridge:packageDebugResources
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_bridge:parseDebugLocalResources
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_bridge:generateDebugRFile
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_ui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_ui:preBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugBuild UP-TO-DATE
+> Task :media_capture_ui:generateDebugResValues
+> Task :media_capture_ui:generateDebugResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_ui:packageDebugResources
+> Task :media_capture_ui:javaPreCompileDebug
+> Task :media_capture_bridge:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_ui:parseDebugLocalResources
+> Task :media_capture_bridge:javaPreCompileDebug
+> Task :media_capture_bridge:writeDebugAarMetadata
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_ui:writeDebugAarMetadata
+> Task :media_capture_ui:generateDebugRFile
+> Task :media_capture_bridge:compileDebugLibraryResources
+> Task :media_capture_bridge:generateDebugUnitTestResValues
+> Task :media_capture_bridge:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_bridge:checkDebugUnitTestAarMetadata
+> Task :media_capture_bridge:generateDebugUnitTestResources
+> Task :media_capture_bridge:extractDeepLinksDebug
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_ui:extractDeepLinksDebug
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_bridge:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_ui:compileDebugLibraryResources
+> Task :media_capture_bridge:javaPreCompileDebugUnitTest
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_bridge:mergeDebugShaders
+> Task :media_capture_bridge:processDebugManifest
+> Task :media_capture_ui:processDebugManifest
+> Task :media_capture_bridge:compileDebugShaders NO-SOURCE
+> Task :media_capture_bridge:mergeDebugUnitTestResources
+> Task :media_capture_bridge:processDebugUnitTestManifest
+> Task :media_capture_bridge:generateDebugAssets UP-TO-DATE
+> Task :media_capture_bridge:mergeDebugAssets
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_ui:mergeDebugShaders
+> Task :media_capture_ui:compileDebugShaders NO-SOURCE
+> Task :media_capture_ui:generateDebugAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugAssets
+> Task :media_capture_bridge:mergeDebugUnitTestAssets
+> Task :media_capture_bridge:preReleaseBuild UP-TO-DATE
+> Task :media_capture_bridge:generateReleaseResValues
+> Task :media_capture_bridge:generateReleaseResources
+> Task :media_capture_bridge:packageReleaseResources
+> Task :media_capture_core:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:generateReleaseResValues
+> Task :media_capture_bridge:parseReleaseLocalResources
+> Task :media_capture_core:generateReleaseResources
+> Task :media_capture_bridge:generateReleaseRFile
+> Task :media_capture_core:packageReleaseResources
+> Task :media_capture_ui:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileRelease
+> Task :media_capture_ui:generateReleaseResValues
+> Task :media_capture_core:parseReleaseLocalResources
+> Task :media_capture_ui:generateReleaseResources
+> Task :media_capture_core:generateReleaseRFile
+> Task :media_capture_ui:packageReleaseResources
+> Task :media_capture_ui:parseReleaseLocalResources
+> Task :media_capture_ui:javaPreCompileRelease
+> Task :media_capture_bridge:javaPreCompileRelease
+> Task :media_capture_bridge:preReleaseUnitTestBuild UP-TO-DATE
+> Task :media_capture_bridge:writeReleaseAarMetadata
+> Task :media_capture_core:writeReleaseAarMetadata
+> Task :media_capture_ui:generateReleaseRFile
+> Task :media_capture_ui:writeReleaseAarMetadata
+> Task :media_capture_bridge:compileReleaseLibraryResources
+> Task :media_capture_bridge:generateReleaseUnitTestResValues
+> Task :media_capture_bridge:mapReleaseUnitTestSourceSetPaths
+> Task :media_capture_bridge:checkReleaseUnitTestAarMetadata
+> Task :media_capture_bridge:generateReleaseUnitTestResources
+> Task :media_capture_bridge:extractDeepLinksRelease
+> Task :media_capture_core:extractDeepLinksRelease
+> Task :media_capture_ui:extractDeepLinksRelease
+> Task :media_capture_core:compileReleaseLibraryResources
+> Task :media_capture_ui:processReleaseManifest
+> Task :media_capture_ui:compileReleaseLibraryResources
+> Task :media_capture_core:processReleaseManifest
+> Task :media_capture_bridge:processReleaseManifest
+> Task :media_capture_bridge:processDebugUnitTestResources
+> Task :media_capture_bridge:processReleaseUnitTestManifest
+> Task :media_capture_bridge:packageDebugUnitTestForUnitTest
+> Task :media_capture_bridge:generateDebugUnitTestConfig
+> Task :media_capture_bridge:generateReleaseUnitTestAssets UP-TO-DATE
+> Task :media_capture_bridge:javaPreCompileReleaseUnitTest
+> Task :media_capture_bridge:mergeReleaseUnitTestResources
+> Task :media_capture_bridge:mergeReleaseShaders
+> Task :media_capture_bridge:compileReleaseShaders NO-SOURCE
+> Task :media_capture_bridge:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_bridge:mergeReleaseAssets
+> Task :media_capture_core:mergeReleaseShaders
+> Task :media_capture_core:compileReleaseShaders NO-SOURCE
+> Task :media_capture_core:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_core:mergeReleaseAssets
+> Task :media_capture_ui:mergeReleaseShaders
+> Task :media_capture_ui:compileReleaseShaders NO-SOURCE
+> Task :media_capture_ui:generateReleaseAssets UP-TO-DATE
+> Task :media_capture_ui:mergeReleaseAssets
+> Task :media_capture_bridge:mergeReleaseUnitTestAssets
+> Task :media_capture_bridge:mergeDebugJniLibFolders
+> Task :media_capture_bridge:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_bridge:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_bridge:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_bridge:extractDeepLinksForAarDebug
+> Task :media_capture_bridge:prepareDebugArtProfile
+> Task :media_capture_bridge:prepareLintJarForPublish
+> Task :media_capture_ui:mergeDebugJniLibFolders
+> Task :media_capture_ui:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_ui:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_ui:extractDeepLinksForAarDebug
+> Task :media_capture_ui:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_ui:prepareDebugArtProfile
+> Task :media_capture_ui:prepareLintJarForPublish
+> Task :media_capture_core:mergeDebugJniLibFolders
+> Task :media_capture_core:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_core:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_core:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_core:extractDeepLinksForAarDebug
+> Task :media_capture_core:prepareDebugArtProfile
+> Task :media_capture_bridge:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:prepareLintJarForPublish
+> Task :media_capture_bridge:generateDebugAndroidTestResValues
+> Task :media_capture_bridge:writeDebugLintModelMetadata
+> Task :media_capture_core:writeDebugLintModelMetadata
+> Task :media_capture_ui:writeDebugLintModelMetadata
+> Task :media_capture_bridge:extractProguardFiles
+> Task :media_capture_core:extractProguardFiles
+> Task :media_capture_ui:extractProguardFiles
+> Task :media_capture_core:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugAndroidTestResValues
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_ui:generateDebugAndroidTestResValues
+> Task :media_capture_ui:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_bridge:mergeReleaseJniLibFolders
+> Task :media_capture_bridge:mergeReleaseNativeLibs NO-SOURCE
+> Task :media_capture_bridge:stripReleaseDebugSymbols NO-SOURCE
+> Task :media_capture_bridge:copyReleaseJniLibsProjectAndLocalJars
+> Task :media_capture_bridge:extractDeepLinksForAarRelease
+> Task :media_capture_bridge:prepareReleaseArtProfile
+> Task :media_capture_bridge:mapReleaseSourceSetPaths
+> Task :media_capture_bridge:processReleaseUnitTestResources
+> Task :media_capture_bridge:mergeReleaseResources
+> Task :media_capture_bridge:packageReleaseUnitTestForUnitTest
+> Task :media_capture_bridge:generateReleaseUnitTestConfig
+
+> Task :media_capture_bridge:dependencies
+
+------------------------------------------------------------
+Project ':media_capture_bridge'
+------------------------------------------------------------
+
+debugRuntimeClasspath - Runtime classpath of '/debug'.
++--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0
+|    \--- org.jetbrains:annotations:13.0 -> 23.0.0
++--- project :media_capture_core
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0 (*)
+|    +--- androidx.camera:camera-camera2:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1
+|    |    |    \--- androidx.annotation:annotation-jvm:1.9.1
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.9.24 -> 2.1.0 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -> 2.1.0 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0
+|    |    |    \--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1
+|    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    |    +--- androidx.arch.core:core-common:2.1.0 -> 2.2.0 (*)
+|    |    |    +--- androidx.concurrent:concurrent-futures:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    \--- com.google.guava:listenablefuture:1.0
+|    |    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0
+|    |    |    |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.3.71 -> 2.1.0 (*)
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4 -> 1.9.0
+|    |    |    |         \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0
+|    |    |    |              +--- org.jetbrains:annotations:23.0.0
+|    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0
+|    |    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (c)
+|    |    |    |              |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (c)
+|    |    |    |              |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.9.0 (c)
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0
+|    |    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    |    |    +--- androidx.collection:collection:1.4.2
+|    |    |    |    |    \--- androidx.collection:collection-jvm:1.4.2
+|    |    |    |    |         +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (*)
+|    |    |    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    |    |    +--- androidx.core:core-viewtree:1.0.0
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 -> 2.9.2
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-runtime-android:2.9.2
+|    |    |    |    |         +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-runtime:2.2.0
+|    |    |    |    |         |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         |    \--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |         +--- androidx.core:core-viewtree:1.0.0 (*)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-common:2.9.2
+|    |    |    |    |         |    \--- androidx.lifecycle:lifecycle-common-jvm:2.9.2
+|    |    |    |    |         |         +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |         |         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |         |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |         |         +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |         |         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |         |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    |         +--- androidx.profileinstaller:profileinstaller:1.4.0
+|    |    |    |    |         |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    |         |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    |    |    |         |    +--- androidx.startup:startup-runtime:1.1.1
+|    |    |    |    |         |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         |    |    \--- androidx.tracing:tracing:1.0.0 -> 1.2.0
+|    |    |    |    |         |    |         +--- androidx.annotation:annotation:1.2.0 -> 1.9.1 (*)
+|    |    |    |    |         |    |         \--- androidx.tracing:tracing-ktx:1.2.0 (c)
+|    |    |    |    |         |    \--- com.google.guava:listenablefuture:1.0
+|    |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0
+|    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0 (*)
+|    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0 (*)
+|    |    |    |    |         |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.0 -> 2.1.0 (*)
+|    |    |    |    |         +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.1
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    +--- androidx.core:core-ktx:1.16.0 (c)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
+|    |    |    +--- androidx.exifinterface:exifinterface:1.3.2 -> 1.4.2
+|    |    |    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    |    |    \--- org.jspecify:jspecify:1.0.0
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.9.2 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.1.0 -> 2.9.2
+|    |    |    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    +--- androidx.arch.core:core-runtime:2.2.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2
+|    |    |    |    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    |    +--- androidx.arch.core:core-runtime:2.2.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (*)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (*)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    |    +--- com.google.guava:listenablefuture:1.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    +--- org.jspecify:jspecify:1.0.0
+|    |    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    |    +--- androidx.camera:camera-view:1.5.1 (c)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    +--- androidx.camera.featurecombinationquery:featurecombinationquery:1.5.1
+|    |    |    +--- androidx.annotation:annotation:1.7.0 -> 1.9.1 (*)
+|    |    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    |    \--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-lifecycle:1.5.1
+|    |    +--- androidx.annotation:annotation:1.7.0 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.1.0 -> 2.9.2 (*)
+|    |    +--- androidx.tracing:tracing-ktx:1.2.0
+|    |    |    +--- androidx.tracing:tracing:1.2.0 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.21 -> 2.1.0 (*)
+|    |    |    \--- androidx.tracing:tracing:1.2.0 (c)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-video:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-video:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures:1.1.0 (*)
+|    |    +--- androidx.concurrent:concurrent-futures-ktx:1.1.0 (*)
+|    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    \--- androidx.camera:camera-view:1.5.1 (c)
+|    +--- androidx.camera:camera-view:1.5.1
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.4.1 (*)
+|    |    +--- androidx.appcompat:appcompat:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    |    |    \--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    +--- androidx.fragment:fragment:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    |    \--- androidx.customview:customview:1.0.0
+|    |    |    |    |         +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |         \--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.loader:loader:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -> 2.9.2 (*)
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.9.2
+|    |    |    |    |         \--- androidx.lifecycle:lifecycle-viewmodel-android:2.9.2
+|    |    |    |    |              +--- androidx.annotation:annotation:1.9.1 (*)
+|    |    |    |    |              +--- androidx.core:core-viewtree:1.0.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |              +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1 -> 1.9.0 (*)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |    |    |    |              +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (c)
+|    |    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |    |    |    +--- androidx.activity:activity:1.0.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.1.0 -> 2.9.2 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.1.0 -> 2.9.2 (*)
+|    |    |    |    |    \--- androidx.savedstate:savedstate:1.0.0
+|    |    |    |    |         +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |         +--- androidx.arch.core:core-common:2.0.1 -> 2.2.0 (*)
+|    |    |    |    |         \--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.9.2 (*)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -> 2.9.2 (*)
+|    |    |    +--- androidx.appcompat:appcompat-resources:1.1.0
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.1 -> 1.16.0 (*)
+|    |    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -> 1.9.1 (*)
+|    |    |    |    |    +--- androidx.core:core:1.1.0 -> 1.16.0 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    |    |    +--- androidx.interpolator:interpolator:1.0.0 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.1.0 -> 1.4.2 (*)
+|    |    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    |    +--- androidx.drawerlayout:drawerlayout:1.0.0
+|    |    |    |    +--- androidx.annotation:annotation:1.0.0 -> 1.9.1 (*)
+|    |    |    |    +--- androidx.core:core:1.0.0 -> 1.16.0 (*)
+|    |    |    |    \--- androidx.customview:customview:1.0.0 (*)
+|    |    |    \--- androidx.collection:collection:1.0.0 -> 1.4.2 (*)
+|    |    +--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    +--- androidx.camera:camera-core:1.5.1 (*)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (*)
+|    |    +--- androidx.camera:camera-video:1.5.1 (*)
+|    |    +--- androidx.concurrent:concurrent-futures:1.0.0 -> 1.1.0 (*)
+|    |    +--- androidx.core:core:1.3.2 -> 1.16.0 (*)
+|    |    +--- androidx.fragment:fragment:1.1.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.0.0 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata:2.3.1 -> 2.9.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.3.1 -> 2.9.2 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.3
+|    |    +--- com.google.guava:listenablefuture:1.0
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    +--- androidx.camera:camera-camera2:1.5.1 (c)
+|    |    +--- androidx.camera:camera-core:1.5.1 (c)
+|    |    +--- androidx.camera:camera-lifecycle:1.5.1 (c)
+|    |    \--- androidx.camera:camera-video:1.5.1 (c)
+|    +--- androidx.exifinterface:exifinterface:1.4.2 (*)
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
++--- project :media_capture_ui
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:2.1.0 (*)
+|    +--- project :media_capture_core (*)
+|    +--- androidx.core:core-ktx:1.16.0
+|    |    +--- androidx.annotation:annotation:1.8.1 -> 1.9.1 (*)
+|    |    +--- androidx.core:core:1.16.0 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |    +--- androidx.core:core:1.16.0 (c)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 -> 2.1.0 (c)
+|    +--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2
+|    |    \--- androidx.lifecycle:lifecycle-runtime-ktx-android:2.9.2
+|    |         +--- androidx.annotation:annotation:1.9.1 (*)
+|    |         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (*)
+|    |         +--- org.jetbrains.kotlin:kotlin-stdlib -> 2.1.0 (*)
+|    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1 -> 1.9.0 (*)
+|    |         +--- androidx.lifecycle:lifecycle-common:2.9.2 (c)
+|    |         +--- androidx.lifecycle:lifecycle-livedata:2.9.2 (c)
+|    |         +--- androidx.lifecycle:lifecycle-livedata-core:2.9.2 (c)
+|    |         +--- androidx.lifecycle:lifecycle-runtime:2.9.2 (c)
+|    |         +--- org.jetbrains.kotlin:kotlin-stdlib:2.0.21 -> 2.1.0 (c)
+|    |         +--- androidx.lifecycle:lifecycle-viewmodel:2.9.2 (c)
+|    |         \--- androidx.lifecycle:lifecycle-livedata-core-ktx:2.9.2 (c)
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
++--- androidx.core:core-ktx:1.16.0 (*)
++--- androidx.lifecycle:lifecycle-runtime-ktx:2.9.2 (*)
+\--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0 (*)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+> Task :media_capture_bridge:verifyReleaseResources
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_core:extractDebugAnnotations
+> Task :media_capture_core:mergeDebugGeneratedProguardFiles
+> Task :media_capture_core:mergeDebugConsumerProguardFiles
+> Task :media_capture_core:mergeDebugJavaResource
+> Task :media_capture_core:createFullJarDebug
+> Task :media_capture_core:syncDebugLibJars
+> Task :media_capture_core:bundleDebugLocalLintAar
+> Task :media_capture_core:generateDebugLintModel
+> Task :media_capture_core:generateDebugAndroidTestLintModel
+> Task :media_capture_core:generateDebugUnitTestLintModel
+> Task :media_capture_core:compileReleaseKotlin
+> Task :media_capture_core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processReleaseJavaRes
+> Task :media_capture_core:bundleLibCompileToJarRelease
+> Task :media_capture_core:bundleLibRuntimeToJarRelease
+> Task :media_capture_core:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileDebugKotlin
+> Task :media_capture_ui:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:bundleLibCompileToJarDebug
+> Task :media_capture_ui:processDebugJavaRes
+> Task :media_capture_ui:bundleLibRuntimeToJarDebug
+> Task :media_capture_ui:extractDebugAnnotations
+> Task :media_capture_ui:mergeDebugGeneratedProguardFiles
+> Task :media_capture_ui:mergeDebugConsumerProguardFiles
+> Task :media_capture_ui:createFullJarDebug
+> Task :media_capture_ui:mergeDebugJavaResource
+> Task :media_capture_ui:generateDebugLintModel
+> Task :media_capture_ui:syncDebugLibJars
+> Task :media_capture_ui:bundleDebugLocalLintAar
+> Task :media_capture_ui:generateDebugAndroidTestLintModel
+> Task :media_capture_ui:generateDebugUnitTestLintModel
+> Task :media_capture_ui:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileReleaseKotlin
+> Task :media_capture_ui:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processReleaseJavaRes
+> Task :media_capture_ui:bundleLibRuntimeToJarRelease
+> Task :media_capture_ui:bundleLibCompileToJarRelease
+> Task :media_capture_bridge:compileDebugKotlin
+> Task :media_capture_bridge:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processDebugJavaRes
+> Task :media_capture_bridge:bundleLibCompileToJarDebug
+> Task :media_capture_bridge:bundleLibRuntimeToJarDebug
+> Task :media_capture_bridge:extractDebugAnnotations
+> Task :media_capture_bridge:mergeDebugGeneratedProguardFiles
+> Task :media_capture_bridge:mergeDebugConsumerProguardFiles
+> Task :media_capture_bridge:mergeDebugJavaResource
+> Task :media_capture_bridge:createFullJarDebug
+> Task :media_capture_bridge:syncDebugLibJars
+> Task :media_capture_bridge:bundleDebugLocalLintAar
+> Task :media_capture_ui:lintAnalyzeDebugUnitTest
+> Task :media_capture_bridge:generateDebugLintReportModel
+> Task :media_capture_bridge:generateDebugAndroidTestLintModel
+> Task :media_capture_bridge:generateDebugUnitTestLintModel
+> Task :media_capture_bridge:bundleDebugAar
+> Task :media_capture_bridge:assembleDebug
+> Task :media_capture_bridge:lintAnalyzeDebugAndroidTest
+> Task :media_capture_core:lintAnalyzeDebugUnitTest
+> Task :media_capture_bridge:compileReleaseKotlin
+> Task :media_capture_bridge:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processReleaseJavaRes
+> Task :media_capture_bridge:extractReleaseAnnotations
+> Task :media_capture_bridge:mergeReleaseGeneratedProguardFiles
+> Task :media_capture_bridge:mergeReleaseConsumerProguardFiles
+> Task :media_capture_bridge:bundleLibCompileToJarRelease
+> Task :media_capture_bridge:bundleLibRuntimeToJarRelease
+> Task :media_capture_bridge:mergeReleaseJavaResource
+> Task :media_capture_bridge:syncReleaseLibJars
+> Task :media_capture_bridge:bundleReleaseAar
+> Task :media_capture_bridge:assembleRelease
+> Task :media_capture_core:lintAnalyzeDebug
+> Task :media_capture_bridge:compileDebugUnitTestKotlin
+> Task :media_capture_bridge:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processDebugUnitTestJavaRes
+> Task :media_capture_bridge:compileReleaseUnitTestKotlin
+> Task :media_capture_bridge:lintAnalyzeDebugUnitTest
+> Task :media_capture_ui:lintAnalyzeDebug
+> Task :media_capture_bridge:testDebugUnitTest
+> Task :media_capture_bridge:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processReleaseUnitTestJavaRes
+> Task :media_capture_bridge:testReleaseUnitTest
+> Task :media_capture_bridge:test
+> Task :media_capture_bridge:lintAnalyzeDebug
+> Task :media_capture_bridge:lintReportDebug
+> Task :media_capture_bridge:lintDebug
+> Task :media_capture_bridge:lint
+
+BUILD SUCCESSFUL in 22s
+205 actionable tasks: 205 executed
+[media-capture-android] Bridge Adapter Debug: 65 tests, 0 skipped, 0 failures, 0 errors
+[media-capture-android] Bridge Adapter Release: 65 tests, 0 skipped, 0 failures, 0 errors
+
+[media-capture-android] Re-run Android capability, renderer, UI and Wire contract vectors
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_core:checkDebugUnitTestAarMetadata
+> Task :media_capture_core:generateDebugUnitTestResValues
+> Task :media_capture_core:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_core:generateDebugUnitTestResources
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_core:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebugUnitTest
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:processDebugUnitTestManifest
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_core:mergeDebugUnitTestAssets
+> Task :media_capture_core:mergeDebugUnitTestResources
+> Task :media_capture_core:processDebugUnitTestResources
+> Task :media_capture_core:packageDebugUnitTestForUnitTest
+> Task :media_capture_core:generateDebugUnitTestConfig
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_core:compileDebugUnitTestKotlin
+> Task :media_capture_core:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugUnitTestJavaRes
+> Task :media_capture_core:testDebugUnitTest
+
+BUILD SUCCESSFUL in 7s
+30 actionable tasks: 30 executed
+[media-capture-android] contract vector: com.example.mediacapture.MediaCaptureCoreStateTest (10 tests)
+[media-capture-android] contract vector: com.example.mediacapture.MediaCaptureRenderViewTest (8 tests)
+[media-capture-android] contract vector: com.example.mediacapture.MediaCaptureRenderBackgroundGateTest (3 tests)
+[media-capture-android] contract vector: com.example.mediacapture.RenderAttachmentTest (9 tests)
+[media-capture-android] contract vector: com.example.mediacapture.ThumbnailJobTest (11 tests)
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_ui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_ui:preBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_ui:generateDebugResValues
+> Task :media_capture_ui:generateDebugResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_ui:packageDebugResources
+> Task :media_capture_ui:javaPreCompileDebug
+> Task :media_capture_ui:parseDebugLocalResources
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_ui:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_ui:writeDebugAarMetadata
+> Task :media_capture_ui:generateDebugRFile
+> Task :media_capture_ui:compileDebugLibraryResources
+> Task :media_capture_ui:generateDebugUnitTestResValues
+> Task :media_capture_ui:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_ui:checkDebugUnitTestAarMetadata
+> Task :media_capture_ui:generateDebugUnitTestResources
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_ui:extractDeepLinksDebug
+> Task :media_capture_ui:javaPreCompileDebugUnitTest
+> Task :media_capture_ui:processDebugManifest
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_ui:mergeDebugUnitTestResources
+> Task :media_capture_ui:processDebugUnitTestManifest
+> Task :media_capture_ui:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugShaders
+> Task :media_capture_ui:compileDebugShaders NO-SOURCE
+> Task :media_capture_ui:generateDebugAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugAssets
+> Task :media_capture_ui:mergeDebugUnitTestAssets
+> Task :media_capture_ui:processDebugUnitTestResources
+> Task :media_capture_ui:packageDebugUnitTestForUnitTest
+> Task :media_capture_ui:generateDebugUnitTestConfig
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_ui:compileDebugKotlin
+> Task :media_capture_ui:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processDebugJavaRes
+> Task :media_capture_ui:bundleLibRuntimeToJarDebug
+> Task :media_capture_ui:bundleLibCompileToJarDebug
+> Task :media_capture_ui:compileDebugUnitTestKotlin
+> Task :media_capture_ui:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processDebugUnitTestJavaRes
+> Task :media_capture_ui:testDebugUnitTest
+
+BUILD SUCCESSFUL in 6s
+46 actionable tasks: 46 executed
+[media-capture-android] contract vector: com.example.mediacapture.ui.MediaCaptureFlowCoordinatorTest (19 tests)
+[media-capture-android] contract vector: com.example.mediacapture.ui.MediaCaptureUiPresenterTest (10 tests)
+> Task :media_capture_bridge:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_bridge:preBuild UP-TO-DATE
+> Task :media_capture_bridge:preDebugBuild UP-TO-DATE
+> Task :media_capture_bridge:generateDebugResValues
+> Task :media_capture_bridge:generateDebugResources
+> Task :media_capture_bridge:packageDebugResources
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_bridge:parseDebugLocalResources
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_bridge:generateDebugRFile
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_ui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_ui:preBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_ui:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_ui:generateDebugResValues
+> Task :media_capture_ui:generateDebugResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_ui:packageDebugResources
+> Task :media_capture_ui:javaPreCompileDebug
+> Task :media_capture_ui:parseDebugLocalResources
+> Task :media_capture_bridge:javaPreCompileDebug
+> Task :media_capture_bridge:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_bridge:writeDebugAarMetadata
+> Task :media_capture_ui:generateDebugRFile
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_ui:writeDebugAarMetadata
+> Task :media_capture_bridge:compileDebugLibraryResources
+> Task :media_capture_bridge:generateDebugUnitTestResValues
+> Task :media_capture_bridge:mapDebugUnitTestSourceSetPaths
+> Task :media_capture_bridge:generateDebugUnitTestResources
+> Task :media_capture_bridge:checkDebugUnitTestAarMetadata
+> Task :media_capture_bridge:extractDeepLinksDebug
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_bridge:processDebugManifest
+> Task :media_capture_ui:extractDeepLinksDebug
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_ui:compileDebugLibraryResources
+> Task :media_capture_bridge:generateDebugUnitTestAssets UP-TO-DATE
+> Task :media_capture_ui:processDebugManifest
+> Task :media_capture_bridge:javaPreCompileDebugUnitTest
+> Task :media_capture_bridge:mergeDebugShaders
+> Task :media_capture_bridge:processDebugUnitTestManifest
+> Task :media_capture_bridge:compileDebugShaders NO-SOURCE
+> Task :media_capture_bridge:generateDebugAssets UP-TO-DATE
+> Task :media_capture_bridge:mergeDebugAssets
+> Task :media_capture_bridge:mergeDebugUnitTestResources
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_ui:mergeDebugShaders
+> Task :media_capture_ui:compileDebugShaders NO-SOURCE
+> Task :media_capture_ui:generateDebugAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugAssets
+> Task :media_capture_bridge:mergeDebugUnitTestAssets
+> Task :media_capture_bridge:processDebugUnitTestResources
+> Task :media_capture_bridge:packageDebugUnitTestForUnitTest
+> Task :media_capture_bridge:generateDebugUnitTestConfig
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_ui:compileDebugKotlin
+> Task :media_capture_ui:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:processDebugJavaRes
+> Task :media_capture_ui:bundleLibCompileToJarDebug
+> Task :media_capture_ui:bundleLibRuntimeToJarDebug
+> Task :media_capture_bridge:compileDebugKotlin
+> Task :media_capture_bridge:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processDebugJavaRes
+> Task :media_capture_bridge:bundleLibRuntimeToJarDebug
+> Task :media_capture_bridge:bundleLibCompileToJarDebug
+> Task :media_capture_bridge:compileDebugUnitTestKotlin
+> Task :media_capture_bridge:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:processDebugUnitTestJavaRes
+> Task :media_capture_bridge:testDebugUnitTest
+
+BUILD SUCCESSFUL in 7s
+62 actionable tasks: 62 executed
+[media-capture-android] contract vector: com.example.media_capture.MediaCaptureWireCodecTest (5 tests)
+[media-capture-android] contract vector: com.example.media_capture.MediaCaptureBridgeControllerTest (40 tests)
+[media-capture-android] contract vector: com.example.media_capture.BoundedCommandHandlerTest (3 tests)
+[media-capture-android] contract vector: com.example.media_capture.MediaCaptureTransferStoreTest (6 tests)
+[media-capture-android] contract vector: com.example.media_capture.AndroidContractVectorGateTest (3 tests)
+
+[media-capture-android] Compile the cross-module Gate and emulator-only lifecycle/UI suite
+> Task :clean
+> Task :preBuild UP-TO-DATE
+> Task :preDebugBuild UP-TO-DATE
+> Task :mergeDebugJniLibFolders
+> Task :mergeDebugNativeLibs NO-SOURCE
+> Task :stripDebugDebugSymbols NO-SOURCE
+> Task :copyDebugJniLibsProjectAndLocalJars
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :generateDebugResValues
+> Task :generateDebugResources
+> Task :packageDebugResources
+> Task :media_capture_bridge:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_bridge:preBuild UP-TO-DATE
+> Task :media_capture_bridge:preDebugBuild UP-TO-DATE
+> Task :media_capture_bridge:generateDebugResValues
+> Task :parseDebugLocalResources
+> Task :media_capture_bridge:generateDebugResources
+> Task :generateDebugRFile
+> Task :media_capture_bridge:packageDebugResources
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_bridge:parseDebugLocalResources
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_bridge:generateDebugRFile
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_ui:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_ui:preBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:parseDebugLocalResources
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_ui:generateDebugResValues
+> Task :media_capture_ui:generateDebugResources
+> Task :media_capture_core:generateDebugRFile
+> Task :media_capture_ui:packageDebugResources
+> Task :media_capture_ui:javaPreCompileDebug
+> Task :media_capture_ui:parseDebugLocalResources
+> Task :media_capture_bridge:javaPreCompileDebug
+> Task :extractDeepLinksForAarDebug
+> Task :mergeDebugShaders
+> Task :media_capture_ui:generateDebugRFile
+> Task :compileDebugShaders NO-SOURCE
+> Task :generateDebugAssets UP-TO-DATE
+> Task :mergeDebugAssets
+> Task :javaPreCompileDebug
+> Task :prepareDebugArtProfile
+> Task :prepareLintJarForPublish
+> Task :writeDebugAarMetadata
+> Task :media_capture_bridge:mergeDebugJniLibFolders
+> Task :media_capture_bridge:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_bridge:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_bridge:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_bridge:extractDeepLinksForAarDebug
+> Task :processDebugManifest
+> Task :media_capture_bridge:mergeDebugShaders
+> Task :media_capture_bridge:compileDebugShaders NO-SOURCE
+> Task :media_capture_bridge:generateDebugAssets UP-TO-DATE
+> Task :media_capture_bridge:mergeDebugAssets
+> Task :media_capture_bridge:prepareDebugArtProfile
+> Task :media_capture_bridge:prepareLintJarForPublish
+> Task :media_capture_bridge:writeDebugAarMetadata
+> Task :media_capture_ui:mergeDebugJniLibFolders
+> Task :media_capture_bridge:processDebugManifest
+> Task :media_capture_ui:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_ui:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_ui:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_ui:extractDeepLinksForAarDebug
+> Task :media_capture_ui:mergeDebugShaders
+> Task :media_capture_ui:compileDebugShaders NO-SOURCE
+> Task :media_capture_ui:generateDebugAssets UP-TO-DATE
+> Task :media_capture_ui:mergeDebugAssets
+> Task :media_capture_ui:prepareDebugArtProfile
+> Task :media_capture_ui:prepareLintJarForPublish
+> Task :media_capture_ui:writeDebugAarMetadata
+> Task :media_capture_core:mergeDebugJniLibFolders
+> Task :media_capture_ui:processDebugManifest
+> Task :media_capture_core:mergeDebugNativeLibs NO-SOURCE
+> Task :media_capture_core:stripDebugDebugSymbols NO-SOURCE
+> Task :media_capture_core:copyDebugJniLibsProjectAndLocalJars
+> Task :media_capture_core:extractDeepLinksForAarDebug
+> Task :media_capture_core:mergeDebugShaders
+> Task :media_capture_core:compileDebugShaders NO-SOURCE
+> Task :media_capture_core:generateDebugAssets UP-TO-DATE
+> Task :media_capture_core:mergeDebugAssets
+> Task :media_capture_core:prepareDebugArtProfile
+> Task :media_capture_core:prepareLintJarForPublish
+> Task :preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :generateDebugAndroidTestResValues
+> Task :writeDebugLintModelMetadata
+> Task :media_capture_core:processDebugManifest
+> Task :media_capture_bridge:writeDebugLintModelMetadata
+> Task :media_capture_core:writeDebugLintModelMetadata
+> Task :media_capture_ui:writeDebugLintModelMetadata
+> Task :extractProguardFiles
+> Task :media_capture_bridge:extractProguardFiles
+> Task :media_capture_core:extractProguardFiles
+> Task :media_capture_ui:extractProguardFiles
+> Task :preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_bridge:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_bridge:generateDebugAndroidTestResValues
+> Task :media_capture_bridge:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugAndroidTestResValues
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_ui:preDebugAndroidTestBuild UP-TO-DATE
+> Task :media_capture_ui:generateDebugAndroidTestResValues
+> Task :media_capture_ui:preDebugUnitTestBuild UP-TO-DATE
+> Task :preReleaseBuild UP-TO-DATE
+> Task :mergeReleaseJniLibFolders
+> Task :mergeReleaseNativeLibs NO-SOURCE
+> Task :stripReleaseDebugSymbols NO-SOURCE
+> Task :copyReleaseJniLibsProjectAndLocalJars
+> Task :generateReleaseResValues
+> Task :extractDeepLinksForAarRelease
+> Task :generateReleaseResources
+> Task :packageReleaseResources
+> Task :media_capture_bridge:preReleaseBuild UP-TO-DATE
+> Task :media_capture_bridge:generateReleaseResValues
+> Task :parseReleaseLocalResources
+> Task :media_capture_bridge:generateReleaseResources
+> Task :generateReleaseRFile
+> Task :media_capture_bridge:packageReleaseResources
+> Task :media_capture_core:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:generateReleaseResValues
+> Task :media_capture_bridge:parseReleaseLocalResources
+> Task :media_capture_core:generateReleaseResources
+> Task :media_capture_bridge:generateReleaseRFile
+> Task :media_capture_core:packageReleaseResources
+> Task :media_capture_ui:preReleaseBuild UP-TO-DATE
+> Task :media_capture_core:parseReleaseLocalResources
+> Task :media_capture_core:javaPreCompileRelease
+> Task :media_capture_ui:generateReleaseResValues
+> Task :media_capture_ui:generateReleaseResources
+> Task :media_capture_core:generateReleaseRFile
+> Task :media_capture_ui:packageReleaseResources
+> Task :media_capture_ui:javaPreCompileRelease
+> Task :media_capture_ui:parseReleaseLocalResources
+> Task :media_capture_bridge:javaPreCompileRelease
+> Task :mergeReleaseShaders
+> Task :compileReleaseShaders NO-SOURCE
+> Task :generateReleaseAssets UP-TO-DATE
+> Task :mergeReleaseAssets
+> Task :media_capture_ui:generateReleaseRFile
+> Task :javaPreCompileRelease
+> Task :prepareReleaseArtProfile
+> Task :writeReleaseAarMetadata
+> Task :processReleaseManifest
+> Task :mapReleaseSourceSetPaths
+> Task :mergeReleaseResources
+> Task :media_capture_bridge:compileReleaseLibraryResources
+> Task :media_capture_core:compileReleaseLibraryResources
+> Task :media_capture_ui:compileReleaseLibraryResources
+> Task :compileDebugLibraryResources
+> Task :checkDebugAndroidTestAarMetadata
+> Task :mapDebugAndroidTestSourceSetPaths
+> Task :generateDebugAndroidTestResources
+> Task :extractDeepLinksDebug
+> Task :media_capture_bridge:extractDeepLinksDebug
+> Task :media_capture_core:extractDeepLinksDebug
+> Task :media_capture_ui:extractDeepLinksDebug
+> Task :processDebugAndroidTestManifest
+> Task :media_capture_core:compileDebugLibraryResources
+> Task :media_capture_bridge:compileDebugLibraryResources
+> Task :media_capture_ui:compileDebugLibraryResources
+> Task :javaPreCompileDebugAndroidTest
+> Task :mergeDebugAndroidTestShaders
+> Task :compileDebugAndroidTestShaders NO-SOURCE
+> Task :generateDebugAndroidTestAssets UP-TO-DATE
+> Task :mergeDebugAndroidTestResources
+> Task :mergeDebugAndroidTestAssets
+> Task :compressDebugAndroidTestAssets
+> Task :desugarDebugAndroidTestFileDependencies
+> Task :copyDebugJniLibsProjectOnly
+> Task :mergeDebugAndroidTestJniLibFolders
+> Task :media_capture_bridge:copyDebugJniLibsProjectOnly
+> Task :media_capture_core:copyDebugJniLibsProjectOnly
+> Task :media_capture_ui:copyDebugJniLibsProjectOnly
+> Task :validateSigningDebugAndroidTest
+> Task :checkDebugAndroidTestDuplicateClasses
+> Task :mergeDebugAndroidTestNativeLibs
+> Task :verifyReleaseResources
+> Task :writeDebugAndroidTestSigningConfigVersions
+> Task :stripDebugAndroidTestDebugSymbols
+> Task :processDebugAndroidTestResources
+> Task :media_capture_core:compileReleaseKotlin
+> Task :media_capture_core:compileDebugKotlin
+> Task :media_capture_core:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_core:extractDebugAnnotations
+> Task :media_capture_core:mergeDebugGeneratedProguardFiles
+> Task :media_capture_core:mergeDebugConsumerProguardFiles
+> Task :media_capture_core:bundleLibCompileToJarDebug
+> Task :media_capture_core:processDebugJavaRes
+> Task :media_capture_core:mergeDebugJavaResource
+> Task :media_capture_core:generateDebugLintModel
+> Task :media_capture_core:bundleLibRuntimeToJarDebug
+> Task :media_capture_core:syncDebugLibJars
+> Task :media_capture_core:bundleDebugLocalLintAar
+> Task :media_capture_core:createFullJarDebug
+> Task :media_capture_core:generateDebugAndroidTestLintModel
+> Task :media_capture_core:generateDebugUnitTestLintModel
+> Task :media_capture_core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_core:bundleLibCompileToJarRelease
+> Task :mergeExtDexDebugAndroidTest
+> Task :media_capture_core:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileDebugKotlin
+> Task :media_capture_ui:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:extractDebugAnnotations
+> Task :media_capture_ui:mergeDebugGeneratedProguardFiles
+> Task :media_capture_ui:mergeDebugConsumerProguardFiles
+> Task :media_capture_ui:bundleLibCompileToJarDebug
+> Task :media_capture_ui:processDebugJavaRes
+> Task :media_capture_ui:mergeDebugJavaResource
+> Task :media_capture_ui:bundleLibRuntimeToJarDebug
+> Task :media_capture_ui:generateDebugLintModel
+> Task :media_capture_ui:syncDebugLibJars
+> Task :media_capture_ui:bundleDebugLocalLintAar
+> Task :media_capture_ui:createFullJarDebug
+> Task :media_capture_ui:generateDebugAndroidTestLintModel
+> Task :media_capture_ui:generateDebugUnitTestLintModel
+> Task :media_capture_ui:lintAnalyzeDebugAndroidTest
+> Task :media_capture_ui:compileReleaseKotlin
+> Task :media_capture_ui:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_ui:bundleLibCompileToJarRelease
+> Task :media_capture_bridge:compileDebugKotlin
+> Task :media_capture_bridge:compileDebugJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:extractDebugAnnotations
+> Task :media_capture_bridge:mergeDebugGeneratedProguardFiles
+> Task :media_capture_bridge:mergeDebugConsumerProguardFiles
+> Task :media_capture_bridge:processDebugJavaRes
+> Task :media_capture_bridge:bundleLibCompileToJarDebug
+> Task :media_capture_bridge:mergeDebugJavaResource
+> Task :media_capture_bridge:bundleLibRuntimeToJarDebug
+> Task :media_capture_bridge:generateDebugLintModel
+> Task :compileDebugKotlin NO-SOURCE
+> Task :extractDebugAnnotations
+> Task :compileDebugJavaWithJavac NO-SOURCE
+> Task :mergeDebugGeneratedProguardFiles
+> Task :mergeDebugConsumerProguardFiles
+> Task :processDebugJavaRes NO-SOURCE
+> Task :mergeDebugJavaResource
+> Task :media_capture_bridge:syncDebugLibJars
+> Task :syncDebugLibJars
+> Task :bundleDebugLocalLintAar
+> Task :media_capture_bridge:bundleDebugLocalLintAar
+> Task :bundleLibRuntimeToJarDebug
+> Task :media_capture_bridge:createFullJarDebug
+> Task :createFullJarDebug
+> Task :generateDebugAndroidTestLintModel
+> Task :generateDebugLintReportModel
+> Task :generateDebugUnitTestLintModel
+> Task :media_capture_bridge:generateDebugAndroidTestLintModel
+> Task :media_capture_bridge:generateDebugUnitTestLintModel
+> Task :bundleDebugAar
+> Task :assembleDebug
+> Task :bundleLibCompileToJarDebug
+> Task :media_capture_ui:lintAnalyzeDebugUnitTest
+> Task :media_capture_bridge:compileReleaseKotlin
+> Task :media_capture_bridge:compileReleaseJavaWithJavac NO-SOURCE
+> Task :media_capture_bridge:bundleLibCompileToJarRelease
+> Task :compileReleaseKotlin NO-SOURCE
+> Task :extractReleaseAnnotations
+> Task :compileReleaseJavaWithJavac NO-SOURCE
+> Task :mergeReleaseGeneratedProguardFiles
+> Task :mergeReleaseConsumerProguardFiles
+> Task :processReleaseJavaRes NO-SOURCE
+> Task :mergeReleaseJavaResource
+> Task :syncReleaseLibJars
+> Task :bundleReleaseAar
+> Task :assembleRelease
+> Task :media_capture_core:lintAnalyzeDebugUnitTest
+> Task :compileDebugAndroidTestKotlin
+> Task :compileDebugAndroidTestJavaWithJavac NO-SOURCE
+> Task :processDebugAndroidTestJavaRes
+> Task :lintAnalyzeDebugUnitTest
+> Task :dexBuilderDebugAndroidTest
+> Task :mergeProjectDexDebugAndroidTest
+> Task :lintAnalyzeDebugAndroidTest
+> Task :mergeDebugAndroidTestJavaResource
+> Task :media_capture_bridge:lintAnalyzeDebugAndroidTest
+> Task :mergeLibDexDebugAndroidTest
+> Task :media_capture_core:lintAnalyzeDebug
+> Task :packageDebugAndroidTest
+> Task :createDebugAndroidTestApkListingFileRedirect
+> Task :assembleDebugAndroidTest
+> Task :media_capture_bridge:lintAnalyzeDebugUnitTest
+> Task :media_capture_ui:lintAnalyzeDebug
+> Task :media_capture_bridge:lintAnalyzeDebug
+> Task :lintAnalyzeDebug
+> Task :lintReportDebug
+> Task :lintDebug
+> Task :lint
+
+BUILD SUCCESSFUL in 17s
+230 actionable tasks: 230 executed
+
+[media-capture-android] Check optional emulator test layer
+[media-capture-android] no ready emulator; connectedDebugAndroidTest not run
+
+[media-capture-android] PASS
+[media-capture-android] static Android gate passed; Host and physical-device validation remain separate
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```

@@ -8,3 +8,4 @@ export 'network/api_response.dart';
 export 'network/api_transport.dart';
 export 'network/api_transport_exception.dart';
 export 'network/secret.dart';
+export 'value/media_resource_id.dart';

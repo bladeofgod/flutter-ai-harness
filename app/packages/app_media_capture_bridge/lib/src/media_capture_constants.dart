@@ -1,0 +1,21 @@
+const int mediaCaptureWireVersion = 3;
+const String mediaCaptureCommandsChannel = 'com.example.media_capture.commands';
+const String mediaCaptureEventsChannel = 'com.example.media_capture.events';
+
+const String methodStartSession = 'start_session';
+const String methodTakePhoto = 'take_photo';
+const String methodStartRecording = 'start_recording';
+const String methodStopRecording = 'stop_recording';
+const String methodSwitchCamera = 'switch_camera';
+const String methodSetFlashMode = 'set_flash_mode';
+const String methodSetFocusPoint = 'set_focus_point';
+const String methodSetZoom = 'set_zoom';
+const String methodRetake = 'retake';
+const String methodConfirm = 'confirm';
+const String methodCancel = 'cancel';
+const String methodReleaseMedia = 'release_media';
+const String methodReadMediaThumbnail = 'read_media_thumbnail';
+const String methodPresentCaptureFlow = 'present_capture_flow';
+const String methodDismissCaptureFlow = 'dismiss_capture_flow';
+const String methodMaterializeMediaResource = 'materialize_media_resource';
+const String methodReleaseMaterializedMedia = 'release_materialized_media';

@@ -12,18 +12,25 @@ evidence="$FIXTURE_ROOT/evidence.log"
 private_unix="/Use""rs/alice/project"
 private_windows='C:\Use''rs\bob\project'
 multiline_argument=$'line-one   \nline-two\r\tend'
+xcode_device='{ platform:iOS, arch:arm64, id:fixture-device-id, name:Fixture iPhone, error:iOS is not installed. }'
+xcode_mac='{ platform:macOS, arch:arm64, id:fixture-host-id, name:Fixture Mac }'
+result_bundle='/var/folders/fixture/session/T/ResultBundle.xcresult'
 bash "$ROOT/scripts/quality/capture-evidence.sh" "$evidence" -- \
-  bash -c 'printf "%s\n" "path=$1" "windows=$2" "Authorization: Bearer fixture-bearer" "token=fixture-token" "api_key=fixture-api-key" "ghp_12345678901234567890" "-----BEGIN PRIVATE KEY-----" "fixture-private-key" "-----END PRIVATE KEY-----" "kept-output"' \
-  fixture "$private_unix" "$private_windows" 'value   ' "$multiline_argument"
+  bash -c 'printf "%s\n" "path=$1" "windows=$2" "Authorization: Bearer fixture-bearer" "token=fixture-token" "api_key=fixture-api-key" "ghp_12345678901234567890" "-----BEGIN PRIVATE KEY-----" "fixture-private-key" "-----END PRIVATE KEY-----" "$3" "$4" "$5" "kept-output"' \
+  fixture "$private_unix" "$private_windows" "$xcode_device" "$xcode_mac" \
+  "$result_bundle" 'value   ' "$multiline_argument"
 
 rg -q 'kept-output' "$evidence"
 rg -q '<home>/project' "$evidence"
 rg -q 'token=<redacted>' "$evidence"
 rg -q 'Authorization: Bearer <redacted>' "$evidence"
 rg -q '<redacted-private-key>' "$evidence"
+rg -q 'id:<redacted-device-id>' "$evidence"
+rg -q 'name:<redacted-device-name>' "$evidence"
+rg -q '<temporary-path>' "$evidence"
 rg -Fq "'value   '" "$evidence"
 rg -Fq "\$'line-one   \\nline-two\\r\\tend'" "$evidence"
-if rg -q 'alice|bob|fixture-bearer|fixture-token|fixture-api-key|fixture-private-key|ghp_' "$evidence"; then
+if rg -q 'alice|bob|fixture-bearer|fixture-token|fixture-api-key|fixture-private-key|ghp_|fixture-device-id|fixture-host-id|Fixture iPhone|Fixture Mac|/var/folders/' "$evidence"; then
   echo "错误：证据采集器未脱敏 Fixture。" >&2
   exit 1
 fi
@@ -52,6 +59,13 @@ printf '%s\n' "${private_unix%/project}/raw" "${private_windows%\\project}\\raw"
   > "$FIXTURE_ROOT/unsafe.log"
 if bash "$ROOT/scripts/quality/evidence-lint.sh" "$FIXTURE_ROOT/unsafe.log" >/dev/null 2>&1; then
   echo "错误：evidence lint 未拒绝原始路径和凭据。" >&2
+  exit 1
+fi
+
+printf '%s\n' "$xcode_device" "$xcode_mac" "$result_bundle" \
+  > "$FIXTURE_ROOT/unsafe-xcode.log"
+if bash "$ROOT/scripts/quality/evidence-lint.sh" "$FIXTURE_ROOT/unsafe-xcode.log" >/dev/null 2>&1; then
+  echo "错误：evidence lint 未拒绝 Xcode 设备标识和本机临时路径。" >&2
   exit 1
 fi
 

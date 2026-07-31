@@ -1,0 +1,1507 @@
+{
+  "$schema": "../../native/contracts/capability.schema.json",
+  "contractId": "media_capture",
+  "capabilityVersion": 4,
+  "versionHistory": [
+    {
+      "version": 1,
+      "changeKind": "baseline",
+      "compatibleWith": [1],
+      "description": "Established capture sessions, confirmed media leases, callback-scoped native reads, ownership, permission, lifecycle, and stable failure semantics."
+    },
+    {
+      "version": 2,
+      "changeKind": "additive",
+      "compatibleWith": [1, 2],
+      "description": "Adds native-only render attachments and a sanitized bounded thumbnail copy while preserving every Version 1 operation and state semantic."
+    },
+    {
+      "version": 3,
+      "changeKind": "additive",
+      "compatibleWith": [1, 2, 3],
+      "description": "Adds module-defined concrete platform render surfaces with actual mount, lifecycle gate, ownership, and revoke semantics while preserving every Version 1 and Version 2 operation, state, failure, lease, thumbnail, and handle semantic."
+    },
+    {
+      "version": 4,
+      "changeKind": "additive",
+      "compatibleWith": [1, 2, 3, 4],
+      "description": "Adds bounded streaming export from active confirmed media to a caller-scoped native sink while preserving every Version 1 through Version 3 operation, state, render, thumbnail, lease, and handle semantic."
+    }
+  ],
+  "platform": {
+    "supported": ["android", "ios"],
+    "semanticParity": "required",
+    "differences": [
+      {
+        "platform": "android",
+        "id": "android_permission_retry_resolution",
+        "description": "A retryable denial and a settings-required denial are distinguished only when prior request history and current system prompt eligibility make that conclusion reliable."
+      },
+      {
+        "platform": "android",
+        "id": "android_private_cache_mapping",
+        "description": "Temporary media is stored under the application-private cache area selected by the module."
+      },
+      {
+        "platform": "android",
+        "id": "android_module_render_surface",
+        "description": "The module-defined MediaCaptureRenderView internally owns PreviewView, SurfaceProvider, photo content, and the video player surface; the native owner sees only the concrete outer surface."
+      },
+      {
+        "platform": "ios",
+        "id": "ios_permission_retry_resolution",
+        "description": "A system denial that cannot present the authorization prompt again maps to permanently_denied; policy-managed denial maps to restricted."
+      },
+      {
+        "platform": "ios",
+        "id": "ios_private_cache_mapping",
+        "description": "Temporary media is stored under an application-private temporary or cache area selected by the module."
+      },
+      {
+        "platform": "ios",
+        "id": "ios_module_render_surface",
+        "description": "The independent MediaCaptureAppleRendering product exposes MediaCaptureRenderView while capture preview, photo content, and player layers remain module-owned internals."
+      }
+    ]
+  },
+  "operation": [
+    {
+      "id": "start_session",
+      "description": "Creates a cancellable session immediately; readiness or terminal setup failure is delivered by event.",
+      "requestId": "start_session_request",
+      "resultId": "session_created",
+      "resultScope": "session",
+      "eventIds": ["session_ready", "session_failed"],
+      "failureIds": ["invalid_argument", "permission_denied", "permission_restricted", "permission_permanently_denied", "resource_in_use", "storage_full", "unsupported_capability", "system_interrupted", "session_conflict"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["idle"]}]
+    },
+    {
+      "id": "take_photo",
+      "description": "Captures one photo and creates one module-owned preview handle.",
+      "requestId": "session_action_request",
+      "resultId": "media_preview",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "storage_full", "encoding_failed", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready"]}]
+    },
+    {
+      "id": "start_recording",
+      "description": "Starts video recording; duration-limit completion is delivered as media_preview_ready.",
+      "requestId": "session_action_request",
+      "resultId": "recording_started",
+      "resultScope": "session",
+      "eventIds": ["media_preview_ready", "session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "permission_denied", "permission_restricted", "permission_permanently_denied", "resource_in_use", "storage_full", "encoding_failed", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready"]}]
+    },
+    {
+      "id": "stop_recording",
+      "description": "Stops recording and returns its preview; repeated calls while previewing return the same preview without creating a file.",
+      "requestId": "session_action_request",
+      "resultId": "media_preview",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "encoding_failed", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["recording", "previewing"]}]
+    },
+    {
+      "id": "switch_camera",
+      "description": "Switches to another camera declared by the session_ready capability snapshot.",
+      "requestId": "session_action_request",
+      "resultId": "control_applied",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "resource_in_use", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready"]}]
+    },
+    {
+      "id": "set_flash_mode",
+      "description": "Applies a flash mode declared by the session_ready capability snapshot.",
+      "requestId": "flash_mode_request",
+      "resultId": "control_applied",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready", "recording"]}]
+    },
+    {
+      "id": "set_focus_point",
+      "description": "Applies a normalized focus point when declared supported by session_ready.",
+      "requestId": "focus_point_request",
+      "resultId": "control_applied",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready", "recording"]}]
+    },
+    {
+      "id": "set_zoom",
+      "description": "Applies a finite zoom factor inside the session_ready minimum and maximum; out-of-range input is rejected.",
+      "requestId": "zoom_request",
+      "resultId": "control_applied",
+      "resultScope": "session",
+      "eventIds": ["session_failed"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "unsupported_capability", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready", "recording"]}]
+    },
+    {
+      "id": "retake",
+      "description": "Deletes the current unconfirmed preview and returns the session to ready.",
+      "requestId": "media_handle_request",
+      "resultId": "retake_ready",
+      "resultScope": "session",
+      "eventIds": [],
+      "failureIds": ["session_invalid", "media_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["session", "media"],
+      "validFrom": [{"scope": "session", "states": ["previewing"]}, {"scope": "media", "states": ["preview"]}]
+    },
+    {
+      "id": "confirm",
+      "description": "Ends capture and transfers a time-limited logical lease while physical storage remains module-owned.",
+      "requestId": "media_handle_request",
+      "resultId": "confirmed_media",
+      "resultScope": "session",
+      "eventIds": ["media_lease_expired", "media_read_revoked"],
+      "failureIds": ["session_invalid", "media_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["session", "media"],
+      "validFrom": [{"scope": "session", "states": ["previewing"]}, {"scope": "media", "states": ["preview"]}]
+    },
+    {
+      "id": "cancel",
+      "description": "Returns cancellation, never Failure; repeated calls reuse the cancelled tombstone result during its recognition window.",
+      "requestId": "session_action_request",
+      "resultId": "session_cancelled",
+      "resultScope": "session",
+      "eventIds": [],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["requesting_permission", "preparing", "ready", "recording", "previewing", "cancelled"]}]
+    },
+    {
+      "id": "open_media_read",
+      "description": "Opens callback-scoped read-only access only while a lease is active; grace states reject new reads.",
+      "requestId": "media_handle_request",
+      "resultId": "scoped_media_read",
+      "resultScope": "media",
+      "eventIds": ["media_read_revoked"],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["leased"]}]
+    },
+    {
+      "id": "release_media",
+      "description": "Ends the lease, denies new reads, and starts a bounded read grace; repeats reuse the tombstone result until expiry.",
+      "requestId": "media_handle_request",
+      "resultId": "media_released",
+      "resultScope": "media",
+      "eventIds": ["media_read_revoked"],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["leased", "release_grace", "released"]}]
+    },
+    {
+      "id": "attach_live_preview",
+      "description": "Binds one callback resource adapter to a ready or recording session for one UI owner generation.",
+      "requestId": "live_preview_attachment_request",
+      "resultId": "render_attachment_attached",
+      "resultScope": "session",
+      "eventIds": ["render_attachment_revoked"],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument", "attachment_generation_retired", "attachment_target_conflict", "system_interrupted"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["ready", "recording"]}]
+    },
+    {
+      "id": "detach_live_preview",
+      "description": "Idempotently revokes the matching live preview attachment generation.",
+      "requestId": "live_preview_detach_request",
+      "resultId": "render_attachment_detached",
+      "resultScope": "session",
+      "eventIds": [],
+      "failureIds": ["session_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["session"],
+      "validFrom": [{"scope": "session", "states": ["requesting_permission", "preparing", "ready", "recording", "previewing", "completed", "cancelled", "failed"]}]
+    },
+    {
+      "id": "attach_unconfirmed_preview_render",
+      "description": "Binds one callback resource adapter to one unconfirmed preview for one UI owner generation.",
+      "requestId": "unconfirmed_preview_attachment_request",
+      "resultId": "render_attachment_attached",
+      "resultScope": "media",
+      "eventIds": ["render_attachment_revoked"],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument", "attachment_generation_retired", "attachment_target_conflict", "system_interrupted"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["preview"]}]
+    },
+    {
+      "id": "detach_unconfirmed_preview_render",
+      "description": "Idempotently revokes the matching unconfirmed preview attachment generation.",
+      "requestId": "unconfirmed_preview_detach_request",
+      "resultId": "render_attachment_detached",
+      "resultScope": "media",
+      "eventIds": [],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["preview", "leased", "release_grace", "expiry_grace", "discarded", "released", "expired"]}]
+    },
+    {
+      "id": "read_media_thumbnail",
+      "description": "Creates one sanitized bounded copy from confirmed media while its lease remains active.",
+      "requestId": "media_thumbnail_request",
+      "resultId": "media_thumbnail",
+      "resultScope": "media",
+      "eventIds": [],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument", "thumbnail_generation_failed", "thumbnail_generation_cancelled", "thumbnail_overloaded"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["leased"]}]
+    },
+    {
+      "id": "copy_confirmed_media_to_sink",
+      "description": "Copies active confirmed media through bounded sequential chunks into one caller-scoped native sink without exposing storage identity.",
+      "requestId": "media_export_request",
+      "resultId": "media_export_result",
+      "resultScope": "media",
+      "eventIds": [],
+      "failureIds": ["media_invalid", "invalid_state", "invalid_argument", "system_interrupted", "media_export_conflict", "media_export_overloaded", "media_export_too_large", "media_export_sink_rejected", "media_export_read_failed", "media_export_write_failed", "media_export_cancelled", "media_export_timed_out"],
+      "scopes": ["media"],
+      "validFrom": [{"scope": "media", "states": ["leased"]}]
+    }
+  ],
+  "field": [
+    {
+      "id": "enabled_media_types",
+      "description": "Non-empty subset of photo and video enabled for the session.",
+      "valueType": "string_list",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["photo", "video"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": 1, "maxItems": 2, "format": "none", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "preferred_camera",
+      "description": "Preferred initial camera with implementation fallback when unavailable.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["rear", "front"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "audio_enabled",
+      "description": "Whether video recording may include microphone audio.",
+      "valueType": "boolean",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "max_video_duration_millis",
+      "description": "Video duration limit from 1 through 60000 milliseconds.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 60000, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "duration_millis", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "session_handle",
+      "description": "Opaque registry key for one module-instance session.",
+      "valueType": "opaque_id",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "opaque_handle", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "flash_mode",
+      "description": "Requested flash behavior.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["off", "on", "auto", "torch"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "normalized_x",
+      "description": "Horizontal focus coordinate in the inclusive range zero through one.",
+      "valueType": "decimal",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0, "maximum": 1, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "normalized_coordinate", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "normalized_y",
+      "description": "Vertical focus coordinate in the inclusive range zero through one.",
+      "valueType": "decimal",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0, "maximum": 1, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "normalized_coordinate", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "zoom_factor",
+      "description": "Finite zoom value bounded by the session_ready snapshot.",
+      "valueType": "decimal",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "zoom_factor", "boundarySource": "session_zoom_range", "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "media_handle",
+      "description": "Opaque registry key for one module-instance media resource.",
+      "valueType": "opaque_id",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "opaque_handle", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "active_camera",
+      "description": "Camera selected after availability fallback.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["rear", "front"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "available_cameras",
+      "description": "Non-empty camera positions available to this session.",
+      "valueType": "string_list",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["rear", "front"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": 1, "maxItems": 2, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "switch_camera_supported",
+      "description": "Whether the session can switch between available cameras.",
+      "valueType": "boolean",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "supported_flash_modes",
+      "description": "Flash modes supported by the active camera and media mode.",
+      "valueType": "string_list",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["off", "on", "auto", "torch"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": 1, "maxItems": 4, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "focus_point_supported",
+      "description": "Whether normalized point focus is available.",
+      "valueType": "boolean",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "min_zoom_factor",
+      "description": "Finite positive inclusive minimum zoom factor.",
+      "valueType": "decimal",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0.01, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "zoom_bound", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "max_zoom_factor",
+      "description": "Finite positive inclusive maximum zoom factor.",
+      "valueType": "decimal",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0.01, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "zoom_bound", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "audio_included",
+      "description": "Whether microphone audio is present in the recording.",
+      "valueType": "boolean",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "media_type",
+      "description": "Kind of captured media.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["photo", "video"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "pixel_width",
+      "description": "Positive encoded pixel width after orientation handling.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "pixel_dimension", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "pixel_height",
+      "description": "Positive encoded pixel height after orientation handling.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "pixel_dimension", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "duration_millis",
+      "description": "Null for photos and a positive finite duration for video.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": true,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 60000, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "duration_millis", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": [{"whenFieldId": "media_type", "operator": "equals", "value": "photo", "effect": "must_be_null"}, {"whenFieldId": "media_type", "operator": "equals", "value": "video", "effect": "must_be_non_null"}]}
+    },
+    {
+      "id": "orientation_degrees",
+      "description": "Clockwise display orientation limited to canonical right-angle values.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": null, "maximum": null, "allowedIntegers": [0, 90, 180, 270], "minItems": null, "maxItems": null, "format": "orientation_degrees", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "byte_length",
+      "description": "Positive encoded file length in bytes.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "byte_length", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "lease_expires_at",
+      "description": "Non-negative absolute lease expiration instant in epoch milliseconds.",
+      "valueType": "timestamp",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "unix_epoch_millis", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "read_access",
+      "description": "Callback-scoped read access that cannot outlive the module-controlled scope.",
+      "valueType": "scoped_read_access",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "scoped_read_access", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "content_type",
+      "description": "Registered MIME content type for the encoded media.",
+      "valueType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "mime_type", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "terminal_failure_id",
+      "description": "Stable terminal capability Failure identifier delivered by session_failed.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["permission_denied", "permission_restricted", "permission_permanently_denied", "resource_in_use", "storage_full", "encoding_failed", "system_interrupted", "session_timeout"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "render_target_adapter",
+      "description": "Native-only callback resource implemented by a module-defined concrete platform surface; its outer lifecycle is consumer-owned while backing target, source, renderer, and mount binding remain module-private.",
+      "valueType": "callback_resource",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "render_target_adapter", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "owner_generation",
+      "description": "Positive monotonically increasing generation selected by the UI owner for stale callback rejection.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 9223372036854775807, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "owner_generation", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "attachment_kind",
+      "description": "Native render attachment kind.",
+      "valueType": "enum",
+      "required": true,
+      "nullable": false,
+      "enumValues": ["live_preview", "unconfirmed_preview"],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "none", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "max_pixel_edge",
+      "description": "Requested inclusive thumbnail edge limit from 64 through 512 pixels.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 64, "maximum": 512, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "pixel_dimension", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_copy",
+      "description": "Caller-owned bounded encoded copy that is not the source media representation.",
+      "valueType": "bounded_copy",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "caller_owned_bounded_copy", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_byte_length",
+      "description": "Actual bounded copy length from 1 through 524288 bytes.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 524288, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "byte_length", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_pixel_width",
+      "description": "Upright thumbnail width bounded by the request and 512-pixel global limit.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 512, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "pixel_dimension", "boundarySource": "max_pixel_edge", "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_pixel_height",
+      "description": "Upright thumbnail height bounded by the request and 512-pixel global limit.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 512, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "pixel_dimension", "boundarySource": "max_pixel_edge", "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_content_type",
+      "description": "Closed sanitized thumbnail content type.",
+      "valueType": "string",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "image_jpeg_content_type", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "thumbnail_orientation_degrees",
+      "description": "Thumbnail pixels are physically upright and always declare zero orientation.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": null, "maximum": null, "allowedIntegers": [0], "minItems": null, "maxItems": null, "format": "orientation_degrees", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    },
+    {
+      "id": "poster_frame_millis",
+      "description": "Null for photos and the actual selected video frame timestamp in milliseconds.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": true,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 0, "maximum": 60000, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "duration_millis", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": [{"whenFieldId": "media_type", "operator": "equals", "value": "photo", "effect": "must_be_null"}, {"whenFieldId": "media_type", "operator": "equals", "value": "video", "effect": "must_be_non_null"}]}
+    },
+    {
+      "id": "media_copy_sink",
+      "description": "Caller-scoped typed native sink capability that cannot be serialized, retained by the module, or represented by a storage path, locator, descriptor, or platform object.",
+      "valueType": "sink_capability",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": false, "minimum": null, "maximum": null, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "native_only_sink_capability", "boundarySource": null, "outOfRangePolicy": "not_applicable", "conditionalRules": []}
+    },
+    {
+      "id": "media_export_max_length",
+      "description": "Positive caller-declared maximum accepted export length capped at fifty mebibytes.",
+      "valueType": "integer",
+      "required": true,
+      "nullable": false,
+      "enumValues": [],
+      "validation": {"finite": true, "minimum": 1, "maximum": 52428800, "allowedIntegers": [], "minItems": null, "maxItems": null, "format": "byte_length", "boundarySource": null, "outOfRangePolicy": "reject", "conditionalRules": []}
+    }
+  ],
+  "request": [
+    {"id": "start_session_request", "description": "Options selected before explicit user action starts capture.", "fieldIds": ["enabled_media_types", "preferred_camera", "audio_enabled", "max_video_duration_millis"]},
+    {"id": "session_action_request", "description": "Identifies one active or recognized session.", "fieldIds": ["session_handle"]},
+    {"id": "flash_mode_request", "description": "Identifies the session and requested flash behavior.", "fieldIds": ["session_handle", "flash_mode"]},
+    {"id": "focus_point_request", "description": "Identifies the session and normalized focus point.", "fieldIds": ["session_handle", "normalized_x", "normalized_y"]},
+    {"id": "zoom_request", "description": "Identifies the session and finite zoom factor.", "fieldIds": ["session_handle", "zoom_factor"]},
+    {"id": "media_handle_request", "description": "Identifies module-created media without revealing storage.", "fieldIds": ["media_handle"]},
+    {"id": "live_preview_attachment_request", "description": "Identifies a ready or recording session and binds a render adapter to one owner generation.", "fieldIds": ["session_handle", "render_target_adapter", "owner_generation"]},
+    {"id": "live_preview_detach_request", "description": "Identifies a live preview generation and exact adapter identity to revoke idempotently.", "fieldIds": ["session_handle", "render_target_adapter", "owner_generation"]},
+    {"id": "unconfirmed_preview_attachment_request", "description": "Identifies one preview media handle and binds a render adapter to one owner generation.", "fieldIds": ["media_handle", "render_target_adapter", "owner_generation"]},
+    {"id": "unconfirmed_preview_detach_request", "description": "Identifies an unconfirmed preview generation and exact adapter identity to revoke idempotently.", "fieldIds": ["media_handle", "render_target_adapter", "owner_generation"]},
+    {"id": "media_thumbnail_request", "description": "Requests a sanitized thumbnail from an opaque confirmed media handle with an explicit edge bound.", "fieldIds": ["media_handle", "max_pixel_edge"]},
+    {"id": "media_export_request", "description": "Requests one bounded streaming copy from active confirmed media into a caller-scoped native sink.", "fieldIds": ["media_handle", "media_copy_sink", "media_export_max_length"]}
+  ],
+  "result": [
+    {"id": "session_created", "description": "Immediate cancellable session creation result.", "fieldIds": ["session_handle"]},
+    {"id": "control_applied", "description": "Requested in-session control was applied.", "fieldIds": ["session_handle"]},
+    {"id": "recording_started", "description": "Video recording entered its active state.", "fieldIds": ["session_handle", "audio_included"]},
+    {"id": "media_preview", "description": "Unconfirmed module-owned media preview.", "fieldIds": ["media_handle", "media_type", "pixel_width", "pixel_height", "duration_millis", "orientation_degrees", "byte_length"]},
+    {"id": "retake_ready", "description": "Preview was deleted and the session can capture again.", "fieldIds": ["session_handle"]},
+    {"id": "confirmed_media", "description": "Metadata and logical lease for confirmed module-owned media.", "fieldIds": ["media_handle", "media_type", "pixel_width", "pixel_height", "duration_millis", "orientation_degrees", "byte_length", "lease_expires_at"]},
+    {"id": "session_cancelled", "description": "User ended capture without a media lease.", "fieldIds": ["session_handle"]},
+    {"id": "scoped_media_read", "description": "Read-only access bounded by the module callback scope.", "fieldIds": ["media_handle", "read_access", "byte_length", "content_type"]},
+    {"id": "media_released", "description": "Logical lease ended and no new reads are accepted.", "fieldIds": ["media_handle"]},
+    {"id": "render_attachment_attached", "description": "One native-only render attachment generation is active.", "fieldIds": ["attachment_kind", "owner_generation"]},
+    {"id": "render_attachment_detached", "description": "The matching render attachment generation is revoked or already absent.", "fieldIds": ["attachment_kind", "owner_generation"]},
+    {"id": "media_thumbnail", "description": "Sanitized upright JPEG copy with bounded dimensions and byte length.", "fieldIds": ["media_handle", "thumbnail_copy", "thumbnail_byte_length", "thumbnail_pixel_width", "thumbnail_pixel_height", "thumbnail_content_type", "thumbnail_orientation_degrees", "media_type", "poster_frame_millis"]},
+    {"id": "media_export_result", "description": "Metadata for the source whose bytes were fully committed into the caller-scoped sink.", "fieldIds": ["media_handle", "media_type", "content_type", "byte_length"]}
+  ],
+  "event": [
+    {"id": "session_ready", "description": "Session resources are ready with a control-capability snapshot.", "fieldIds": ["session_handle", "active_camera", "available_cameras", "switch_camera_supported", "supported_flash_modes", "focus_point_supported", "min_zoom_factor", "max_zoom_factor"]},
+    {"id": "session_failed", "description": "Session ended because a typed terminal Failure occurred.", "fieldIds": ["session_handle", "terminal_failure_id"]},
+    {"id": "media_preview_ready", "description": "Automatic duration stop created an unconfirmed preview.", "fieldIds": ["session_handle", "media_handle", "media_type", "pixel_width", "pixel_height", "duration_millis", "orientation_degrees", "byte_length"]},
+    {"id": "media_lease_expired", "description": "Lease ended and no new read scopes may open.", "fieldIds": ["media_handle"]},
+    {"id": "media_read_revoked", "description": "Read grace ended; active reads were revoked and storage deletion completed.", "fieldIds": ["media_handle"]},
+    {"id": "render_attachment_revoked", "description": "The active render generation was revoked before detach and cleanup.", "fieldIds": ["attachment_kind", "owner_generation"]}
+  ],
+  "stateMachines": [
+    {
+      "id": "session",
+      "description": "One capture invocation; completed sessions do not block later sessions.",
+      "multiplicity": "single_active",
+      "initial": "idle",
+      "terminal": ["completed", "cancelled", "failed"],
+      "items": [
+        {"id": "idle", "description": "New session before start.", "terminal": false},
+        {"id": "requesting_permission", "description": "Required authorization is resolving.", "terminal": false},
+        {"id": "preparing", "description": "Capture resources are preparing.", "terminal": false},
+        {"id": "ready", "description": "Session can capture.", "terminal": false},
+        {"id": "recording", "description": "Video encoding is active.", "terminal": false},
+        {"id": "previewing", "description": "One unconfirmed preview exists.", "terminal": false},
+        {"id": "completed", "description": "Capture ended with a media lease.", "terminal": true},
+        {"id": "cancelled", "description": "User ended capture; tombstone supports bounded repeat cancellation.", "terminal": true},
+        {"id": "failed", "description": "Typed terminal Failure ended capture.", "terminal": true}
+      ],
+      "transitions": [
+        {"triggerKind": "operation", "triggerId": "start_session", "fromStates": ["idle"], "toState": "requesting_permission", "outcome": "success", "emission": {"kind": "result", "id": "session_created"}},
+        {"triggerKind": "lifecycle", "triggerId": "permission_resolved", "fromStates": ["requesting_permission"], "toState": "preparing", "outcome": "success", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "lifecycle", "triggerId": "resources_ready", "fromStates": ["preparing"], "toState": "ready", "outcome": "success", "emission": {"kind": "event", "id": "session_ready"}},
+        {"triggerKind": "operation", "triggerId": "take_photo", "fromStates": ["ready"], "toState": "previewing", "outcome": "success", "emission": {"kind": "result", "id": "media_preview"}},
+        {"triggerKind": "operation", "triggerId": "start_recording", "fromStates": ["ready"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "recording_started"}},
+        {"triggerKind": "operation", "triggerId": "stop_recording", "fromStates": ["recording", "previewing"], "toState": "previewing", "outcome": "success", "emission": {"kind": "result", "id": "media_preview"}},
+        {"triggerKind": "lifecycle", "triggerId": "video_duration_reached", "fromStates": ["recording"], "toState": "previewing", "outcome": "success", "emission": {"kind": "event", "id": "media_preview_ready"}},
+        {"triggerKind": "operation", "triggerId": "switch_camera", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_flash_mode", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_flash_mode", "fromStates": ["recording"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_focus_point", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_focus_point", "fromStates": ["recording"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_zoom", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "set_zoom", "fromStates": ["recording"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "control_applied"}},
+        {"triggerKind": "operation", "triggerId": "attach_live_preview", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_attached"}},
+        {"triggerKind": "operation", "triggerId": "attach_live_preview", "fromStates": ["recording"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_attached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["requesting_permission"], "toState": "requesting_permission", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["preparing"], "toState": "preparing", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["ready"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["recording"], "toState": "recording", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["previewing"], "toState": "previewing", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["completed"], "toState": "completed", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["cancelled"], "toState": "cancelled", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_live_preview", "fromStates": ["failed"], "toState": "failed", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "retake", "fromStates": ["previewing"], "toState": "ready", "outcome": "success", "emission": {"kind": "result", "id": "retake_ready"}},
+        {"triggerKind": "operation", "triggerId": "confirm", "fromStates": ["previewing"], "toState": "completed", "outcome": "success", "emission": {"kind": "result", "id": "confirmed_media"}},
+        {"triggerKind": "operation", "triggerId": "cancel", "fromStates": ["requesting_permission", "preparing", "ready", "recording", "previewing", "cancelled"], "toState": "cancelled", "outcome": "cancelled", "emission": {"kind": "result", "id": "session_cancelled"}},
+        {"triggerKind": "lifecycle", "triggerId": "capability_failure", "fromStates": ["requesting_permission", "preparing", "ready", "recording", "previewing"], "toState": "failed", "outcome": "failure", "emission": {"kind": "event", "id": "session_failed"}},
+        {"triggerKind": "lifecycle", "triggerId": "preview_timed_out", "fromStates": ["previewing"], "toState": "failed", "outcome": "failure", "emission": {"kind": "failure", "id": "session_timeout"}},
+        {"triggerKind": "lifecycle", "triggerId": "app_restarted", "fromStates": ["requesting_permission", "preparing", "ready", "recording", "previewing"], "toState": "failed", "outcome": "failure", "emission": {"kind": "none", "id": null}}
+      ]
+    },
+    {
+      "id": "media",
+      "description": "Independent lifecycle for every created media handle.",
+      "multiplicity": "per_handle_multiple",
+      "initial": "preview",
+      "terminal": ["discarded", "released", "expired"],
+      "items": [
+        {"id": "preview", "description": "Unconfirmed module-owned media.", "terminal": false},
+        {"id": "leased", "description": "Consumer logical lease permits new read scopes.", "terminal": false},
+        {"id": "release_grace", "description": "Explicit release denied new reads while existing reads have bounded grace.", "terminal": false},
+        {"id": "expiry_grace", "description": "TTL expiry denied new reads while existing reads have bounded grace.", "terminal": false},
+        {"id": "discarded", "description": "Unconfirmed media was deleted.", "terminal": true},
+        {"id": "released", "description": "Release grace ended and tombstone remains temporarily recognizable.", "terminal": true},
+        {"id": "expired", "description": "Expiry grace ended and tombstone remains temporarily recognizable.", "terminal": true}
+      ],
+      "transitions": [
+        {"triggerKind": "operation", "triggerId": "retake", "fromStates": ["preview"], "toState": "discarded", "outcome": "success", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "lifecycle", "triggerId": "session_cancelled", "fromStates": ["preview"], "toState": "discarded", "outcome": "cancelled", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "operation", "triggerId": "confirm", "fromStates": ["preview"], "toState": "leased", "outcome": "success", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "operation", "triggerId": "attach_unconfirmed_preview_render", "fromStates": ["preview"], "toState": "preview", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_attached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["preview"], "toState": "preview", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["leased"], "toState": "leased", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["release_grace"], "toState": "release_grace", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["expiry_grace"], "toState": "expiry_grace", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["discarded"], "toState": "discarded", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["released"], "toState": "released", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "fromStates": ["expired"], "toState": "expired", "outcome": "success", "emission": {"kind": "result", "id": "render_attachment_detached"}},
+        {"triggerKind": "operation", "triggerId": "open_media_read", "fromStates": ["leased"], "toState": "leased", "outcome": "success", "emission": {"kind": "result", "id": "scoped_media_read"}},
+        {"triggerKind": "operation", "triggerId": "read_media_thumbnail", "fromStates": ["leased"], "toState": "leased", "outcome": "success", "emission": {"kind": "result", "id": "media_thumbnail"}},
+        {"triggerKind": "operation", "triggerId": "copy_confirmed_media_to_sink", "fromStates": ["leased"], "toState": "leased", "outcome": "success", "emission": {"kind": "result", "id": "media_export_result"}},
+        {"triggerKind": "operation", "triggerId": "release_media", "fromStates": ["leased", "release_grace"], "toState": "release_grace", "outcome": "success", "emission": {"kind": "result", "id": "media_released"}},
+        {"triggerKind": "operation", "triggerId": "release_media", "fromStates": ["released"], "toState": "released", "outcome": "success", "emission": {"kind": "result", "id": "media_released"}},
+        {"triggerKind": "lifecycle", "triggerId": "capability_failure", "fromStates": ["preview"], "toState": "discarded", "outcome": "failure", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "lifecycle", "triggerId": "preview_timed_out", "fromStates": ["preview"], "toState": "discarded", "outcome": "failure", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "lifecycle", "triggerId": "lease_expired", "fromStates": ["leased"], "toState": "expiry_grace", "outcome": "expired", "emission": {"kind": "event", "id": "media_lease_expired"}},
+        {"triggerKind": "lifecycle", "triggerId": "release_read_grace_elapsed", "fromStates": ["release_grace"], "toState": "released", "outcome": "success", "emission": {"kind": "event", "id": "media_read_revoked"}},
+        {"triggerKind": "lifecycle", "triggerId": "expiry_read_grace_elapsed", "fromStates": ["expiry_grace"], "toState": "expired", "outcome": "expired", "emission": {"kind": "event", "id": "media_read_revoked"}},
+        {"triggerKind": "lifecycle", "triggerId": "app_restarted", "fromStates": ["preview"], "toState": "discarded", "outcome": "expired", "emission": {"kind": "none", "id": null}},
+        {"triggerKind": "lifecycle", "triggerId": "app_restarted", "fromStates": ["leased", "release_grace", "expiry_grace"], "toState": "expired", "outcome": "expired", "emission": {"kind": "none", "id": null}}
+      ]
+    }
+  ],
+  "failure": [
+    {"id": "permission_denied", "description": "Permission is denied but may be requested again.", "recoverable": true, "terminal": true},
+    {"id": "permission_restricted", "description": "System or policy prevents access.", "recoverable": false, "terminal": true},
+    {"id": "permission_permanently_denied", "description": "Another system prompt cannot be shown.", "recoverable": false, "terminal": true},
+    {"id": "resource_in_use", "description": "Required capture resource has another owner.", "recoverable": true, "terminal": true},
+    {"id": "storage_full", "description": "Private temporary storage cannot be reserved.", "recoverable": true, "terminal": true},
+    {"id": "encoding_failed", "description": "Encoding did not create valid media.", "recoverable": true, "terminal": true},
+    {"id": "media_invalid", "description": "Media handle is unknown or its tombstone recognition window expired.", "recoverable": false, "terminal": false},
+    {"id": "session_invalid", "description": "Session handle is unknown or its tombstone recognition window expired.", "recoverable": false, "terminal": false},
+    {"id": "unsupported_capability", "description": "Requested mode or control is unavailable.", "recoverable": true, "terminal": false},
+    {"id": "system_interrupted", "description": "System interruption ended capture.", "recoverable": true, "terminal": true},
+    {"id": "session_conflict", "description": "Another session owns capture resources.", "recoverable": true, "terminal": false},
+    {"id": "invalid_state", "description": "Operation is not valid in the recognized resource state.", "recoverable": true, "terminal": false},
+    {"id": "invalid_argument", "description": "Input violates structured field validation and no state changed.", "recoverable": true, "terminal": false},
+    {"id": "session_timeout", "description": "Unconfirmed preview exceeded its timeout and was deleted.", "recoverable": true, "terminal": true},
+    {"id": "thumbnail_generation_failed", "description": "Sanitized bounded thumbnail generation failed without exposing backend decoder details.", "recoverable": true, "terminal": false},
+    {"id": "thumbnail_generation_cancelled", "description": "Thumbnail generation was cancelled before a bounded copy committed.", "recoverable": true, "terminal": false},
+    {"id": "thumbnail_overloaded", "description": "Bounded thumbnail concurrency or working budget is exhausted before source access begins.", "recoverable": true, "terminal": false},
+    {"id": "attachment_generation_retired", "description": "Attach generation is at or below the retained high-watermark and can never bind again.", "recoverable": false, "terminal": false},
+    {"id": "attachment_target_conflict", "description": "The active generation is already bound to a different target identity.", "recoverable": true, "terminal": false},
+    {"id": "media_export_conflict", "description": "The same media already has an active export job; the existing job is preserved.", "recoverable": true, "terminal": false},
+    {"id": "media_export_overloaded", "description": "Module export capacity is reserved by active jobs; no sink or source is opened and no existing job is displaced.", "recoverable": true, "terminal": false},
+    {"id": "media_export_too_large", "description": "Declared or observed source length exceeds the accepted bounded export length.", "recoverable": true, "terminal": false},
+    {"id": "media_export_sink_rejected", "description": "The typed sink rejected begin or commit without exposing sink-specific details.", "recoverable": true, "terminal": false},
+    {"id": "media_export_read_failed", "description": "The module could not continue reading the confirmed source and redacted the underlying cause.", "recoverable": true, "terminal": false},
+    {"id": "media_export_write_failed", "description": "The typed sink could not accept a bounded chunk and its underlying details were redacted.", "recoverable": true, "terminal": false},
+    {"id": "media_export_cancelled", "description": "Caller cancellation won the export terminal race.", "recoverable": true, "terminal": false},
+    {"id": "media_export_timed_out", "description": "The fixed export deadline won the terminal race.", "recoverable": true, "terminal": false}
+  ],
+  "permission": {
+    "requestTrigger": "explicit_user_action",
+    "resources": [
+      {"id": "camera", "description": "Required for photo or video capture.", "requiredForOperations": ["start_session", "take_photo", "start_recording"], "requestPolicy": "request_when_user_starts_capture"},
+      {"id": "microphone", "description": "Required only for user-started video with audio enabled.", "requiredForOperations": ["start_recording"], "requestPolicy": "request_when_user_starts_audio_recording"},
+      {"id": "photo_library", "description": "Not used by V1.", "requiredForOperations": [], "requestPolicy": "never_request_non_target"}
+    ],
+    "states": [
+      {"id": "not_determined", "description": "Permission has not been requested."},
+      {"id": "granted", "description": "Required access is available."},
+      {"id": "denied", "description": "Access is denied but another prompt may be possible."},
+      {"id": "restricted", "description": "System or device policy prevents access."},
+      {"id": "permanently_denied", "description": "Settings intervention is required."},
+      {"id": "unsupported", "description": "Device does not provide the resource."}
+    ]
+  },
+  "lifecycle": {
+    "owner": "native_module",
+    "concurrency": "single_active_session_per_module_instance",
+    "rules": [
+      {"id": "explicit_user_start", "description": "Only explicit user action starts a session or permission request."},
+      {"id": "module_owned_session", "description": "Module owns capture resources for the whole session."},
+      {"id": "permission_resolved", "description": "Granted required permissions advance setup."},
+      {"id": "resources_ready", "description": "Prepared resources emit session_ready."},
+      {"id": "video_duration_reached", "description": "Configured duration automatically stops recording and emits media_preview_ready."},
+      {"id": "session_cancelled", "description": "Cancellation discards an associated preview."},
+      {"id": "capability_failure", "description": "Typed failure ends the affected session and discards only its preview."},
+      {"id": "preview_timed_out", "description": "A 600-second preview timeout produces session_timeout and cleanup."},
+      {"id": "lease_expired", "description": "An 86400-second lease TTL denies new reads and starts read grace."},
+      {"id": "release_read_grace_elapsed", "description": "Explicit-release read grace reached 60 seconds."},
+      {"id": "expiry_read_grace_elapsed", "description": "TTL-expiry read grace reached 60 seconds."},
+      {"id": "app_restarted", "description": "Restart terminates sessions, discards previews, expires leases, and invalidates handles."},
+      {"id": "idempotent_close_operations", "description": "Repeated stop, cancel, and release reuse existing result or tombstone without extending lifetime."},
+      {"id": "platform_context_documented", "description": "Each platform API documents call and UI callback context."}
+      ,{"id": "display_rotation_changed", "description": "Rotation revokes render attachments before a new owner generation may attach."}
+      ,{"id": "app_backgrounded", "description": "Backgrounding revokes render attachments before capture lifecycle cleanup."}
+      ,{"id": "preview_owner_destroyed", "description": "Destroying a UI owner invalidates its generation before detaching render targets."}
+      ,{"id": "session_terminal", "description": "A terminal Session transition first revokes and detaches live preview resources."}
+      ,{"id": "core_closed", "description": "Core close revokes callbacks and detaches every render resource before closing capture resources."}
+      ,{"id": "thumbnail_read_cancelled", "description": "Caller cancellation wins before result commit and discards any partial thumbnail copy."}
+      ,{"id": "thumbnail_generation_aborted", "description": "Generation failure discards partial output before returning a sanitized stable Failure."}
+      ,{"id": "thumbnail_result_committed", "description": "Atomic ownership transfer won and triggers exactly-once Module resource finalization before result delivery."}
+      ,{"id": "media_export_cancel_requested", "description": "Caller cancellation closes the export callback gate and requests cooperative task and sink cancellation."}
+      ,{"id": "media_export_deadline_elapsed", "description": "The fixed deadline closes the export callback gate and requests cooperative task and sink cancellation."}
+      ,{"id": "media_export_aborted", "description": "A non-success winner aborts a begun sink exactly once before releasing export resources."}
+      ,{"id": "media_export_committed", "description": "A complete length-verified stream commits the sink exactly once before success delivery."}
+    ]
+  },
+  "resourcePolicy": {
+    "resources": [
+      {"id": "capture_session", "description": "One module-controlled capture invocation.", "kind": "managed_session", "physicalOwner": "native_module", "storageScope": "memory_registry"},
+      {"id": "captured_media", "description": "Encoded media stored in the App-private temporary area.", "kind": "managed_file", "physicalOwner": "native_module", "storageScope": "app_private_temporary"},
+      {"id": "live_preview_attachment", "description": "Native-only callback attachment between a live Session and one UI render owner.", "kind": "callback_attachment", "physicalOwner": "native_module", "storageScope": "transient_memory"},
+      {"id": "unconfirmed_preview_render_attachment", "description": "Native-only callback attachment between preview media and one UI render owner.", "kind": "callback_attachment", "physicalOwner": "native_module", "storageScope": "transient_memory"},
+      {"id": "live_platform_render_surface", "description": "Module-defined concrete platform surface whose outer lifecycle belongs to one native consumer owner.", "kind": "module_defined_platform_surface", "physicalOwner": "native_consumer", "storageScope": "transient_ui"},
+      {"id": "unconfirmed_platform_render_surface", "description": "Module-defined concrete platform surface for one unconfirmed photo or video preview owner.", "kind": "module_defined_platform_surface", "physicalOwner": "native_consumer", "storageScope": "transient_ui"},
+      {"id": "thumbnail_generation_job", "description": "Registered managed job that owns source access and decoder lifetime until one terminal outcome wins.", "kind": "managed_job", "physicalOwner": "native_module", "storageScope": "transient_memory"},
+      {"id": "thumbnail_generation_buffer", "description": "Module-owned partial encoding and decoded-pixel buffer before atomic result commit.", "kind": "managed_buffer", "physicalOwner": "native_module", "storageScope": "transient_sensitive_memory"},
+      {"id": "thumbnail_copy", "description": "Independent sanitized bounded copy physically owned by the caller after atomic result commit.", "kind": "bounded_copy", "physicalOwner": "caller", "storageScope": "caller_memory"},
+      {"id": "media_export_job", "description": "Registered managed export job that owns the source scope, sink invocation, deadline, and terminal gate.", "kind": "managed_job", "physicalOwner": "native_module", "storageScope": "transient_memory"},
+      {"id": "media_export_buffer", "description": "Single bounded chunk buffer reserved by the module for one active export job.", "kind": "managed_buffer", "physicalOwner": "native_module", "storageScope": "transient_sensitive_memory"}
+    ],
+    "ownershipPhases": [
+      {"id": "session_active", "description": "Module owns active capture resources.", "resourceId": "capture_session", "stateMachineId": "session", "stateIds": ["idle", "requesting_permission", "preparing", "ready", "recording", "previewing"], "logicalOwner": "native_module", "expiresAfterSeconds": null},
+      {"id": "session_tombstone", "description": "Terminal session remains recognizable only for idempotent close.", "resourceId": "capture_session", "stateMachineId": "session", "stateIds": ["completed", "cancelled", "failed"], "logicalOwner": "module_registry", "expiresAfterSeconds": 300},
+      {"id": "media_preview", "description": "Module owns unconfirmed preview.", "resourceId": "captured_media", "stateMachineId": "media", "stateIds": ["preview"], "logicalOwner": "native_module", "expiresAfterSeconds": 600},
+      {"id": "media_consumer_lease", "description": "Consumer owns logical lease; module owns storage.", "resourceId": "captured_media", "stateMachineId": "media", "stateIds": ["leased"], "logicalOwner": "consumer_logical_lease", "expiresAfterSeconds": 86400},
+      {"id": "media_read_grace", "description": "No new reads; existing reads have bounded grace.", "resourceId": "captured_media", "stateMachineId": "media", "stateIds": ["release_grace", "expiry_grace"], "logicalOwner": "native_module", "expiresAfterSeconds": 60},
+      {"id": "media_tombstone", "description": "Deleted media remains recognizable only for idempotent close or stable invalid response.", "resourceId": "captured_media", "stateMachineId": "media", "stateIds": ["discarded", "released", "expired"], "logicalOwner": "module_registry", "expiresAfterSeconds": 300},
+      {"id": "live_preview_render_scope", "description": "One native UI owner generation may render a ready or recording Session.", "resourceId": "live_preview_attachment", "stateMachineId": "session", "stateIds": ["ready", "recording"], "logicalOwner": "native_ui_owner_generation", "expiresAfterSeconds": null},
+      {"id": "unconfirmed_preview_render_scope", "description": "One native UI owner generation may render one unconfirmed preview.", "resourceId": "unconfirmed_preview_render_attachment", "stateMachineId": "media", "stateIds": ["preview"], "logicalOwner": "native_ui_owner_generation", "expiresAfterSeconds": null},
+      {"id": "live_render_surface_owner_scope", "description": "The native consumer owns only the concrete outer live surface lifecycle for its active owner generation.", "resourceId": "live_platform_render_surface", "stateMachineId": "session", "stateIds": ["ready", "recording"], "logicalOwner": "native_consumer_surface_owner", "expiresAfterSeconds": null},
+      {"id": "unconfirmed_render_surface_owner_scope", "description": "The native consumer owns only the concrete outer unconfirmed preview surface lifecycle for its active owner generation.", "resourceId": "unconfirmed_platform_render_surface", "stateMachineId": "media", "stateIds": ["preview"], "logicalOwner": "native_consumer_surface_owner", "expiresAfterSeconds": null},
+      {"id": "thumbnail_generation_job_scope", "description": "A registered in-flight job owns source access while confirmed media remains leased.", "resourceId": "thumbnail_generation_job", "stateMachineId": "media", "stateIds": ["leased"], "logicalOwner": "native_module", "expiresAfterSeconds": null},
+      {"id": "thumbnail_generation_buffer_scope", "description": "Module owns decoded pixels and partial encoded output until terminal outcome commit.", "resourceId": "thumbnail_generation_buffer", "stateMachineId": "media", "stateIds": ["leased"], "logicalOwner": "native_module", "expiresAfterSeconds": null},
+      {"id": "media_export_job_scope", "description": "Module owns one registered export job for active confirmed media until one terminal outcome wins.", "resourceId": "media_export_job", "stateMachineId": "media", "stateIds": ["leased"], "logicalOwner": "native_module", "expiresAfterSeconds": null},
+      {"id": "media_export_buffer_scope", "description": "Module owns the reserved bounded chunk buffer until export finalization releases it.", "resourceId": "media_export_buffer", "stateMachineId": "media", "stateIds": ["leased"], "logicalOwner": "native_module", "expiresAfterSeconds": null}
+    ],
+    "handles": [
+      {"id": "session_handle_policy", "description": "Opaque session registry key.", "resourceId": "capture_session", "fieldId": "session_handle", "scope": "module_instance", "moduleInstanceScoped": true, "generationStrategy": "cryptographically_secure_random", "minimumEntropyBits": 128, "maxLength": 128, "nonReusable": true, "strictRegistryLookup": true, "pathDerived": false, "pathConcatenationAllowed": false, "tombstoneTtlSeconds": 300, "expiredFailureId": "session_invalid"},
+      {"id": "media_handle_policy", "description": "Opaque media registry key.", "resourceId": "captured_media", "fieldId": "media_handle", "scope": "module_instance", "moduleInstanceScoped": true, "generationStrategy": "cryptographically_secure_random", "minimumEntropyBits": 128, "maxLength": 128, "nonReusable": true, "strictRegistryLookup": true, "pathDerived": false, "pathConcatenationAllowed": false, "tombstoneTtlSeconds": 300, "expiredFailureId": "media_invalid"}
+    ],
+    "leases": [
+      {"id": "confirmed_media_lease", "description": "Confirmed media lease with bounded read shutdown.", "resourceId": "captured_media", "stateMachineId": "media", "activeStateId": "leased", "ttlSeconds": 86400, "newReadsAfterEnd": "deny", "activeReadGraceSeconds": 60, "graceExpiryAction": "force_revoke_close_delete", "deleteAfterGrace": true}
+    ],
+    "attachments": [
+      {
+        "id": "live_preview_attachment_policy",
+        "description": "One native UI owner generation renders a live ready or recording Session through a platform adapter.",
+        "resourceId": "live_preview_attachment",
+        "operationIds": ["attach_live_preview", "detach_live_preview"],
+        "targetFieldId": "render_target_adapter",
+        "ownerGenerationFieldId": "owner_generation",
+        "stateMachineId": "session",
+        "allowedStateIds": ["ready", "recording"],
+        "consumerScope": "native_consumer_only",
+        "maxConcurrentAttachments": 1,
+        "generationHighWatermark": "per_scope_monotonic_high_watermark",
+        "generationLinearization": "compare_and_advance_before_binding_mutation",
+        "highWatermarkRetention": "until_scope_terminal_or_registry_invalidation",
+        "retiredGenerationPolicy": "never_accept_below_high_watermark_or_detached_at_high_watermark",
+        "freshGenerationPolicy": "strictly_greater_than_high_watermark",
+        "sameGenerationSameTarget": "idempotent_only_while_current_binding_matches",
+        "sameGenerationDifferentTarget": "reject_without_binding_change",
+        "sameGenerationDifferentTargetFailureId": "attachment_target_conflict",
+        "staleAttachFailureId": "attachment_generation_retired",
+        "staleAttachEffect": "reject_without_revoke_detach_callback_or_binding_change",
+        "staleDetachBehavior": "no_op_preserve_current_binding",
+        "mismatchedDetachBehavior": "no_op_preserve_current_binding",
+        "detachMatchPolicy": "require_owner_generation_and_adapter_instance_identity",
+        "currentBindingIdentity": "owner_generation_and_adapter_instance_identity",
+        "replacementSequenceIds": ["compare_and_advance_high_watermark", "revoke_old_callbacks", "detach_old_target", "attach_new_target", "commit_result"],
+        "revokeTriggerIds": ["take_photo", "stop_recording", "video_duration_reached", "display_rotation_changed", "app_backgrounded", "preview_owner_destroyed", "session_terminal", "core_closed", "app_restarted"],
+        "callbackThread": "owner_ui_thread",
+        "callbackValidation": "active_scope_and_owner_generation_required",
+        "cleanupOrder": "invalidate_generation_stop_callbacks_detach_before_state_cleanup",
+        "resumePolicy": "explicit_attach_with_new_owner_generation",
+        "forbiddenRepresentationIds": ["media_bytes", "path", "uri", "file_descriptor", "capture_session_object", "ui_object", "platform_sdk_type"]
+      },
+      {
+        "id": "unconfirmed_preview_render_attachment_policy",
+        "description": "One native UI owner generation renders one preview-state media handle through a platform adapter.",
+        "resourceId": "unconfirmed_preview_render_attachment",
+        "operationIds": ["attach_unconfirmed_preview_render", "detach_unconfirmed_preview_render"],
+        "targetFieldId": "render_target_adapter",
+        "ownerGenerationFieldId": "owner_generation",
+        "stateMachineId": "media",
+        "allowedStateIds": ["preview"],
+        "consumerScope": "native_consumer_only",
+        "maxConcurrentAttachments": 1,
+        "generationHighWatermark": "per_scope_monotonic_high_watermark",
+        "generationLinearization": "compare_and_advance_before_binding_mutation",
+        "highWatermarkRetention": "until_scope_terminal_or_registry_invalidation",
+        "retiredGenerationPolicy": "never_accept_below_high_watermark_or_detached_at_high_watermark",
+        "freshGenerationPolicy": "strictly_greater_than_high_watermark",
+        "sameGenerationSameTarget": "idempotent_only_while_current_binding_matches",
+        "sameGenerationDifferentTarget": "reject_without_binding_change",
+        "sameGenerationDifferentTargetFailureId": "attachment_target_conflict",
+        "staleAttachFailureId": "attachment_generation_retired",
+        "staleAttachEffect": "reject_without_revoke_detach_callback_or_binding_change",
+        "staleDetachBehavior": "no_op_preserve_current_binding",
+        "mismatchedDetachBehavior": "no_op_preserve_current_binding",
+        "detachMatchPolicy": "require_owner_generation_and_adapter_instance_identity",
+        "currentBindingIdentity": "owner_generation_and_adapter_instance_identity",
+        "replacementSequenceIds": ["compare_and_advance_high_watermark", "revoke_old_callbacks", "detach_old_target", "attach_new_target", "commit_result"],
+        "revokeTriggerIds": ["retake", "confirm", "session_cancelled", "capability_failure", "preview_timed_out", "display_rotation_changed", "app_backgrounded", "preview_owner_destroyed", "core_closed", "app_restarted"],
+        "callbackThread": "owner_ui_thread",
+        "callbackValidation": "active_scope_and_owner_generation_required",
+        "cleanupOrder": "invalidate_generation_stop_callbacks_detach_before_media_cleanup_or_transfer",
+        "resumePolicy": "explicit_attach_with_new_owner_generation",
+        "forbiddenRepresentationIds": ["media_bytes", "path", "uri", "file_descriptor", "capture_session_object", "ui_object", "platform_sdk_type"]
+      }
+    ],
+    "renderSurfaces": [
+      {
+        "id": "live_platform_render_surface_policy",
+        "description": "Mounts the module-private live source into one concrete module-defined surface without exposing its backing target or capture pipeline.",
+        "resourceId": "live_platform_render_surface",
+        "attachmentPolicyId": "live_preview_attachment_policy",
+        "targetFieldId": "render_target_adapter",
+        "ownerGenerationFieldId": "owner_generation",
+        "consumerScope": "native_consumer_only",
+        "surfaceKind": "live_preview",
+        "actualMountRequired": true,
+        "actualMountCapability": "module_accesses_private_source_and_backing_target",
+        "factoryPolicy": "module_defined_concrete_surface_factory_non_empty",
+        "identityPolicy": "concrete_surface_instance_identity_not_token",
+        "surfaceOwner": "native_consumer",
+        "sourceOwner": "native_module",
+        "rendererOwner": "native_module",
+        "bindingOwner": "native_module",
+        "cleanupOwner": "native_module",
+        "ownerAccessPolicy": "outer_surface_lifecycle_only_no_backing_source_renderer_or_binding_access",
+        "factoryContract": {
+          "ownerRoleId": "native_module",
+          "inputBindings": [
+            {"roleId": "surface_lifecycle_owner", "bindingKind": "ownership_phase", "bindingId": "live_render_surface_owner_scope", "required": true},
+            {"roleId": "owner_generation", "bindingKind": "field", "bindingId": "owner_generation", "required": true}
+          ],
+          "output": {
+            "roleId": "surface_instance",
+            "resourceId": "live_platform_render_surface",
+            "platformConformanceRoleId": "platform_closed_target_conformance",
+            "nullable": false,
+            "freshInstancePerInvocation": true,
+            "identityPolicy": "concrete_instance_identity"
+          },
+          "emptyOutputPolicy": "reject_before_attachment_mutation"
+        },
+        "diagnosticPolicy": {
+          "id": "live_render_surface_diagnostic_policy",
+          "allowedRecordKindIds": ["attachment_rejected", "mount_failed", "revoke_completed", "stale_mutation_dropped"],
+          "allowedFieldIds": ["record_kind", "operation_id", "lifecycle_state", "redacted_status", "stable_failure_id"],
+          "allowedStatusIds": ["success", "rejected", "revoked", "dropped", "redacted_failure"],
+          "fieldValueSources": [
+            {"fieldId": "record_kind", "sourceKind": "declared_enum", "reference": {"scopeId": "diagnostic_policy", "collectionId": "allowed_record_kind_ids", "valueMemberId": "item"}, "allowedValueIds": ["attachment_rejected", "mount_failed", "revoke_completed", "stale_mutation_dropped"]},
+            {"fieldId": "operation_id", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "operation", "valueMemberId": "id"}, "allowedValueIds": ["start_session", "take_photo", "start_recording", "stop_recording", "switch_camera", "set_flash_mode", "set_focus_point", "set_zoom", "retake", "confirm", "cancel", "open_media_read", "release_media", "attach_live_preview", "detach_live_preview", "attach_unconfirmed_preview_render", "detach_unconfirmed_preview_render", "read_media_thumbnail", "copy_confirmed_media_to_sink"]},
+            {"fieldId": "lifecycle_state", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "state_machines", "valueMemberId": "state_id"}, "allowedValueIds": ["idle", "requesting_permission", "preparing", "ready", "recording", "previewing", "completed", "cancelled", "failed", "preview", "leased", "release_grace", "expiry_grace", "discarded", "released", "expired"]},
+            {"fieldId": "redacted_status", "sourceKind": "declared_enum", "reference": {"scopeId": "diagnostic_policy", "collectionId": "allowed_status_ids", "valueMemberId": "item"}, "allowedValueIds": ["success", "rejected", "revoked", "dropped", "redacted_failure"]},
+            {"fieldId": "stable_failure_id", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "failure", "valueMemberId": "id"}, "allowedValueIds": ["permission_denied", "permission_restricted", "permission_permanently_denied", "resource_in_use", "storage_full", "encoding_failed", "media_invalid", "session_invalid", "unsupported_capability", "system_interrupted", "session_conflict", "invalid_state", "invalid_argument", "session_timeout", "thumbnail_generation_failed", "thumbnail_generation_cancelled", "thumbnail_overloaded", "attachment_generation_retired", "attachment_target_conflict", "media_export_conflict", "media_export_overloaded", "media_export_too_large", "media_export_sink_rejected", "media_export_read_failed", "media_export_write_failed", "media_export_cancelled", "media_export_timed_out"]}
+          ],
+          "valuePolicy": "stable_enum_or_redacted_status_only",
+          "redactionPolicy": "redact_before_record_creation",
+          "forbiddenDataIds": ["surface_instance", "surface_description", "target_instance", "target_description", "owner_generation", "source_instance", "renderer_instance", "binding_instance", "mount_endpoint_instance", "platform_sdk_object", "platform_sdk_description", "path", "raw_exception", "media_bytes", "opaque_token"],
+          "exceptionPolicy": "stable_failure_id_only_no_raw_exception"
+        },
+        "platformImplementations": [
+          {
+            "platform": "android",
+            "moduleProduct": "media_capture_android",
+            "publicSurfaceType": "MediaCaptureRenderView",
+            "factoryInputType": "MediaCaptureRenderSurfaceOwner",
+            "factoryOutputType": "MediaCaptureRenderView",
+            "factoryOutputConformanceId": "android_live_render_target_conformance",
+            "concreteSurfaceRequired": true,
+            "actualMountTargetIds": ["android_preview_view", "android_surface_provider"],
+            "moduleOwnedRendererIds": ["android_live_source", "android_preview_renderer", "android_render_binding"],
+            "ownerAccessibleIds": ["concrete_outer_surface", "surface_lifecycle"],
+            "sourceAccessPolicy": "module_internal_only",
+            "rendererAccessPolicy": "module_internal_only",
+            "targetConformance": {
+              "id": "android_live_render_target_conformance",
+              "closed": true,
+              "factoryOutputType": "MediaCaptureRenderView",
+              "acceptedTargetKindIds": ["android_preview_view", "android_surface_provider"],
+              "requiredMountEndpointType": "MediaCaptureRenderMountEndpoint",
+              "targetOwnerRoleId": "native_module",
+              "arbitraryTargetPolicy": "reject"
+            },
+            "mountBinding": {
+              "endpointType": "MediaCaptureRenderMountEndpoint",
+              "endpointVisibility": "module_internal",
+              "endpointOwnerRoleId": "native_module",
+              "backingTargetOwnerRoleId": "native_module",
+              "sourceOwnerRoleId": "native_module",
+              "rendererOwnerRoleId": "native_module",
+              "bindingOwnerRoleId": "native_module",
+              "surfaceResourceId": "live_platform_render_surface",
+              "attachmentPolicyId": "live_preview_attachment_policy",
+              "factoryOutputRoleId": "surface_instance",
+              "targetConformanceId": "android_live_render_target_conformance",
+              "lifecycleOwnershipPhaseId": "live_render_surface_owner_scope",
+              "ownerGenerationFieldId": "owner_generation",
+              "mountMutationPolicy": "validate_gate_before_endpoint_mutation"
+            }
+          },
+          {
+            "platform": "ios",
+            "moduleProduct": "MediaCaptureAppleRendering",
+            "publicSurfaceType": "MediaCaptureRenderView",
+            "factoryInputType": "MediaCaptureRenderSurfaceOwner",
+            "factoryOutputType": "MediaCaptureRenderView",
+            "factoryOutputConformanceId": "ios_live_render_target_conformance",
+            "concreteSurfaceRequired": true,
+            "actualMountTargetIds": ["ios_capture_video_preview_layer", "ios_surface_backing_target"],
+            "moduleOwnedRendererIds": ["ios_live_source", "ios_preview_renderer", "ios_render_binding"],
+            "ownerAccessibleIds": ["concrete_outer_surface", "surface_lifecycle"],
+            "sourceAccessPolicy": "module_internal_only",
+            "rendererAccessPolicy": "module_internal_only",
+            "targetConformance": {
+              "id": "ios_live_render_target_conformance",
+              "closed": true,
+              "factoryOutputType": "MediaCaptureRenderView",
+              "acceptedTargetKindIds": ["ios_capture_video_preview_layer", "ios_surface_backing_target"],
+              "requiredMountEndpointType": "MediaCaptureRenderMountEndpoint",
+              "targetOwnerRoleId": "native_module",
+              "arbitraryTargetPolicy": "reject"
+            },
+            "mountBinding": {
+              "endpointType": "MediaCaptureRenderMountEndpoint",
+              "endpointVisibility": "module_internal",
+              "endpointOwnerRoleId": "native_module",
+              "backingTargetOwnerRoleId": "native_module",
+              "sourceOwnerRoleId": "native_module",
+              "rendererOwnerRoleId": "native_module",
+              "bindingOwnerRoleId": "native_module",
+              "surfaceResourceId": "live_platform_render_surface",
+              "attachmentPolicyId": "live_preview_attachment_policy",
+              "factoryOutputRoleId": "surface_instance",
+              "targetConformanceId": "ios_live_render_target_conformance",
+              "lifecycleOwnershipPhaseId": "live_render_surface_owner_scope",
+              "ownerGenerationFieldId": "owner_generation",
+              "mountMutationPolicy": "validate_gate_before_endpoint_mutation"
+            }
+          }
+        ],
+        "mountSourceKindIds": ["live_camera_source"],
+        "installSequenceIds": ["validate_active_scope", "validate_target_identity", "validate_owner_generation", "validate_lifecycle_gate", "connect_private_source_to_module_renderer", "mount_renderer_into_surface", "commit_binding"],
+        "mutationGate": "validate_active_scope_target_identity_owner_generation_and_lifecycle_before_install_mutation_observer_or_player_callback",
+        "passiveFramePolicy": "framework_pipeline_without_synthetic_per_hardware_frame_callback",
+        "revokeSequenceIds": ["invalidate_callback_gate", "disconnect_source_session_or_player", "remove_module_renderer_or_content", "clear_module_renderer_or_content", "detach_surface", "cleanup_binding_registry_and_state"],
+        "replacementSequenceIds": ["compare_and_advance_high_watermark", "invalidate_callback_gate", "disconnect_source_session_or_player", "remove_module_renderer_or_content", "clear_module_renderer_or_content", "detach_surface", "cleanup_old_binding_state_preserve_generation_high_watermark", "validate_active_scope", "validate_target_identity", "validate_owner_generation", "validate_lifecycle_gate", "connect_private_source_to_module_renderer", "mount_renderer_into_surface", "commit_binding"],
+        "cleanupExecution": "exactly_once_per_active_binding",
+        "staleMutationPolicy": "drop_without_surface_mutation",
+        "replacementPolicy": "fresh_surface_binding_for_strictly_new_owner_generation",
+        "crossRuntimeProjection": "forbidden_native_only",
+        "forbiddenRepresentationIds": ["arbitrary_ui_object", "platform_sdk_source", "capture_session_object", "preview_layer", "player_layer", "surface_provider", "sample_buffer", "pixel_frame", "media_bytes", "path", "uri", "file_descriptor", "untyped_map", "any_object", "opaque_token", "identity_only_marker", "empty_factory", "cross_runtime_encoding"]
+      },
+      {
+        "id": "unconfirmed_platform_render_surface_policy",
+        "description": "Mounts module-private photo content or a video player into one concrete module-defined surface before confirmation.",
+        "resourceId": "unconfirmed_platform_render_surface",
+        "attachmentPolicyId": "unconfirmed_preview_render_attachment_policy",
+        "targetFieldId": "render_target_adapter",
+        "ownerGenerationFieldId": "owner_generation",
+        "consumerScope": "native_consumer_only",
+        "surfaceKind": "unconfirmed_preview",
+        "actualMountRequired": true,
+        "actualMountCapability": "module_accesses_private_source_and_backing_target",
+        "factoryPolicy": "module_defined_concrete_surface_factory_non_empty",
+        "identityPolicy": "concrete_surface_instance_identity_not_token",
+        "surfaceOwner": "native_consumer",
+        "sourceOwner": "native_module",
+        "rendererOwner": "native_module",
+        "bindingOwner": "native_module",
+        "cleanupOwner": "native_module",
+        "ownerAccessPolicy": "outer_surface_lifecycle_only_no_backing_source_renderer_or_binding_access",
+        "factoryContract": {
+          "ownerRoleId": "native_module",
+          "inputBindings": [
+            {"roleId": "surface_lifecycle_owner", "bindingKind": "ownership_phase", "bindingId": "unconfirmed_render_surface_owner_scope", "required": true},
+            {"roleId": "owner_generation", "bindingKind": "field", "bindingId": "owner_generation", "required": true}
+          ],
+          "output": {
+            "roleId": "surface_instance",
+            "resourceId": "unconfirmed_platform_render_surface",
+            "platformConformanceRoleId": "platform_closed_target_conformance",
+            "nullable": false,
+            "freshInstancePerInvocation": true,
+            "identityPolicy": "concrete_instance_identity"
+          },
+          "emptyOutputPolicy": "reject_before_attachment_mutation"
+        },
+        "diagnosticPolicy": {
+          "id": "unconfirmed_render_surface_diagnostic_policy",
+          "allowedRecordKindIds": ["attachment_rejected", "mount_failed", "revoke_completed", "stale_mutation_dropped"],
+          "allowedFieldIds": ["record_kind", "operation_id", "lifecycle_state", "redacted_status", "stable_failure_id"],
+          "allowedStatusIds": ["success", "rejected", "revoked", "dropped", "redacted_failure"],
+          "fieldValueSources": [
+            {"fieldId": "record_kind", "sourceKind": "declared_enum", "reference": {"scopeId": "diagnostic_policy", "collectionId": "allowed_record_kind_ids", "valueMemberId": "item"}, "allowedValueIds": ["attachment_rejected", "mount_failed", "revoke_completed", "stale_mutation_dropped"]},
+            {"fieldId": "operation_id", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "operation", "valueMemberId": "id"}, "allowedValueIds": ["start_session", "take_photo", "start_recording", "stop_recording", "switch_camera", "set_flash_mode", "set_focus_point", "set_zoom", "retake", "confirm", "cancel", "open_media_read", "release_media", "attach_live_preview", "detach_live_preview", "attach_unconfirmed_preview_render", "detach_unconfirmed_preview_render", "read_media_thumbnail", "copy_confirmed_media_to_sink"]},
+            {"fieldId": "lifecycle_state", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "state_machines", "valueMemberId": "state_id"}, "allowedValueIds": ["idle", "requesting_permission", "preparing", "ready", "recording", "previewing", "completed", "cancelled", "failed", "preview", "leased", "release_grace", "expiry_grace", "discarded", "released", "expired"]},
+            {"fieldId": "redacted_status", "sourceKind": "declared_enum", "reference": {"scopeId": "diagnostic_policy", "collectionId": "allowed_status_ids", "valueMemberId": "item"}, "allowedValueIds": ["success", "rejected", "revoked", "dropped", "redacted_failure"]},
+            {"fieldId": "stable_failure_id", "sourceKind": "capability_collection", "reference": {"scopeId": "capability_contract", "collectionId": "failure", "valueMemberId": "id"}, "allowedValueIds": ["permission_denied", "permission_restricted", "permission_permanently_denied", "resource_in_use", "storage_full", "encoding_failed", "media_invalid", "session_invalid", "unsupported_capability", "system_interrupted", "session_conflict", "invalid_state", "invalid_argument", "session_timeout", "thumbnail_generation_failed", "thumbnail_generation_cancelled", "thumbnail_overloaded", "attachment_generation_retired", "attachment_target_conflict", "media_export_conflict", "media_export_overloaded", "media_export_too_large", "media_export_sink_rejected", "media_export_read_failed", "media_export_write_failed", "media_export_cancelled", "media_export_timed_out"]}
+          ],
+          "valuePolicy": "stable_enum_or_redacted_status_only",
+          "redactionPolicy": "redact_before_record_creation",
+          "forbiddenDataIds": ["surface_instance", "surface_description", "target_instance", "target_description", "owner_generation", "source_instance", "renderer_instance", "binding_instance", "mount_endpoint_instance", "platform_sdk_object", "platform_sdk_description", "path", "raw_exception", "media_bytes", "opaque_token"],
+          "exceptionPolicy": "stable_failure_id_only_no_raw_exception"
+        },
+        "platformImplementations": [
+          {
+            "platform": "android",
+            "moduleProduct": "media_capture_android",
+            "publicSurfaceType": "MediaCaptureRenderView",
+            "factoryInputType": "MediaCaptureRenderSurfaceOwner",
+            "factoryOutputType": "MediaCaptureRenderView",
+            "factoryOutputConformanceId": "android_unconfirmed_render_target_conformance",
+            "concreteSurfaceRequired": true,
+            "actualMountTargetIds": ["android_photo_content_target", "android_video_player_surface"],
+            "moduleOwnedRendererIds": ["android_file_source", "android_photo_renderer", "android_video_player", "android_render_binding"],
+            "ownerAccessibleIds": ["concrete_outer_surface", "surface_lifecycle"],
+            "sourceAccessPolicy": "module_internal_only",
+            "rendererAccessPolicy": "module_internal_only",
+            "targetConformance": {
+              "id": "android_unconfirmed_render_target_conformance",
+              "closed": true,
+              "factoryOutputType": "MediaCaptureRenderView",
+              "acceptedTargetKindIds": ["android_photo_content_target", "android_video_player_surface"],
+              "requiredMountEndpointType": "MediaCaptureRenderMountEndpoint",
+              "targetOwnerRoleId": "native_module",
+              "arbitraryTargetPolicy": "reject"
+            },
+            "mountBinding": {
+              "endpointType": "MediaCaptureRenderMountEndpoint",
+              "endpointVisibility": "module_internal",
+              "endpointOwnerRoleId": "native_module",
+              "backingTargetOwnerRoleId": "native_module",
+              "sourceOwnerRoleId": "native_module",
+              "rendererOwnerRoleId": "native_module",
+              "bindingOwnerRoleId": "native_module",
+              "surfaceResourceId": "unconfirmed_platform_render_surface",
+              "attachmentPolicyId": "unconfirmed_preview_render_attachment_policy",
+              "factoryOutputRoleId": "surface_instance",
+              "targetConformanceId": "android_unconfirmed_render_target_conformance",
+              "lifecycleOwnershipPhaseId": "unconfirmed_render_surface_owner_scope",
+              "ownerGenerationFieldId": "owner_generation",
+              "mountMutationPolicy": "validate_gate_before_endpoint_mutation"
+            }
+          },
+          {
+            "platform": "ios",
+            "moduleProduct": "MediaCaptureAppleRendering",
+            "publicSurfaceType": "MediaCaptureRenderView",
+            "factoryInputType": "MediaCaptureRenderSurfaceOwner",
+            "factoryOutputType": "MediaCaptureRenderView",
+            "factoryOutputConformanceId": "ios_unconfirmed_render_target_conformance",
+            "concreteSurfaceRequired": true,
+            "actualMountTargetIds": ["ios_photo_content_target", "ios_player_layer"],
+            "moduleOwnedRendererIds": ["ios_file_source", "ios_photo_renderer", "ios_video_player", "ios_render_binding"],
+            "ownerAccessibleIds": ["concrete_outer_surface", "surface_lifecycle"],
+            "sourceAccessPolicy": "module_internal_only",
+            "rendererAccessPolicy": "module_internal_only",
+            "targetConformance": {
+              "id": "ios_unconfirmed_render_target_conformance",
+              "closed": true,
+              "factoryOutputType": "MediaCaptureRenderView",
+              "acceptedTargetKindIds": ["ios_photo_content_target", "ios_player_layer"],
+              "requiredMountEndpointType": "MediaCaptureRenderMountEndpoint",
+              "targetOwnerRoleId": "native_module",
+              "arbitraryTargetPolicy": "reject"
+            },
+            "mountBinding": {
+              "endpointType": "MediaCaptureRenderMountEndpoint",
+              "endpointVisibility": "module_internal",
+              "endpointOwnerRoleId": "native_module",
+              "backingTargetOwnerRoleId": "native_module",
+              "sourceOwnerRoleId": "native_module",
+              "rendererOwnerRoleId": "native_module",
+              "bindingOwnerRoleId": "native_module",
+              "surfaceResourceId": "unconfirmed_platform_render_surface",
+              "attachmentPolicyId": "unconfirmed_preview_render_attachment_policy",
+              "factoryOutputRoleId": "surface_instance",
+              "targetConformanceId": "ios_unconfirmed_render_target_conformance",
+              "lifecycleOwnershipPhaseId": "unconfirmed_render_surface_owner_scope",
+              "ownerGenerationFieldId": "owner_generation",
+              "mountMutationPolicy": "validate_gate_before_endpoint_mutation"
+            }
+          }
+        ],
+        "mountSourceKindIds": ["unconfirmed_photo_source", "unconfirmed_video_source"],
+        "installSequenceIds": ["validate_active_scope", "validate_target_identity", "validate_owner_generation", "validate_lifecycle_gate", "connect_private_source_to_module_renderer", "mount_renderer_into_surface", "commit_binding"],
+        "mutationGate": "validate_active_scope_target_identity_owner_generation_and_lifecycle_before_install_mutation_observer_or_player_callback",
+        "passiveFramePolicy": "framework_pipeline_without_synthetic_per_hardware_frame_callback",
+        "revokeSequenceIds": ["invalidate_callback_gate", "disconnect_source_session_or_player", "remove_module_renderer_or_content", "clear_module_renderer_or_content", "detach_surface", "cleanup_binding_registry_and_state"],
+        "replacementSequenceIds": ["compare_and_advance_high_watermark", "invalidate_callback_gate", "disconnect_source_session_or_player", "remove_module_renderer_or_content", "clear_module_renderer_or_content", "detach_surface", "cleanup_old_binding_state_preserve_generation_high_watermark", "validate_active_scope", "validate_target_identity", "validate_owner_generation", "validate_lifecycle_gate", "connect_private_source_to_module_renderer", "mount_renderer_into_surface", "commit_binding"],
+        "cleanupExecution": "exactly_once_per_active_binding",
+        "staleMutationPolicy": "drop_without_surface_mutation",
+        "replacementPolicy": "fresh_surface_binding_for_strictly_new_owner_generation",
+        "crossRuntimeProjection": "forbidden_native_only",
+        "forbiddenRepresentationIds": ["arbitrary_ui_object", "platform_sdk_source", "capture_session_object", "preview_layer", "player_layer", "surface_provider", "sample_buffer", "pixel_frame", "media_bytes", "path", "uri", "file_descriptor", "untyped_map", "any_object", "opaque_token", "identity_only_marker", "empty_factory", "cross_runtime_encoding"]
+      }
+    ],
+    "boundedCopies": [
+      {
+        "id": "confirmed_media_thumbnail_policy",
+        "description": "Creates one metadata-sanitized bounded copy without exposing or extending the source lease.",
+        "operationId": "read_media_thumbnail",
+        "roleBindings": [
+          {"roleId": "source_resource", "bindingKind": "resource", "bindingId": "captured_media"},
+          {"roleId": "source_state", "bindingKind": "state_machine", "bindingId": "media"},
+          {"roleId": "source_scope", "bindingKind": "field", "bindingId": "media_handle"},
+          {"roleId": "module_scope", "bindingKind": "scope", "bindingId": "module_instance"},
+          {"roleId": "in_flight_job", "bindingKind": "resource", "bindingId": "thumbnail_generation_job"},
+          {"roleId": "generation_buffer", "bindingKind": "resource", "bindingId": "thumbnail_generation_buffer"},
+          {"roleId": "result_copy", "bindingKind": "resource", "bindingId": "thumbnail_copy"},
+          {"roleId": "result_shape", "bindingKind": "result", "bindingId": "media_thumbnail"},
+          {"roleId": "request_bound", "bindingKind": "field", "bindingId": "max_pixel_edge"},
+          {"roleId": "copy_value", "bindingKind": "field", "bindingId": "thumbnail_copy"},
+          {"roleId": "copy_byte_length", "bindingKind": "field", "bindingId": "thumbnail_byte_length"},
+          {"roleId": "copy_width", "bindingKind": "field", "bindingId": "thumbnail_pixel_width"},
+          {"roleId": "copy_height", "bindingKind": "field", "bindingId": "thumbnail_pixel_height"},
+          {"roleId": "copy_content_type", "bindingKind": "field", "bindingId": "thumbnail_content_type"},
+          {"roleId": "copy_orientation", "bindingKind": "field", "bindingId": "thumbnail_orientation_degrees"},
+          {"roleId": "source_type", "bindingKind": "field", "bindingId": "media_type"},
+          {"roleId": "sample_time", "bindingKind": "field", "bindingId": "poster_frame_millis"}
+        ],
+        "preconditions": [
+          {"roleId": "source_state", "predicateId": "current_state", "acceptedValueIds": ["leased"], "rejectedValueIds": ["preview", "release_grace", "expiry_grace", "discarded", "released", "expired"], "failureId": "invalid_state"}
+        ],
+        "bounds": [
+          {"id": "request_edge_bound", "roleId": "request_bound", "minimum": 64, "maximum": 512, "boundaryRoleId": null, "enforcement": "reject_before_source_access"},
+          {"id": "copy_byte_bound", "roleId": "copy_byte_length", "minimum": 1, "maximum": 524288, "boundaryRoleId": null, "enforcement": "verify_before_result_commit"},
+          {"id": "copy_width_bound", "roleId": "copy_width", "minimum": 1, "maximum": 512, "boundaryRoleId": "request_bound", "enforcement": "verify_not_above_boundary_or_global_max"},
+          {"id": "copy_height_bound", "roleId": "copy_height", "minimum": 1, "maximum": 512, "boundaryRoleId": "request_bound", "enforcement": "verify_not_above_boundary_or_global_max"},
+          {"id": "copy_orientation_bound", "roleId": "copy_orientation", "minimum": 0, "maximum": 0, "boundaryRoleId": null, "enforcement": "verify_exact"}
+        ],
+        "transforms": [
+          {"id": "sanitize_and_encode", "inputRoleIds": ["source_resource"], "outputRoleIds": ["generation_buffer", "copy_value", "copy_content_type"], "guaranteeIds": ["image_jpeg_only", "reencode_or_equivalent_sanitize", "strip_exif_location_device_filename_and_non_display_metadata", "source_lease_ttl_grace_tombstone_unchanged"]},
+          {"id": "normalize_display_orientation", "inputRoleIds": ["source_resource"], "outputRoleIds": ["copy_value", "copy_width", "copy_height", "copy_orientation"], "guaranteeIds": ["physically_upright_pixels", "orientation_zero"]},
+          {"id": "verify_copy_length", "inputRoleIds": ["copy_value"], "outputRoleIds": ["copy_byte_length"], "guaranteeIds": ["declared_length_equals_actual_copy_length"]},
+          {"id": "select_video_sample", "inputRoleIds": ["source_resource", "source_type"], "outputRoleIds": ["sample_time", "generation_buffer"], "guaranteeIds": ["photo_sample_time_null", "video_target_minimum_of_1000_and_floor_duration_divided_by_2", "target_then_nearest_after_else_nearest_before", "equal_distance_earlier_frame", "actual_sample_time_returned"]}
+        ],
+        "ownershipTransfer": {
+          "initialOwnerRoleId": "generation_buffer",
+          "transferAtId": "atomic_result_commit",
+          "transferredOwnerRoleId": "result_copy",
+          "atomic": true,
+          "postTransferPolicy": "caller_owned_independent_copy_not_revoked_by_source_release_expiry_restart_or_cleanup"
+        },
+        "execution": {
+          "preAccessRegistration": {"managedRoleId": "in_flight_job", "beforeAccessRoleId": "source_resource", "required": true},
+          "concurrencyBounds": [
+            {"scopeRoleId": "source_scope", "maximum": 1},
+            {"scopeRoleId": "module_scope", "maximum": 2}
+          ],
+          "workBudgets": [
+            {"id": "decoded_pixel_budget", "scopeRoleId": "in_flight_job", "unitId": "pixel", "maximum": 1048576, "enforcement": "reject_or_subsample_before_allocation"},
+            {"id": "job_working_memory_budget", "scopeRoleId": "in_flight_job", "unitId": "byte", "maximum": 8388608, "enforcement": "reject_before_budget_exceeded"},
+            {"id": "module_working_memory_budget", "scopeRoleId": "module_scope", "unitId": "byte", "maximum": 16777216, "enforcement": "reject_before_budget_exceeded"}
+          ],
+          "sourceReductionPolicy": "decode_time_subsample_before_full_resolution_allocation",
+          "overloadFailureId": "thumbnail_overloaded"
+        },
+        "raceArbitration": {
+          "linearizationPoint": "atomic_terminal_outcome_commit",
+          "winnerPolicy": "first_terminal_trigger_wins",
+          "outcomeDelivery": "exactly_once",
+          "cleanupExecution": "exactly_once_for_non_success_winner",
+          "successFinalizationExecution": "exactly_once_after_atomic_transfer_before_result_delivery",
+          "successCommitEffect": "caller_copy_independent_and_never_revoked_by_later_source_state",
+          "failureCleanupSequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"],
+          "successFinalizationSequenceIds": ["close_source_access", "finish_and_close_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "unregister_managed_job"],
+          "triggerPolicies": [
+            {"triggerKind": "lifecycle", "triggerId": "thumbnail_result_committed", "outcomeKind": "result", "outcomeId": "media_thumbnail", "sequenceKind": "success_finalization", "sequenceIds": ["close_source_access", "finish_and_close_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "unregister_managed_job"]},
+            {"triggerKind": "operation", "triggerId": "release_media", "outcomeKind": "failure", "outcomeId": "invalid_state", "sequenceKind": "failure_cleanup", "sequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"]},
+            {"triggerKind": "lifecycle", "triggerId": "lease_expired", "outcomeKind": "failure", "outcomeId": "invalid_state", "sequenceKind": "failure_cleanup", "sequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"]},
+            {"triggerKind": "lifecycle", "triggerId": "app_restarted", "outcomeKind": "failure", "outcomeId": "media_invalid", "sequenceKind": "failure_cleanup", "sequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"]},
+            {"triggerKind": "lifecycle", "triggerId": "thumbnail_read_cancelled", "outcomeKind": "failure", "outcomeId": "thumbnail_generation_cancelled", "sequenceKind": "failure_cleanup", "sequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"]},
+            {"triggerKind": "lifecycle", "triggerId": "thumbnail_generation_aborted", "outcomeKind": "failure", "outcomeId": "thumbnail_generation_failed", "sequenceKind": "failure_cleanup", "sequenceIds": ["revoke_source_access", "cancel_and_await_decoder", "close_source_handles", "wipe_decoded_pixels", "wipe_generation_buffer", "discard_partial_copy", "unregister_managed_job"]}
+          ]
+        },
+        "privacyPolicyIds": ["sanitize_thumbnail_encoding", "strip_thumbnail_exif", "strip_location_metadata", "minimize_embedded_metadata", "strip_thumbnail_source_filename", "strip_non_display_thumbnail_metadata"],
+        "forbiddenRepresentationIds": ["source_media_bytes", "path", "uri", "file_descriptor", "untyped_map", "platform_sdk_type"],
+        "backendDetailsPolicy": "redact_backend_decoder_details"
+      }
+    ],
+    "streamingCopies": [
+      {
+        "id": "confirmed_media_export_policy",
+        "description": "Streams active confirmed media through one bounded module buffer into a caller-scoped typed sink with a single terminal outcome.",
+        "operationId": "copy_confirmed_media_to_sink",
+        "roleBindings": [
+          {"roleId": "source_resource", "bindingKind": "resource", "bindingId": "captured_media"},
+          {"roleId": "source_state", "bindingKind": "state_machine", "bindingId": "media"},
+          {"roleId": "source_scope", "bindingKind": "field", "bindingId": "media_handle"},
+          {"roleId": "source_type", "bindingKind": "field", "bindingId": "media_type"},
+          {"roleId": "source_content_type", "bindingKind": "field", "bindingId": "content_type"},
+          {"roleId": "source_declared_length", "bindingKind": "field", "bindingId": "byte_length"},
+          {"roleId": "requested_max_length", "bindingKind": "field", "bindingId": "media_export_max_length"},
+          {"roleId": "actual_length", "bindingKind": "field", "bindingId": "byte_length"},
+          {"roleId": "sink_capability", "bindingKind": "field", "bindingId": "media_copy_sink"},
+          {"roleId": "module_scope", "bindingKind": "scope", "bindingId": "module_instance"},
+          {"roleId": "export_job", "bindingKind": "resource", "bindingId": "media_export_job"},
+          {"roleId": "chunk_buffer", "bindingKind": "resource", "bindingId": "media_export_buffer"},
+          {"roleId": "success_result", "bindingKind": "result", "bindingId": "media_export_result"}
+        ],
+        "preconditions": [
+          {"roleId": "source_state", "predicateId": "current_state", "acceptedValueIds": ["leased"], "rejectedValueIds": ["preview", "release_grace", "expiry_grace", "discarded", "released", "expired"], "failureId": "invalid_state"},
+          {"roleId": "source_type", "predicateId": "closed_source_type", "acceptedValueIds": ["photo", "video"], "rejectedValueIds": [], "failureId": "invalid_state"},
+          {"roleId": "source_content_type", "predicateId": "closed_source_content_type", "acceptedValueIds": ["image_jpeg", "video_mp4"], "rejectedValueIds": [], "failureId": "invalid_state"}
+        ],
+        "sourceRepresentations": [
+          {"sourceValueId": "photo", "formatId": "image_jpeg", "contentType": "image/jpeg"},
+          {"sourceValueId": "video", "formatId": "video_mp4", "contentType": "video/mp4"}
+        ],
+        "bounds": [
+          {"id": "requested_export_length_bound", "roleId": "requested_max_length", "minimum": 1, "maximum": 52428800, "boundaryRoleId": null, "enforcement": "reject_before_reservation"},
+          {"id": "declared_source_length_bound", "roleId": "source_declared_length", "minimum": 1, "maximum": 52428800, "boundaryRoleId": "requested_max_length", "enforcement": "verify_before_source_or_sink_open"},
+          {"id": "chunk_buffer_bound", "roleId": "chunk_buffer", "minimum": 1, "maximum": 262144, "boundaryRoleId": null, "enforcement": "verify_before_each_sink_write"},
+          {"id": "actual_export_length_bound", "roleId": "actual_length", "minimum": 1, "maximum": 52428800, "boundaryRoleId": "source_declared_length", "enforcement": "verify_equal_before_sink_commit"}
+        ],
+        "sinkProtocol": {
+          "sinkRoleId": "sink_capability",
+          "consumerScope": "native_consumer_call_only",
+          "serializationPolicy": "forbidden",
+          "registryStoragePolicy": "forbidden",
+          "methods": [
+            {"id": "begin_sink", "phase": "begin", "cardinality": "exactly_once_before_first_write", "payloadRoleIds": ["source_type", "source_content_type", "source_declared_length"]},
+            {"id": "write_sink_chunk", "phase": "write", "cardinality": "zero_or_more_sequential_bounded_calls", "payloadRoleIds": ["chunk_buffer"]},
+            {"id": "commit_sink", "phase": "commit", "cardinality": "exactly_once_on_success", "payloadRoleIds": ["actual_length"]},
+            {"id": "abort_sink", "phase": "abort", "cardinality": "exactly_once_after_begin_on_non_success", "payloadRoleIds": []}
+          ],
+          "invocationOrderIds": ["begin_sink", "write_zero_or_more_chunks", "commit_sink_or_abort_sink"],
+          "sequentialWrites": true,
+          "terminalExclusivity": "commit_xor_abort",
+          "cancellationAware": true,
+          "cancellationConvergenceSeconds": 5
+        },
+        "execution": {
+          "reservationRoleIds": ["export_job", "chunk_buffer"],
+          "beforeAccessRoleIds": ["source_resource", "sink_capability"],
+          "atomicReservation": true,
+          "capacityPolicy": "reject_without_sink_call_source_open_wait_or_existing_job_eviction",
+          "concurrencyBounds": [
+            {"scopeRoleId": "source_scope", "maximum": 1},
+            {"scopeRoleId": "module_scope", "maximum": 4}
+          ],
+          "workBudgets": [
+            {"id": "export_job_buffer_budget", "scopeRoleId": "export_job", "unitId": "byte", "maximum": 262144, "enforcement": "reject_before_allocation_or_write"},
+            {"id": "export_module_buffer_budget", "scopeRoleId": "module_scope", "unitId": "byte", "maximum": 1048576, "enforcement": "reject_before_reservation"}
+          ],
+          "deadlineSeconds": 120,
+          "deadlineStartId": "registry_reservation_committed",
+          "cancellationPolicy": "close_gate_cancel_task_and_sink_then_converge_within_sink_bound",
+          "lateResultPolicy": "drop_without_commit_abort_or_second_outcome",
+          "lengthCheckIds": ["declared_length_before_copy", "cumulative_length_before_each_write", "actual_equals_declared_before_commit"],
+          "fullBufferingPolicy": "forbidden_stream_bounded_chunks_only",
+          "overloadFailureId": "media_export_overloaded"
+        },
+        "terminalPolicy": {
+          "linearizationPoint": "media_export_terminal_outcome_commit",
+          "winnerPolicy": "first_terminal_trigger_wins",
+          "outcomeDelivery": "exactly_once",
+          "successSinkActionId": "commit_sink",
+          "failureSinkActionId": "abort_sink_if_begin_succeeded",
+          "successSinkActionCardinality": "exactly_once",
+          "failureSinkActionCardinality": "exactly_once_after_begin",
+          "terminalExclusivity": "commit_xor_abort",
+          "failureCleanupSequenceIds": ["close_callback_gate", "cancel_export_task_and_sink", "abort_sink_once_if_begun", "close_source_access", "wipe_export_buffer", "release_export_buffer_reservation", "unregister_export_job"],
+          "successFinalizationSequenceIds": ["commit_sink_once", "close_callback_gate", "close_source_access", "wipe_export_buffer", "release_export_buffer_reservation", "unregister_export_job"]
+        },
+        "failureBehaviors": [
+          {"failureId": "media_export_conflict", "recoverable": true, "terminal": false, "triggerIds": ["per_source_job_capacity_precheck"], "raceWinnerId": "pre_access_rejection", "sinkActionId": "not_invoked", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_overloaded", "recoverable": true, "terminal": false, "triggerIds": ["module_capacity_precheck"], "raceWinnerId": "pre_access_rejection", "sinkActionId": "not_invoked", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_too_large", "recoverable": true, "terminal": false, "triggerIds": ["declared_length_check", "cumulative_length_check", "actual_length_check"], "raceWinnerId": "length_guard", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_sink_rejected", "recoverable": true, "terminal": false, "triggerIds": ["sink_begin_rejected", "sink_commit_rejected"], "raceWinnerId": "sink_rejection", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_read_failed", "recoverable": true, "terminal": false, "triggerIds": ["source_read_failed"], "raceWinnerId": "source_failure", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_write_failed", "recoverable": true, "terminal": false, "triggerIds": ["sink_write_failed"], "raceWinnerId": "sink_failure", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_cancelled", "recoverable": true, "terminal": false, "triggerIds": ["media_export_cancel_requested"], "raceWinnerId": "caller_cancellation", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_export_timed_out", "recoverable": true, "terminal": false, "triggerIds": ["media_export_deadline_elapsed"], "raceWinnerId": "deadline", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "media_invalid", "recoverable": false, "terminal": false, "triggerIds": ["strict_registry_lookup_failed"], "raceWinnerId": "pre_access_rejection", "sinkActionId": "not_invoked", "sourceLeaseEffect": "no_active_lease", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "invalid_state", "recoverable": true, "terminal": false, "triggerIds": ["active_lease_validation_failed", "release_media", "lease_expired"], "raceWinnerId": "source_state_change", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "winner_preserves_defined_source_state_transition", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "invalid_argument", "recoverable": true, "terminal": false, "triggerIds": ["request_validation_failed"], "raceWinnerId": "pre_access_rejection", "sinkActionId": "not_invoked", "sourceLeaseEffect": "active_lease_unchanged", "detailsPolicy": "empty_or_length_only_redacted"},
+          {"failureId": "system_interrupted", "recoverable": true, "terminal": true, "triggerIds": ["core_closed"], "raceWinnerId": "core_close", "sinkActionId": "abort_once_if_begin_succeeded", "sourceLeaseEffect": "core_close_invalidates_module_resources", "detailsPolicy": "empty_or_length_only_redacted"}
+        ],
+        "successResultId": "media_export_result",
+        "successResultFieldIds": ["media_handle", "media_type", "content_type", "byte_length"],
+        "sourceLeasePolicy": "caller_retains_active_lease_no_release_ttl_refresh_grace_or_tombstone_change",
+        "privacyPolicyIds": ["media_export_sink_native_only", "media_export_no_storage_identity", "media_export_redacted_diagnostics"],
+        "forbiddenRepresentationIds": ["path", "uri", "file_descriptor", "platform_sdk_type", "untyped_map", "raw_source_bytes_result", "full_source_memory_buffer"],
+        "backendDetailsPolicy": "redact_sink_source_os_and_exception_details"
+      }
+    ],
+    "cleanup": [
+      {"id": "retake_cleanup", "description": "Retake invalidates and deletes preview.", "triggerKind": "operation", "triggerId": "retake", "resourceId": "captured_media", "action": "invalidate_delete", "order": "before_state_transition"},
+      {"id": "cancel_cleanup", "description": "Cancellation invalidates and deletes preview.", "triggerKind": "lifecycle", "triggerId": "session_cancelled", "resourceId": "captured_media", "action": "invalidate_delete", "order": "before_state_transition"},
+      {"id": "failure_cleanup", "description": "Terminal failure releases capture and deletes partial preview.", "triggerKind": "lifecycle", "triggerId": "capability_failure", "resourceId": "captured_media", "action": "invalidate_delete", "order": "before_terminal_transition"},
+      {"id": "preview_timeout_cleanup", "description": "Preview timeout deletes unconfirmed media.", "triggerKind": "lifecycle", "triggerId": "preview_timed_out", "resourceId": "captured_media", "action": "invalidate_delete", "order": "before_terminal_transition"},
+      {"id": "release_cleanup", "description": "Release denies new reads and starts bounded grace.", "triggerKind": "operation", "triggerId": "release_media", "resourceId": "captured_media", "action": "deny_new_reads_start_grace", "order": "before_state_transition"},
+      {"id": "lease_expiry_cleanup", "description": "TTL expiry denies new reads and starts bounded grace.", "triggerKind": "lifecycle", "triggerId": "lease_expired", "resourceId": "captured_media", "action": "deny_new_reads_start_grace", "order": "before_state_transition"},
+      {"id": "release_read_grace_cleanup", "description": "Release grace expiry revokes reads, closes access, and deletes storage.", "triggerKind": "lifecycle", "triggerId": "release_read_grace_elapsed", "resourceId": "captured_media", "action": "force_revoke_close_delete", "order": "before_terminal_transition"},
+      {"id": "expiry_read_grace_cleanup", "description": "TTL grace expiry revokes reads, closes access, and deletes storage.", "triggerKind": "lifecycle", "triggerId": "expiry_read_grace_elapsed", "resourceId": "captured_media", "action": "force_revoke_close_delete", "order": "before_terminal_transition"},
+      {"id": "restart_cleanup", "description": "Restart invalidates handles and deletes module temporary residue.", "triggerKind": "lifecycle", "triggerId": "app_restarted", "resourceId": "captured_media", "action": "invalidate_delete", "order": "before_registry_invalidation"},
+      {"id": "live_preview_explicit_detach", "description": "Explicit detach revokes callbacks and detaches the target idempotently.", "triggerKind": "operation", "triggerId": "detach_live_preview", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_result_commit"},
+      {"id": "live_preview_photo_revoke", "description": "Photo capture revokes live rendering before entering preview.", "triggerKind": "operation", "triggerId": "take_photo", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_state_transition"},
+      {"id": "live_preview_stop_revoke", "description": "Recording stop revokes live rendering before entering preview.", "triggerKind": "operation", "triggerId": "stop_recording", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_state_transition"},
+      {"id": "live_preview_duration_revoke", "description": "Automatic duration stop revokes live rendering before entering preview.", "triggerKind": "lifecycle", "triggerId": "video_duration_reached", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_state_transition"},
+      {"id": "live_preview_rotation_revoke", "description": "Rotation revokes the old owner generation before detach.", "triggerKind": "lifecycle", "triggerId": "display_rotation_changed", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_owner_replacement"},
+      {"id": "live_preview_background_revoke", "description": "Backgrounding revokes callbacks before capture resource handling.", "triggerKind": "lifecycle", "triggerId": "app_backgrounded", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_state_cleanup"},
+      {"id": "live_preview_owner_destroy_revoke", "description": "Owner destruction invalidates its generation before detach.", "triggerKind": "lifecycle", "triggerId": "preview_owner_destroyed", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_owner_destroy"},
+      {"id": "live_preview_terminal_revoke", "description": "Session terminal processing revokes live rendering first.", "triggerKind": "lifecycle", "triggerId": "session_terminal", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_terminal_transition"},
+      {"id": "live_preview_core_close_revoke", "description": "Core close revokes render callbacks before capture resources close.", "triggerKind": "lifecycle", "triggerId": "core_closed", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_core_resource_close"},
+      {"id": "live_preview_restart_revoke", "description": "Restart invalidates render generations before registry cleanup.", "triggerKind": "lifecycle", "triggerId": "app_restarted", "resourceId": "live_preview_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_registry_invalidation"},
+      {"id": "unconfirmed_preview_explicit_detach", "description": "Explicit detach revokes unconfirmed preview callbacks idempotently.", "triggerKind": "operation", "triggerId": "detach_unconfirmed_preview_render", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_result_commit"},
+      {"id": "unconfirmed_preview_retake_revoke", "description": "Retake revokes rendering before deleting preview media.", "triggerKind": "operation", "triggerId": "retake", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_media_cleanup"},
+      {"id": "unconfirmed_preview_confirm_revoke", "description": "Confirm revokes unconfirmed rendering before lease transfer.", "triggerKind": "operation", "triggerId": "confirm", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_media_transfer"},
+      {"id": "unconfirmed_preview_cancel_revoke", "description": "Cancellation revokes rendering before preview deletion.", "triggerKind": "lifecycle", "triggerId": "session_cancelled", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_media_cleanup"},
+      {"id": "unconfirmed_preview_failure_revoke", "description": "Failure revokes rendering before preview cleanup.", "triggerKind": "lifecycle", "triggerId": "capability_failure", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_media_cleanup"},
+      {"id": "unconfirmed_preview_timeout_revoke", "description": "Preview timeout revokes rendering before deletion.", "triggerKind": "lifecycle", "triggerId": "preview_timed_out", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_media_cleanup"},
+      {"id": "unconfirmed_preview_rotation_revoke", "description": "Rotation revokes the old owner generation before detach.", "triggerKind": "lifecycle", "triggerId": "display_rotation_changed", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_owner_replacement"},
+      {"id": "unconfirmed_preview_background_revoke", "description": "Backgrounding revokes unconfirmed preview callbacks.", "triggerKind": "lifecycle", "triggerId": "app_backgrounded", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_state_cleanup"},
+      {"id": "unconfirmed_preview_owner_destroy_revoke", "description": "Owner destruction invalidates its generation before detach.", "triggerKind": "lifecycle", "triggerId": "preview_owner_destroyed", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_owner_destroy"},
+      {"id": "unconfirmed_preview_core_close_revoke", "description": "Core close revokes preview callbacks before media cleanup.", "triggerKind": "lifecycle", "triggerId": "core_closed", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_core_resource_close"},
+      {"id": "unconfirmed_preview_restart_revoke", "description": "Restart invalidates preview render generations before media cleanup.", "triggerKind": "lifecycle", "triggerId": "app_restarted", "resourceId": "unconfirmed_preview_render_attachment", "action": "invalidate_generation_stop_callbacks_detach", "order": "before_registry_invalidation"},
+      {"id": "thumbnail_release_cleanup", "description": "Release winner wipes all Module buffers, discards partial output, then unregisters the managed job last before Failure delivery.", "triggerKind": "operation", "triggerId": "release_media", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_generation_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "thumbnail_expiry_cleanup", "description": "Lease-expiry winner wipes all Module buffers, discards partial output, then unregisters the managed job last before Failure delivery.", "triggerKind": "lifecycle", "triggerId": "lease_expired", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_generation_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "thumbnail_cancel_cleanup", "description": "Cancellation winner wipes all Module buffers, discards partial output, then unregisters the managed job last before Failure delivery.", "triggerKind": "lifecycle", "triggerId": "thumbnail_read_cancelled", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_generation_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "thumbnail_failure_cleanup", "description": "Decoder-failure winner wipes all Module buffers, discards partial output, then unregisters the managed job last before redacted Failure delivery.", "triggerKind": "lifecycle", "triggerId": "thumbnail_generation_aborted", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_generation_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "thumbnail_restart_cleanup", "description": "Restart winner wipes all Module buffers, discards partial output, then unregisters the managed job last before invalidation Failure delivery.", "triggerKind": "lifecycle", "triggerId": "app_restarted", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_generation_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "thumbnail_success_finalization", "description": "Successful atomic ownership transfer wipes Module buffers, then unregisters the managed job last without touching the caller copy.", "triggerKind": "lifecycle", "triggerId": "thumbnail_result_committed", "resourceId": "thumbnail_generation_job", "action": "run_thumbnail_success_finalization_sequence", "order": "after_atomic_transfer_before_result_delivery"},
+      {"id": "media_export_release_cleanup", "description": "Release winner closes the callback gate, cancels work, aborts a begun sink once, and unregisters export resources last.", "triggerKind": "operation", "triggerId": "release_media", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_expiry_cleanup", "description": "Lease-expiry winner closes the callback gate, cancels work, aborts a begun sink once, and unregisters export resources last.", "triggerKind": "lifecycle", "triggerId": "lease_expired", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_cancel_cleanup", "description": "Caller-cancellation winner closes the callback gate, cancels work, aborts a begun sink once, and unregisters export resources last.", "triggerKind": "lifecycle", "triggerId": "media_export_cancel_requested", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_timeout_cleanup", "description": "Deadline winner closes the callback gate, cancels work, aborts a begun sink once, and unregisters export resources last.", "triggerKind": "lifecycle", "triggerId": "media_export_deadline_elapsed", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_failure_cleanup", "description": "Read, write, length, or sink failure aborts a begun sink once and unregisters export resources last.", "triggerKind": "lifecycle", "triggerId": "media_export_aborted", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_core_close_cleanup", "description": "Core close closes the callback gate, cancels work, aborts a begun sink once, and unregisters export resources last.", "triggerKind": "lifecycle", "triggerId": "core_closed", "resourceId": "media_export_job", "action": "run_media_export_failure_cleanup_sequence", "order": "after_atomic_winner_before_outcome_delivery"},
+      {"id": "media_export_success_finalization", "description": "Length-verified success commits the sink once and unregisters export resources last before result delivery.", "triggerKind": "lifecycle", "triggerId": "media_export_committed", "resourceId": "media_export_job", "action": "run_media_export_success_finalization_sequence", "order": "after_atomic_winner_before_result_delivery"}
+    ],
+    "privacy": [
+      {"id": "strip_location_metadata", "description": "Remove location metadata before preview."},
+      {"id": "minimize_embedded_metadata", "description": "Remove device-identifying metadata."},
+      {"id": "redact_logs", "description": "Never log handles, paths, bytes, or embedded metadata."},
+      {"id": "no_arbitrary_paths", "description": "Handles are registry keys only and never path input."},
+      {"id": "strip_thumbnail_exif", "description": "Sanitized thumbnail copies contain no EXIF block."},
+      {"id": "strip_thumbnail_source_filename", "description": "Sanitized thumbnail copies contain no original filename."},
+      {"id": "sanitize_thumbnail_encoding", "description": "Thumbnail pixels are re-encoded or equivalently sanitized before result commit."},
+      {"id": "strip_non_display_thumbnail_metadata", "description": "Thumbnail copies retain no metadata beyond explicit display result fields."},
+      {"id": "no_sensitive_thumbnail_cache_key", "description": "Media content, handles, paths, and identifiers never appear in a thumbnail cache key."},
+      {"id": "no_thumbnail_source_export", "description": "Thumbnail reads never return source bytes, paths, URIs, descriptors, or untyped platform values."},
+      {"id": "native_render_surface_not_data_payload", "description": "A module-defined render surface is a Native lifecycle resource, never media data or a serializable payload."},
+      {"id": "no_render_surface_cross_runtime_projection", "description": "Render surfaces, backing targets, sources, renderers, and bindings never cross a Runtime boundary."},
+      {"id": "render_internals_module_private", "description": "Source, renderer, player, layer, binding, and cleanup access remains private to the Native Module."},
+      {"id": "render_surface_structured_logs_only", "description": "Render diagnostics contain only stable enum fields and redacted status; instances, generation, internal resources, SDK descriptions, paths, and raw exceptions are forbidden."},
+      {"id": "media_export_sink_native_only", "description": "The export sink is a typed caller-scoped native capability and is never serialized or stored in the module registry."},
+      {"id": "media_export_no_storage_identity", "description": "Export request, result, failure, diagnostics, and sink contract contain no path, locator, descriptor, or platform storage object."},
+      {"id": "media_export_redacted_diagnostics", "description": "Export diagnostics expose only stable outcome IDs and bounded lengths, never handles, source metadata, sink details, operating-system errors, exception text, or content summaries."}
+    ]
+  }
+}

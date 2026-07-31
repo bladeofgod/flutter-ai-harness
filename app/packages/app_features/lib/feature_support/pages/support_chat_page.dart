@@ -1,23 +1,30 @@
 import 'dart:async';
 
 import 'package:app_data/support.dart';
+import 'package:app_media/app_media.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../api/support_media_picker.dart'
+    show SupportMediaPickFailureCode, SupportMediaSource;
 import '../controllers/support_chat_controller.dart';
 import '../widgets/support_chat_components.dart';
 
 final class SupportChatPage extends StatefulWidget {
   const SupportChatPage({
-    required this.controller,
+    required this.mediaResourceStore,
+    required this.createController,
     required this.onOpenVoucher,
+    required this.onOpenMedia,
     required this.onDone,
     super.key,
   });
 
-  final SupportChatController controller;
+  final MediaResourceStore mediaResourceStore;
+  final SupportChatController Function() createController;
   final ValueChanged<Voucher> onOpenVoucher;
+  final ValueChanged<SupportMediaContent> onOpenMedia;
   final VoidCallback onDone;
 
   @override
@@ -27,6 +34,13 @@ final class SupportChatPage extends StatefulWidget {
 final class _SupportChatPageState extends State<SupportChatPage> {
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  late final SupportChatController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.createController();
+  }
 
   @override
   void dispose() {
@@ -36,16 +50,39 @@ final class _SupportChatPageState extends State<SupportChatPage> {
   }
 
   Future<void> _send() async {
-    final sent = await widget.controller.send();
+    final sent = await _controller.send();
     if (sent && mounted) {
       _textController.clear();
       _focusNode.requestFocus();
     }
   }
 
+  Future<void> _chooseMedia() async {
+    if (_controller.isSendingMedia) {
+      return;
+    }
+    _focusNode.unfocus();
+    final source = await showModalBottomSheet<SupportMediaSource>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => const _SupportMediaSourceSheet(),
+    );
+    if (source == null || !mounted) {
+      return;
+    }
+    final result = await _controller.sendMedia(source);
+    if (!mounted || result is! SupportMediaSendFailed) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(_mediaFailureMessage(result.code))));
+  }
+
   @override
   Widget build(BuildContext context) => GetBuilder<SupportChatController>(
-    init: widget.controller,
+    init: _controller,
     global: false,
     autoRemove: false,
     dispose: (state) => state.controller.onDelete(),
@@ -53,66 +90,89 @@ final class _SupportChatPageState extends State<SupportChatPage> {
       final state = controller.viewState;
       final conversation = state is SupportChatData ? state.conversation : null;
       final canRate = conversation?.stage == SupportConversationStage.active;
-      return Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          title: Text('Customer Support', style: supportHeading(size: 21)),
-          actions: [
-            if (canRate)
-              IconButton(
-                key: const ValueKey('support-open-rating'),
-                tooltip: 'Rate service',
-                onPressed: controller.requestRatingFromUi,
-                icon: const Icon(Icons.star_outline),
+      return _SupportMediaStoreScope(
+        store: widget.mediaResourceStore,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            title: Text('Customer Support', style: supportHeading(size: 21)),
+            actions: [
+              if (canRate)
+                IconButton(
+                  key: const ValueKey('support-open-rating'),
+                  tooltip: 'Rate service',
+                  onPressed: controller.requestRatingFromUi,
+                  icon: const Icon(Icons.star_outline),
+                ),
+            ],
+          ),
+          body: SafeArea(
+            top: false,
+            child: switch (state) {
+              SupportChatLoading() => const Center(
+                child: CircularProgressIndicator(
+                  key: ValueKey('support-loading'),
+                ),
               ),
-          ],
-        ),
-        body: SafeArea(
-          top: false,
-          child: switch (state) {
-            SupportChatLoading() => const Center(
-              child: CircularProgressIndicator(
-                key: ValueKey('support-loading'),
+              SupportChatError(:final failure) => _SupportError(
+                failure: failure,
+                onRetry: controller.retryFromUi,
               ),
-            ),
-            SupportChatError(:final failure) => _SupportError(
-              failure: failure,
-              onRetry: controller.retryFromUi,
-            ),
-            SupportChatData(:final conversation) =>
-              switch (conversation.stage) {
-                SupportConversationStage.starting => _StartingQuestions(
-                  questions: conversation.suggestedQuestions,
-                  onSelect: controller.selectQuestionFromUi,
-                ),
-                SupportConversationStage.connecting ||
-                SupportConversationStage.typing ||
-                SupportConversationStage.active => _ConversationView(
-                  conversation: conversation,
-                  scrollRequest: controller.scrollRequest,
-                  textController: _textController,
-                  focusNode: _focusNode,
-                  draft: controller.draft,
-                  onDraftChanged: controller.updateDraft,
-                  onSend: () => unawaited(_send()),
-                  onOpenVoucher: widget.onOpenVoucher,
-                ),
-                SupportConversationStage.rating => _ServiceRating(
-                  selectedRating: controller.selectedRating,
-                  onSelect: controller.selectRating,
-                  onSubmit: controller.submitRatingFromUi,
-                ),
-                SupportConversationStage.rated => _RatingComplete(
-                  rating: conversation.rating!,
-                  onDone: widget.onDone,
-                ),
-              },
-          },
+              SupportChatData(:final conversation) =>
+                switch (conversation.stage) {
+                  SupportConversationStage.starting => _StartingQuestions(
+                    questions: conversation.suggestedQuestions,
+                    onSelect: controller.selectQuestionFromUi,
+                  ),
+                  SupportConversationStage.connecting ||
+                  SupportConversationStage.typing ||
+                  SupportConversationStage.active => _ConversationView(
+                    conversation: conversation,
+                    scrollRequest: controller.scrollRequest,
+                    textController: _textController,
+                    focusNode: _focusNode,
+                    draft: controller.draft,
+                    onDraftChanged: controller.updateDraft,
+                    onSend: () => unawaited(_send()),
+                    onAddMedia: () => unawaited(_chooseMedia()),
+                    isSendingMedia: controller.isSendingMedia,
+                    onOpenVoucher: widget.onOpenVoucher,
+                    onOpenMedia: widget.onOpenMedia,
+                  ),
+                  SupportConversationStage.rating => _ServiceRating(
+                    selectedRating: controller.selectedRating,
+                    onSelect: controller.selectRating,
+                    onSubmit: controller.submitRatingFromUi,
+                  ),
+                  SupportConversationStage.rated => _RatingComplete(
+                    rating: conversation.rating!,
+                    onDone: widget.onDone,
+                  ),
+                },
+            },
+          ),
         ),
       );
     }),
   );
+}
+
+final class _SupportMediaStoreScope extends InheritedWidget {
+  const _SupportMediaStoreScope({required this.store, required super.child});
+
+  final MediaResourceStore store;
+
+  static MediaResourceStore of(BuildContext context) {
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<_SupportMediaStoreScope>();
+    assert(scope != null, 'Support media store scope is missing.');
+    return scope!.store;
+  }
+
+  @override
+  bool updateShouldNotify(_SupportMediaStoreScope oldWidget) =>
+      !identical(store, oldWidget.store);
 }
 
 final class _SupportError extends StatelessWidget {
@@ -244,7 +304,10 @@ final class _ConversationView extends StatelessWidget {
     required this.draft,
     required this.onDraftChanged,
     required this.onSend,
+    required this.onAddMedia,
+    required this.isSendingMedia,
     required this.onOpenVoucher,
+    required this.onOpenMedia,
   });
 
   final SupportConversation conversation;
@@ -254,7 +317,10 @@ final class _ConversationView extends StatelessWidget {
   final String draft;
   final ValueChanged<String> onDraftChanged;
   final VoidCallback onSend;
+  final VoidCallback onAddMedia;
+  final bool isSendingMedia;
   final ValueChanged<Voucher> onOpenVoucher;
+  final ValueChanged<SupportMediaContent> onOpenMedia;
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +333,7 @@ final class _ConversationView extends StatelessWidget {
             messages: conversation.messages,
             scrollRequest: scrollRequest,
             onOpenVoucher: onOpenVoucher,
+            onOpenMedia: onOpenMedia,
           ),
         ),
         _MessageComposer(
@@ -276,6 +343,8 @@ final class _ConversationView extends StatelessWidget {
           canSend: isActive && draft.trim().isNotEmpty,
           onChanged: onDraftChanged,
           onSend: onSend,
+          onAddMedia: onAddMedia,
+          isSendingMedia: isSendingMedia,
         ),
       ],
     );
@@ -341,11 +410,13 @@ final class _MessageList extends StatefulWidget {
     required this.messages,
     required this.scrollRequest,
     required this.onOpenVoucher,
+    required this.onOpenMedia,
   });
 
   final List<SupportMessage> messages;
   final int scrollRequest;
   final ValueChanged<Voucher> onOpenVoucher;
+  final ValueChanged<SupportMediaContent> onOpenMedia;
 
   @override
   State<_MessageList> createState() => _MessageListState();
@@ -439,6 +510,7 @@ final class _MessageListState extends State<_MessageList> {
         itemBuilder: (context, index) => _MessageBubble(
           message: widget.messages[index],
           onOpenVoucher: widget.onOpenVoucher,
+          onOpenMedia: widget.onOpenMedia,
         ),
       ),
       if (_showBottomButton)
@@ -457,10 +529,15 @@ final class _MessageListState extends State<_MessageList> {
 }
 
 final class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({required this.message, required this.onOpenVoucher});
+  const _MessageBubble({
+    required this.message,
+    required this.onOpenVoucher,
+    required this.onOpenMedia,
+  });
 
   final SupportMessage message;
   final ValueChanged<Voucher> onOpenVoucher;
+  final ValueChanged<SupportMediaContent> onOpenMedia;
 
   @override
   Widget build(BuildContext context) {
@@ -480,6 +557,10 @@ final class _MessageBubble extends StatelessWidget {
           description: description,
           onOpen: () => onOpenVoucher(voucher),
         ),
+      SupportMediaContent() => _MediaMessage(
+        content: message.content as SupportMediaContent,
+        onOpen: () => onOpenMedia(message.content as SupportMediaContent),
+      ),
     };
     return Semantics(
       label: isCustomer ? 'You' : 'Support',
@@ -490,7 +571,10 @@ final class _MessageBubble extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 310),
           margin: const EdgeInsets.only(bottom: 12),
           padding: EdgeInsets.all(
-            message.content is SupportVoucherContent ? 8 : 13,
+            message.content is SupportVoucherContent ||
+                    message.content is SupportMediaContent
+                ? 6
+                : 13,
           ),
           decoration: BoxDecoration(
             color: isCustomer ? AppColors.primary : AppColors.surfaceMuted,
@@ -500,6 +584,108 @@ final class _MessageBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+final class _MediaMessage extends StatelessWidget {
+  const _MediaMessage({required this.content, required this.onOpen});
+
+  final SupportMediaContent content;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final poster = _mediaPoster(content.poster);
+    return Semantics(
+      button: true,
+      label: content.type == SupportMediaType.image
+          ? 'Open image attachment'
+          : 'Open video attachment',
+      child: ExcludeSemantics(
+        child: SizedBox(
+          width: 220,
+          height: 160,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              key: const ValueKey('support-open-media-preview'),
+              onTap: onOpen,
+              borderRadius: BorderRadius.circular(5),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    MediaResourceThumbnail(
+                      resourceId: content.resourceId,
+                      store: _SupportMediaStoreScope.of(context),
+                      width: 220,
+                      height: 160,
+                      poster: poster,
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ColoredBox(
+                        color: const Color(0xAA000000),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 7,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  content.label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: supportBody(
+                                    size: 12,
+                                    weight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              if (content.duration case final duration?) ...[
+                                const SizedBox(width: 8),
+                                Text(
+                                  _formatDuration(duration),
+                                  style: supportBody(
+                                    size: 12,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+MediaPoster? _mediaPoster(SupportMediaPoster? poster) {
+  if (poster == null) {
+    return null;
+  }
+  try {
+    return MediaPoster.png(
+      bytes: poster.bytes,
+      width: poster.width,
+      height: poster.height,
+    );
+  } on ArgumentError {
+    return null;
   }
 }
 
@@ -575,6 +761,8 @@ final class _MessageComposer extends StatelessWidget {
     required this.canSend,
     required this.onChanged,
     required this.onSend,
+    required this.onAddMedia,
+    required this.isSendingMedia,
   });
 
   final TextEditingController textController;
@@ -583,6 +771,8 @@ final class _MessageComposer extends StatelessWidget {
   final bool canSend;
   final ValueChanged<String> onChanged;
   final VoidCallback onSend;
+  final VoidCallback onAddMedia;
+  final bool isSendingMedia;
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
@@ -632,11 +822,28 @@ final class _MessageComposer extends StatelessWidget {
           const SizedBox(width: 8),
           SizedBox.square(
             dimension: 48,
-            child: IconButton.filled(
-              key: const ValueKey('support-send-message'),
-              tooltip: 'Send message',
-              onPressed: canSend ? onSend : null,
-              icon: const Icon(Icons.send),
+            child: IconButton(
+              key: const ValueKey('support-add-media'),
+              tooltip: 'Add photo or video',
+              onPressed: enabled && !isSendingMedia ? onAddMedia : null,
+              icon: isSendingMedia
+                  ? const SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.photo_camera_outlined),
+            ),
+          ),
+          const SizedBox(width: 4),
+          SizedBox(
+            height: 48,
+            child: Tooltip(
+              message: 'Send message',
+              child: FilledButton(
+                key: const ValueKey('support-send-message'),
+                onPressed: canSend ? onSend : null,
+                child: const Text('Send'),
+              ),
             ),
           ),
         ],
@@ -644,6 +851,64 @@ final class _MessageComposer extends StatelessWidget {
     ),
   );
 }
+
+final class _SupportMediaSourceSheet extends StatelessWidget {
+  const _SupportMediaSourceSheet();
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    top: false,
+    child: Padding(
+      key: const ValueKey('support-media-source-sheet'),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text('Add media', style: supportHeading(size: 20)),
+          const SizedBox(height: 8),
+          ListTile(
+            key: const ValueKey('support-media-source-camera'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.photo_camera_outlined),
+            title: const Text('Take a photo or video'),
+            onTap: () => Navigator.of(context).pop(SupportMediaSource.camera),
+          ),
+          ListTile(
+            key: const ValueKey('support-media-source-gallery'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.photo_library_outlined),
+            title: const Text('Choose from gallery'),
+            subtitle: const Text('Photo or video'),
+            onTap: () => Navigator.of(context).pop(SupportMediaSource.gallery),
+          ),
+          TextButton(
+            key: const ValueKey('support-media-source-cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+String _formatDuration(Duration duration) {
+  final minutes = duration.inMinutes;
+  final seconds = duration.inSeconds.remainder(60);
+  return '$minutes:${seconds.toString().padLeft(2, '0')}';
+}
+
+String _mediaFailureMessage(SupportMediaPickFailureCode code) => switch (code) {
+  SupportMediaPickFailureCode.permissionDenied =>
+    'Camera or gallery access was not granted.',
+  SupportMediaPickFailureCode.readFailed =>
+    'The selected media could not be read.',
+  SupportMediaPickFailureCode.tooLarge =>
+    'Choose an image under 2 MB or a video under 50 MB.',
+  SupportMediaPickFailureCode.invalidMedia => 'Choose a valid photo or video.',
+  SupportMediaPickFailureCode.unavailable => 'The media picker is unavailable.',
+};
 
 final class _ServiceRating extends StatelessWidget {
   const _ServiceRating({

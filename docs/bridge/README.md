@@ -1,6 +1,9 @@
 # Bridge 契约
 
-本目录是 Flutter 与原生端 MethodChannel/EventChannel 协议的唯一事实源。
+本目录是 Flutter 与原生端 MethodChannel/EventChannel 协议的唯一事实源。跨 Runtime
+架构、Native Module、Dart Client、两端 Bridge Adapter 与 Host 的职责见
+[`native-architecture.md`](../native-architecture.md)。Bridge 只定义跨 Runtime Adapter
+和 wire 契约，不拥有被委托的 Native Capability；纯原生消费者直接调用 Native Module。
 
 ## 规则
 
@@ -42,3 +45,10 @@ com.example.<module>.<feature>
 11. 变更日志。
 
 首份实际契约由 Demo 的第一个真实 Bridge 任务生成，本目录不预置虚构协议清单。
+
+## 当前契约
+
+- [Media Capture Flutter Bridge Contract](./media-capture.md)：从原生 Media Capture Capability
+  派生的 Version 3 MethodChannel/EventChannel 协议；包含直接 operation、全屏 Native UI
+  presentation、受限缩略图，以及一次性 `materialize`/`release` transfer locator 的 Payload、错误和
+  生命周期边界。Version 1/2 历史保留在变更日志中。

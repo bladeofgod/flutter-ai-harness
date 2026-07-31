@@ -644,6 +644,36 @@ void main() {
     expect(find.text('Hello, Romina!'), findsNothing);
   });
 
+  testWidgets('injects the Registry media API into the Orders review route', (
+    tester,
+  ) async {
+    _setPhoneViewport(tester);
+    final mediaApi = _TrackingMediaApi();
+    final registry = FeaturesRegistry.local(orderReviewMediaApi: mediaApi);
+    final authState = AuthStateCoordinator();
+    addTearDown(authState.dispose);
+    addTearDown(registry.dispose);
+    authState.authenticate(await _login(registry));
+
+    final router = createDemoRouter(
+      featuresRegistry: registry,
+      authStateCoordinator: authState,
+      initialLocation: '/orders/order-1003/review',
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('order-review-media-add')));
+    await tester.pumpAndSettle();
+
+    expect(mediaApi.captureCount, 1);
+    expect(
+      find.byKey(const ValueKey('order-review-media-add')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('renders the shell error page for an unknown route', (
     tester,
   ) async {
@@ -695,3 +725,24 @@ Uint8List _onePixelPng() => base64Decode(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8A'
   'AQUBAScY42YAAAAASUVORK5CYII=',
 );
+
+final class _TrackingMediaApi implements OrderReviewMediaApi {
+  var captureCount = 0;
+
+  @override
+  Future<OrderReviewMediaCaptureOutcome> capture() async {
+    captureCount += 1;
+    return const OrderReviewMediaCancelled();
+  }
+
+  @override
+  Future<OrderReviewMediaReleaseOutcome> release(
+    OrderReviewMediaAttachment attachment,
+  ) async => const OrderReviewMediaReleased();
+
+  @override
+  Future<void> clearDrafts() async {}
+
+  @override
+  Future<void> dispose() async {}
+}

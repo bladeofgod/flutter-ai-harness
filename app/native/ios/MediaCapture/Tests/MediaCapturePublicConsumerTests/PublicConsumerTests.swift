@@ -1,0 +1,30 @@
+import MediaCapture
+import MediaCaptureAppleRendering
+import UIKit
+import XCTest
+
+final class PublicConsumerTests: XCTestCase {
+    func testConsumerCompilesAgainstPackageProductWithoutFlutterOrWireTypes() throws {
+        let options = try SessionOptions(
+            enabledMediaTypes: [.photo, .video],
+            preferredCamera: .rear,
+            audioEnabled: false,
+            maxVideoDurationMilliseconds: 5_000
+        )
+        let handle = try SessionHandle(rawValue: "consumer_owned_opaque_handle")
+
+        XCTAssertEqual(options.preferredCamera, .rear)
+        XCTAssertEqual(handle.rawValue, "consumer_owned_opaque_handle")
+        XCTAssertEqual(MediaCaptureFailure(.mediaInvalid).id.rawValue, "media_invalid")
+        XCTAssertNotNil(MediaCaptureCore.self)
+    }
+
+    @MainActor
+    func testIndependentPackageCanUseBothProductsAndConcreteSurface() throws {
+        let owner = MediaCaptureRenderSurfaceOwner(ownerGeneration: 1)
+        let view = try MediaCaptureRenderSurfaceFactory.make(owner: owner)
+
+        XCTAssertNotNil(view.layer)
+        XCTAssertTrue(view.surfaceOwner === owner)
+    }
+}

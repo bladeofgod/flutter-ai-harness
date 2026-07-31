@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:app_data/search.dart';
@@ -5,10 +6,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../api/search_image_picker.dart';
 import '../../shared/catalog/catalog_asset_image.dart';
 import '../../shared/catalog/catalog_components.dart';
 import '../controllers/search_controller.dart';
-import '../media/search_image_picker.dart';
 
 typedef SearchProductSelected = void Function(String productId);
 
@@ -87,7 +88,9 @@ final class _SearchHeader extends StatelessWidget {
                     tooltip: 'Search with a photo',
                     onPressed: controller.isPickingImage
                         ? null
-                        : controller.pickImage,
+                        : () => unawaited(
+                            _chooseSearchImageSource(context, controller),
+                          ),
                     icon: controller.isPickingImage
                         ? const SizedBox.square(
                             dimension: 18,
@@ -155,7 +158,8 @@ final class _SearchBody extends StatelessWidget {
         Expanded(
           child: switch (controller.state) {
             SearchViewState.initial => _InitialSearch(
-              onImageSearch: controller.pickImage,
+              onImageSearch: () =>
+                  unawaited(_chooseSearchImageSource(context, controller)),
             ),
             SearchViewState.searching => const Center(
               child: CircularProgressIndicator(key: ValueKey('search-loading')),
@@ -190,6 +194,86 @@ final class _SearchBody extends StatelessWidget {
   }
 }
 
+enum _SearchImageSource { camera, gallery }
+
+Future<void> _chooseSearchImageSource(
+  BuildContext context,
+  SearchFlowController controller,
+) async {
+  if (controller.isPickingImage) {
+    return;
+  }
+  FocusScope.of(context).unfocus();
+  final source = await showModalBottomSheet<_SearchImageSource>(
+    context: context,
+    useSafeArea: true,
+    showDragHandle: true,
+    builder: (context) => const _SearchImageSourceSheet(),
+  );
+  if (!context.mounted) {
+    return;
+  }
+  switch (source) {
+    case _SearchImageSource.camera:
+      await controller.capturePhoto();
+      return;
+    case _SearchImageSource.gallery:
+      await controller.pickImage();
+      return;
+    case null:
+      return;
+  }
+}
+
+final class _SearchImageSourceSheet extends StatelessWidget {
+  const _SearchImageSourceSheet();
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    top: false,
+    child: Padding(
+      key: const ValueKey('search-image-source-sheet'),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Add a photo',
+            style: TextStyle(
+              fontFamily: AppFonts.raleway,
+              package: AppFonts.package,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListTile(
+            key: const ValueKey('search-image-source-camera'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.photo_camera_outlined),
+            title: const Text('Take a photo'),
+            onTap: () => Navigator.of(context).pop(_SearchImageSource.camera),
+          ),
+          ListTile(
+            key: const ValueKey('search-image-source-gallery'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.photo_library_outlined),
+            title: const Text('Choose from gallery'),
+            onTap: () => Navigator.of(context).pop(_SearchImageSource.gallery),
+          ),
+          TextButton(
+            key: const ValueKey('search-image-source-cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 final class _InitialSearch extends StatelessWidget {
   const _InitialSearch({required this.onImageSearch});
 
@@ -215,7 +299,7 @@ final class _InitialSearch extends StatelessWidget {
       ),
       const SizedBox(height: 9),
       const Text(
-        'Search by product name or choose a photo from your gallery.',
+        'Search by product name or add a photo.',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: AppFonts.nunitoSans,
@@ -229,7 +313,7 @@ final class _InitialSearch extends StatelessWidget {
       FilledButton.icon(
         key: const ValueKey('search-image-button'),
         onPressed: onImageSearch,
-        icon: const Icon(Icons.photo_library_outlined),
+        icon: const Icon(Icons.add_photo_alternate_outlined),
         label: const Text('Choose a photo'),
       ),
     ],

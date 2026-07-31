@@ -266,7 +266,7 @@ final class _CategoriesHeader extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Text('Shop', style: _raleway(size: 28, height: 36 / 28)),
-      const SizedBox(width: 19),
+      SizedBox(width: MediaQuery.sizeOf(context).width < 360 ? 10 : 19),
       Expanded(
         child: Container(
           key: const ValueKey('categories-query-chip'),
@@ -293,11 +293,6 @@ final class _CategoriesHeader extends StatelessWidget {
               const SizedBox(width: 4),
               const Icon(Icons.close, size: 14, color: Color(0xFF7D9BF0)),
               const Spacer(),
-              const Icon(
-                Icons.photo_camera_outlined,
-                size: 21,
-                color: AppColors.primary,
-              ),
             ],
           ),
         ),

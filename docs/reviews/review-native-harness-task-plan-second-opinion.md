@@ -26,35 +26,35 @@
 
 ### 1. 平台范围没有结构化事实，Validator 无法确定拒绝 Executor 冲突
 
-- 位置：[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L57)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L63)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L71)、[harness_check.dart](../../app/tool/harness_check.dart#L472)
+- 位置：[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L57)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L63)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L71)、[harness_check.dart](../../app/tool/harness_check.dart#L472)
 - 影响：任务要求 `execute-tasks` 不从文件名或 diff 猜平台，同时要求 Harness Fixture 拒绝“Android/iOS 范围与 Executor 不匹配”；但现有任务卡只结构化声明 `executor`、`blockedBy` 和可选 `securityReview`。Validator 只能确认 Executor 在 allowlist 中，无法从自然语言正文确定任务属于 Android、iOS、Dart 还是 Wire。实现者只能违反要求去解析 prose/路径，或留下一个不能证明验收标准的测试。
 - 证据：任务第 10 条明确禁止运行时从文件名或 diff 推断，却没有新增 `platforms`、工作类型或目标文件等可校验字段；当前 `_validateTasks` 在 472-476 行只校验两个既有 Executor 值。现有 `plan-tasks` 也不要求结构化平台范围。
 - 修法：二选一并在卡内定案。推荐为 Native/Bridge 任务增加最小结构化范围，例如 `platforms` 与 `workKinds`，同步更新 `CLAUDE.md`、`plan-tasks`、`execute-tasks`、Validator、活动/归档兼容和 Fixture；如果不扩展任务元数据，则删除“Validator 确定拒绝平台冲突”的验收，把它明确降为规划/执行阶段的语义 Review，不能声称 Harness 已机器保证。
 
 ### 2. DAG 允许三个任务并行修改同一 Validator 和 Fixture
 
-- 位置：[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L3)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L68)、[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L3)、[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L55)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L3)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L48)
+- 位置：[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L3)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L68)、[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L3)、[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L55)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L3)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L48)
 - 影响：架构任务完成后，Agent 标准与 Capability 可以并行；Capability 完成后 Bridge 也可与仍在执行的 Agent 标准并行。三张卡都要求扩展 `app/tool/harness_check.dart` 和 `scripts/quality/test-harness.sh`，会产生覆盖、冲突、漏合并 Fixture 或复审摘要失效。当前 DAG 因而只在 slug 层面无环，不满足共享工作树上的可并行执行条件。
 - 证据：Agent 标准要求修改 Harness Task Validator 并扩展 Harness/Codex Fixture；Capability 和 Bridge 都明确要求修改 `harness_check.dart` 及失败 Fixture。它们之间没有 `blockedBy` 边，旧报告把这三者视为可并行，却只处理了未来 Android/iOS 平台详情文档的并发写入。
 - 修法：最小修法是串成 `architecture -> agent-standards -> capability-contract -> bridge-contract`；这样还可确保 Capability 中需要 Android/iOS 沙箱判断的媒体句柄决策发生在原生知识资产建立之后。若必须并行，则先拆出单独的 Schema/Validator 基础任务，并把各 Contract Validator 与 Fixture 分到独立文件，明确唯一聚合任务，禁止多个并行任务编辑同一入口脚本。
 
 ### 3. 第二阶段重规划时点过早，且没有 Bootstrap 完成门禁
 
-- 位置：[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L100)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L78)
+- 位置：[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L100)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L78)
 - 影响：Agent 标准卡要求“完成本任务后”立即重新调用 `plan-tasks`，但此时 Capability 和 Wire Contract 按当前 DAG 可能尚未完成。第二阶段 Android/iOS Core、Dart Client 和平台 Adapter 会在缺少最终结构化契约时被规划，或者只能引用尚未确定路径的未来产物。反过来，如果不主动执行这句 prose，四张卡又都可以归档而不产生任何第二阶段任务，Bootstrap 会在“具备实现条件”之前被当成完成。
 - 证据：重规划动作挂在只依赖架构任务的 Agent 标准卡末尾；Bridge 卡只说实现任务“重新规划后创建”，没有要求何时、由谁、以哪些已归档产物为门禁，也没有验收项确认第二阶段任务已生成并再次 Review。
 - 修法：把第二阶段入口移到一个明确的 Bootstrap 批次门禁：只有架构、Agent、Capability 和 Wire 四卡均完成并归档后，才用更新后的 `plan-tasks` 读取实际产物生成平台 Core、平台 Adapter、Dart Client、分平台质量门禁与跨端集成卡；生成结果必须形成无环 DAG并再次独立 Review 后才能执行。若该动作保持人工触发，报告和任务说明必须明确“当前四卡完成不等于 Media Capture 实施计划完成”，不能只依赖 Agent 卡末尾的一句建议。
 
 ### 4. 两个 Contract 没有给出稳定产物路径，版本独立性测试也不是可观测不变量
 
-- 位置：[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L46)、[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L55)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L19)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L39)、[media-capture-bridge-contract.md](../tasks/media-capture-bridge-contract.md#L57)
+- 位置：[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L46)、[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L55)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L19)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L39)、[media-capture-bridge-contract.md](../tasks/done/media-capture-bridge-contract.md#L57)
 - 影响：Capability 卡只说“新增结构化 Contract”，没有文件路径、格式、Schema 标识或 Validator 入口；Bridge 卡的输入因此只能写成没有链接的泛称，并继续把实现方案留在“JSON Schema 或仓库标准解析方案”之间。下游无法确定引用哪个事实源，两个执行者也可能建立不兼容的结构。另一个验收要求让失败 Fixture 识别 Capability/Wire “同时升级或错误绑定”，但当前静态检查只看到一个仓库快照，无法判断两个独立版本是否恰好同号或是否在同一变更中升级；禁止同号会误拒绝合法独立版本。
 - 证据：当前 `docs/bridge/README.md` 只有 prose 模板，并不存在可复用的结构化 Bridge Schema 约定；任务卡没有补足新约定的具体路径。现有 Harness Check 不读取 Git 历史，无法证明“同时升级”这一历史事件。
 - 修法：在任务卡中固定 Capability Contract、Schema、Wire Contract、Schema 和 Validator/Fixture 的仓库相对路径与格式，定义稳定 operation/failure ID 及映射方式。把版本测试改为可静态证明的结构不变量，例如 Wire 有独立 `wireVersion`，显式声明兼容的 Capability version/range，禁止引用同一个 version source；不要把数值相等或同一 commit 中变更本身视为绑定。
 
 ### 5. Agent 标准卡要求的多个自动化测试在当前工具模型中不可执行
 
-- 位置：[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L70)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L72)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L73)、[codex_adapters.dart](../../app/tool/codex_adapters.dart#L673)、[test-harness.sh](../../scripts/quality/test-harness.sh#L128)
+- 位置：[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L70)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L72)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L73)、[codex_adapters.dart](../../app/tool/codex_adapters.dart#L673)、[test-harness.sh](../../scripts/quality/test-harness.sh#L128)
 - 影响：执行者无法诚实地用 `make harness-test` 证明“给定多平台输入会被 plan-tasks 拆卡”，因为 `plan-tasks` 是 Agent Markdown 工作流，不是可调用的确定性规划器。Codex Adapter 生成物也只复制 Skill 的 name/description 并链接事实源，不包含 `paths`，所以 path-only 变化不会产生 Adapter drift；强行让该测试通过会扭曲生成格式或写只检查文案的假测试。
 - 证据：`_skillAdapter` 在 673-688 行只生成 name、description 和事实源链接；`scripts/quality/test-harness.sh` 的 `run_check` 只运行 Dart Validator，不会执行 LLM/Agent 规划。Claude Skill 的 `paths` 可由 Harness 校验源 frontmatter，但不能当成 Codex Adapter 内容漂移来测。
 - 修法：把测试按可观测边界拆开：Codex Adapter Fixture 只测新增 Agent/Skill 的生成、缺失、过期、description 和只读 sandbox；Harness Fixture 测结构化 Executor/平台元数据与 Skill `paths` 的允许模式；多平台拆卡用独立规划 Review 场景验收。若必须自动证明规划行为，先实现确定性输入模型和规划/校验器，再把该工具加入任务范围。
@@ -63,14 +63,14 @@
 
 ### 1. Figma 状态写成“尚未提供”不符合仓库现状
 
-- 位置：[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L24)、[media-capture-capability-contract.md](../tasks/media-capture-capability-contract.md#L84)、[shoppe-main-app-design-context.md](../figma/shoppe-main-app-design-context.md#L5)、[shoppe-main-app-design-context.md](../figma/shoppe-main-app-design-context.md#L26)、[order_review_page.dart](../../app/packages/app_features/lib/feature_orders/pages/order_review_page.dart#L55)
+- 位置：[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L24)、[media-capture-capability-contract.md](../tasks/done/media-capture-capability-contract.md#L84)、[shoppe-main-app-design-context.md](../figma/shoppe-main-app-design-context.md#L5)、[shoppe-main-app-design-context.md](../figma/shoppe-main-app-design-context.md#L26)、[order_review_page.dart](../../app/packages/app_features/lib/feature_orders/pages/order_review_page.dart#L55)
 - 影响：仓库已有标准化的 Shoppe Figma 来源，且节点 `66/67` 已归为评价填写/完成状态，订单评价页面也已实现。真正缺少的是“在现有评价流程中加入 Media Capture 的新设计输入”，不是整个评价 Figma。模糊表述会导致重复标准化既有设计，或把不涉及新增拍摄 UI 的 Shoppe 接线一概延期。
 - 证据：设计上下文记录了 File Key、读取日期和订单评价节点，但也要求执行前重新读取准确节点；现有 `OrderReviewPage` 只有评分、文本与提交，没有媒体入口。因此不能从既有设计推导拍摄 UI，同时也不能声称设计稿完全不存在。
 - 修法：引用现有 `docs/figma/shoppe-main-app-design-context.md`，明确“既有订单评价设计与实现存在，但 Media Capture 入口、预览及附件状态尚无已批准设计”；只有新增 Native UI 和页面视觉/交互等待该增量设计，Core、Contract、Dart Client、平台 Adapter 与非 UI 集成继续不等待 Figma。
 
 ### 2. “Flutter Bridge Adapter”同时指 Dart Package 和平台 Adapter，依赖方向仍有歧义
 
-- 位置：[native-harness-architecture-foundation.md](../tasks/native-harness-architecture-foundation.md#L44)、[native-harness-architecture-foundation.md](../tasks/native-harness-architecture-foundation.md#L48)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L49)、[native-harness-agent-standards.md](../tasks/native-harness-agent-standards.md#L100)
+- 位置：[native-harness-architecture-foundation.md](../tasks/done/native-harness-architecture-foundation.md#L44)、[native-harness-architecture-foundation.md](../tasks/done/native-harness-architecture-foundation.md#L48)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L49)、[native-harness-agent-standards.md](../tasks/done/native-harness-agent-standards.md#L100)
 - 影响：架构卡先称 Flutter/Dart Adapter 位于 Workspace Package，又称 Flutter Bridge Adapter 依赖 Native Module；Agent 卡随后才区分 Dart Client 与各端 Bridge Adapter。实现者可能把 Dart 层描述成直接依赖 Kotlin/Swift 模块，或无法判断平台 Adapter 位于 Flutter Package、Host 还是原生模块之外。
 - 证据：Dart Client、Android Bridge Adapter、iOS Bridge Adapter 具有不同依赖能力，不能共用一句“Adapter 依赖 Native Module”表达；后续任务已经使用三者分拆的术语，基础架构卡应与之统一。
 - 修法：在架构任务中固定三段关系：Dart Client 只拥有 Wire Model/Channel 调用；Android/iOS Bridge Adapter 分别依赖对应 Native Module 并做边界映射；Host 只注册 Adapter。再明确聚焦 Workspace Package 是否包含平台子目录，以及原生模块如何从 Host/Plugin 构建图接入。

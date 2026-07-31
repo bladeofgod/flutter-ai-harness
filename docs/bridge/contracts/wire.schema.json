@@ -1,0 +1,747 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:flutter-ai-harness:schema:bridge-wire:2",
+  "title": "Typed Flutter bridge wire contract",
+  "description": "Defines a versioned Channel transport derived from, but not owned by, a transport-neutral capability contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "contractId", "wireVersion", "capability", "payloadKeyStyle", "channels", "fieldMappings", "transportConstraints", "payloads", "failurePayloads", "methods", "failureDelivery", "events", "asyncFailures", "errors", "errorDetailFields", "coverage", "platform", "lifecycle", "security", "changeLog"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "contractId": {"$ref": "#/$defs/stableId"},
+    "wireVersion": {"type": "integer", "minimum": 1},
+    "capability": {"$ref": "#/$defs/capabilityReference"},
+    "payloadKeyStyle": {"const": "lower_camel_case"},
+    "channels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/channel"}},
+    "fieldMappings": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/fieldMapping"}},
+    "transportConstraints": {"$ref": "#/$defs/transportConstraints"},
+    "payloads": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/payload"}},
+    "failurePayloads": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/failurePayload"}},
+    "methods": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/method"}},
+    "failureDelivery": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/failureDelivery"}},
+    "events": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/event"}},
+    "asyncFailures": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/asyncFailure"}},
+    "errors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/error"}},
+    "errorDetailFields": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/errorDetailField"}},
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "platform": {"$ref": "#/$defs/platformContract"},
+    "lifecycle": {"$ref": "#/$defs/lifecycleContract"},
+    "transferStore": {"oneOf": [{"$ref": "#/$defs/transferStoreContract"}, {"type": "null"}]},
+    "security": {"$ref": "#/$defs/securityContract"},
+    "changeLog": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/changeEntry"}}
+  },
+  "$defs": {
+    "stableId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "nonEmptyString": {"type": "string", "minLength": 1},
+    "nullableStableId": {"oneOf": [{"$ref": "#/$defs/stableId"}, {"type": "null"}]},
+    "nullableString": {"type": ["string", "null"]},
+    "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "stableIdSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+    "stableIdSequence": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+    "capabilityReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contractId", "contractPath", "compatibleCapabilityVersions"],
+      "properties": {
+        "contractId": {"$ref": "#/$defs/stableId"},
+        "contractPath": {"$ref": "#/$defs/nonEmptyString"},
+        "compatibleCapabilityVersions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 1}}
+      }
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "name"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"enum": ["method_channel", "event_channel"]},
+        "name": {"type": "string", "pattern": "^com\\.example\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}
+      }
+    },
+    "fieldMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityFieldId", "key", "wireType", "required", "nullable", "enumValues", "validation"],
+      "properties": {
+        "capabilityFieldId": {"$ref": "#/$defs/stableId"},
+        "key": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"},
+        "wireType": {"enum": ["bool", "bytes", "double", "int", "string", "list_bool", "list_double", "list_int", "list_string"]},
+        "required": {"type": "boolean"},
+        "nullable": {"type": "boolean"},
+        "enumValues": {"$ref": "#/$defs/stableIdSet"},
+        "validation": {"$ref": "#/$defs/fieldValidation"}
+      }
+    },
+    "fieldValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finite", "minimum", "maximum", "allowedIntegers", "minItems", "maxItems", "format", "boundarySource", "outOfRangePolicy", "conditionalRules"],
+      "properties": {
+        "finite": {"type": "boolean"},
+        "minimum": {"type": ["number", "null"]},
+        "maximum": {"type": ["number", "null"]},
+        "allowedIntegers": {"type": "array", "uniqueItems": true, "items": {"type": "integer"}},
+        "minItems": {"type": ["integer", "null"], "minimum": 0},
+        "maxItems": {"type": ["integer", "null"], "minimum": 0},
+        "format": {"$ref": "#/$defs/stableId"},
+        "boundarySource": {"$ref": "#/$defs/nullableStableId"},
+        "outOfRangePolicy": {"enum": ["reject", "clamp", "not_applicable"]},
+        "conditionalRules": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/conditionalRule"}}
+      }
+    },
+    "transportConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signedInteger", "opaqueHandles"],
+      "properties": {
+        "signedInteger": {"oneOf": [{"$ref": "#/$defs/signedIntegerConstraint"}, {"type": "null"}]},
+        "opaqueHandles": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/opaqueHandleConstraint"}}
+      }
+    },
+    "signedIntegerConstraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wireType", "bits", "minimum", "maximum", "inboundOutOfRange", "outboundOutOfRange"],
+      "properties": {
+        "wireType": {"const": "int"},
+        "bits": {"const": 64},
+        "minimum": {"type": "integer"},
+        "maximum": {"type": "integer"},
+        "inboundOutOfRange": {"const": "invalid_wire_payload"},
+        "outboundOutOfRange": {"const": "wire_encoding_failed"}
+      }
+    },
+    "opaqueHandleConstraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityFieldId", "capabilityHandlePolicyId", "wireType", "minLength", "maxLength", "format", "inboundOutOfRange", "outboundOutOfRange"],
+      "properties": {
+        "capabilityFieldId": {"$ref": "#/$defs/stableId"},
+        "capabilityHandlePolicyId": {"$ref": "#/$defs/stableId"},
+        "wireType": {"const": "string"},
+        "minLength": {"type": "integer", "minimum": 1},
+        "maxLength": {"type": "integer", "minimum": 1},
+        "format": {"const": "opaque_string"},
+        "inboundOutOfRange": {"const": "invalid_wire_payload"},
+        "outboundOutOfRange": {"const": "wire_encoding_failed"}
+      }
+    },
+    "conditionalRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["whenFieldId", "operator", "value", "effect"],
+      "properties": {
+        "whenFieldId": {"$ref": "#/$defs/stableId"},
+        "operator": {"enum": ["equals", "contains"]},
+        "value": {"type": ["string", "integer", "boolean", "null"]},
+        "effect": {"enum": ["required", "must_be_null", "must_be_non_null"]}
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "capabilityShapeId", "fieldIds", "unknownFieldPolicy"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"enum": ["request", "result", "event"]},
+        "capabilityShapeId": {"$ref": "#/$defs/stableId"},
+        "fieldIds": {"$ref": "#/$defs/stableIdSet"},
+        "unknownFieldPolicy": {"const": "reject"}
+      }
+    },
+    "failurePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "capabilityFailureId", "contextFieldIds", "unknownFieldPolicy"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "capabilityFailureId": {"$ref": "#/$defs/stableId"},
+        "contextFieldIds": {"$ref": "#/$defs/stableIdSet"},
+        "unknownFieldPolicy": {"const": "reject"}
+      }
+    },
+    "platformSupport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["android", "ios"],
+      "properties": {"android": {"enum": ["supported", "unsupported"]}, "ios": {"enum": ["supported", "unsupported"]}}
+    },
+    "method": {
+      "oneOf": [
+        {"$ref": "#/$defs/directMethod"},
+        {"$ref": "#/$defs/adapterMethod"},
+        {"$ref": "#/$defs/presentationMethod"}
+      ]
+    },
+    "directMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "channelId", "capabilityOperationId", "requestPayloadId", "resultPayloadId", "resultType", "errorCodes", "completion", "platformSupport"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"const": "direct_operation"},
+        "channelId": {"$ref": "#/$defs/stableId"},
+        "capabilityOperationId": {"$ref": "#/$defs/stableId"},
+        "requestPayloadId": {"$ref": "#/$defs/stableId"},
+        "resultPayloadId": {"$ref": "#/$defs/stableId"},
+        "resultType": {"$ref": "#/$defs/stableId"},
+        "errorCodes": {"$ref": "#/$defs/stableIdSet"},
+        "completion": {"const": "exactly_once"},
+        "platformSupport": {"$ref": "#/$defs/platformSupport"}
+      }
+    },
+    "presentationMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "channelId", "capabilityOperationId", "requestPayloadId", "orchestratedCapabilityOperationIds", "nativeOnlyCapabilityOperationIds", "presentationPolicy", "terminalOutcomes", "errorCodes", "completion", "platformSupport"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"const": "presentation"},
+        "channelId": {"$ref": "#/$defs/stableId"},
+        "capabilityOperationId": {"type": "null"},
+        "requestPayloadId": {"$ref": "#/$defs/stableId"},
+        "orchestratedCapabilityOperationIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "nativeOnlyCapabilityOperationIds": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "presentationPolicy": {"$ref": "#/$defs/presentationPolicy"},
+        "terminalOutcomes": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/presentationTerminalOutcome"}},
+        "errorCodes": {"$ref": "#/$defs/stableIdSet"},
+        "completion": {"const": "exactly_once"},
+        "platformSupport": {"$ref": "#/$defs/platformSupport"}
+      }
+    },
+    "adapterMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "channelId", "requestPayloadId", "resultPayloadId", "resultType", "errorCodes", "completion", "platformSupport"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"const": "adapter_operation"},
+        "channelId": {"$ref": "#/$defs/stableId"},
+        "requestPayloadId": {"$ref": "#/$defs/stableId"},
+        "resultPayloadId": {"$ref": "#/$defs/stableId"},
+        "resultType": {"$ref": "#/$defs/stableId"},
+        "errorCodes": {"$ref": "#/$defs/stableIdSet"},
+        "completion": {"const": "exactly_once"},
+        "platformSupport": {"$ref": "#/$defs/platformSupport"}
+      }
+    },
+    "presentationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "ownerScope", "ownerGeneration", "maxConcurrentPerOwner", "capabilityEventRouting", "slotPolicy", "presentOrder", "dismissOrder", "ownerLifecyclePolicies", "ownerDestroy", "engineDetach"],
+      "properties": {
+        "mode": {"$ref": "#/$defs/stableId"},
+        "ownerScope": {"$ref": "#/$defs/stableId"},
+        "ownerGeneration": {"$ref": "#/$defs/stableId"},
+        "maxConcurrentPerOwner": {"type": "integer", "minimum": 1},
+        "capabilityEventRouting": {"$ref": "#/$defs/stableId"},
+        "slotPolicy": {"$ref": "#/$defs/presentationSlotPolicy"},
+        "presentOrder": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "dismissOrder": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "ownerLifecyclePolicies": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/ownerLifecyclePolicy"}},
+        "ownerDestroy": {"$ref": "#/$defs/stableId"},
+        "engineDetach": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "presentationSlotPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coordinatorId", "scope", "capacity", "generationTransition", "terminalMachineOrderId", "reservationOrder", "conflictOutcome", "releaseTriggerIds", "releaseOrder"],
+      "properties": {
+        "coordinatorId": {"$ref": "#/$defs/stableId"},
+        "scope": {"$ref": "#/$defs/stableId"},
+        "capacity": {"type": "integer", "minimum": 1},
+        "generationTransition": {"$ref": "#/$defs/stableId"},
+        "terminalMachineOrderId": {"$ref": "#/$defs/stableId"},
+        "reservationOrder": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "conflictOutcome": {"$ref": "#/$defs/stableId"},
+        "releaseTriggerIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "releaseOrder": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}}
+      }
+    },
+    "ownerLifecyclePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "triggerId", "ownerState", "actions", "generationPolicy", "reattachPolicy", "terminalOutcome"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "triggerId": {"$ref": "#/$defs/stableId"},
+        "ownerState": {"$ref": "#/$defs/stableId"},
+        "actions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+        "generationPolicy": {"$ref": "#/$defs/stableId"},
+        "reattachPolicy": {"$ref": "#/$defs/stableId"},
+        "terminalOutcome": {"$ref": "#/$defs/nullableStableId"}
+      }
+    },
+    "presentationTerminalOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "delivery", "resultType", "resultPayloadId", "resourceAdoptionPolicyId", "completionMachineOrderId", "cleanupPolicyId"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "delivery": {"enum": ["result", "error"]},
+        "resultType": {"$ref": "#/$defs/nullableStableId"},
+        "resultPayloadId": {"$ref": "#/$defs/nullableStableId"},
+        "resourceAdoptionPolicyId": {"$ref": "#/$defs/nullableStableId"},
+        "completionMachineOrderId": {"$ref": "#/$defs/stableId"},
+        "cleanupPolicyId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "failureDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityOperationId", "directFailureIds", "deferredEventId", "deferredFailureIds"],
+      "properties": {
+        "capabilityOperationId": {"$ref": "#/$defs/stableId"},
+        "directFailureIds": {"$ref": "#/$defs/stableIdSet"},
+        "deferredEventId": {"$ref": "#/$defs/nullableStableId"},
+        "deferredFailureIds": {"$ref": "#/$defs/stableIdSet"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "channelId", "capabilityEventId", "payloadId", "platformSupport"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "channelId": {"$ref": "#/$defs/stableId"},
+        "capabilityEventId": {"$ref": "#/$defs/stableId"},
+        "payloadId": {"$ref": "#/$defs/stableId"},
+        "platformSupport": {"$ref": "#/$defs/platformSupport"}
+      }
+    },
+    "asyncFailure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "channelId", "capabilityFailureId", "capabilityStateMachineId", "capabilityTriggerId", "payloadId", "failureType", "callbackThread", "sinkBehavior", "platformSupport"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "channelId": {"$ref": "#/$defs/stableId"},
+        "capabilityFailureId": {"$ref": "#/$defs/stableId"},
+        "capabilityStateMachineId": {"$ref": "#/$defs/stableId"},
+        "capabilityTriggerId": {"$ref": "#/$defs/stableId"},
+        "payloadId": {"$ref": "#/$defs/stableId"},
+        "failureType": {"$ref": "#/$defs/stableId"},
+        "callbackThread": {"const": "platform_ui_thread"},
+        "sinkBehavior": {"enum": ["continue", "terminate"]},
+        "platformSupport": {"$ref": "#/$defs/platformSupport"}
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "source", "capabilityFailureId", "recoverable", "terminal", "messagePolicy", "detailsAllowedKeys"],
+      "properties": {
+        "code": {"$ref": "#/$defs/stableId"},
+        "source": {"enum": ["capability_failure", "wire_protocol"]},
+        "capabilityFailureId": {"$ref": "#/$defs/nullableStableId"},
+        "recoverable": {"type": "boolean"},
+        "terminal": {"type": "boolean"},
+        "messagePolicy": {"const": "static_redacted"},
+        "detailsAllowedKeys": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}}
+      }
+    },
+    "errorDetailField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "wireType", "source", "enumValues", "minLength", "maxLength", "minimum", "maximum", "redaction"],
+      "properties": {
+        "key": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"},
+        "wireType": {"enum": ["int", "string"]},
+        "source": {"$ref": "#/$defs/stableId"},
+        "enumValues": {"$ref": "#/$defs/stringSet"},
+        "minLength": {"type": ["integer", "null"], "minimum": 0},
+        "maxLength": {"type": ["integer", "null"], "minimum": 0},
+        "minimum": {"type": ["integer", "null"]},
+        "maximum": {"type": ["integer", "null"]},
+        "redaction": {"const": "allowlisted_value_only"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operations", "results", "events", "failures", "resources", "ownershipScopes", "nativeInputs", "nativeArtifacts"],
+      "properties": {
+        "operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "results": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "events": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "failures": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "resources": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "ownershipScopes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/coverageEntry"}},
+        "nativeInputs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nativeInputCoverageEntry"}},
+        "nativeArtifacts": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/nativeArtifactCoverageEntry"}}
+      }
+    },
+    "coverageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityId", "disposition", "wireId", "reason"],
+      "properties": {
+        "capabilityId": {"$ref": "#/$defs/stableId"},
+        "disposition": {"enum": ["exposed_method", "mapped_payload", "mapped_event", "mapped_error", "native_consumer_only", "intentionally_not_exposed"]},
+        "wireId": {"$ref": "#/$defs/nullableStableId"},
+        "reason": {"$ref": "#/$defs/nullableString"}
+      }
+    },
+    "nativeArtifactCoverageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityId", "artifactKind", "ownerPolicyId", "platform", "disposition", "wireId", "reason"],
+      "properties": {
+        "capabilityId": {"$ref": "#/$defs/stableId"},
+        "artifactKind": {"$ref": "#/$defs/stableId"},
+        "ownerPolicyId": {"$ref": "#/$defs/stableId"},
+        "platform": {"$ref": "#/$defs/nullableStableId"},
+        "disposition": {"enum": ["native_consumer_only", "intentionally_not_exposed"]},
+        "wireId": {"type": "null"},
+        "reason": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "nativeInputCoverageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityId", "disposition", "wireId", "bindingKind", "fixedIntegerValue", "reason"],
+      "properties": {
+        "capabilityId": {"$ref": "#/$defs/stableId"},
+        "disposition": {"const": "native_consumer_only"},
+        "wireId": {"type": "null"},
+        "bindingKind": {"enum": ["adapter_native_sink", "fixed_integer"]},
+        "fixedIntegerValue": {"type": ["integer", "null"]},
+        "reason": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "platformContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported", "semanticParity", "differences"],
+      "properties": {
+        "supported": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["android", "ios"]}},
+        "semanticParity": {"$ref": "#/$defs/stableId"},
+        "differences": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/platformDifference"}}
+      }
+    },
+    "platformDifference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "id", "description"],
+      "properties": {"platform": {"enum": ["android", "ios"]}, "id": {"$ref": "#/$defs/stableId"}, "description": {"$ref": "#/$defs/nonEmptyString"}}
+    },
+    "lifecycleContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestEnvelope", "resultEnvelope", "methodCompletion", "callbackThread"],
+      "properties": {
+        "requestEnvelope": {"$ref": "#/$defs/envelope"},
+        "resultEnvelope": {"$ref": "#/$defs/envelope"},
+        "eventListenEnvelope": {"oneOf": [{"$ref": "#/$defs/envelope"}, {"type": "null"}]},
+        "eventEnvelope": {"oneOf": [{"$ref": "#/$defs/envelope"}, {"type": "null"}]},
+        "failureEnvelope": {"oneOf": [{"$ref": "#/$defs/envelope"}, {"type": "null"}]},
+        "requestIdPolicy": {"oneOf": [{"$ref": "#/$defs/requestIdPolicy"}, {"type": "null"}]},
+        "duplicateRequests": {"oneOf": [{"$ref": "#/$defs/duplicateRequestPolicy"}, {"type": "null"}]},
+        "methodCompletion": {"const": "exactly_once"},
+        "callbackThread": {"const": "platform_ui_thread"},
+        "sessionFailedEventCorrelation": {"$ref": "#/$defs/nullableStableId"},
+        "listenerPolicy": {"oneOf": [{"$ref": "#/$defs/listenerPolicy"}, {"type": "null"}]},
+        "boundaries": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/boundaryPolicy"}},
+        "linearizationPolicy": {"oneOf": [{"$ref": "#/$defs/linearizationPolicy"}, {"type": "null"}]},
+        "resourceAdoptionPolicies": {"oneOf": [{"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/resourceAdoptionPolicy"}}, {"type": "null"}]},
+        "resultCompletionPolicies": {"oneOf": [{"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/resultCompletionPolicy"}}, {"type": "null"}]},
+        "lateResultPolicies": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/lateResultPolicy"}},
+        "lateCallbackBehavior": {"$ref": "#/$defs/nullableStableId"},
+        "eventEncodingFailureBehavior": {"$ref": "#/$defs/nullableStableId"},
+        "cancelBehavior": {"$ref": "#/$defs/nullableStableId"}
+      }
+    },
+    "listenerPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxActiveSinks", "secondListen", "secondListenErrorCode", "cancel", "relisten", "generation", "lateEvent"],
+      "properties": {
+        "maxActiveSinks": {"type": "integer", "minimum": 1},
+        "secondListen": {"$ref": "#/$defs/stableId"},
+        "secondListenErrorCode": {"$ref": "#/$defs/stableId"},
+        "cancel": {"$ref": "#/$defs/stableId"},
+        "relisten": {"$ref": "#/$defs/stableId"},
+        "generation": {"$ref": "#/$defs/stableId"},
+        "lateEvent": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "boundaryPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "actions"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"$ref": "#/$defs/nonEmptyString"},
+        "coordinatorId": {"$ref": "#/$defs/nullableStableId"},
+        "actions": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/boundaryAction"}}
+      }
+    },
+    "boundaryAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order", "resourceId", "actionId"],
+      "properties": {
+        "order": {"type": "integer", "minimum": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "actionId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "lateResultPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resultType", "boundaryIds", "resourceId", "cleanupActionId", "cleanupBeforeDrop", "flutterCompletion"],
+      "properties": {
+        "resultType": {"$ref": "#/$defs/stableId"},
+        "boundaryIds": {"$ref": "#/$defs/stableIdSet"},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "cleanupActionId": {"$ref": "#/$defs/stableId"},
+        "cleanupBeforeDrop": {"type": "boolean"},
+        "flutterCompletion": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "linearizationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coordinatorId", "participants", "callbackWinOrderId", "callbackWinOrder", "boundaryWinOrder"],
+      "properties": {
+        "coordinatorId": {"$ref": "#/$defs/stableId"},
+        "participants": {"$ref": "#/$defs/stableIdSet"},
+        "callbackWinOrderId": {"$ref": "#/$defs/stableId"},
+        "callbackWinOrder": {"$ref": "#/$defs/stableIdSet"},
+        "boundaryWinOrder": {"$ref": "#/$defs/stableIdSet"}
+      }
+    },
+    "resourceAdoptionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "resultType", "resourceId", "adoptionActionId", "coordinatorId"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "resultType": {"$ref": "#/$defs/stableId"},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "adoptionActionId": {"$ref": "#/$defs/stableId"},
+        "coordinatorId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "resultCompletionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resultType", "coordinatorId", "resourceAdoptionPolicyId", "callbackWinOrderId", "callbackWinActionId", "boundaryWinActionId"],
+      "properties": {
+        "resultType": {"$ref": "#/$defs/stableId"},
+        "coordinatorId": {"$ref": "#/$defs/stableId"},
+        "resourceAdoptionPolicyId": {"$ref": "#/$defs/nullableStableId"},
+        "callbackWinOrderId": {"$ref": "#/$defs/nullableStableId"},
+        "callbackWinActionId": {"$ref": "#/$defs/stableId"},
+        "boundaryWinActionId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredKeys", "unknownFieldPolicy"],
+      "properties": {"requiredKeys": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}}, "unknownFieldPolicy": {"const": "reject"}}
+    },
+    "duplicateRequestPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "scope", "pending", "maxPendingRequests", "completedTombstoneSeconds", "completed", "maxCompletedRequestTombstones", "completionSlotReservation", "overflow", "pendingEviction", "completedEvictionBeforeTtl", "extendsCapabilityLifetime"],
+      "properties": {
+        "key": {"const": "requestId"},
+        "scope": {"const": "engine_attachment"},
+        "pending": {"const": "reject_duplicate_request"},
+        "maxPendingRequests": {"type": "integer", "minimum": 1},
+        "completedTombstoneSeconds": {"type": "integer", "minimum": 1},
+        "completed": {"const": "reject_duplicate_request"},
+        "maxCompletedRequestTombstones": {"type": "integer", "minimum": 1},
+        "completionSlotReservation": {"const": "reserve_before_invoking_capability"},
+        "overflow": {"const": "reject_bridge_overloaded_without_invoking_capability"},
+        "pendingEviction": {"const": "forbidden"},
+        "completedEvictionBeforeTtl": {"const": "forbidden"},
+        "extendsCapabilityLifetime": {"const": false}
+      }
+    },
+    "requestIdPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wireType", "minLength", "maxLength", "pattern", "format", "logging"],
+      "properties": {
+        "wireType": {"const": "string"},
+        "minLength": {"type": "integer", "minimum": 1},
+        "maxLength": {"type": "integer", "minimum": 1},
+        "pattern": {"type": "string", "minLength": 1},
+        "format": {"const": "ascii_token"},
+        "logging": {"const": "redact"}
+      }
+    },
+    "securityContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataClassifications", "policies"],
+      "properties": {
+        "dataClassifications": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/dataClassification"}},
+        "policies": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/securityPolicy"}}
+      }
+    },
+    "transferStoreContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "locatorClassification", "exportHandlePolicy", "fileUriPolicy", "resultPolicy", "limits", "lifecycle", "redaction", "fileUriGoldenVectors", "fileUriLengthGoldenVectors"],
+      "properties": {
+        "owner": {"$ref": "#/$defs/stableId"},
+        "locatorClassification": {"$ref": "#/$defs/stableId"},
+        "exportHandlePolicy": {"$ref": "#/$defs/exportHandlePolicy"},
+        "fileUriPolicy": {"$ref": "#/$defs/fileUriPolicy"},
+        "resultPolicy": {"$ref": "#/$defs/transferResultPolicy"},
+        "limits": {"$ref": "#/$defs/transferStoreLimits"},
+        "lifecycle": {"$ref": "#/$defs/transferStoreLifecycle"},
+        "redaction": {"$ref": "#/$defs/transferStoreRedaction"},
+        "fileUriGoldenVectors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/fileUriGoldenVector"}},
+        "fileUriLengthGoldenVectors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/fileUriLengthGoldenVector"}}
+      }
+    },
+    "exportHandlePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ownerScope", "generator", "minimumEntropyBits", "format", "minLength", "maxLength", "lookup", "reuse", "crossAttachmentUse", "logging"],
+      "properties": {
+        "ownerScope": {"const": "engine_attachment"},
+        "generator": {"const": "cryptographically_secure_random"},
+        "minimumEntropyBits": {"type": "integer", "minimum": 128},
+        "format": {"const": "base64url_no_padding"},
+        "minLength": {"type": "integer", "minimum": 1},
+        "maxLength": {"type": "integer", "minimum": 1},
+        "lookup": {"const": "strict_registry_lookup"},
+        "reuse": {"const": "forbidden"},
+        "crossAttachmentUse": {"const": "reject_materialized_media_invalid"},
+        "logging": {"const": "redact"}
+      }
+    },
+    "transferResultPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxByteLength", "photoContentType", "videoContentType", "durationFieldId", "integrityFieldId", "integrityAlgorithm", "integrityEncoding", "integrityRequired"],
+      "properties": {
+        "maxByteLength": {"type": "integer", "minimum": 1},
+        "photoContentType": {"const": "image/jpeg"},
+        "videoContentType": {"const": "video/mp4"},
+        "durationFieldId": {"$ref": "#/$defs/stableId"},
+        "integrityFieldId": {"$ref": "#/$defs/stableId"},
+        "integrityAlgorithm": {"const": "sha256"},
+        "integrityEncoding": {"const": "lowercase_hex_64"},
+        "integrityRequired": {"type": "boolean"}
+      }
+    },
+    "fileUriPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme", "serialization", "lengthUnit", "percentEncodingHexCase", "maxLength", "absolutePath", "normalizedPath", "emptyHostOnly", "rejectUserInfo", "rejectPort", "rejectQuery", "rejectFragment", "rejectDotSegments", "rejectUnescapedNonAscii", "rejectIllegalOrOverlongPercentEncoding"],
+      "properties": {
+        "scheme": {"const": "file"},
+        "serialization": {"const": "ascii_percent_encoded"},
+        "lengthUnit": {"const": "ascii_code_units"},
+        "percentEncodingHexCase": {"const": "uppercase"},
+        "maxLength": {"type": "integer", "minimum": 1},
+        "absolutePath": {"type": "boolean"},
+        "normalizedPath": {"type": "boolean"},
+        "emptyHostOnly": {"type": "boolean"},
+        "rejectUserInfo": {"type": "boolean"},
+        "rejectPort": {"type": "boolean"},
+        "rejectQuery": {"type": "boolean"},
+        "rejectFragment": {"type": "boolean"},
+        "rejectDotSegments": {"type": "boolean"},
+        "rejectUnescapedNonAscii": {"type": "boolean"},
+        "rejectIllegalOrOverlongPercentEncoding": {"type": "boolean"}
+      }
+    },
+    "transferStoreLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxFileBytes", "ttlSeconds", "maxActiveExportsPerEngineAttachment", "maxActiveBytesPerEngineAttachment", "releaseTombstoneSeconds", "maxReleaseTombstones", "releaseTombstoneOverflow"],
+      "properties": {
+        "maxFileBytes": {"type": "integer", "minimum": 1},
+        "ttlSeconds": {"type": "integer", "minimum": 1},
+        "maxActiveExportsPerEngineAttachment": {"type": "integer", "minimum": 1},
+        "maxActiveBytesPerEngineAttachment": {"type": "integer", "minimum": 1},
+        "releaseTombstoneSeconds": {"type": "integer", "minimum": 1},
+        "maxReleaseTombstones": {"type": "integer", "minimum": 1},
+        "releaseTombstoneOverflow": {"const": "reject_transfer_store_overloaded_without_eviction"}
+      }
+    },
+    "transferStoreLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["materializeOrder", "releaseOrder", "inflightCleanupOrder", "activeExportCleanupOrder", "restartSweepOrder", "cleanupTriggers", "releasePendingDuplicatePolicy", "releaseTombstoneHitOutcome", "releaseUnknownOrExpiredOutcome", "deleteFailurePolicy", "sourceLeasePolicy"],
+      "properties": {
+        "materializeOrder": {"$ref": "#/$defs/stableIdSequence"},
+        "releaseOrder": {"$ref": "#/$defs/stableIdSequence"},
+        "inflightCleanupOrder": {"$ref": "#/$defs/stableIdSequence"},
+        "activeExportCleanupOrder": {"$ref": "#/$defs/stableIdSequence"},
+        "restartSweepOrder": {"$ref": "#/$defs/stableIdSequence"},
+        "cleanupTriggers": {"$ref": "#/$defs/stableIdSet"},
+        "releasePendingDuplicatePolicy": {"const": "join_claimed_cleanup_without_new_reservation_or_side_effects"},
+        "releaseTombstoneHitOutcome": {"const": "materialized_media_released"},
+        "releaseUnknownOrExpiredOutcome": {"const": "materialized_media_invalid"},
+        "deleteFailurePolicy": {"const": "retain_registry_entry_active_capacity_and_tombstone_reservation_retry_same_claim_bounded_without_success"},
+        "sourceLeasePolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "transferStoreRedaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["forbiddenSinks", "forbiddenDetailKeys"],
+      "properties": {
+        "forbiddenSinks": {"$ref": "#/$defs/stableIdSet"},
+        "forbiddenDetailKeys": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}}
+      }
+    },
+    "fileUriGoldenVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "uri", "valid", "reason"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "uri": {"$ref": "#/$defs/nonEmptyString"},
+        "valid": {"type": "boolean"},
+        "reason": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "fileUriLengthGoldenVector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "totalLength", "valid", "reason"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "totalLength": {"type": "integer", "minimum": 1},
+        "valid": {"type": "boolean"},
+        "reason": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "dataClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "fieldIds", "wireKeys", "classification", "transferPolicy"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"$ref": "#/$defs/nonEmptyString"},
+        "fieldIds": {"$ref": "#/$defs/stableIdSet"},
+        "wireKeys": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}},
+        "classification": {"$ref": "#/$defs/stableId"},
+        "transferPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "securityPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description"],
+      "properties": {"id": {"$ref": "#/$defs/stableId"}, "description": {"$ref": "#/$defs/nonEmptyString"}}
+    },
+    "changeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wireVersion", "compatibleCapabilityVersions", "description"],
+      "properties": {"wireVersion": {"type": "integer", "minimum": 1}, "compatibleCapabilityVersions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 1}}, "description": {"$ref": "#/$defs/nonEmptyString"}}
+    }
+  }
+}

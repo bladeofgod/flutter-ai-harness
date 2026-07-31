@@ -1,0 +1,26 @@
+name: app_media_capture_bridge
+description: Typed Dart client for the Media Capture Flutter bridge.
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.7"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.media_capture
+        pluginClass: MediaCaptureBridgePlugin
+      ios:
+        pluginClass: MediaCaptureBridgePlugin

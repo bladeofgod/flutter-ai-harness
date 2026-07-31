@@ -1,0 +1,501 @@
+## Command
+
+```text
+env TOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart
+00:01 +0: loading <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart
+00:01 +0: <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart: bundles and decodes every localized Categories product
+00:01 +1: <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart: bundles and decodes every localized Categories product
+00:01 +2: <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart: bundles and decodes every localized Categories product
+00:01 +2: loading <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart
+00:01 +2: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +3: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +4: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +5: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +6: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +7: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +8: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +8: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +9: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +10: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +11: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +12: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +13: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +14: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +15: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +20: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +21: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +22: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +23: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:02 +24: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:03 +24: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:03 +25: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:03 +26: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: filter child Route cancels without pollution and applies draft
+00:03 +27: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +28: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +29: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +30: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +31: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:03 +32: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:04 +32: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:04 +33: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: edits Profile and publishes one same-id user update
+00:04 +34: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:04 +35: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:04 +36: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +37: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +38: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +39: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +40: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +41: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +42: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +43: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +44: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +45: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +46: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +47: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +48: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +49: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +50: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +51: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:04 +52: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:05 +52: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:05 +53: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:05 +54: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:05 +55: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:05 +56: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:05 +57: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: has no overflow on compact, landscape and scaled viewports
+00:05 +58: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:05 +59: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:05 +60: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:05 +61: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:05 +62: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:05 +63: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:05 +64: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:05 +65: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:06 +65: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:06 +66: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:06 +67: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: redirects an empty Cart and releases the shared route scope
+00:06 +68: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: updates quantity and deletes the final item into empty state
+00:06 +69: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: updates quantity and deletes the final item into empty state
+00:06 +70: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +71: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +72: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +73: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +74: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +75: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +76: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +77: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +78: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:06 +79: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: has one vertical owner and no overflow across viewports
+00:06 +80: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +80: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +81: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +82: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +83: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +84: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:07 +84: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +85: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +86: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +87: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +88: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +89: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +90: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:07 +91: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:07 +92: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:07 +93: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:07 +94: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:07 +94: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Live exposes a truthful local preview state and product action
+00:08 +94: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Live exposes a truthful local preview state and product action
+00:08 +95: <repo>/app/packages/app_features/test/feature_promotions/promotions_assets_test.dart: bundles and decodes every Promotions-consumed local raster
+00:08 +96: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Story navigation is manual and Variant driven
+00:08 +97: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:08 +98: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:08 +99: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:08 +100: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +101: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +102: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +103: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +104: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +105: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +106: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:08 +107: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:09 +107: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:09 +108: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:09 +109: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:09 +110: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:09 +110: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:09 +111: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:09 +112: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:09 +113: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:09 +114: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:09 +115: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:10 +115: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:10 +116: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:10 +117: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:10 +118: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:10 +119: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:10 +120: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: renders five semantic destinations and reports taps
+00:10 +121: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: opens Product Detail from every Shop feed product rail
+00:10 +122: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: opens Product Detail from every Shop feed product rail
+00:10 +123: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: opens Product Detail from every Shop feed product rail
+00:10 +124: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +125: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +126: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +127: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +128: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +129: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +130: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +131: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:10 +132: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +132: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +133: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +134: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +135: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +136: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +137: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +138: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:11 +138: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +139: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +140: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +141: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +142: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +143: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +144: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +145: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +146: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +147: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +148: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +149: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +150: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:11 +150: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: opens Profile cards through their public navigation callbacks
+00:12 +150: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: opens Profile cards through their public navigation callbacks
+00:12 +151: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: ... starting, connecting, typing and active deterministically
+00:12 +152: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +153: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +154: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +155: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +156: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +157: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +158: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +159: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +160: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +161: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +162: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +163: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +164: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +165: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +166: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:12 +166: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: provides bounded horizontal scrolling for all designed rails
+00:12 +167: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +168: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +169: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +170: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +171: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +172: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +173: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +174: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +175: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +176: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:12 +177: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:13 +177: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:13 +178: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:13 +179: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:13 +180: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:13 +181: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: renders the identified user and an intermediate dot state
+00:13 +182: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: renders the identified user and an intermediate dot state
+00:13 +183: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:13 +184: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:13 +185: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends a gallery video from the composer media sheet
+00:13 +186: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends a gallery video from the composer media sheet
+00:13 +187: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends a gallery video from the composer media sheet
+00:13 +188: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends a gallery video from the composer media sheet
+00:13 +189: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: all flow states remain reachable with keyboard constraints
+00:13 +190: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:13 +191: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +191: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +192: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +193: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +194: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +195: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +196: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +197: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +198: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +199: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +200: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +201: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +202: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:14 +203: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:14 +204: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +204: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +205: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +206: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +207: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +208: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +209: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +210: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +211: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +212: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +213: <repo>/app/packages/app_features/test/feature_auth/registration_route_lifecycle_test.dart: ... builder rebuild keeps one Controller until the route leaves
+00:15 +214: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: rejects missing, mismatched, and stale flow access
+00:15 +215: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +216: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +217: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +218: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +219: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +220: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +221: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +222: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +223: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +224: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +225: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +226: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +227: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +228: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +229: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +230: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +231: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:15 +232: <repo>/app/packages/app_features/test/feature_auth/registration_assets_test.dart: bundles and decodes registration raster assets at expected sizes
+00:15 +233: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +233: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +234: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +235: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +236: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +237: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +238: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +239: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:16 +240: <repo>/app/packages/app_features/test/feature_search/native_search_camera_media_picker_test.dart: default decoder rejects a corrupt JPEG frame
+00:16 +241: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +242: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +243: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +244: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +245: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: submits one AuthResult through the Route callback
+00:16 +246: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +247: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +248: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +249: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +250: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +251: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +252: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +253: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +254: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +255: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +256: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +257: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +258: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +259: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:16 +260: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +260: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +261: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +262: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +263: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +264: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +265: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +266: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +267: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +268: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +269: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +270: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +271: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +272: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +273: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +274: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:17 +275: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:17 +276: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:17 +277: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:17 +277: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: shows recognizing, recognized and deterministic result states
+00:18 +277: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: shows recognizing, recognized and deterministic result states
+00:18 +278: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: shows recognizing, recognized and deterministic result states
+00:18 +278: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: image button lets the user choose camera or gallery
+00:18 +279: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: image button lets the user choose camera or gallery
+00:18 +279: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: header image entry shares the chooser and cancel is inert
+00:18 +280: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +281: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +282: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +283: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +284: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +285: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +286: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +287: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +288: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +289: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +290: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +291: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +292: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +293: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +294: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +295: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +296: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +297: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +298: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +299: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +300: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +301: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +302: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +303: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +304: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +305: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +306: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +307: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +308: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:18 +309: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:19 +310: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:19 +311: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:19 +312: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:19 +313: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+00:19 +314: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+00:19 +315: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: shows and consumes one delivery notification overlay
+00:19 +316: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: shows and consumes one delivery notification overlay
+00:19 +316: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: opens History directly for the Profile To Review entry
+00:19 +317: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: opens History directly for the Profile To Review entry
+00:19 +317: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:20 +317: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:20 +318: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+00:20 +318: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: shows a real thumbnail and exposes retake/remove semantics
+00:20 +319: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: shows a real thumbnail and exposes retake/remove semantics
+00:20 +319: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: evicts captured thumbnail pixels after removal
+00:20 +320: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: evicts captured thumbnail pixels after removal
+00:20 +320: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: popping a ready review clears its draft after UI unmounts
+00:20 +321: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: popping a ready review clears its draft after UI unmounts
+00:20 +321: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: disables every media action while review submission is pending
+00:20 +322: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: disables every media action while review submission is pending
+00:20 +322: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: releases a thumbnail that cannot be rendered
+00:20 +323: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: releases a thumbnail that cannot be rendered
+00:20 +323: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: bad retained thumbnail waits for explicit cleanup retry
+00:20 +324: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: bad retained thumbnail waits for explicit cleanup retry
+00:20 +324: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps the review media section stable on compact and landscape layouts
+00:20 +325: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps the review media section stable on compact and landscape layouts
+00:20 +325: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps launching and removing stable with keyboard and safe areas
+00:20 +326: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps launching and removing stable with keyboard and safe areas
+00:20 +326: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: refreshes order detail after review Done
+00:21 +326: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: refreshes order detail after review Done
+00:21 +327: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: refreshes order detail after review Done
+00:21 +327: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: renders failed-attempt state and compact scaled layout
+00:21 +328: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: renders failed-attempt state and compact scaled layout
+00:21 +328: All tests passed!
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+env 'JAVA_HOME=<home>/Library/Java/JavaVirtualMachines/jbr-17.0.12/Contents/Home' 'ANDROID_HOME=<home>/Library/Android/sdk' TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 85.0.0 (105.0.0 available)
+  analyzer 7.7.1 (14.1.0 available)
+  characters 1.4.0 (1.4.1 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.3.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.17 (0.12.20 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.16.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.26.2 (1.31.2 available)
+  test_api 0.7.6 (0.7.13 available)
+  test_core 0.6.11 (0.6.19 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...
+e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
+    1. Kotlin compile daemon is ready
+Running Gradle task 'assembleDebug'...                             35.5s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```

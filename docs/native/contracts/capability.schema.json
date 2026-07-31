@@ -1,0 +1,1588 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:flutter-ai-harness:schema:native-capability:4",
+  "title": "Transport-neutral native capability contract",
+  "description": "Defines reusable native capability semantics without prescribing domain scopes, platform SDK types, or a cross-runtime transport.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contractId",
+    "capabilityVersion",
+    "versionHistory",
+    "platform",
+    "operation",
+    "field",
+    "request",
+    "result",
+    "event",
+    "stateMachines",
+    "failure",
+    "permission",
+    "lifecycle",
+    "resourcePolicy"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "contractId": {"$ref": "#/$defs/stableId"},
+    "capabilityVersion": {"type": "integer", "minimum": 1},
+    "versionHistory": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/versionEntry"}
+    },
+    "platform": {"$ref": "#/$defs/platformContract"},
+    "operation": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/operation"}
+    },
+    "field": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/field"}
+    },
+    "request": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/dataShape"}
+    },
+    "result": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/dataShape"}
+    },
+    "event": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/dataShape"}
+    },
+    "stateMachines": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/stateMachine"}
+    },
+    "failure": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/failure"}
+    },
+    "permission": {"$ref": "#/$defs/permissionContract"},
+    "lifecycle": {"$ref": "#/$defs/lifecycleContract"},
+    "resourcePolicy": {"$ref": "#/$defs/resourcePolicy"}
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "semanticEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1}
+      }
+    },
+    "versionEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "changeKind", "compatibleWith", "description"],
+      "properties": {
+        "version": {"type": "integer", "minimum": 1},
+        "changeKind": {"$ref": "#/$defs/stableId"},
+        "compatibleWith": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "description": {"type": "string", "minLength": 1}
+      }
+    },
+    "platformContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported", "semanticParity", "differences"],
+      "properties": {
+        "supported": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["android", "ios"]}
+        },
+        "semanticParity": {"$ref": "#/$defs/stableId"},
+        "differences": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/platformDifference"}
+        }
+      }
+    },
+    "platformDifference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "id", "description"],
+      "properties": {
+        "platform": {"enum": ["android", "ios"]},
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1}
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "requestId",
+        "resultId",
+        "resultScope",
+        "eventIds",
+        "failureIds",
+        "scopes",
+        "validFrom"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "requestId": {"$ref": "#/$defs/stableId"},
+        "resultId": {"$ref": "#/$defs/stableId"},
+        "resultScope": {"$ref": "#/$defs/stableId"},
+        "eventIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "failureIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "validFrom": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/operationValidFrom"}
+        }
+      }
+    },
+    "operationValidFrom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "states"],
+      "properties": {
+        "scope": {"$ref": "#/$defs/stableId"},
+        "states": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "dataShape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "fieldIds"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "fieldIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "valueType",
+        "required",
+        "nullable",
+        "enumValues",
+        "validation"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "valueType": {
+          "enum": [
+            "boolean",
+            "decimal",
+            "enum",
+            "integer",
+            "bounded_copy",
+            "callback_resource",
+            "opaque_id",
+            "sink_capability",
+            "scoped_read_access",
+            "string",
+            "string_list",
+            "timestamp"
+          ]
+        },
+        "required": {"type": "boolean"},
+        "nullable": {"type": "boolean"},
+        "enumValues": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "validation": {"$ref": "#/$defs/fieldValidation"}
+      }
+    },
+    "fieldValidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finite",
+        "minimum",
+        "maximum",
+        "allowedIntegers",
+        "minItems",
+        "maxItems",
+        "format",
+        "boundarySource",
+        "outOfRangePolicy",
+        "conditionalRules"
+      ],
+      "properties": {
+        "finite": {"type": "boolean"},
+        "minimum": {"type": ["number", "null"]},
+        "maximum": {"type": ["number", "null"]},
+        "allowedIntegers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "integer"}
+        },
+        "minItems": {"type": ["integer", "null"], "minimum": 0},
+        "maxItems": {"type": ["integer", "null"], "minimum": 0},
+        "format": {"$ref": "#/$defs/stableId"},
+        "boundarySource": {
+          "oneOf": [
+            {"$ref": "#/$defs/stableId"},
+            {"type": "null"}
+          ]
+        },
+        "outOfRangePolicy": {
+          "enum": ["reject", "clamp", "not_applicable"]
+        },
+        "conditionalRules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/conditionalRule"}
+        }
+      }
+    },
+    "conditionalRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["whenFieldId", "operator", "value", "effect"],
+      "properties": {
+        "whenFieldId": {"$ref": "#/$defs/stableId"},
+        "operator": {"enum": ["equals", "contains"]},
+        "value": {"type": ["string", "integer", "boolean", "null"]},
+        "effect": {"enum": ["required", "must_be_null", "must_be_non_null"]}
+      }
+    },
+    "stateMachine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "multiplicity",
+        "initial",
+        "terminal",
+        "items",
+        "transitions"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "multiplicity": {"$ref": "#/$defs/stableId"},
+        "initial": {"$ref": "#/$defs/stableId"},
+        "terminal": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/state"}
+        },
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/transition"}
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "terminal"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "terminal": {"type": "boolean"}
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggerKind",
+        "triggerId",
+        "fromStates",
+        "toState",
+        "outcome",
+        "emission"
+      ],
+      "properties": {
+        "triggerKind": {"enum": ["operation", "lifecycle"]},
+        "triggerId": {"$ref": "#/$defs/stableId"},
+        "fromStates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "toState": {"$ref": "#/$defs/stableId"},
+        "outcome": {"enum": ["success", "cancelled", "failure", "expired"]},
+        "emission": {"$ref": "#/$defs/emission"}
+      }
+    },
+    "emission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {"enum": ["result", "event", "failure", "none"]},
+        "id": {
+          "oneOf": [
+            {"$ref": "#/$defs/stableId"},
+            {"type": "null"}
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"kind": {"const": "none"}}},
+          "then": {"properties": {"id": {"type": "null"}}},
+          "else": {"properties": {"id": {"$ref": "#/$defs/stableId"}}}
+        }
+      ]
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "recoverable", "terminal"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "recoverable": {"type": "boolean"},
+        "terminal": {"type": "boolean"}
+      }
+    },
+    "permissionContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestTrigger", "resources", "states"],
+      "properties": {
+        "requestTrigger": {"$ref": "#/$defs/stableId"},
+        "resources": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/permissionResource"}
+        },
+        "states": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/semanticEntry"}
+        }
+      }
+    },
+    "permissionResource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "requiredForOperations", "requestPolicy"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "requiredForOperations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "requestPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "lifecycleContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "concurrency", "rules"],
+      "properties": {
+        "owner": {"$ref": "#/$defs/stableId"},
+        "concurrency": {"$ref": "#/$defs/stableId"},
+        "rules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/semanticEntry"}
+        }
+      }
+    },
+    "resourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resources",
+        "ownershipPhases",
+        "handles",
+        "leases",
+        "attachments",
+        "renderSurfaces",
+        "boundedCopies",
+        "streamingCopies",
+        "cleanup",
+        "privacy"
+      ],
+      "properties": {
+        "resources": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/resource"}
+        },
+        "ownershipPhases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/ownershipPhase"}
+        },
+        "handles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/handlePolicy"}
+        },
+        "leases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/leasePolicy"}
+        },
+        "attachments": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/attachmentPolicy"}
+        },
+        "renderSurfaces": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/renderSurfacePolicy"}
+        },
+        "boundedCopies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/boundedCopyPolicy"}
+        },
+        "streamingCopies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/streamingCopyPolicy"}
+        },
+        "cleanup": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/cleanupRule"}
+        },
+        "privacy": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/semanticEntry"}
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "kind", "physicalOwner", "storageScope"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "kind": {"$ref": "#/$defs/stableId"},
+        "physicalOwner": {"$ref": "#/$defs/stableId"},
+        "storageScope": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "ownershipPhase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "resourceId",
+        "stateMachineId",
+        "stateIds",
+        "logicalOwner",
+        "expiresAfterSeconds"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "stateMachineId": {"$ref": "#/$defs/stableId"},
+        "stateIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "logicalOwner": {"$ref": "#/$defs/stableId"},
+        "expiresAfterSeconds": {"type": ["integer", "null"], "minimum": 1}
+      }
+    },
+    "handlePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "resourceId",
+        "fieldId",
+        "scope",
+        "moduleInstanceScoped",
+        "generationStrategy",
+        "minimumEntropyBits",
+        "maxLength",
+        "nonReusable",
+        "strictRegistryLookup",
+        "pathDerived",
+        "pathConcatenationAllowed",
+        "tombstoneTtlSeconds",
+        "expiredFailureId"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "fieldId": {"$ref": "#/$defs/stableId"},
+        "scope": {"$ref": "#/$defs/stableId"},
+        "moduleInstanceScoped": {"type": "boolean"},
+        "generationStrategy": {"$ref": "#/$defs/stableId"},
+        "minimumEntropyBits": {"type": "integer", "minimum": 1},
+        "maxLength": {"type": "integer", "minimum": 1},
+        "nonReusable": {"type": "boolean"},
+        "strictRegistryLookup": {"type": "boolean"},
+        "pathDerived": {"type": "boolean"},
+        "pathConcatenationAllowed": {"type": "boolean"},
+        "tombstoneTtlSeconds": {"type": ["integer", "null"], "minimum": 1},
+        "expiredFailureId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "leasePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "resourceId",
+        "stateMachineId",
+        "activeStateId",
+        "ttlSeconds",
+        "newReadsAfterEnd",
+        "activeReadGraceSeconds",
+        "graceExpiryAction",
+        "deleteAfterGrace"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "stateMachineId": {"$ref": "#/$defs/stableId"},
+        "activeStateId": {"$ref": "#/$defs/stableId"},
+        "ttlSeconds": {"type": ["integer", "null"], "minimum": 1},
+        "newReadsAfterEnd": {"$ref": "#/$defs/stableId"},
+        "activeReadGraceSeconds": {"type": ["integer", "null"], "minimum": 0},
+        "graceExpiryAction": {"$ref": "#/$defs/stableId"},
+        "deleteAfterGrace": {"type": "boolean"}
+      }
+    },
+    "attachmentPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "resourceId",
+        "operationIds",
+        "targetFieldId",
+        "ownerGenerationFieldId",
+        "stateMachineId",
+        "allowedStateIds",
+        "consumerScope",
+        "maxConcurrentAttachments",
+        "generationHighWatermark",
+        "generationLinearization",
+        "highWatermarkRetention",
+        "retiredGenerationPolicy",
+        "freshGenerationPolicy",
+        "sameGenerationSameTarget",
+        "sameGenerationDifferentTarget",
+        "sameGenerationDifferentTargetFailureId",
+        "staleAttachFailureId",
+        "staleAttachEffect",
+        "staleDetachBehavior",
+        "mismatchedDetachBehavior",
+        "detachMatchPolicy",
+        "currentBindingIdentity",
+        "replacementSequenceIds",
+        "revokeTriggerIds",
+        "callbackThread",
+        "callbackValidation",
+        "cleanupOrder",
+        "resumePolicy",
+        "forbiddenRepresentationIds"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "operationIds": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "targetFieldId": {"$ref": "#/$defs/stableId"},
+        "ownerGenerationFieldId": {"$ref": "#/$defs/stableId"},
+        "stateMachineId": {"$ref": "#/$defs/stableId"},
+        "allowedStateIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "consumerScope": {"$ref": "#/$defs/stableId"},
+        "maxConcurrentAttachments": {"type": "integer", "minimum": 1},
+        "generationHighWatermark": {"$ref": "#/$defs/stableId"},
+        "generationLinearization": {"$ref": "#/$defs/stableId"},
+        "highWatermarkRetention": {"$ref": "#/$defs/stableId"},
+        "retiredGenerationPolicy": {"$ref": "#/$defs/stableId"},
+        "freshGenerationPolicy": {"$ref": "#/$defs/stableId"},
+        "sameGenerationSameTarget": {"$ref": "#/$defs/stableId"},
+        "sameGenerationDifferentTarget": {"$ref": "#/$defs/stableId"},
+        "sameGenerationDifferentTargetFailureId": {"$ref": "#/$defs/stableId"},
+        "staleAttachFailureId": {"$ref": "#/$defs/stableId"},
+        "staleAttachEffect": {"$ref": "#/$defs/stableId"},
+        "staleDetachBehavior": {"$ref": "#/$defs/stableId"},
+        "mismatchedDetachBehavior": {"$ref": "#/$defs/stableId"},
+        "detachMatchPolicy": {"$ref": "#/$defs/stableId"},
+        "currentBindingIdentity": {"$ref": "#/$defs/stableId"},
+        "replacementSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "revokeTriggerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "callbackThread": {"$ref": "#/$defs/stableId"},
+        "callbackValidation": {"$ref": "#/$defs/stableId"},
+        "cleanupOrder": {"$ref": "#/$defs/stableId"},
+        "resumePolicy": {"$ref": "#/$defs/stableId"},
+        "forbiddenRepresentationIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "renderSurfacePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "resourceId",
+        "attachmentPolicyId",
+        "targetFieldId",
+        "ownerGenerationFieldId",
+        "consumerScope",
+        "surfaceKind",
+        "actualMountRequired",
+        "actualMountCapability",
+        "factoryPolicy",
+        "identityPolicy",
+        "surfaceOwner",
+        "sourceOwner",
+        "rendererOwner",
+        "bindingOwner",
+        "cleanupOwner",
+        "ownerAccessPolicy",
+        "factoryContract",
+        "diagnosticPolicy",
+        "platformImplementations",
+        "mountSourceKindIds",
+        "installSequenceIds",
+        "mutationGate",
+        "passiveFramePolicy",
+        "revokeSequenceIds",
+        "replacementSequenceIds",
+        "cleanupExecution",
+        "staleMutationPolicy",
+        "replacementPolicy",
+        "crossRuntimeProjection",
+        "forbiddenRepresentationIds"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "attachmentPolicyId": {"$ref": "#/$defs/stableId"},
+        "targetFieldId": {"$ref": "#/$defs/stableId"},
+        "ownerGenerationFieldId": {"$ref": "#/$defs/stableId"},
+        "consumerScope": {"$ref": "#/$defs/stableId"},
+        "surfaceKind": {"$ref": "#/$defs/stableId"},
+        "actualMountRequired": {"type": "boolean"},
+        "actualMountCapability": {"$ref": "#/$defs/stableId"},
+        "factoryPolicy": {"$ref": "#/$defs/stableId"},
+        "identityPolicy": {"$ref": "#/$defs/stableId"},
+        "surfaceOwner": {"$ref": "#/$defs/stableId"},
+        "sourceOwner": {"$ref": "#/$defs/stableId"},
+        "rendererOwner": {"$ref": "#/$defs/stableId"},
+        "bindingOwner": {"$ref": "#/$defs/stableId"},
+        "cleanupOwner": {"$ref": "#/$defs/stableId"},
+        "ownerAccessPolicy": {"$ref": "#/$defs/stableId"},
+        "factoryContract": {"$ref": "#/$defs/renderSurfaceFactoryContract"},
+        "diagnosticPolicy": {"$ref": "#/$defs/renderSurfaceDiagnosticPolicy"},
+        "platformImplementations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/platformRenderSurface"}
+        },
+        "mountSourceKindIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "installSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "mutationGate": {"$ref": "#/$defs/stableId"},
+        "passiveFramePolicy": {"$ref": "#/$defs/stableId"},
+        "revokeSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "replacementSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "cleanupExecution": {"$ref": "#/$defs/stableId"},
+        "staleMutationPolicy": {"$ref": "#/$defs/stableId"},
+        "replacementPolicy": {"$ref": "#/$defs/stableId"},
+        "crossRuntimeProjection": {"$ref": "#/$defs/stableId"},
+        "forbiddenRepresentationIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "platformRenderSurface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "moduleProduct",
+        "publicSurfaceType",
+        "factoryInputType",
+        "factoryOutputType",
+        "factoryOutputConformanceId",
+        "concreteSurfaceRequired",
+        "actualMountTargetIds",
+        "moduleOwnedRendererIds",
+        "ownerAccessibleIds",
+        "sourceAccessPolicy",
+        "rendererAccessPolicy",
+        "targetConformance",
+        "mountBinding"
+      ],
+      "properties": {
+        "platform": {"enum": ["android", "ios"]},
+        "moduleProduct": {"type": "string", "minLength": 1},
+        "publicSurfaceType": {"type": "string", "minLength": 1},
+        "factoryInputType": {"type": "string", "minLength": 1},
+        "factoryOutputType": {"type": "string", "minLength": 1},
+        "factoryOutputConformanceId": {"$ref": "#/$defs/stableId"},
+        "concreteSurfaceRequired": {"type": "boolean"},
+        "actualMountTargetIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "moduleOwnedRendererIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "ownerAccessibleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "sourceAccessPolicy": {"$ref": "#/$defs/stableId"},
+        "rendererAccessPolicy": {"$ref": "#/$defs/stableId"},
+        "targetConformance": {"$ref": "#/$defs/renderTargetConformance"},
+        "mountBinding": {"$ref": "#/$defs/renderMountBinding"}
+      }
+    },
+    "renderSurfaceFactoryContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownerRoleId",
+        "inputBindings",
+        "output",
+        "emptyOutputPolicy"
+      ],
+      "properties": {
+        "ownerRoleId": {"$ref": "#/$defs/stableId"},
+        "inputBindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/renderSurfaceFactoryInput"}
+        },
+        "output": {"$ref": "#/$defs/renderSurfaceFactoryOutput"},
+        "emptyOutputPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "renderSurfaceFactoryInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roleId", "bindingKind", "bindingId", "required"],
+      "properties": {
+        "roleId": {"$ref": "#/$defs/stableId"},
+        "bindingKind": {
+          "enum": ["field", "resource", "ownership_phase"]
+        },
+        "bindingId": {"$ref": "#/$defs/stableId"},
+        "required": {"type": "boolean"}
+      }
+    },
+    "renderSurfaceFactoryOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roleId",
+        "resourceId",
+        "platformConformanceRoleId",
+        "nullable",
+        "freshInstancePerInvocation",
+        "identityPolicy"
+      ],
+      "properties": {
+        "roleId": {"$ref": "#/$defs/stableId"},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "platformConformanceRoleId": {"$ref": "#/$defs/stableId"},
+        "nullable": {"type": "boolean"},
+        "freshInstancePerInvocation": {"type": "boolean"},
+        "identityPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "renderSurfaceDiagnosticPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "allowedRecordKindIds",
+        "allowedFieldIds",
+        "allowedStatusIds",
+        "fieldValueSources",
+        "valuePolicy",
+        "redactionPolicy",
+        "forbiddenDataIds",
+        "exceptionPolicy"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "allowedRecordKindIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "allowedFieldIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "allowedStatusIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "fieldValueSources": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/diagnosticFieldValueSource"}
+        },
+        "valuePolicy": {"$ref": "#/$defs/stableId"},
+        "redactionPolicy": {"$ref": "#/$defs/stableId"},
+        "forbiddenDataIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "exceptionPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "diagnosticFieldValueSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fieldId", "sourceKind", "reference", "allowedValueIds"],
+      "properties": {
+        "fieldId": {"$ref": "#/$defs/stableId"},
+        "sourceKind": {"$ref": "#/$defs/stableId"},
+        "reference": {"$ref": "#/$defs/diagnosticValueReference"},
+        "allowedValueIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "diagnosticValueReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scopeId", "collectionId", "valueMemberId"],
+      "properties": {
+        "scopeId": {"$ref": "#/$defs/stableId"},
+        "collectionId": {"$ref": "#/$defs/stableId"},
+        "valueMemberId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "renderTargetConformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "closed",
+        "factoryOutputType",
+        "acceptedTargetKindIds",
+        "requiredMountEndpointType",
+        "targetOwnerRoleId",
+        "arbitraryTargetPolicy"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "closed": {"type": "boolean"},
+        "factoryOutputType": {"type": "string", "minLength": 1},
+        "acceptedTargetKindIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "requiredMountEndpointType": {"type": "string", "minLength": 1},
+        "targetOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "arbitraryTargetPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "renderMountBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "endpointType",
+        "endpointVisibility",
+        "endpointOwnerRoleId",
+        "backingTargetOwnerRoleId",
+        "sourceOwnerRoleId",
+        "rendererOwnerRoleId",
+        "bindingOwnerRoleId",
+        "surfaceResourceId",
+        "attachmentPolicyId",
+        "factoryOutputRoleId",
+        "targetConformanceId",
+        "lifecycleOwnershipPhaseId",
+        "ownerGenerationFieldId",
+        "mountMutationPolicy"
+      ],
+      "properties": {
+        "endpointType": {"type": "string", "minLength": 1},
+        "endpointVisibility": {"$ref": "#/$defs/stableId"},
+        "endpointOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "backingTargetOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "sourceOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "rendererOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "bindingOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "surfaceResourceId": {"$ref": "#/$defs/stableId"},
+        "attachmentPolicyId": {"$ref": "#/$defs/stableId"},
+        "factoryOutputRoleId": {"$ref": "#/$defs/stableId"},
+        "targetConformanceId": {"$ref": "#/$defs/stableId"},
+        "lifecycleOwnershipPhaseId": {"$ref": "#/$defs/stableId"},
+        "ownerGenerationFieldId": {"$ref": "#/$defs/stableId"},
+        "mountMutationPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "boundedCopyPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "operationId",
+        "roleBindings",
+        "preconditions",
+        "bounds",
+        "transforms",
+        "ownershipTransfer",
+        "execution",
+        "raceArbitration",
+        "privacyPolicyIds",
+        "forbiddenRepresentationIds",
+        "backendDetailsPolicy"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "operationId": {"$ref": "#/$defs/stableId"},
+        "roleBindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/roleBinding"}
+        },
+        "preconditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/preconditionPolicy"}
+        },
+        "bounds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/boundPolicy"}
+        },
+        "transforms": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/transformPolicy"}
+        },
+        "ownershipTransfer": {"$ref": "#/$defs/ownershipTransferPolicy"},
+        "execution": {"$ref": "#/$defs/executionPolicy"},
+        "raceArbitration": {"$ref": "#/$defs/raceArbitrationPolicy"},
+        "privacyPolicyIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "forbiddenRepresentationIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "backendDetailsPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "roleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roleId", "bindingKind", "bindingId"],
+      "properties": {
+        "roleId": {"$ref": "#/$defs/stableId"},
+        "bindingKind": {"enum": ["field", "resource", "state_machine", "result", "scope"]},
+        "bindingId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "preconditionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["roleId", "predicateId", "acceptedValueIds", "rejectedValueIds", "failureId"],
+      "properties": {
+        "roleId": {"$ref": "#/$defs/stableId"},
+        "predicateId": {"$ref": "#/$defs/stableId"},
+        "acceptedValueIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "rejectedValueIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "failureId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "boundPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "roleId", "minimum", "maximum", "boundaryRoleId", "enforcement"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "roleId": {"$ref": "#/$defs/stableId"},
+        "minimum": {"type": ["number", "null"]},
+        "maximum": {"type": ["number", "null"]},
+        "boundaryRoleId": {
+          "oneOf": [
+            {"$ref": "#/$defs/stableId"},
+            {"type": "null"}
+          ]
+        },
+        "enforcement": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "transformPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "inputRoleIds", "outputRoleIds", "guaranteeIds"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "inputRoleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "outputRoleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "guaranteeIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "ownershipTransferPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initialOwnerRoleId", "transferAtId", "transferredOwnerRoleId", "atomic", "postTransferPolicy"],
+      "properties": {
+        "initialOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "transferAtId": {"$ref": "#/$defs/stableId"},
+        "transferredOwnerRoleId": {"$ref": "#/$defs/stableId"},
+        "atomic": {"type": "boolean"},
+        "postTransferPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preAccessRegistration", "concurrencyBounds", "workBudgets", "sourceReductionPolicy", "overloadFailureId"],
+      "properties": {
+        "preAccessRegistration": {"$ref": "#/$defs/preAccessRegistrationPolicy"},
+        "concurrencyBounds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/concurrencyBound"}
+        },
+        "workBudgets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/workBudget"}
+        },
+        "sourceReductionPolicy": {"$ref": "#/$defs/stableId"},
+        "overloadFailureId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "preAccessRegistrationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["managedRoleId", "beforeAccessRoleId", "required"],
+      "properties": {
+        "managedRoleId": {"$ref": "#/$defs/stableId"},
+        "beforeAccessRoleId": {"$ref": "#/$defs/stableId"},
+        "required": {"type": "boolean"}
+      }
+    },
+    "concurrencyBound": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scopeRoleId", "maximum"],
+      "properties": {
+        "scopeRoleId": {"$ref": "#/$defs/stableId"},
+        "maximum": {"type": "integer", "minimum": 1}
+      }
+    },
+    "workBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "scopeRoleId", "unitId", "maximum", "enforcement"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "scopeRoleId": {"$ref": "#/$defs/stableId"},
+        "unitId": {"$ref": "#/$defs/stableId"},
+        "maximum": {"type": "integer", "minimum": 1},
+        "enforcement": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "raceArbitrationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["linearizationPoint", "winnerPolicy", "outcomeDelivery", "cleanupExecution", "successFinalizationExecution", "successCommitEffect", "failureCleanupSequenceIds", "successFinalizationSequenceIds", "triggerPolicies"],
+      "properties": {
+        "linearizationPoint": {"$ref": "#/$defs/stableId"},
+        "winnerPolicy": {"$ref": "#/$defs/stableId"},
+        "outcomeDelivery": {"$ref": "#/$defs/stableId"},
+        "cleanupExecution": {"$ref": "#/$defs/stableId"},
+        "successFinalizationExecution": {"$ref": "#/$defs/stableId"},
+        "successCommitEffect": {"$ref": "#/$defs/stableId"},
+        "failureCleanupSequenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "successFinalizationSequenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "triggerPolicies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/raceTriggerPolicy"}
+        }
+      }
+    },
+    "raceTriggerPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["triggerKind", "triggerId", "outcomeKind", "outcomeId", "sequenceKind", "sequenceIds"],
+      "properties": {
+        "triggerKind": {"enum": ["operation", "lifecycle", "commit"]},
+        "triggerId": {"$ref": "#/$defs/stableId"},
+        "outcomeKind": {"enum": ["result", "failure"]},
+        "outcomeId": {"$ref": "#/$defs/stableId"},
+        "sequenceKind": {"enum": ["failure_cleanup", "success_finalization"]},
+        "sequenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "streamingCopyPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "operationId",
+        "roleBindings",
+        "preconditions",
+        "sourceRepresentations",
+        "bounds",
+        "sinkProtocol",
+        "execution",
+        "terminalPolicy",
+        "failureBehaviors",
+        "successResultId",
+        "successResultFieldIds",
+        "sourceLeasePolicy",
+        "privacyPolicyIds",
+        "forbiddenRepresentationIds",
+        "backendDetailsPolicy"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "operationId": {"$ref": "#/$defs/stableId"},
+        "roleBindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/roleBinding"}
+        },
+        "preconditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/preconditionPolicy"}
+        },
+        "sourceRepresentations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/streamingSourceRepresentation"}
+        },
+        "bounds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/boundPolicy"}
+        },
+        "sinkProtocol": {"$ref": "#/$defs/streamingSinkProtocol"},
+        "execution": {"$ref": "#/$defs/streamingExecutionPolicy"},
+        "terminalPolicy": {"$ref": "#/$defs/streamingTerminalPolicy"},
+        "failureBehaviors": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/streamingFailureBehavior"}
+        },
+        "successResultId": {"$ref": "#/$defs/stableId"},
+        "successResultFieldIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "sourceLeasePolicy": {"$ref": "#/$defs/stableId"},
+        "privacyPolicyIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "forbiddenRepresentationIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "backendDetailsPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "streamingSourceRepresentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceValueId", "formatId", "contentType"],
+      "properties": {
+        "sourceValueId": {"$ref": "#/$defs/stableId"},
+        "formatId": {"$ref": "#/$defs/stableId"},
+        "contentType": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 127,
+          "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+        }
+      }
+    },
+    "streamingSinkProtocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sinkRoleId",
+        "consumerScope",
+        "serializationPolicy",
+        "registryStoragePolicy",
+        "methods",
+        "invocationOrderIds",
+        "sequentialWrites",
+        "terminalExclusivity",
+        "cancellationAware",
+        "cancellationConvergenceSeconds"
+      ],
+      "properties": {
+        "sinkRoleId": {"$ref": "#/$defs/stableId"},
+        "consumerScope": {"$ref": "#/$defs/stableId"},
+        "serializationPolicy": {"$ref": "#/$defs/stableId"},
+        "registryStoragePolicy": {"$ref": "#/$defs/stableId"},
+        "methods": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/streamingSinkMethod"}
+        },
+        "invocationOrderIds": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "sequentialWrites": {"type": "boolean"},
+        "terminalExclusivity": {"$ref": "#/$defs/stableId"},
+        "cancellationAware": {"type": "boolean"},
+        "cancellationConvergenceSeconds": {"type": "integer", "minimum": 1}
+      }
+    },
+    "streamingSinkMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "phase", "cardinality", "payloadRoleIds"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "phase": {"enum": ["begin", "write", "commit", "abort"]},
+        "cardinality": {"$ref": "#/$defs/stableId"},
+        "payloadRoleIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "streamingExecutionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reservationRoleIds",
+        "beforeAccessRoleIds",
+        "atomicReservation",
+        "capacityPolicy",
+        "concurrencyBounds",
+        "workBudgets",
+        "deadlineSeconds",
+        "deadlineStartId",
+        "cancellationPolicy",
+        "lateResultPolicy",
+        "lengthCheckIds",
+        "fullBufferingPolicy",
+        "overloadFailureId"
+      ],
+      "properties": {
+        "reservationRoleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "beforeAccessRoleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "atomicReservation": {"type": "boolean"},
+        "capacityPolicy": {"$ref": "#/$defs/stableId"},
+        "concurrencyBounds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/concurrencyBound"}
+        },
+        "workBudgets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/workBudget"}
+        },
+        "deadlineSeconds": {"type": "integer", "minimum": 1},
+        "deadlineStartId": {"$ref": "#/$defs/stableId"},
+        "cancellationPolicy": {"$ref": "#/$defs/stableId"},
+        "lateResultPolicy": {"$ref": "#/$defs/stableId"},
+        "lengthCheckIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "fullBufferingPolicy": {"$ref": "#/$defs/stableId"},
+        "overloadFailureId": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "streamingTerminalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "linearizationPoint",
+        "winnerPolicy",
+        "outcomeDelivery",
+        "successSinkActionId",
+        "failureSinkActionId",
+        "successSinkActionCardinality",
+        "failureSinkActionCardinality",
+        "terminalExclusivity",
+        "failureCleanupSequenceIds",
+        "successFinalizationSequenceIds"
+      ],
+      "properties": {
+        "linearizationPoint": {"$ref": "#/$defs/stableId"},
+        "winnerPolicy": {"$ref": "#/$defs/stableId"},
+        "outcomeDelivery": {"$ref": "#/$defs/stableId"},
+        "successSinkActionId": {"$ref": "#/$defs/stableId"},
+        "failureSinkActionId": {"$ref": "#/$defs/stableId"},
+        "successSinkActionCardinality": {"$ref": "#/$defs/stableId"},
+        "failureSinkActionCardinality": {"$ref": "#/$defs/stableId"},
+        "terminalExclusivity": {"$ref": "#/$defs/stableId"},
+        "failureCleanupSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "successFinalizationSequenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        }
+      }
+    },
+    "streamingFailureBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failureId",
+        "recoverable",
+        "terminal",
+        "triggerIds",
+        "raceWinnerId",
+        "sinkActionId",
+        "sourceLeaseEffect",
+        "detailsPolicy"
+      ],
+      "properties": {
+        "failureId": {"$ref": "#/$defs/stableId"},
+        "recoverable": {"type": "boolean"},
+        "terminal": {"type": "boolean"},
+        "triggerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "raceWinnerId": {"$ref": "#/$defs/stableId"},
+        "sinkActionId": {"$ref": "#/$defs/stableId"},
+        "sourceLeaseEffect": {"$ref": "#/$defs/stableId"},
+        "detailsPolicy": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "cleanupRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "description", "triggerKind", "triggerId", "resourceId", "action", "order"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "description": {"type": "string", "minLength": 1},
+        "triggerKind": {"enum": ["operation", "lifecycle"]},
+        "triggerId": {"$ref": "#/$defs/stableId"},
+        "resourceId": {"$ref": "#/$defs/stableId"},
+        "action": {"$ref": "#/$defs/stableId"},
+        "order": {"$ref": "#/$defs/stableId"}
+      }
+    }
+  }
+}

@@ -57,7 +57,10 @@ String _redact(String input, {bool normalizeTerminalOutput = true}) {
           r'-----END [^-\r\n]*PRIVATE KEY-----',
         ),
         '<redacted-private-key>',
-      );
+      )
+      .replaceAll(RegExp(r'/var/folders/[^\s]+'), '<temporary-path>');
+
+  content = _redactXcodeDestinationLines(content);
 
   content = content.replaceAllMapped(
     RegExp(r'\b(authorization\s*:\s*bearer\s+)([^\s]+)', caseSensitive: false),
@@ -80,6 +83,24 @@ String _redact(String input, {bool normalizeTerminalOutput = true}) {
   );
 
   return content;
+}
+
+String _redactXcodeDestinationLines(String input) {
+  final destinationLine = RegExp(r'^\s*\{[^}\r\n]*\bplatform:[^}\r\n]*\}\s*$');
+  return input
+      .split('\n')
+      .map((line) {
+        if (!destinationLine.hasMatch(line)) {
+          return line;
+        }
+        return line
+            .replaceAll(RegExp(r'\bid:[^,}\r\n]+'), 'id:<redacted-device-id>')
+            .replaceAll(
+              RegExp(r'\bname:[^,}\r\n]+'),
+              'name:<redacted-device-name>',
+            );
+      })
+      .join('\n');
 }
 
 String _normalizeTerminalOutput(String input) {
