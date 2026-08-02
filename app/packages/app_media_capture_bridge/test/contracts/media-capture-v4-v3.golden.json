@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 1,
+  "contractId": "media_capture_cross_runtime_golden",
+  "consumerBindings": [
+    {
+      "path": "app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart",
+      "implementationDigest": "72213ca9473de4ea28279d9e629d628ebc61ff32cb0a8228e4860575c13964d2"
+    },
+    {
+      "path": "app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt",
+      "implementationDigest": "e4d1734c639b968fdbfa549fbfe49735f899f3a46736030621ec15926f06b898"
+    },
+    {
+      "path": "app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift",
+      "implementationDigest": "eb5811265ebc4bc9dad9fe5a0e41788209deeebb83ce01df7ceb223c9b3b0773"
+    },
+    {
+      "path": "app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh",
+      "implementationDigest": "a4ed219e960e5beed766ca1b549b7b39062abe67db31ae575bed7c1397f918b4"
+    }
+  ],
+  "current": {
+    "capabilityVersion": 4,
+    "wireVersion": 3,
+    "compatibleCapabilityVersions": [4],
+    "capabilityOperationIds": [
+      "start_session",
+      "take_photo",
+      "start_recording",
+      "stop_recording",
+      "switch_camera",
+      "set_flash_mode",
+      "set_focus_point",
+      "set_zoom",
+      "retake",
+      "confirm",
+      "cancel",
+      "open_media_read",
+      "release_media",
+      "attach_live_preview",
+      "detach_live_preview",
+      "attach_unconfirmed_preview_render",
+      "detach_unconfirmed_preview_render",
+      "read_media_thumbnail",
+      "copy_confirmed_media_to_sink"
+    ],
+    "capabilityEventIds": [
+      "session_ready",
+      "session_failed",
+      "media_preview_ready",
+      "media_lease_expired",
+      "media_read_revoked",
+      "render_attachment_revoked"
+    ],
+    "capabilityFailureIds": [
+      "permission_denied",
+      "permission_restricted",
+      "permission_permanently_denied",
+      "resource_in_use",
+      "storage_full",
+      "encoding_failed",
+      "media_invalid",
+      "session_invalid",
+      "unsupported_capability",
+      "system_interrupted",
+      "session_conflict",
+      "invalid_state",
+      "invalid_argument",
+      "session_timeout",
+      "thumbnail_generation_failed",
+      "thumbnail_generation_cancelled",
+      "thumbnail_overloaded",
+      "attachment_generation_retired",
+      "attachment_target_conflict",
+      "media_export_conflict",
+      "media_export_overloaded",
+      "media_export_too_large",
+      "media_export_sink_rejected",
+      "media_export_read_failed",
+      "media_export_write_failed",
+      "media_export_cancelled",
+      "media_export_timed_out"
+    ],
+    "methodIds": [
+      "start_session",
+      "take_photo",
+      "start_recording",
+      "stop_recording",
+      "switch_camera",
+      "set_flash_mode",
+      "set_focus_point",
+      "set_zoom",
+      "retake",
+      "confirm",
+      "cancel",
+      "release_media",
+      "read_media_thumbnail",
+      "materialize_media_resource",
+      "release_materialized_media",
+      "present_capture_flow",
+      "dismiss_capture_flow"
+    ],
+    "eventIds": [
+      "session_ready",
+      "session_failed",
+      "media_preview_ready",
+      "media_lease_expired",
+      "media_read_revoked"
+    ],
+    "failureIds": [
+      "bridge_overloaded",
+      "bridge_unavailable",
+      "duplicate_request",
+      "encoding_failed",
+      "incompatible_wire_version",
+      "invalid_argument",
+      "invalid_state",
+      "invalid_wire_payload",
+      "listener_already_active",
+      "materialized_media_invalid",
+      "media_export_cancelled",
+      "media_export_conflict",
+      "media_export_overloaded",
+      "media_export_read_failed",
+      "media_export_sink_rejected",
+      "media_export_timed_out",
+      "media_export_too_large",
+      "media_export_write_failed",
+      "media_invalid",
+      "permission_denied",
+      "permission_permanently_denied",
+      "permission_restricted",
+      "presentation_conflict",
+      "resource_in_use",
+      "session_conflict",
+      "session_invalid",
+      "session_timeout",
+      "storage_full",
+      "system_interrupted",
+      "thumbnail_generation_cancelled",
+      "thumbnail_generation_failed",
+      "thumbnail_overloaded",
+      "transfer_store_overloaded",
+      "transfer_store_unavailable",
+      "unsupported_capability",
+      "wire_encoding_failed"
+    ],
+    "mappedCapabilityFailureIds": [
+      "encoding_failed",
+      "invalid_argument",
+      "invalid_state",
+      "media_export_cancelled",
+      "media_export_conflict",
+      "media_export_overloaded",
+      "media_export_read_failed",
+      "media_export_sink_rejected",
+      "media_export_timed_out",
+      "media_export_too_large",
+      "media_export_write_failed",
+      "media_invalid",
+      "permission_denied",
+      "permission_permanently_denied",
+      "permission_restricted",
+      "resource_in_use",
+      "session_conflict",
+      "session_invalid",
+      "session_timeout",
+      "storage_full",
+      "system_interrupted",
+      "thumbnail_generation_cancelled",
+      "thumbnail_generation_failed",
+      "thumbnail_overloaded",
+      "unsupported_capability"
+    ],
+    "wireProtocolFailureIds": [
+      "bridge_overloaded",
+      "bridge_unavailable",
+      "duplicate_request",
+      "incompatible_wire_version",
+      "invalid_wire_payload",
+      "listener_already_active",
+      "materialized_media_invalid",
+      "presentation_conflict",
+      "transfer_store_overloaded",
+      "transfer_store_unavailable",
+      "wire_encoding_failed"
+    ]
+  },
+  "history": {
+    "capability": [
+      {
+        "version": 1,
+        "operationCount": 13,
+        "eventCount": 5,
+        "nativeReadScope": true,
+        "nativeRenderScope": "none",
+        "boundedExport": false
+      },
+      {
+        "version": 2,
+        "operationCount": 18,
+        "eventCount": 6,
+        "nativeReadScope": true,
+        "nativeRenderScope": "callback_adapter",
+        "boundedExport": false
+      },
+      {
+        "version": 3,
+        "operationCount": 18,
+        "eventCount": 6,
+        "nativeReadScope": true,
+        "nativeRenderScope": "module_concrete_surface",
+        "boundedExport": false
+      },
+      {
+        "version": 4,
+        "operationCount": 19,
+        "eventCount": 6,
+        "nativeReadScope": true,
+        "nativeRenderScope": "module_concrete_surface",
+        "boundedExport": true
+      }
+    ],
+    "wire": [
+      {
+        "version": 1,
+        "compatibleCapabilityVersions": [1],
+        "methodCount": 12,
+        "eventCount": 5,
+        "exposesNativeRead": false,
+        "exposesNativeRender": false,
+        "exposesTransfer": false
+      },
+      {
+        "version": 2,
+        "compatibleCapabilityVersions": [2, 3],
+        "methodCount": 14,
+        "eventCount": 5,
+        "exposesNativeRead": false,
+        "exposesNativeRender": false,
+        "exposesTransfer": false
+      },
+      {
+        "version": 3,
+        "compatibleCapabilityVersions": [4],
+        "methodCount": 17,
+        "eventCount": 5,
+        "exposesNativeRead": false,
+        "exposesNativeRender": false,
+        "exposesTransfer": true
+      }
+    ]
+  },
+  "transfer": {
+    "limits": {
+      "maxFileBytes": 52428800,
+      "ttlSeconds": 300,
+      "maxActiveExportsPerEngineAttachment": 4,
+      "maxActiveBytesPerEngineAttachment": 104857600,
+      "releaseTombstoneSeconds": 300,
+      "maxReleaseTombstones": 4096
+    },
+    "mimeCases": [
+      {"mediaType": "photo", "contentType": "image/jpeg", "valid": true},
+      {"mediaType": "photo", "contentType": "video/mp4", "valid": false},
+      {"mediaType": "video", "contentType": "video/mp4", "valid": true},
+      {"mediaType": "video", "contentType": "video/quicktime", "valid": false}
+    ],
+    "signed64Cases": [
+      {"decimal": "-9223372036854775808", "valid": true},
+      {"decimal": "9223372036854775807", "valid": true},
+      {"decimal": "-9223372036854775809", "valid": false},
+      {"decimal": "9223372036854775808", "valid": false}
+    ],
+    "fileUriCases": [
+      {
+        "id": "absolute_no_authority",
+        "uri": "file:///var/mobile/Containers/Data/Application/app/Library/Caches/media-transfer/a.bin",
+        "valid": true
+      },
+      {
+        "id": "localhost_authority_rejected",
+        "uri": "file://localhost/var/mobile/Containers/Data/Application/app/Library/Caches/media-transfer/a.bin",
+        "valid": false
+      },
+      {
+        "id": "relative_path_rejected",
+        "uri": "file:media-transfer/a.bin",
+        "valid": false
+      },
+      {
+        "id": "single_slash_absolute_rejected",
+        "uri": "file:/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false
+      },
+      {
+        "id": "port_rejected",
+        "uri": "file://:123/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false
+      },
+      {
+        "id": "dot_segment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/../a.bin",
+        "valid": false
+      },
+      {
+        "id": "encoded_dot_segment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%2E%2E/a.bin",
+        "valid": false
+      },
+      {
+        "id": "query_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a.bin?x=1",
+        "valid": false
+      },
+      {
+        "id": "fragment_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a.bin#x",
+        "valid": false
+      },
+      {
+        "id": "userinfo_rejected",
+        "uri": "file://user@/data/user/0/app/cache/media-transfer/a.bin",
+        "valid": false
+      },
+      {
+        "id": "overlong_percent_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%C0%AF.bin",
+        "valid": false
+      },
+      {
+        "id": "invalid_percent_triplet_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%GG.bin",
+        "valid": false
+      },
+      {
+        "id": "encoded_slash_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%2Fb.bin",
+        "valid": false
+      },
+      {
+        "id": "encoded_backslash_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%5Cb.bin",
+        "valid": false
+      },
+      {
+        "id": "nul_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%00.bin",
+        "valid": false
+      },
+      {
+        "id": "control_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/a%0A.bin",
+        "valid": false
+      },
+      {
+        "id": "raw_unicode_rejected",
+        "uri": "file:///data/user/0/app/cache/media-transfer/照片.jpg",
+        "valid": false
+      },
+      {
+        "id": "percent_encoded_unicode_accepted",
+        "uri": "file:///data/user/0/app/cache/media-transfer/%E7%85%A7%E7%89%87.jpg",
+        "valid": true
+      }
+    ],
+    "fileUriLengthCases": [
+      {"totalLength": 4096, "valid": true},
+      {"totalLength": 4097, "valid": false}
+    ]
+  },
+  "lifecycle": {
+    "cleanupOrder": [
+      "import_store_commit",
+      "release_transfer",
+      "release_source_lease"
+    ],
+    "lateCompletion": "cleanup_without_delivery",
+    "engineDetach": "delete_transfer_before_boundary_completion",
+    "releaseAfterTombstone": "idempotent_success"
+  },
+  "redaction": {
+    "forbiddenPersistentKeys": [
+      "fileUri",
+      "mediaHandle",
+      "exportHandle",
+      "absolutePath"
+    ],
+    "failureDetailsMayContainLocator": false,
+    "logsMayContainLocator": false
+  }
+}

@@ -2,7 +2,9 @@ package com.example.media_capture
 
 import com.example.mediacapture.api.FailureCode
 import com.example.mediacapture.api.MediaCapture
+import com.example.mediacapture.api.MediaMetadata
 import com.example.mediacapture.api.MediaState
+import com.example.mediacapture.api.MediaType
 import com.example.mediacapture.api.SessionHandle
 import com.example.mediacapture.api.SessionState
 import com.example.mediacapture.rendering.MediaCaptureRenderView
@@ -102,16 +104,149 @@ class AndroidContractVectorGateTest {
     }
 
     @Test
-    fun wireV3TransferVectorsMatchAndroidCodecAndLimits() {
+    fun wireV3CrossRuntimeGoldenMatchesAndroidCodecAndEverySection() {
         val wire = contract("media-capture.wire.json")
+        val golden = contract("media-capture-v4-v3.golden.json")
+        assertEquals(
+            setOf(
+                "schemaVersion",
+                "contractId",
+                "consumerBindings",
+                "current",
+                "history",
+                "transfer",
+                "lifecycle",
+                "redaction",
+            ),
+            golden.keys().asSequence().toSet(),
+        )
+        val current = golden.getJSONObject("current")
+        assertEquals(4, current.getInt("capabilityVersion"))
+        assertEquals(MEDIA_CAPTURE_WIRE_VERSION, current.getInt("wireVersion"))
+        assertEquals(MediaCaptureWireCodec.methods, current.getJSONArray("methodIds").strings())
+        assertEquals(
+            setOf("session_ready", "session_failed", "media_preview_ready", "media_lease_expired", "media_read_revoked"),
+            current.getJSONArray("eventIds").strings(),
+        )
+        assertEquals(operationMethods.keys, current.getJSONArray("capabilityOperationIds").strings())
+        assertEquals(
+            setOf(
+                "session_ready",
+                "session_failed",
+                "media_preview_ready",
+                "media_lease_expired",
+                "media_read_revoked",
+                "render_attachment_revoked",
+            ),
+            current.getJSONArray("capabilityEventIds").strings(),
+        )
+        val capabilityFailures = FailureCode.entries.map { it.wireValue }.toSet()
+        val mappedCapabilityFailures = current.getJSONArray("mappedCapabilityFailureIds").strings()
+        val wireProtocolFailures = current.getJSONArray("wireProtocolFailureIds").strings()
+        val wireFailures = current.getJSONArray("failureIds").strings()
+        assertEquals(capabilityFailures, current.getJSONArray("capabilityFailureIds").strings())
+        assertEquals(
+            capabilityFailures - setOf("attachment_generation_retired", "attachment_target_conflict"),
+            mappedCapabilityFailures,
+        )
+        assertEquals(wireFailures - mappedCapabilityFailures, wireProtocolFailures)
+        val contractFailures = wire.getJSONArray("errors").objects()
+        assertEquals(contractFailures.map { it.getString("code") }.toSet(), wireFailures)
+        assertEquals(
+            contractFailures.filter { it.getString("source") == "capability_failure" }
+                .map { it.getString("code") }.toSet(),
+            mappedCapabilityFailures,
+        )
+        assertEquals(
+            contractFailures.filter { it.getString("source") == "wire_protocol" }
+                .map { it.getString("code") }.toSet(),
+            wireProtocolFailures,
+        )
+
+        val history = golden.getJSONObject("history")
+        assertEquals(
+            listOf(
+                "1|13|5|true|none|false",
+                "2|18|6|true|callback_adapter|false",
+                "3|18|6|true|module_concrete_surface|false",
+                "4|19|6|true|module_concrete_surface|true",
+            ),
+            history.getJSONArray("capability").objects().map {
+                listOf(
+                    it.getInt("version"),
+                    it.getInt("operationCount"),
+                    it.getInt("eventCount"),
+                    it.getBoolean("nativeReadScope"),
+                    it.getString("nativeRenderScope"),
+                    it.getBoolean("boundedExport"),
+                ).joinToString("|")
+            },
+        )
+        assertEquals(
+            listOf(
+                "1|1|12|5|false|false|false",
+                "2|2,3|14|5|false|false|false",
+                "3|4|17|5|false|false|true",
+            ),
+            history.getJSONArray("wire").objects().map {
+                listOf(
+                    it.getInt("version"),
+                    it.getJSONArray("compatibleCapabilityVersions").ints().sorted().joinToString(","),
+                    it.getInt("methodCount"),
+                    it.getInt("eventCount"),
+                    it.getBoolean("exposesNativeRead"),
+                    it.getBoolean("exposesNativeRender"),
+                    it.getBoolean("exposesTransfer"),
+                ).joinToString("|")
+            },
+        )
+
         val transfer = wire.getJSONObject("transferStore")
         val limits = transfer.getJSONObject("limits")
-        assertEquals(52_428_800L, limits.getLong("maxFileBytes"))
-        assertEquals(300, limits.getInt("ttlSeconds"))
-        assertEquals(4, limits.getInt("maxActiveExportsPerEngineAttachment"))
-        assertEquals(104_857_600L, limits.getLong("maxActiveBytesPerEngineAttachment"))
+        val goldenLimits = golden.getJSONObject("transfer").getJSONObject("limits")
+        listOf(
+            "maxFileBytes",
+            "ttlSeconds",
+            "maxActiveExportsPerEngineAttachment",
+            "maxActiveBytesPerEngineAttachment",
+            "releaseTombstoneSeconds",
+            "maxReleaseTombstones",
+        ).forEach { key -> assertEquals(limits.getLong(key), goldenLimits.getLong(key), key) }
 
-        transfer.getJSONArray("fileUriGoldenVectors").objects().forEach { vector ->
+        golden.getJSONObject("transfer").getJSONArray("mimeCases").objects().forEachIndexed { index, vector ->
+            val mediaType = if (vector.getString("mediaType") == "photo") MediaType.PHOTO else MediaType.VIDEO
+            val metadata =
+                MediaMetadata(
+                    mediaType = mediaType,
+                    pixelWidth = 1,
+                    pixelHeight = 1,
+                    durationMillis = if (mediaType == MediaType.VIDEO) 1_000L else null,
+                    orientationDegrees = 0,
+                    byteLength = 1_024L,
+                    contentType = vector.getString("contentType"),
+                )
+            val encode = {
+                MediaCaptureWireCodec.materializedMedia(
+                    requestId = "mime-$index",
+                    exportHandle = "ABCDEFGHIJKLMNOPQRSTUV",
+                    fileUri = "file:///data/user/0/app/cache/media-transfer/a.bin",
+                    metadata = metadata,
+                    expiresAtEpochMillis = 301_000L,
+                )
+            }
+            if (vector.getBoolean("valid")) encode() else assertFails { encode() }
+        }
+        golden.getJSONObject("transfer").getJSONArray("signed64Cases").objects().forEach { vector ->
+            assertEquals(vector.getBoolean("valid"), vector.getString("decimal").toLongOrNull() != null)
+        }
+
+        val contractVectors = transfer.getJSONArray("fileUriGoldenVectors").objects()
+        val goldenVectors = golden.getJSONObject("transfer").getJSONArray("fileUriCases").objects()
+        assertEquals(
+            contractVectors.map { Triple(it.getString("id"), it.getString("uri"), it.getBoolean("valid")) },
+            goldenVectors.map { Triple(it.getString("id"), it.getString("uri"), it.getBoolean("valid")) },
+        )
+        goldenVectors.forEach { vector ->
             val uri = vector.getString("uri")
             if (vector.getBoolean("valid")) {
                 MediaCaptureWireCodec.requireCanonicalFileUri(uri)
@@ -120,9 +255,30 @@ class AndroidContractVectorGateTest {
             }
         }
         val lengths = transfer.getJSONArray("fileUriLengthGoldenVectors").objects()
+        assertEquals(
+            lengths.map { it.getInt("totalLength") to it.getBoolean("valid") },
+            golden.getJSONObject("transfer").getJSONArray("fileUriLengthCases").objects()
+                .map { it.getInt("totalLength") to it.getBoolean("valid") },
+        )
         val maximum = "file:///" + "a".repeat(lengths.single { it.getBoolean("valid") }.getInt("totalLength") - 8)
         MediaCaptureWireCodec.requireCanonicalFileUri(maximum)
         assertFails { MediaCaptureWireCodec.requireCanonicalFileUri("${maximum}a") }
+
+        val lifecycle = golden.getJSONObject("lifecycle")
+        assertEquals(
+            listOf("import_store_commit", "release_transfer", "release_source_lease"),
+            lifecycle.getJSONArray("cleanupOrder").stringsInOrder(),
+        )
+        assertEquals("cleanup_without_delivery", lifecycle.getString("lateCompletion"))
+        assertEquals("delete_transfer_before_boundary_completion", lifecycle.getString("engineDetach"))
+        assertEquals("idempotent_success", lifecycle.getString("releaseAfterTombstone"))
+        val redaction = golden.getJSONObject("redaction")
+        assertEquals(
+            setOf("fileUri", "mediaHandle", "exportHandle", "absolutePath"),
+            redaction.getJSONArray("forbiddenPersistentKeys").strings(),
+        )
+        assertEquals(false, redaction.getBoolean("failureDetailsMayContainLocator"))
+        assertEquals(false, redaction.getBoolean("logsMayContainLocator"))
     }
 
     private fun contract(name: String): JSONObject {
@@ -165,6 +321,9 @@ private fun JSONArray.ids(): Set<String> = objects().map { it.getString("id") }.
 
 private fun JSONArray.strings(): Set<String> =
     (0 until length()).map(::getString).toSet()
+
+private fun JSONArray.stringsInOrder(): List<String> =
+    (0 until length()).map(::getString)
 
 private fun JSONArray.ints(): Set<Int> =
     (0 until length()).map(::getInt).toSet()

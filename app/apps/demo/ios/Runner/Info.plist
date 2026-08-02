@@ -26,6 +26,10 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Ai-Harness uses your photo library for a profile picture or local product image search.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ai-Harness uses the camera to capture photos and videos you choose to share.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Ai-Harness uses the microphone when you choose to record a video with audio.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

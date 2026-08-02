@@ -11,10 +11,17 @@ implementationFiles:
   - docs/bridge/README.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: eed4882a63a0e1c8b72c80d0f1d939dbb1ec1f22b2dbcde4badc4d1970f06d4d
+implementationDigest: 27c2a069b085b0c2dea019bfd63ba54d3620d4572734a8274b470c624756bcad
 ---
 
 # Security Review: Media Capture Native UI Flow Wire V2
+
+## iOS dismiss 支持状态影响复审
+
+后续 Wire V3 仅把 `dismiss_capture_flow` 的 iOS support 提升为 `supported`，没有改变本报告审查的
+presentation payload、owner correlation、exactly-once、lease settlement、Native-only Render、thumbnail
+或 redaction 边界。反向 mutation 继续拒绝支持矩阵回退；独立 Security Reviewer 复审为 P0 0、P1 0、
+P2 0，摘要已绑定当前共享文件。
 
 ## 结论
 
@@ -57,3 +64,8 @@ P2，摘要可同步到当前文件集合。静态契约不能替代 Android/iOS
 
 独立安全复审确认 V4 export 仍不会进入 Wire V2/V3，十三类 projection mutant 全部通过。当前实现
 `P0=0`、`P1=0`、`P2=0`；摘要已绑定最终共享 Harness。
+
+## 跨 Runtime 集成影响
+
+最终集成只补充 V4/V3 golden 全量消费、consumer 摘要绑定和文档计数校验，没有放宽 Native UI 三终态、
+owner、lease、locator 或 Native-only 边界。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。

@@ -22,7 +22,7 @@ implementationFiles:
   - app/tool/redact_evidence.dart
   - scripts/quality/evidence-lint.sh
   - scripts/quality/test-evidence.sh
-implementationDigest: 766e095bc364cf413d4eddb01429ad0b5216b0c37c33063e923ac2d5e7a0ac50
+implementationDigest: bd668b9edace1ab75c0f9127e76d3088c6aaa73d8d9b1c5129ee42f2ad2e7751
 ---
 
 # Security Review：Flutter 媒体预览组件
@@ -100,3 +100,8 @@ target 均编译成功。第三方 Android 低版本全帧解码、原生异常�
 受控随机 job root、canonical containment、symlink no-follow、provider 返回路径比对、bounded read、
 最多两个 native job、超时与 late cleanup 均保持闭合；当前 evidence 未包含设备 ID、设备名称或本机
 临时路径。结论为 `P0=0`、`P1=0`、`P2=0`。
+
+## 跨 Runtime 集成影响
+
+lockfile 变化只把已存在的 `xml` 提升为 Harness 直接 dev dependency；Thumbnail/Viewer、播放器和资源
+生命周期实现未修改。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

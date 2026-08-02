@@ -11,7 +11,7 @@ securityReview: required
 
 ## 输入与事实来源
 
-- 最新 Capability V3、Schema/详情文档与本任务现有 Review 历史。
+- Capability V1-V3、Schema/详情文档与本任务现有 Review 历史；V4 export 由独立后续任务实现。
 - `docs/native-architecture.md`、`swift-ios-standards`、`native-testing-strategy`。
 - 当前 Host 基线 iOS 13、Swift 5 配置；模块采用 Swift、Swift Concurrency、本地 SwiftPM 和
   AVFoundation，实际 Package platform/工具链由本任务在仓库环境构建验证。

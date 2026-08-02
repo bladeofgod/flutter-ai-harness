@@ -29,10 +29,16 @@ implementationFiles:
   - .agents/skills/kotlin-android-standards/SKILL.md
   - .agents/skills/swift-ios-standards/SKILL.md
   - .agents/skills/native-testing-strategy/SKILL.md
-implementationDigest: 3e4e9f9e5e8db28c325b117a31573bb9d6f7a8b6691cd3975beb8c33629803ca
+implementationDigest: da5cfbdf6c5062fbeb0e9e54b02fde990598f36d95e77991fca92d57ea2b80dc
 ---
 
 # Security Review：原生 Agent 与编码规范
+
+## iOS dismiss 支持状态影响复审
+
+共享 Validator/Harness 后续只把既有 Wire dismiss 的 iOS support 期望从 unsupported 提升为 supported，并
+反转对应 mutation；任务路径、符号链接、Executor/Skill 路由、Reviewer 只读工具和 Agent 执行能力均未
+变化。独立 Security Reviewer 确认 P0 0、P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 结论
 
@@ -107,3 +113,19 @@ commit/push/publish/凭据能力、Skill 路由和安全审查门禁。当前实
 fixture，不改变 Agent 工具、网络、凭据、提交、推送或发布能力。任务 executor/platform/workKind 的
 确定性路由、任务路径 symlink 防护和 Reviewer 只读边界仍由完整 Harness mutant suite 覆盖；最终
 `make harness-test` exit 0，本报告摘要同步到当前文件集合。
+
+## iOS SwiftPM Host 架构影响复审
+
+本次变化只在 `docs/native-architecture.md` 补充 iOS SwiftPM 的验证分层和后续任务所有权，不修改
+`.claude/commands`、`.claude/agents`、`.claude/skills`、Harness 或 Codex Adapter。独立 Security
+Reviewer 重新核对任务路径、结构化 Executor 路由、Reviewer 只读边界，以及网络、凭据、外部写入、
+commit、push、publish 和发布能力，确认均未变化，P0 0、P1 0、P2 0。
+
+临时 Host 构建沿用既有本地构建能力，并进一步要求项目级 SwiftPM 开关、仅当前用户可访问的系统临时
+目录、敏感材料排除、全退出路径清理和证据路径脱敏；同时禁止全局 Flutter 配置、本机 framework 路径、
+远程包装依赖及 CocoaPods fallback。原安全结论仍成立，本报告摘要已绑定当前原文件集合。
+
+## 跨 Runtime 集成影响
+
+最终集成扩展 Harness 的 golden consumer 摘要和 plist 结构化校验，并更新原生架构实现状态；没有修改
+Agent 工具、网络、凭据、提交、推送或发布权限。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

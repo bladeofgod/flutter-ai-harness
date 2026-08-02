@@ -19,10 +19,15 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: f19d1ffa3d3cdb05531a0cb904a5522e1c0698d22300680a2fa7888d384fc0fd
+implementationDigest: 16c6d61e4abdcf925eb80983ac18b44eb0bc84fe70ef795d353a879be74f034c
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
+
+> 后续文件身份修正把生产 `android.system.Os` instrumented suite 纳入编译与可选 emulator Gate，并将
+> Bridge 精确计数更新为 71。Gate 现在读取 emulator SDK，只有 API 23 结果才关闭最低版本运行缺口；
+> 当前无 ready emulator 的证据仍明确标记未运行。新增测试依赖均固定版本并进入 strict dependency
+> verification；独立 Security Review 为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。
 
 ## 最终结论
 
@@ -55,3 +60,8 @@ wrapper 不在 ignore 中且在执行前受 exact hash 约束；本报告再以 
 Activity runtime、系统权限、CameraX 出帧、编码器、中断和性能保持未验证；跨 Runtime 共享 golden 仍由最终
 Integration 创建。这些限制均在平台验证文档与 evidence 中明确记录，没有用 Fake/Robolectric 冒充设备
 结果。
+
+## 跨 Runtime 集成影响
+
+Android Contract Vector Gate 现在逐节消费完整 V4/V3 golden，验证结果仍为 Core 88、UI 42、Bridge 71；
+文档明确保留无 ready emulator/API 23/真机缺口。生产模块未改，独立安全复审为 P0/P1/P2 0/0/0。

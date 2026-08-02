@@ -1,4 +1,4 @@
-import AVFoundation
+package import AVFoundation
 import CoreGraphics
 import Foundation
 

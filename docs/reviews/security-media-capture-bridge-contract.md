@@ -11,10 +11,16 @@ implementationFiles:
   - docs/bridge/README.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: eed4882a63a0e1c8b72c80d0f1d939dbb1ec1f22b2dbcde4badc4d1970f06d4d
+implementationDigest: 27c2a069b085b0c2dea019bfd63ba54d3620d4572734a8274b470c624756bcad
 ---
 
 # Security Review：Media Capture Bridge Contract
+
+## iOS dismiss 支持状态影响复审
+
+后续变更只把既有、闭合的 `dismiss_capture_flow` iOS support 提升为 `supported`。method kind、Channel、
+originating `presentationRequestId` payload、协议错误集合、exactly-once、lifecycle、错误 details 与日志脱敏
+均未放宽。独立 Security Reviewer 确认 P0 0、P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 结论
 
@@ -66,3 +72,8 @@ adoption 和版本兼容，确认原始路径、URI、媒体 bytes 与 SDK 对�
 独立安全复审确认 typed Native sink、export operation/result/failure/resource 和 source MIME mapping 均未
 进入既有 Wire。十三类 projection mutant 全部通过，当前实现 `P0=0`、`P1=0`、`P2=0`；摘要已绑定
 最终共享 Harness。
+
+## 跨 Runtime 集成影响
+
+最终集成补齐 current/history/failure source、MIME、signed-64、URI、lifecycle 与 redaction 的三端消费，
+未放宽 Bridge Contract。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。

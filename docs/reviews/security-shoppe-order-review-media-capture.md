@@ -16,7 +16,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: 185a877e0efbdf7e3a2b9a3389816cbbf81aa47fc5852793bc6088408c239a10
+implementationDigest: 4a2a4f9d71bc34f05ad16c7f847c5a822772d496122a67924107978cad597c3b
 ---
 
 # Security Review：Order Review Media Capture
@@ -24,3 +24,8 @@ implementationDigest: 185a877e0efbdf7e3a2b9a3389816cbbf81aa47fc5852793bc6088408c
 独立 Security Review 通过，P0/P1/P2 均为 0。Feature 只持有窄 typed API、bounded thumbnail 与 opaque
 lease；路径、URI、handle 和异常 details 不进入 Controller/UI。Route close 可主动 dismiss，提交与替换
 按 exactly-once 清理，过期 lease 可收敛。
+
+## 跨 Runtime 集成影响
+
+最终集成只更新共享 lockfile、Host、golden、Harness 与状态文档，没有修改订单评价媒体实现。根 `xml`
+仅服务 Harness plist 校验；独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。

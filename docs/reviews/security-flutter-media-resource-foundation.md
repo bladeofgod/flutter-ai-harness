@@ -24,7 +24,7 @@ implementationFiles:
   - app/tool/check_package_dependencies.dart
   - scripts/lint/repository-boundaries.sh
   - scripts/lint/test-repository-boundaries.sh
-implementationDigest: 3bc05505db5491ccde2bd023f23303c4f939ee170b5e6355b102a4cef1421359
+implementationDigest: da3779919e896744720bc40749f0875b3b5c9e1f92eef46efaaee6d2dd9c6a65
 ---
 
 # Security Review: Flutter 媒体资源存储基础件
@@ -93,3 +93,8 @@ Security Reviewer 复审当前实现摘要。
 独立 Security Reviewer 确认预览公共 API 与依赖接入没有放宽 Store 的 source symlink/TOCTOU、
 decoded-byte budget、ISO BMFF bounded walk、pending-delete ownership 或 lease 幂等边界。共享入口、
 pubspec、lockfile 和依赖门禁继续保留在实现文件集合中；当前结论仍为 `P0=0`、`P1=0`、`P2=0`。
+
+## 跨 Runtime 集成影响
+
+根 Workspace 新增的 `xml` 仅是 Harness 的直接 dev dependency，用于结构化校验 iOS plist；不进入
+`app_media` Runtime。Store ownership、locator 隔离和 cleanup 语义不变，独立安全复审为 0/0/0。

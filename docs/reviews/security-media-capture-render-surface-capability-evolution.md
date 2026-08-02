@@ -10,10 +10,16 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 749e0b60592f105cd479fd6fb45c267de7ff8bf56cd3b4d8312cad109d2d4cef
+implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
 ---
 
 # Security Review: Media Capture Render Surface Capability V3
+
+## iOS dismiss 支持状态影响复审
+
+后续 Wire V3 只提升 Adapter dismissal 的 iOS support，并同步共享 Validator/Harness；Capability V3 的
+surface factory、closed conformance、module-only target/source/binding、mutation gate 和日志脱敏规则均未
+变化。独立 Security Reviewer 确认 P0 0、P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 首轮结论
 
@@ -70,3 +76,8 @@ Harness direct Dart runner 使用固定仓库 package config 和参数数组，�
 独立安全复审确认 V3 Render Surface 仍保持 Native-only，V4 export 及其 source representation 不会
 改变 surface/attachment 语义或进入旧版本投影。当前实现 `P0=0`、`P1=0`、`P2=0`；摘要已绑定最终
 Capability、文档与共享 Harness。真实双端 surface 行为仍由平台任务验证。
+
+## 跨 Runtime 集成影响
+
+最终集成的 current/history vectors 继续把 concrete surface 固定为 Native-only，只更新已实现状态和
+设备证据边界。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。

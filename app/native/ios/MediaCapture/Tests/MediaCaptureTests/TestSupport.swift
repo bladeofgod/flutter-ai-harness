@@ -10,8 +10,16 @@ actor FakeCapturePlatform: CapturePlatform {
     var microphonePermission: PermissionState = .granted
     var requestedPermissions: [PermissionResource] = []
     var preparedOptions: [SessionOptions] = []
+    var availableCameras: [CameraPosition] = [.rear, .front]
+    var configuredRecordingAudio: [Bool] = []
     var recording = false
     var stoppedSessionCount = 0
+    var switchCameraCallCount = 0
+    var switchCameraFailure: PlatformFailure?
+    var switchCameraGate: TestAsyncGate?
+    var switchCameraStarted = false
+    var capturedPhotoData = Data([1, 2, 3])
+    var capturedPhotoFlashModes: [FlashMode] = []
     var flashFailure: PlatformFailure?
     var flashGate: TestAsyncGate?
     var flashCallStarted = false
@@ -58,7 +66,7 @@ actor FakeCapturePlatform: CapturePlatform {
         }
         return PlatformReadySnapshot(
             activeCamera: options.preferredCamera,
-            availableCameras: [.rear, .front],
+            availableCameras: availableCameras,
             supportedFlashModes: [.off, .on, .auto, .torch],
             focusPointSupported: true,
             minimumZoomFactor: 1,
@@ -67,10 +75,13 @@ actor FakeCapturePlatform: CapturePlatform {
     }
 
     func capturePhoto(flashMode: FlashMode) async throws -> CapturedPhoto {
-        CapturedPhoto(encodedData: Data([1, 2, 3]))
+        capturedPhotoFlashModes.append(flashMode)
+        return CapturedPhoto(encodedData: capturedPhotoData)
     }
 
-    func configureRecordingAudio(enabled: Bool) async throws {}
+    func configureRecordingAudio(enabled: Bool) async throws {
+        configuredRecordingAudio.append(enabled)
+    }
 
     func startRecording(to destination: URL) async throws {
         try Data([4, 5, 6]).write(to: destination)
@@ -83,7 +94,11 @@ actor FakeCapturePlatform: CapturePlatform {
     }
 
     func switchCamera() async throws -> PlatformReadySnapshot {
-        PlatformReadySnapshot(
+        switchCameraCallCount += 1
+        switchCameraStarted = true
+        if let switchCameraGate { await switchCameraGate.wait() }
+        if let switchCameraFailure { throw switchCameraFailure }
+        return PlatformReadySnapshot(
             activeCamera: .front,
             availableCameras: [.rear, .front],
             supportedFlashModes: [.off, .on, .auto],
@@ -119,6 +134,16 @@ actor FakeCapturePlatform: CapturePlatform {
 
     nonisolated func interrupt() {
         eventContinuation.yield(.interrupted)
+    }
+
+    func configureSwitchCameraGate(_ gate: TestAsyncGate?) {
+        switchCameraGate = gate
+        switchCameraStarted = false
+    }
+
+    func configureStopSession(_ gate: TestAsyncGate?) {
+        stopSessionGate = gate
+        stopSessionStarted = false
     }
 }
 
@@ -169,7 +194,9 @@ actor FakeMediaFileStore: MediaFileStoring {
     private(set) var discardedRecordings: [URL] = []
     var readBackend: (any MediaSourceBackend)?
     var openSourceGate: TestAsyncGate?
+    private var deleteGate: TestAsyncGate?
     private(set) var openSourceStarted = false
+    private(set) var deleteStarted = false
 
     init() {
         try? FileManager.default.createDirectory(
@@ -217,7 +244,7 @@ actor FakeMediaFileStore: MediaFileStoring {
             durationMilliseconds: 1_500,
             orientationDegrees: 0,
             byteLength: count,
-            contentType: "video/quicktime"
+            contentType: "video/mp4"
         )
     }
 
@@ -248,8 +275,17 @@ actor FakeMediaFileStore: MediaFileStoring {
         return .video(url)
     }
 
+    func configureDeleteGate(_ gate: TestAsyncGate) {
+        deleteGate = gate
+    }
+
     func delete(_ reference: StoredMediaReference) async {
         deletedReferences.append(reference)
+        if let deleteGate {
+            deleteStarted = true
+            self.deleteGate = nil
+            await deleteGate.wait()
+        }
         if let url = locations.removeValue(forKey: reference) {
             try? FileManager.default.removeItem(at: url)
         }
@@ -462,33 +498,7 @@ final class FakeRenderTarget: @unchecked Sendable {
     private(set) var mountStarted = false
     private(set) var pendingCallbackGate: MediaCaptureRenderCallbackGate?
     var mountGate: TestAsyncGate?
-    private lazy var endpoint = MediaCaptureRenderMountEndpoint(
-        identity: ObjectIdentifier(self),
-        backingAvailable: { [weak self] in self != nil },
-        mount: { [weak self] _, _, callbackGate in
-            guard let self else { throw MediaCaptureFailure(.invalidArgument) }
-            self.mountStarted = true
-            self.pendingCallbackGate = callbackGate
-            if let mountGate = self.mountGate { await mountGate.wait() }
-            guard let binding = await callbackGate.performMountIfActive({
-                let state = FakeRenderBinding(callbackGate: callbackGate)
-                self.bindings.append(state)
-                return state.binding
-            }) else {
-                throw MediaCaptureFailure(.attachmentGenerationRetired)
-            }
-            return binding
-        },
-        attached: { [weak self] context in
-            self?.callbacks.append("attach:\(context.ownerGeneration)")
-        },
-        revoked: { [weak self] context in
-            self?.callbacks.append("revoke:\(context.ownerGeneration)")
-        },
-        detached: { [weak self] context in
-            self?.callbacks.append("detach:\(context.ownerGeneration)")
-        }
-    )
+    private var endpointStorage: MediaCaptureRenderMountEndpoint?
     private var installed = false
 
     init(ownerGeneration: Int64 = 1) {
@@ -506,6 +516,39 @@ final class FakeRenderTarget: @unchecked Sendable {
     func invalidateOwner() {
         owner.surfaceDestroyed(endpointIdentifier: endpoint.identity)
     }
+
+    private var endpoint: MediaCaptureRenderMountEndpoint {
+        if let endpointStorage { return endpointStorage }
+        let endpoint = MediaCaptureRenderMountEndpoint(
+            identity: ObjectIdentifier(self),
+            backingAvailable: { [weak self] in self != nil },
+            mount: { [weak self] _, _, callbackGate in
+                guard let self else { throw MediaCaptureFailure(.invalidArgument) }
+                self.mountStarted = true
+                self.pendingCallbackGate = callbackGate
+                if let mountGate = self.mountGate { await mountGate.wait() }
+                guard let binding = await callbackGate.performMountIfActive({
+                    let state = FakeRenderBinding(callbackGate: callbackGate)
+                    self.bindings.append(state)
+                    return state.binding
+                }) else {
+                    throw MediaCaptureFailure(.attachmentGenerationRetired)
+                }
+                return binding
+            },
+            attached: { [weak self] context in
+                self?.callbacks.append("attach:\(context.ownerGeneration)")
+            },
+            revoked: { [weak self] context in
+                self?.callbacks.append("revoke:\(context.ownerGeneration)")
+            },
+            detached: { [weak self] context in
+                self?.callbacks.append("detach:\(context.ownerGeneration)")
+            }
+        )
+        endpointStorage = endpoint
+        return endpoint
+    }
 }
 
 @MainActor
@@ -516,21 +559,28 @@ final class FakeRenderBinding: @unchecked Sendable {
     private(set) var renderedFrameCount = 0
     var revokeGate: TestAsyncGate?
     private(set) var revokeStarted = false
-    lazy var binding = MediaCaptureRenderBinding(
-        callbackGate: callbackGate,
-        revoke: { [weak self] in
-            guard let self else { return }
-            self.revokeStarted = true
-            if let revokeGate = self.revokeGate { await revokeGate.wait() }
-            self.revokeCount += 1
-        },
-        detach: { [weak self] in
-            self?.detachCount += 1
-        }
-    )
+    private var bindingStorage: MediaCaptureRenderBinding?
 
     init(callbackGate: MediaCaptureRenderCallbackGate) {
         self.callbackGate = callbackGate
+    }
+
+    var binding: MediaCaptureRenderBinding {
+        if let bindingStorage { return bindingStorage }
+        let binding = MediaCaptureRenderBinding(
+            callbackGate: callbackGate,
+            revoke: { [weak self] in
+                guard let self else { return }
+                self.revokeStarted = true
+                if let revokeGate = self.revokeGate { await revokeGate.wait() }
+                self.revokeCount += 1
+            },
+            detach: { [weak self] in
+                self?.detachCount += 1
+            }
+        )
+        bindingStorage = binding
+        return binding
     }
 
     func emitFrame() async {
@@ -565,13 +615,14 @@ struct CoreFixture {
 
     func startReadySession(
         mediaTypes: Set<MediaType> = [.photo, .video],
-        audioEnabled: Bool = false
+        audioEnabled: Bool = false,
+        maxVideoDurationMilliseconds: Int = 5_000
     ) async throws -> SessionHandle {
         let stream = await core.events()
         let created = try await core.startSession(options: SessionOptions(
             enabledMediaTypes: mediaTypes,
             audioEnabled: audioEnabled,
-            maxVideoDurationMilliseconds: 5_000
+            maxVideoDurationMilliseconds: maxVideoDurationMilliseconds
         ))
         for await event in stream {
             if case let .sessionReady(snapshot) = event,
@@ -590,7 +641,7 @@ struct CoreFixture {
 }
 
 func captureFailure(
-    _ operation: () async throws -> Void
+    _ operation: @Sendable () async throws -> Void
 ) async -> MediaCaptureFailure? {
     do {
         try await operation()
@@ -604,7 +655,7 @@ func captureFailure(
 
 func waitUntil(
     timeoutNanoseconds: UInt64 = 1_000_000_000,
-    _ predicate: @escaping () async -> Bool
+    _ predicate: @escaping @Sendable () async -> Bool
 ) async -> Bool {
     let start = DispatchTime.now().uptimeNanoseconds
     while DispatchTime.now().uptimeNanoseconds - start < timeoutNanoseconds {

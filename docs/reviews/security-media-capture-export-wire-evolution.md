@@ -11,10 +11,16 @@ implementationFiles:
   - docs/bridge/README.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: eed4882a63a0e1c8b72c80d0f1d939dbb1ec1f22b2dbcde4badc4d1970f06d4d
+implementationDigest: 27c2a069b085b0c2dea019bfd63ba54d3620d4572734a8274b470c624756bcad
 ---
 
 # Security Review: Media Capture Transfer Wire V3
+
+## iOS dismiss 支持状态影响复审
+
+后续变更只提升 `dismiss_capture_flow` 的 iOS support；transfer locator、private root、CSPRNG handle、容量、
+TTL、tombstone、canonical URI、source lease 和 cleanup 顺序均未变化。独立 Security Reviewer 确认 P0 0、
+P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 结论
 
@@ -39,3 +45,8 @@ payload，并且只能由基础设施立即导入 Store。
 
 静态契约不能证明平台真实文件始终位于 canonical private root，也不能证明进程终止、磁盘错误和并发 I/O
 下的物理清理。Android/iOS Adapter 与最终跨 Runtime 集成任务必须补真实文件和 Host build 证据。
+
+## 跨 Runtime 集成影响
+
+最终集成用三端 golden、Host build 和 fail-closed consumer binding 验证既有 V4/V3 投影，没有改变 Wire
+导出语义、locator 分类或清理顺序。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。

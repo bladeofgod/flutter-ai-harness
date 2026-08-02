@@ -5,6 +5,7 @@ workKinds: [integration]
 blockedBy:
   - media-capture-android-export-bridge-adapter
   - media-capture-android-host-integration
+  - media-capture-android-transfer-store-file-identity-correction
   - media-capture-flutter-package-registration
   - media-capture-ios-export-bridge-adapter
   - media-capture-ios-native-ui
@@ -40,11 +41,13 @@ securityReview: required
 - 不增加上传、云端 URL、持久消息、相册保存、后台播放、媒体编辑或新的业务入口。
 - 不把状态机/Mapper、transfer path、Store 或消息生命周期堆进 MainActivity/AppDelegate/Runner。
 - 不改变已经批准的 Capability/Wire；共享契约缺口必须回到契约任务，不能在 Integration 现场修改语义。
+- 不为 Media Capture 增加 CocoaPods fallback、本机 Flutter binary path 或手工生成的 package 接线。
 
 ## 共享写入所有权
 
 所有前置任务完成后，本任务是以下聚合面的唯一写入者：
 
+- `app/apps/demo/pubspec.yaml` 的项目级 Flutter SwiftPM 开关
 - `app/apps/demo/ios/**` 的 Host/plugin/SwiftPM 接线，以及已有 Android Host 接线的只读验证
 - `docs/native-architecture.md`、`docs/infrastructure-modules.md`、`docs/infrastructure/media-resources.md`、
   `docs/infrastructure/media-capture*.md`、`docs/bridge/README.md`、`docs/bridge/media-capture*.md`
@@ -60,8 +63,11 @@ securityReview: required
 1. 验证依赖图：`app_media -> app_core, app_ui`，`app_features/apps/demo -> app_media`，`app_data` 不依赖
    `app_media`；Bridge Package仍不依赖其它 Workspace Package，Native Module仍不依赖 Flutter。
 2. Android Host 保持仓库相对 Gradle dependency、Camera/Microphone 权限和标准 Plugin 注册；iOS 只采用
-   `media-capture-ios-quality-gate` 已验证的唯一 Host 路线。两端均不增加 Photo Library/shared storage
-   权限或 Entitlement。
+   `media-capture-ios-quality-gate` 已验证的 SwiftPM Host 路线。在 Demo `pubspec.yaml` 的 `flutter.config`
+   下提交 `enable-swift-package-manager: true`，由锁定 Flutter 生成
+   `FlutterGeneratedPluginSwiftPackage` 并迁移 Runner Xcode project；生成的 ephemeral package 不入库。
+   CocoaPods 可以继续服务其他既有插件，但不能成为 Media Capture fallback。两端均不增加 Photo
+   Library/shared storage 权限或 Entitlement。
 3. Host 只创建/装配模块并注册 Adapter，不处理 Wire Map、拍摄状态、file URI、transfer/store lease、
    `MediaResourceId` 或 Support 消息。
 4. 建立同一组 JSON/golden vectors供 Dart/Kotlin/Swift 消费，覆盖 V3 methods/events/failures、Capability
@@ -77,9 +83,10 @@ securityReview: required
    先卸载 Thumbnail/Viewer，再删除最后引用。
 8. `MediaResourceThumbnail` 使用 bounded poster而非每气泡播放器；Viewer 图片可缩放、视频有真实帧并可
    play/pause/seek。Poster 2-job/10 秒预算、Viewer 单 player、App/Route lifecycle 和 late cleanup 有证据。
-9. 执行 Android Debug APK 与 iOS Debug no-codesign Host build，证明依赖图、plugin registration、
-   SwiftPM/Gradle、Manifest/Info.plist 可解析。存在对应设备时再运行用户主动 capture/gallery 流程；缺设备
-   时明确记录，不用 Fake 冒充。
+9. 执行 Android Debug APK 与真实 Demo iOS Debug no-codesign Host build，证明依赖图、plugin
+   registration、`FlutterGeneratedPluginSwiftPackage`、本地 Core/UI products、Gradle、Manifest 与
+   Info.plist 可解析；构建前后确认没有本机绝对 framework path 或 generated package 入库。存在对应
+   设备时再运行用户主动 capture/gallery 流程；缺设备时明确记录，不用 Fake 冒充。
 10. 根双平台 Gate/CI 保留独立 `check`、Android build、iOS build；Harness 拒绝缺 Package/依赖边、
     contract vector漂移、平台 transfer cleanup缺失、路径进入 Domain/Fixture/log、旧“缩略图后立即释放”
     逻辑或 Support 消息没有 resource ID。
@@ -117,3 +124,9 @@ git diff --check
 
 完整验收需要 Android SDK/JDK 与 macOS/Xcode。真实 Camera/Gallery/视频解码只有在用户提供对应平台设备
 并主动操作时执行；缺失平台必须明确报告，不能用另一平台或 Fake 替代，也不得保存真实媒体作为证据。
+
+## 执行结果
+
+- [实现 Review](../../reviews/execute-media-capture-cross-runtime-integration.md)
+- [Security Review](../../reviews/security-media-capture-cross-runtime-integration.md)
+- [测试证据](../../reviews/test-evidence/media-capture-cross-runtime-integration.log)

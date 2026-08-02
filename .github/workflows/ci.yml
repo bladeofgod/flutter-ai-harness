@@ -57,6 +57,9 @@ jobs:
       - name: Bootstrap workspace
         run: make bootstrap
 
+      - name: Run Android Media Capture gate
+        run: make media-capture-android
+
       - name: Build Android Debug app
         run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
 
@@ -76,6 +79,9 @@ jobs:
 
       - name: Bootstrap workspace
         run: make bootstrap
+
+      - name: Run iOS Media Capture gate
+        run: make media-capture-ios
 
       - name: Build iOS Debug app without signing
         run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign

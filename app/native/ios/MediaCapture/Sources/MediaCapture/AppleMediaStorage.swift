@@ -1,4 +1,4 @@
-@preconcurrency import AVFoundation
+@preconcurrency internal import AVFoundation
 import CoreGraphics
 import Foundation
 import ImageIO
@@ -6,16 +6,36 @@ import MobileCoreServices
 
 internal actor AppleMediaFileStore: MediaFileStoring {
     private let fileManager: FileManager
+    private let parentDirectory: URL
     private let rootDirectory: URL
     private var locations: [StoredMediaReference: URL] = [:]
 
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
-        rootDirectory = fileManager.temporaryDirectory
+        parentDirectory = fileManager.temporaryDirectory
             .appendingPathComponent("MediaCapture", isDirectory: true)
+        rootDirectory = parentDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        AppleMediaDirectoryRegistry.shared.register(rootDirectory)
+    }
+
+    deinit {
+        AppleMediaDirectoryRegistry.shared.unregister(rootDirectory)
     }
 
     func removeTemporaryResidue() async {
+        try? fileManager.createDirectory(
+            at: parentDirectory,
+            withIntermediateDirectories: true,
+            attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
+        )
+        AppleMediaDirectoryRegistry.shared.removeInactiveDirectories(
+            in: parentDirectory,
+            fileManager: fileManager,
+            remove: { directory in
+                try? fileManager.removeItem(at: directory)
+            }
+        )
         try? fileManager.removeItem(at: rootDirectory)
         try? fileManager.createDirectory(
             at: rootDirectory,
@@ -61,7 +81,7 @@ internal actor AppleMediaFileStore: MediaFileStoring {
         try ensureRootDirectory()
         let sanitizedURL = rootDirectory
             .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension("mov")
+            .appendingPathExtension("mp4")
         do {
             let processed = try await AppleVideoProcessor.sanitizeVideo(
                 at: destination,
@@ -79,7 +99,7 @@ internal actor AppleMediaFileStore: MediaFileStoring {
                 durationMilliseconds: processed.durationMilliseconds,
                 orientationDegrees: processed.orientationDegrees,
                 byteLength: processed.byteLength,
-                contentType: "video/quicktime"
+                contentType: "video/mp4"
             )
         } catch is CancellationError {
             try? fileManager.removeItem(at: destination)
@@ -149,6 +169,46 @@ internal actor AppleMediaFileStore: MediaFileStoring {
             return MediaCaptureFailure(.storageFull)
         }
         return MediaCaptureFailure(.encodingFailed)
+    }
+}
+
+internal final class AppleMediaDirectoryRegistry: @unchecked Sendable {
+    static let shared = AppleMediaDirectoryRegistry()
+
+    private let lock = NSLock()
+    private var activeDirectories: Set<String> = []
+
+    init() {}
+
+    func register(_ directory: URL) {
+        lock.lock()
+        activeDirectories.insert(directory.standardizedFileURL.path)
+        lock.unlock()
+    }
+
+    func unregister(_ directory: URL) {
+        lock.lock()
+        activeDirectories.remove(directory.standardizedFileURL.path)
+        lock.unlock()
+    }
+
+    func removeInactiveDirectories(
+        in parent: URL,
+        fileManager: FileManager,
+        remove: (URL) -> Void
+    ) {
+        lock.lock()
+        defer { lock.unlock() }
+        let children = (try? fileManager.contentsOfDirectory(
+            at: parent,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )) ?? []
+        for directory in children where !activeDirectories.contains(
+            directory.standardizedFileURL.path
+        ) {
+            remove(directory)
+        }
     }
 }
 
@@ -322,7 +382,7 @@ internal enum AppleImageProcessor {
     }
 }
 
-private enum AppleVideoProcessor {
+internal enum AppleVideoProcessor {
     struct ProcessedVideo {
         let width: Int
         let height: Int
@@ -333,35 +393,67 @@ private enum AppleVideoProcessor {
 
     static func sanitizeVideo(at inputURL: URL, outputURL: URL) async throws -> ProcessedVideo {
         let asset = AVURLAsset(url: inputURL)
-        guard let track = asset.tracks(withMediaType: .video).first else {
+        let input: (width: Int, height: Int, durationMilliseconds: Int, orientationDegrees: Int)
+        do {
+            input = try inspectedVideo(asset)
+        } catch {
+            MediaCaptureDiagnostics.emit("video_input_inspection_failed", error: error)
+            throw error
+        }
+        MediaCaptureDiagnostics.emit(
+            "video_sanitize_started",
+            details: "duration_ms=\(input.durationMilliseconds) video_tracks=\(asset.tracks(withMediaType: .video).count) audio_tracks=\(asset.tracks(withMediaType: .audio).count)"
+        )
+        let composition: AVMutableComposition
+        do {
+            composition = try sanitizedComposition(from: asset)
+        } catch {
+            MediaCaptureDiagnostics.emit("video_composition_failed", error: error)
+            throw error
+        }
+        guard let export = AVAssetExportSession(
+            asset: composition,
+            presetName: AVAssetExportPresetHighestQuality
+        )
+        else {
+            MediaCaptureDiagnostics.emit("video_export_session_unavailable")
             throw MediaCaptureFailure(.encodingFailed)
         }
-        let transformedSize = track.naturalSize.applying(track.preferredTransform)
-        let width = Int(abs(transformedSize.width).rounded())
-        let height = Int(abs(transformedSize.height).rounded())
-        let durationMilliseconds = Int((CMTimeGetSeconds(asset.duration) * 1_000).rounded(.down))
-        let orientationDegrees = orientation(for: track.preferredTransform)
-        guard width > 0, height > 0,
-              durationMilliseconds > 0, durationMilliseconds <= 60_000,
-              let export = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough)
-        else {
+        guard export.supportedFileTypes.contains(.mp4) else {
+            MediaCaptureDiagnostics.emit(
+                "video_export_type_unsupported",
+                details: "supported_types=\(export.supportedFileTypes.map(\.rawValue).sorted().joined(separator: ","))"
+            )
             throw MediaCaptureFailure(.encodingFailed)
         }
         export.outputURL = outputURL
-        export.outputFileType = .mov
+        export.outputFileType = .mp4
+        export.shouldOptimizeForNetworkUse = true
         export.metadata = []
+        export.metadataItemFilter = .forSharing()
         let exportBox = UncheckedSendableBox(export)
         let operation = CancellableExportOperation {
             exportBox.value.cancelExport()
         }
+        MediaCaptureDiagnostics.emit(
+            "video_export_started",
+            details: "preset=highest_quality output_type=public.mpeg-4"
+        )
         export.exportAsynchronously {
             let result: Result<Void, Error>
             switch exportBox.value.status {
             case .completed:
+                MediaCaptureDiagnostics.emit("video_export_completed")
                 result = .success(())
             case .cancelled:
+                MediaCaptureDiagnostics.emit("video_export_cancelled")
                 result = .failure(CancellationError())
             default:
+                MediaCaptureDiagnostics.emit(
+                    "video_export_failed",
+                    error: exportBox.value.error,
+                    details: "status=\(exportBox.value.status.rawValue)"
+                )
                 result = .failure(MediaCaptureFailure(.encodingFailed))
             }
             operation.resolve(result)
@@ -370,15 +462,111 @@ private enum AppleVideoProcessor {
         try Task.checkCancellation()
         let values = try outputURL.resourceValues(forKeys: [.fileSizeKey])
         guard let byteLength = values.fileSize, byteLength > 0 else {
+            MediaCaptureDiagnostics.emit("video_output_file_invalid")
             throw MediaCaptureFailure(.encodingFailed)
         }
+        let inspected: (
+            width: Int,
+            height: Int,
+            durationMilliseconds: Int,
+            orientationDegrees: Int
+        )
+        do {
+            inspected = try inspectedVideo(AVURLAsset(url: outputURL))
+        } catch {
+            MediaCaptureDiagnostics.emit("video_output_inspection_failed", error: error)
+            throw error
+        }
+        MediaCaptureDiagnostics.emit(
+            "video_sanitize_completed",
+            details: "duration_ms=\(inspected.durationMilliseconds) byte_length=\(byteLength)"
+        )
         return ProcessedVideo(
-            width: width,
-            height: height,
-            durationMilliseconds: durationMilliseconds,
-            orientationDegrees: orientationDegrees,
+            width: inspected.width,
+            height: inspected.height,
+            durationMilliseconds: inspected.durationMilliseconds,
+            orientationDegrees: inspected.orientationDegrees,
             byteLength: byteLength
         )
+    }
+
+    static func sanitizedComposition(from asset: AVAsset) throws -> AVMutableComposition {
+        let composition = AVMutableComposition()
+        let sourceTracks = asset.tracks.compactMap { track -> (AVAssetTrack, CMTimeRange)? in
+            guard [.video, .audio].contains(track.mediaType),
+                  let mediaTimeRange = mediaTimeRange(of: track)
+            else {
+                return nil
+            }
+            return (track, mediaTimeRange)
+        }
+        guard let commonStart = sourceTracks.map(\.1.start).min(by: {
+            CMTimeCompare($0, $1) < 0
+        }) else {
+            throw MediaCaptureFailure(.encodingFailed)
+        }
+        for (sourceTrack, mediaTimeRange) in sourceTracks {
+            guard let destinationTrack = composition.addMutableTrack(
+                withMediaType: sourceTrack.mediaType,
+                preferredTrackID: kCMPersistentTrackID_Invalid
+            ) else {
+                throw MediaCaptureFailure(.encodingFailed)
+            }
+            try destinationTrack.insertTimeRange(
+                mediaTimeRange,
+                of: sourceTrack,
+                at: CMTimeSubtract(mediaTimeRange.start, commonStart)
+            )
+            if sourceTrack.mediaType == .video {
+                destinationTrack.preferredTransform = sourceTrack.preferredTransform
+            }
+        }
+        guard !composition.tracks(withMediaType: .video).isEmpty else {
+            throw MediaCaptureFailure(.encodingFailed)
+        }
+        return composition
+    }
+
+    private static func mediaTimeRange(of track: AVAssetTrack) -> CMTimeRange? {
+        let mediaRanges = track.segments
+            .filter { !$0.isEmpty }
+            .map(\.timeMapping.target)
+        guard let start = mediaRanges.map(\.start).min(by: {
+            CMTimeCompare($0, $1) < 0
+        }),
+        let end = mediaRanges.map({ CMTimeRangeGetEnd($0) }).max(by: {
+            CMTimeCompare($0, $1) < 0
+        }),
+        CMTimeCompare(end, start) > 0
+        else {
+            return track.timeRange.isEmpty ? nil : track.timeRange
+        }
+        return CMTimeRange(start: start, duration: CMTimeSubtract(end, start))
+    }
+
+    private static func inspectedVideo(
+        _ asset: AVAsset
+    ) throws -> (width: Int, height: Int, durationMilliseconds: Int, orientationDegrees: Int) {
+        guard let track = asset.tracks(withMediaType: .video).first else {
+            throw MediaCaptureFailure(.encodingFailed)
+        }
+        let transformedSize = track.naturalSize.applying(track.preferredTransform)
+        let width = Int(abs(transformedSize.width).rounded())
+        let height = Int(abs(transformedSize.height).rounded())
+        let durationSeconds = CMTimeGetSeconds(asset.duration)
+        guard durationSeconds.isFinite,
+              durationSeconds > 0,
+              durationSeconds <= 60
+        else {
+            throw MediaCaptureFailure(.encodingFailed)
+        }
+        let durationMilliseconds = Int((durationSeconds * 1_000).rounded(.down))
+        guard width > 0, height > 0,
+              durationMilliseconds > 0, durationMilliseconds <= 60_000
+        else {
+            throw MediaCaptureFailure(.encodingFailed)
+        }
+        return (width, height, durationMilliseconds, orientation(for: track.preferredTransform))
     }
 
     private static func orientation(for transform: CGAffineTransform) -> Int {

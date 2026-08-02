@@ -259,5 +259,46 @@ Security Review 在 `withMediaRead` 的 slow `openSource` actor reentrancy windo
 leased state 与 `leaseDeadline > now`；失败立即关闭 source，且不登记 `readScopes`。新增测试分别覆盖
 release-during-open 和 lease-expiry-during-open。
 
+## iOS 平台组件解除后的独立复审
+
+mandatory generic build 与 Simulator XCTest 可运行后，独立 Reviewer 发现 P0 1、P1 2：所有默认 Core
+实例共享同一 temporary root，第二个 Core 的 residue cleanup 可删除第一个 Core 的 active lease；视频
+composition 把所有轨道插入零点并从源文件返回公开时长；当时 evidence 末尾仍是失败的 Harness 且缺少
+diff 成功记录。
+
+实现已改为模块父目录下的实例隔离随机子目录，并用进程内 active-root registry 只清理未注册残留；双 Core
+测试覆盖第二个 Core startup/restart 后，第一个 Core 的 read、thumbnail 和 lease 仍有效。视频只复制非空
+media segment 范围，以最早 media start 为共同原点保留轨道相对 offset，并从净化输出重新读取尺寸、方向和
+时长。真实 MOV 测试先确认源 container/track 敏感 metadata 存在，再验证输出清除；双轨测试验证 0.5 秒
+相对 offset 不变。
+
+最终 evidence 已重建：两条 generic Simulator build、`MediaCapture-Package` 76 项 XCTest、`make lint`、
+`make harness-check` 和 `git diff --check` 全部退出 0。由于上述修复发生在最近一次独立结论之后，本报告暂时
+保持 failed，待独立 Reviewer 对当前快照复审后再清零并归档。
+
 独立普通 Reviewer 对最终实现与证据复审通过，P0 0、P1 0、P2 0，确认 release、expiry、restart 和 close
 不会留下 late read capability，也未引入正确性或生命周期回归。mandatory Xcode platform 环境阻塞保持不变。
+
+## 最终并发清理修复
+
+后续 Security Review 发现 active-root registry 在活动集合快照与目录删除之间存在 TOCTOU。最终实现把
+目录枚举、活动判断和残留删除放入同一 registry 锁域；并发 `register` 必须等清理完成后才能返回，新 Core
+随后创建的实例目录不会进入旧清理快照。确定性测试会阻塞删除并证明注册在锁外等待，后续清理也保留已注册
+目录。
+
+重新执行全量测试时，既有 release grace 测试还暴露两个 deadline processor 可能基于同一快照重复删除。
+Core 现在会在任何删除 `await` 前重新校验 grace 状态并提交唯一 terminal state，竞争 processor 不再重复
+删除或发送 revoke 事件；受控 delete gate 测试覆盖该交错。
+
+最终 evidence 包含两条 generic Simulator build、Rendering 6 项、Public Consumer 2 项、Core 70 项，共
+78 项 XCTest，以及 `make lint`、`make harness-check` 和 `git diff --check`，最终命令均退出 0。P0、P1、
+P2 已清零；真机权限 UI、硬件 interruption、编码性能和内存峰值留给 iOS quality gate。
+
+## 镜头切换 correction 对齐
+
+Native UI 最终复审发现 Core 切镜头成功后必须交付新 capability snapshot。该变更已拆到独立
+`media-capture-ios-camera-switch-correction` 任务：平台成功返回后提交新 snapshot 并发送 `sessionReady`，
+caller cancellation 与并发 display rotation 均不会丢弃不可回滚的物理切换；Session terminal 与 generation
+校验仍保留。切换到不支持旧 flash mode 的镜头时会同步重置 photo flash mode。当前 Core evidence 记录
+Core 89 个、Apple Rendering 6 个、Public Consumer 2 个 XCTest，scheme 合计 97 个测试；Core/Rendering
+generic Simulator build 和 lint 通过。

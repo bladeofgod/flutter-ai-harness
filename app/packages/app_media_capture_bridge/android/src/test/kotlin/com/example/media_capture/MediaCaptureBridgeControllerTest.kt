@@ -975,7 +975,7 @@ class MediaCaptureBridgeControllerTest {
     @Test
     fun materializeCommitsPrivateFileAndReleaseKeepsSourceLeaseIndependent() = runTest {
         withTemporaryDirectory { cache ->
-            val fixture = fixture(transferStore = MediaCaptureTransferStore(cache), epochMillis = { 1_000L })
+            val fixture = fixture(transferStore = testTransferStore(cache), epochMillis = { 1_000L })
             val mediaHandle = fixture.confirmPhoto()
 
             val materialized =
@@ -1012,7 +1012,7 @@ class MediaCaptureBridgeControllerTest {
     @Test
     fun transferCapacityRejectsBeforeCallingCoreAndReleasesAfterDelete() = runTest {
         withTemporaryDirectory { cache ->
-            val fixture = fixture(transferStore = MediaCaptureTransferStore(cache))
+            val fixture = fixture(transferStore = testTransferStore(cache))
             val mediaHandle = fixture.confirmPhoto()
             val exports =
                 (1..4).map { index ->
@@ -1049,7 +1049,7 @@ class MediaCaptureBridgeControllerTest {
     @Test
     fun ttlDeletesTransferAndRejectsExpiredHandle() = runTest {
         withTemporaryDirectory { cache ->
-            val fixture = fixture(transferStore = MediaCaptureTransferStore(cache))
+            val fixture = fixture(transferStore = testTransferStore(cache))
             val materialized =
                 fixture.callRunningCurrent(
                     "materialize_media_resource",
@@ -1076,7 +1076,7 @@ class MediaCaptureBridgeControllerTest {
     @Test
     fun engineDetachCleansInflightStagingBeforeCompletingAndDropsLateResult() = runTest {
         withTemporaryDirectory { cache ->
-            val fixture = fixture(transferStore = MediaCaptureTransferStore(cache))
+            val fixture = fixture(transferStore = testTransferStore(cache))
             val mediaHandle = fixture.confirmPhoto()
             fixture.fake.exportGate = CompletableDeferred()
             fixture.fake.exportIgnoresCancellation = true
@@ -1111,14 +1111,14 @@ class MediaCaptureBridgeControllerTest {
         withTemporaryDirectory { cache ->
             var deleteFailures = 3
             val store =
-                MediaCaptureTransferStore(cache) { file ->
+                testTransferStore(cache, deleteFile = { file ->
                     if (deleteFailures > 0) {
                         deleteFailures -= 1
                         false
                     } else {
                         file.delete()
                     }
-                }
+                })
             val fixture = fixture(transferStore = store)
             val materialized =
                 fixture.callRunningCurrent(
@@ -1156,14 +1156,14 @@ class MediaCaptureBridgeControllerTest {
         withTemporaryDirectory { cache ->
             var deleteFailures = 3
             val store =
-                MediaCaptureTransferStore(cache) { file ->
+                testTransferStore(cache, deleteFile = { file ->
                     if (deleteFailures > 0) {
                         deleteFailures -= 1
                         false
                     } else {
                         file.delete()
                     }
-                }
+                })
             val fixture = fixture(transferStore = store)
             val mediaHandle = fixture.confirmPhoto()
             val exports =
@@ -1195,10 +1195,10 @@ class MediaCaptureBridgeControllerTest {
         withTemporaryDirectory { cache ->
             var deleteCalls = 0
             val store =
-                MediaCaptureTransferStore(cache) { file ->
+                testTransferStore(cache, deleteFile = { file ->
                     deleteCalls += 1
                     if (deleteCalls == 1) false else file.delete()
-                }
+                })
             val fixture = fixture(transferStore = store)
             val materialized =
                 fixture.callRunningCurrent(
@@ -1234,7 +1234,7 @@ class MediaCaptureBridgeControllerTest {
     @Test
     fun mismatchedLateExportResultIsDeletedAndNeverLeaksLocatorInError() = runTest {
         withTemporaryDirectory { cache ->
-            val fixture = fixture(transferStore = MediaCaptureTransferStore(cache))
+            val fixture = fixture(transferStore = testTransferStore(cache))
             fixture.fake.exportResultHandleOverride = MediaHandle("unexpected-media")
 
             val result =

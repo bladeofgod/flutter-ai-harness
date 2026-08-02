@@ -10,10 +10,16 @@ implementationFiles:
   - docs/bridge/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 36a6b0c06996ac5061d1374c52c52369d6e20f6ed3ebe1a115a1a96469f35f45
+implementationDigest: 314935ede2df8012b34d0e6b0390ca4e4a40fd31ab4407b009a64ac0b1b0da80
 ---
 
 # Security Review: Media Capture Wire V2 / Capability V3 Compatibility
+
+## iOS dismiss 支持状态影响复审
+
+后续 Wire V3 只提升 Adapter dismissal 的 iOS support；V2 history projection 仍完整移除 V3-only dismiss，
+Capability V3 Native artifact、surface、path/URI/raw bytes 禁入和 transport digest 规则均未变化。独立
+Security Reviewer 确认 P0 0、P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 首轮结论
 
@@ -79,3 +85,8 @@ path/bytes/surface fallback 禁止以及 thumbnail/late cleanup 语义。历史 
 独立安全复审确认 V4-only operation、field/request、result、failure、lifecycle/transition、resource、
 ownership、cleanup/privacy、streaming policy 和 history 均由降投影移除，并有十三类 mutant 直接证明。
 当前实现 `P0=0`、`P1=0`、`P2=0`；摘要已绑定最终 Wire 与共享 Harness。
+
+## 跨 Runtime 集成影响
+
+最终 golden 继续精确锁定 Wire V1/V2 不暴露 Native read/render/transfer，V3 才暴露 scoped transfer；
+三端消费者与 Harness 均验证完整 history。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

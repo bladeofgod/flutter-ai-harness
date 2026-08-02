@@ -2,7 +2,7 @@
 
 ## 跨运行时总览
 
-Flutter Workspace、平台 Host 和未来 Native Module 遵循以下单向关系：
+Flutter Workspace、平台 Host 和已实现/后续 Native Module 遵循以下单向关系：
 
 ```text
 Android Native Consumer -> Android Native Module

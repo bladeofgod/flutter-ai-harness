@@ -26,7 +26,7 @@
 | 全局 Service 初始化 | `ServiceInitializer` | `apps/demo` | 延后 | 未实现 | 多个已存在 Service 确需按顺序执行启动初始化 | [app-runtime.md](./infrastructure/app-runtime.md) |
 | Flutter 媒体资源存储 | `app/packages/app_media/lib/app_media.dart` | `app_media` | 已批准 | 已实现 | Customer Support 媒体消息 | [media-resources.md](./infrastructure/media-resources.md) |
 | Flutter 媒体预览 | `app/packages/app_media/lib/app_media.dart` | `app_media` | 已批准 | 已实现 | Customer Support 图片/视频消息预览；订单评价附件预览复用需求 | [media-resources.md](./infrastructure/media-resources.md) |
-| 原生媒体拍摄 | Android `app/native/android/media_capture/`；iOS `app/native/ios/MediaCapture/` | Android/iOS Media Capture Native Module | 已批准 | 未实现 | Shoppe 订单评价；用户批准归类为项目基础能力 | [media-capture.md](./infrastructure/media-capture.md) |
+| 原生媒体拍摄 | Android `app/native/android/media_capture/`；iOS `app/native/ios/MediaCapture/` | Android/iOS Media Capture Native Module | 已批准 | 已实现 | Customer Support 媒体消息、Shoppe 订单评价与图片搜索入口 | [media-capture.md](./infrastructure/media-capture.md) |
 
 ## 维护规则
 

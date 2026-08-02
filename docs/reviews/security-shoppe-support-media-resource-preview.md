@@ -23,7 +23,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: f7b52945c9121a5b1bd6f7eac79fd23f7777f3492bafdc123814c103a9e476f2
+implementationDigest: 5ef645c231cad5fe16db796bcc2c0c8510ee5fafcf1e9a93312d5a03a75e123c
 ---
 
 # Security Review：Support Media Resource Preview
@@ -31,3 +31,8 @@ implementationDigest: f7b52945c9121a5b1bd6f7eac79fd23f7777f3492bafdc123814c103a9
 独立 Security Review 通过，P0/P1/P2 均为 0。消息只持有 validated `MediaResourceId` 与轻量元数据；路径、
 URI、native/export handle 和原始 bytes 不进入 Fixture、日志、Semantics 或 `toString`。Store commit 在
 release export/native lease 之前；会话接纳、reset、dispose 串行且失败保留 cleanup ownership。
+
+## 跨 Runtime 集成影响
+
+最终集成只更新共享 lockfile、Host、golden、Harness 与状态文档，没有修改 Support 生产消息、resource ID
+或 cleanup。根 `xml` 仍是 Harness dev dependency；独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

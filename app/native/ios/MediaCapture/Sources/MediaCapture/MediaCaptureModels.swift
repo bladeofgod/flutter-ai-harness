@@ -287,6 +287,66 @@ public struct MediaReadAccess: Sendable {
     }
 }
 
+public final class MediaCopyChunk: @unchecked Sendable {
+    public let byteCount: Int
+    private let storage: SensitiveDataBuffer
+
+    internal init(_ data: Data) {
+        byteCount = data.count
+        storage = SensitiveDataBuffer(data)
+    }
+
+    /// Returns a caller-owned bounded copy while the sink callback is active.
+    public func copyBytes() throws -> Data {
+        guard !storage.isEmpty else {
+            throw MediaCaptureFailure(.invalidState)
+        }
+        return storage.copy()
+    }
+
+    @discardableResult
+    internal func invalidate() -> Int {
+        guard !storage.isEmpty else { return 0 }
+        storage.wipe()
+        return byteCount
+    }
+}
+
+public protocol MediaCopySink: Sendable {
+    /// Every callback must observe structured task cancellation and converge within five seconds.
+    /// A cancelled commit must throw before publishing an irreversible target and leave that target
+    /// available to `abort()`. A sink that returns success after observing cancellation is not conforming.
+    func begin(mediaType: MediaType, contentType: String, byteLength: Int) async throws
+
+    /// The chunk is valid only until this callback returns.
+    func write(_ chunk: MediaCopyChunk) async throws
+
+    /// Atomically publishes the target only if the task is still active.
+    func commit(byteLength: Int) async throws
+
+    /// Discards a begun target and must remain valid after an interrupted commit attempt.
+    func abort() async throws
+}
+
+public struct MediaExportResult: Equatable, Sendable {
+    public let mediaHandle: MediaHandle
+    public let mediaType: MediaType
+    public let contentType: String
+    public let byteLength: Int
+
+    public init(
+        mediaHandle: MediaHandle,
+        mediaType: MediaType,
+        contentType: String,
+        byteLength: Int
+    ) {
+        self.mediaHandle = mediaHandle
+        self.mediaType = mediaType
+        self.contentType = contentType
+        self.byteLength = byteLength
+    }
+}
+
 public enum MediaCaptureEvent: Equatable, Sendable {
     case sessionReady(SessionReadySnapshot)
     case sessionFailed(sessionHandle: SessionHandle, failure: MediaCaptureFailure)
@@ -317,6 +377,14 @@ public struct MediaCaptureFailure: Error, Equatable, Sendable {
         case thumbnailOverloaded = "thumbnail_overloaded"
         case attachmentGenerationRetired = "attachment_generation_retired"
         case attachmentTargetConflict = "attachment_target_conflict"
+        case mediaExportConflict = "media_export_conflict"
+        case mediaExportOverloaded = "media_export_overloaded"
+        case mediaExportTooLarge = "media_export_too_large"
+        case mediaExportSinkRejected = "media_export_sink_rejected"
+        case mediaExportReadFailed = "media_export_read_failed"
+        case mediaExportWriteFailed = "media_export_write_failed"
+        case mediaExportCancelled = "media_export_cancelled"
+        case mediaExportTimedOut = "media_export_timed_out"
     }
 
     public let id: ID

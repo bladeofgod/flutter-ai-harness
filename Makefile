@@ -1,4 +1,4 @@
-.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap codex-adapters codex-adapters-check format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test check proto proto-check marionette-install hooks-install hooks-uninstall
+.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap codex-adapters codex-adapters-check format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test media-capture-android media-capture-ios check proto proto-check marionette-install hooks-install hooks-uninstall
 
 setup: prerequisites flutter-sdk
 	$(MAKE) bootstrap
@@ -64,6 +64,12 @@ harness-check: codex-adapters-check
 
 harness-test:
 	bash scripts/quality/test-harness.sh
+
+media-capture-android:
+	bash scripts/quality/media-capture-android.sh
+
+media-capture-ios:
+	bash scripts/quality/media-capture-ios.sh
 
 check: prerequisites format analyze harness-check spec-check lint lint-test harness-test spec-test integration-runner-test hook-test evidence-lint evidence-test prerequisites-test proto-check test
 

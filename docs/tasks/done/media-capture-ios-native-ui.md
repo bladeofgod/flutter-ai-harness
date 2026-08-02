@@ -53,6 +53,8 @@ Makefile 或 Android/Flutter Feature 文件。
    system interruption 不冒充取消。
 4. presenting ViewController generation、dismiss、rotation、scene background/foreground、owner
    deallocation 与 concurrent present 遵守 Flow Wire；每条路径只 resume continuation/complete 一次。
+   公开 `awaitResult` 必须响应 structured cancellation、触发非用户取消的终态清理并传播
+   `CancellationError`。
 5. `@MainActor` 仅拥有 UI/presentation，Core/编码不在主线程。Task、AsyncSequence、UI owner、
    RenderTarget Adapter 和 backing view/layer 均可取消/释放；Camera session/preview pipeline 仍由 Core
    独占。禁止强制解包和未追踪 detached task。

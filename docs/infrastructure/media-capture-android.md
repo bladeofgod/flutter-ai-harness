@@ -1,8 +1,7 @@
 # Android Media Capture Native Core
 
-> 实现状态：Core、Capability V3 concrete render surface、CameraX Framework wrapper、App 私有文件
-> wrapper、受限缩略图实现、V4 typed sink 流式导出实现与本地测试已加入；Native UI、Flutter Bridge
-> Adapter、Host 权限接线和真机 Gate 尚未实现。
+> 实现状态：Core、concrete surface、Native UI、V4 Export Bridge、Host 权限接线、专项静态 Gate、
+> JVM/Robolectric 与 Debug APK build 已完成；Android instrumented 和真机 Camera/权限/硬件性能尚未验收。
 
 [返回 Media Capture 能力说明](./media-capture.md)
 

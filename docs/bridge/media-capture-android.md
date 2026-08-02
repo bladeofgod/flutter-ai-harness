@@ -56,9 +56,12 @@ the 104857600-byte attachment budget. Capacity rejection occurs before Core is c
 creates a 128-bit CSPRNG, unpadded base64url export handle and an empty staging file beneath
 `Context.cacheDir/app_media_capture_bridge/exports`.
 
-The typed `MediaCopySink` writes at most 52428800 bytes directly to that staging file. It validates Core's
-media type, MIME and declared/actual length, flushes and syncs the output, and atomically renames within the
-same directory. Only after the committed file is registered does the Adapter return a canonical
+The typed `MediaCopySink` writes at most 52428800 bytes through the descriptor returned by an exclusive
+`O_NOFOLLOW | O_CLOEXEC` create. Begin, every write and commit compare descriptor/path device-inode identity,
+regular-file type, exact byte length and expected link count. Commit fsyncs that descriptor, publishes with a
+same-directory hard link that cannot replace an existing final entry, validates the two-link identity, removes
+the staging name and requires the final name to be the sole remaining link. Only after that sequence does the
+Adapter return a canonical
 `Uri.fromFile` locator on the Android main thread. The URI is validated against the shared Wire golden
 vectors and is never logged, persisted, emitted as an event or placed in error details. Export handles use
 `android.util.Base64` so the declared Android API 23 minimum remains supported without desugaring.
@@ -66,10 +69,20 @@ vectors and is never logged, persisted, emitted as an event or placed in error d
 The store TTL is five minutes. `release_materialized_media`, TTL expiry, Flutter completion failure, Engine
 detach and a late Core result all delete staging/final files before releasing active count/bytes. Release is
 idempotent through a 4096-entry, five-minute tombstone registry; concurrent releases join one cleanup claim.
-Delete failure returns only `transfer_store_unavailable`, retains the record and capacity, and permits the
-same reserved cleanup to be retried without exposing a path. The Controller performs bounded exponential
-background retries, and later release/materialize calls re-enter retained cleanup. Plugin startup rejects a
-symlinked/non-canonical root and sweeps prior-process residue before opening the transfer generation.
+Deletion only removes a regular file whose identity belongs to that reservation. A missing path or a path now
+occupied by another identity is treated as the reservation's resource already being absent, so the foreign
+entry is preserved and transfer capacity can converge. Failure to delete an identity-matching file returns only
+`transfer_store_unavailable`, retains the record and capacity, and permits the same reserved cleanup to be
+retried without exposing a path. The Controller performs bounded exponential background retries, and later
+release/materialize calls re-enter retained cleanup. Plugin startup rejects a symlinked/non-canonical root and
+sweeps prior-process residue before opening the transfer generation. A process-local coordinator prevents one
+live Store from sweeping another Store's files; closing generation retains that root lease until all existing
+reservations have finished cleanup.
+
+Identity checks and pathname unlink are separate Android system calls because the public Android `Os` API does
+not expose descriptor-relative `unlinkat`. Code already executing under the same App UID remains inside the same
+trust domain and can race pathname operations; this defense does not claim isolation from malicious same-UID
+code. Cross-UID callers cannot access the App-private cache root under the normal Android sandbox.
 
 Materialize and export release never call Core `releaseMedia`. The Flutter owner must import the temporary
 file first, then release the export handle and independently release the source media lease.
@@ -125,14 +138,19 @@ to Flutter.
 
 ## Testing Boundary
 
-Debug and Release each run 61 local tests covering all 16 methods, five events, timeout failure, three presentation
+Debug and Release Gate each run 71 tests covering all 17 methods, five events, timeout failure, three presentation
 outcomes, malformed input, output encoding, request capacities, duplicate/tombstone TTL, listener
 generation, bounded pre-decode transports, permission callback identity, main-thread presentation,
 adoption-before-success, Activity replacement, Engine detach, failed cleanup retry, late
 Session/lease/thumbnail cleanup, transfer commit/release, capacity, TTL, restart sweep, symlink rejection,
-API 23 base64url handles and shared canonical file-URI vectors. Lint runs with warnings as errors and checks
-Core/UI dependencies.
+API 23 base64url handles, shared canonical file-URI vectors, descriptor/path identity drift, no-replace publish,
+concurrent write/delete lock ordering, descriptor inspection failure cleanup and multi-Store startup leases. Lint runs with warnings as errors and checks
+Core/UI dependencies. A separate three-test instrumented suite compiles against minSdk 23 and directly exercises
+the production `android.system.Os` descriptor, symlink, hard-link, external-length and final-conflict paths; it
+runs automatically when the Gate finds exactly one ready emulator and no physical device. The Gate reads that
+emulator's SDK level and only treats an SDK 23 run as minimum-version Store evidence; newer emulator runs retain
+the API 23 runtime gap.
 
-These JVM/Robolectric/Fake results do not prove Flutter Host auto-registration, real Activity presentation,
-CameraX frames, system permission dialogs, hardware recording or device performance. Android Quality Gate
-and final cross-runtime Integration own those checks.
+Android Quality Gate 与最终 Integration 已证明 Flutter Host plugin registration、Gradle dependency graph 和
+Debug APK build。JVM/Robolectric/Fake 与 Host build 仍不证明真实 Activity presentation、CameraX frames、
+系统权限弹窗、硬件录像或设备性能；这些结论只来自明确的 emulator/真机证据。

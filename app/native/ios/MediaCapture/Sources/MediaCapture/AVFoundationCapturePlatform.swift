@@ -1,4 +1,4 @@
-@preconcurrency import AVFoundation
+@preconcurrency internal import AVFoundation
 import Foundation
 
 internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @unchecked Sendable {
@@ -82,39 +82,50 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
 
     func prepare(options: SessionOptions) async throws -> PlatformReadySnapshot {
         try await onSessionQueue {
-            self.session.beginConfiguration()
-            defer { self.session.commitConfiguration() }
-            self.session.sessionPreset = .high
-            self.session.inputs.forEach(self.session.removeInput)
-            self.session.outputs.forEach(self.session.removeOutput)
-            self.videoInput = nil
-            self.audioInput = nil
+            try configureCaptureSession(
+                beginConfiguration: self.session.beginConfiguration,
+                applyConfiguration: {
+                    self.session.sessionPreset = .high
+                    self.session.inputs.forEach(self.session.removeInput)
+                    self.session.outputs.forEach(self.session.removeOutput)
+                    self.videoInput = nil
+                    self.audioInput = nil
 
-            let position = self.avPosition(for: options.preferredCamera)
-            guard let device = self.camera(position: position) ?? self.camera(position: .unspecified) else {
-                throw PlatformFailure.unsupported
-            }
-            do {
-                let input = try AVCaptureDeviceInput(device: device)
-                guard self.session.canAddInput(input),
-                      self.session.canAddOutput(self.photoOutput),
-                      self.session.canAddOutput(self.movieOutput)
-                else {
-                    throw PlatformFailure.resourceInUse
-                }
-                self.session.addInput(input)
-                self.session.addOutput(self.photoOutput)
-                self.session.addOutput(self.movieOutput)
-                self.videoInput = input
-            } catch let failure as PlatformFailure {
-                throw failure
-            } catch {
-                throw PlatformFailure.resourceInUse
-            }
-
-            if !self.session.isRunning {
-                self.session.startRunning()
-            }
+                    let position = self.avPosition(for: options.preferredCamera)
+                    guard let device = self.camera(position: position)
+                        ?? self.camera(position: .unspecified)
+                    else {
+                        throw PlatformFailure.unsupported
+                    }
+                    do {
+                        let input = try AVCaptureDeviceInput(device: device)
+                        guard self.session.canAddInput(input),
+                              self.session.canAddOutput(self.photoOutput),
+                              self.session.canAddOutput(self.movieOutput)
+                        else {
+                            throw PlatformFailure.resourceInUse
+                        }
+                        self.session.addInput(input)
+                        self.session.addOutput(self.photoOutput)
+                        self.session.addOutput(self.movieOutput)
+                        if let connection = self.movieOutput.connection(with: .video),
+                           self.movieOutput.availableVideoCodecTypes.contains(.h264) {
+                            self.movieOutput.setOutputSettings(
+                                [AVVideoCodecKey: AVVideoCodecType.h264],
+                                for: connection
+                            )
+                        }
+                        self.videoInput = input
+                    } catch let failure as PlatformFailure {
+                        throw failure
+                    } catch {
+                        throw PlatformFailure.resourceInUse
+                    }
+                },
+                commitConfiguration: self.session.commitConfiguration,
+                isRunning: { self.session.isRunning },
+                startRunning: self.session.startRunning
+            )
             return try self.snapshot()
         }
     }
@@ -411,7 +422,9 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
         tokens.forEach(NotificationCenter.default.removeObserver)
     }
 
-    private func onSessionQueue<T>(_ body: @escaping () throws -> T) async throws -> T {
+    private func onSessionQueue<T: Sendable>(
+        _ body: @escaping @Sendable () throws -> T
+    ) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
             sessionQueue.async {
                 do {
@@ -474,7 +487,27 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
     }
 }
 
-internal final class OperationCompletion<Value>: @unchecked Sendable {
+internal func configureCaptureSession(
+    beginConfiguration: () -> Void,
+    applyConfiguration: () throws -> Void,
+    commitConfiguration: () -> Void,
+    isRunning: () -> Bool,
+    startRunning: () -> Void
+) rethrows {
+    beginConfiguration()
+    do {
+        try applyConfiguration()
+    } catch {
+        commitConfiguration()
+        throw error
+    }
+    commitConfiguration()
+    if !isRunning() {
+        startRunning()
+    }
+}
+
+internal final class OperationCompletion<Value: Sendable>: @unchecked Sendable {
     private let lock = NSLock()
     private var result: Result<Value, Error>?
     private var waiters: [CheckedContinuation<Result<Value, Error>, Never>] = []
@@ -522,7 +555,7 @@ internal final class OperationCompletion<Value>: @unchecked Sendable {
 }
 
 internal enum CancellableOperationAwaiter {
-    static func value<Value>(
+    static func value<Value: Sendable>(
         _ completion: OperationCompletion<Value>,
         onCancel: @escaping @Sendable () -> Void
     ) async throws -> Value {
@@ -636,7 +669,15 @@ internal final class MovieCaptureDelegate: NSObject, AVCaptureFileOutputRecordin
     }
 
     func finishRecording(error: Error?) {
-        completion.resolve(error == nil
+        let frameworkSuccess = (error as NSError?)?
+            .userInfo[AVErrorRecordingSuccessfullyFinishedKey] as? Bool
+        let recordingIsPlayable = error == nil || frameworkSuccess == true
+        MediaCaptureDiagnostics.emit(
+            "movie_capture_finished",
+            error: error,
+            details: "error_present=\(error != nil) framework_success=\(frameworkSuccess.map(String.init) ?? "unset") playable=\(recordingIsPlayable)"
+        )
+        completion.resolve(recordingIsPlayable
             ? .success(())
             : .failure(PlatformFailure.encodingFailed))
     }

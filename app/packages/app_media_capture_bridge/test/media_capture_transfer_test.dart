@@ -134,8 +134,219 @@ void main() {
       }
     });
 
-    test('consumes every shared contract file URI golden vector', () {
+    test('consumes every shared cross-runtime golden section', () {
       final vectors = _fileUriGoldenVectors();
+      final crossRuntime = _crossRuntimeGolden();
+      expect(crossRuntime.keys.toSet(), const {
+        'schemaVersion',
+        'contractId',
+        'consumerBindings',
+        'current',
+        'history',
+        'transfer',
+        'lifecycle',
+        'redaction',
+      });
+      final current = _objectMap(crossRuntime['current']);
+      expect(current['capabilityVersion'], 4);
+      expect(current['wireVersion'], mediaCaptureWireVersion);
+      expect(
+        (_objectList(current['methodIds']).cast<String>()).toSet(),
+        MediaCaptureOperation.values
+            .where(
+              (operation) =>
+                  operation != MediaCaptureOperation.unknownOperation,
+            )
+            .map((operation) => operation.wireName)
+            .toSet(),
+      );
+      expect((_objectList(current['eventIds']).cast<String>()).toSet(), const {
+        'session_ready',
+        'session_failed',
+        'media_preview_ready',
+        'media_lease_expired',
+        'media_read_revoked',
+      });
+      expect(
+        (_objectList(current['capabilityOperationIds']).cast<String>()).toSet(),
+        const {
+          'start_session',
+          'take_photo',
+          'start_recording',
+          'stop_recording',
+          'switch_camera',
+          'set_flash_mode',
+          'set_focus_point',
+          'set_zoom',
+          'retake',
+          'confirm',
+          'cancel',
+          'open_media_read',
+          'release_media',
+          'attach_live_preview',
+          'detach_live_preview',
+          'attach_unconfirmed_preview_render',
+          'detach_unconfirmed_preview_render',
+          'read_media_thumbnail',
+          'copy_confirmed_media_to_sink',
+        },
+      );
+      expect(
+        (_objectList(current['capabilityEventIds']).cast<String>()).toSet(),
+        const {
+          'session_ready',
+          'session_failed',
+          'media_preview_ready',
+          'media_lease_expired',
+          'media_read_revoked',
+          'render_attachment_revoked',
+        },
+      );
+      final capabilityFailures = MediaCaptureCapabilityFailure.values
+          .map((value) => value.wireName)
+          .toSet();
+      final wireFailures = MediaCaptureFailureCode.values
+          .map((value) => value.wireName)
+          .toSet();
+      final mappedCapabilityFailures = (_objectList(
+        current['mappedCapabilityFailureIds'],
+      ).cast<String>()).toSet();
+      final wireProtocolFailures = (_objectList(
+        current['wireProtocolFailureIds'],
+      ).cast<String>()).toSet();
+      expect(
+        (_objectList(current['capabilityFailureIds']).cast<String>()).toSet(),
+        capabilityFailures,
+      );
+      expect(
+        (_objectList(current['failureIds']).cast<String>()).toSet(),
+        wireFailures,
+      );
+      expect(
+        mappedCapabilityFailures,
+        capabilityFailures.difference(const {
+          'attachment_generation_retired',
+          'attachment_target_conflict',
+        }),
+      );
+      expect(
+        wireProtocolFailures,
+        wireFailures.difference(mappedCapabilityFailures),
+      );
+
+      final history = _objectMap(crossRuntime['history']);
+      expect(_objectList(history['capability']), const <Object?>[
+        {
+          'version': 1,
+          'operationCount': 13,
+          'eventCount': 5,
+          'nativeReadScope': true,
+          'nativeRenderScope': 'none',
+          'boundedExport': false,
+        },
+        {
+          'version': 2,
+          'operationCount': 18,
+          'eventCount': 6,
+          'nativeReadScope': true,
+          'nativeRenderScope': 'callback_adapter',
+          'boundedExport': false,
+        },
+        {
+          'version': 3,
+          'operationCount': 18,
+          'eventCount': 6,
+          'nativeReadScope': true,
+          'nativeRenderScope': 'module_concrete_surface',
+          'boundedExport': false,
+        },
+        {
+          'version': 4,
+          'operationCount': 19,
+          'eventCount': 6,
+          'nativeReadScope': true,
+          'nativeRenderScope': 'module_concrete_surface',
+          'boundedExport': true,
+        },
+      ]);
+      expect(_objectList(history['wire']), const <Object?>[
+        {
+          'version': 1,
+          'compatibleCapabilityVersions': [1],
+          'methodCount': 12,
+          'eventCount': 5,
+          'exposesNativeRead': false,
+          'exposesNativeRender': false,
+          'exposesTransfer': false,
+        },
+        {
+          'version': 2,
+          'compatibleCapabilityVersions': [2, 3],
+          'methodCount': 14,
+          'eventCount': 5,
+          'exposesNativeRead': false,
+          'exposesNativeRender': false,
+          'exposesTransfer': false,
+        },
+        {
+          'version': 3,
+          'compatibleCapabilityVersions': [4],
+          'methodCount': 17,
+          'eventCount': 5,
+          'exposesNativeRead': false,
+          'exposesNativeRender': false,
+          'exposesTransfer': true,
+        },
+      ]);
+
+      final transfer = _objectMap(crossRuntime['transfer']);
+      expect(_objectMap(transfer['limits']), const {
+        'maxFileBytes': mediaCaptureMaxMaterializedBytes,
+        'ttlSeconds': mediaCaptureMaterializedTtlMillis ~/ 1000,
+        'maxActiveExportsPerEngineAttachment': 4,
+        'maxActiveBytesPerEngineAttachment': 104857600,
+        'releaseTombstoneSeconds': 300,
+        'maxReleaseTombstones': 4096,
+      });
+      for (final value in _objectList(transfer['mimeCases'])) {
+        final item = _objectMap(value);
+        final mediaType = _string(item['mediaType']) == 'photo'
+            ? MediaCaptureMediaType.photo
+            : MediaCaptureMediaType.video;
+        final duration = mediaType == MediaCaptureMediaType.video ? 1000 : null;
+        final result = _decode(
+          codec,
+          _materializedPayload(
+            mediaType: mediaType.wireName,
+            contentType: _string(item['contentType']),
+            durationMillis: duration,
+          ),
+          expectedMediaType: mediaType,
+          expectedDurationMillis: duration,
+        );
+        expect(
+          result is MediaCaptureCallSuccess<MediaCaptureMaterializedMedia>,
+          item['valid'],
+          reason: '${item['mediaType']}/${item['contentType']}',
+        );
+      }
+      final signedMinimum = BigInt.parse('-9223372036854775808');
+      final signedMaximum = BigInt.parse('9223372036854775807');
+      for (final value in _objectList(transfer['signed64Cases'])) {
+        final item = _objectMap(value);
+        final parsed = BigInt.tryParse(_string(item['decimal']));
+        final valid =
+            parsed != null &&
+            parsed >= signedMinimum &&
+            parsed <= signedMaximum;
+        expect(valid, item['valid'], reason: _string(item['decimal']));
+      }
+      final crossRuntimeVectors = _fileUriVectors(transfer['fileUriCases']);
+      expect(crossRuntimeVectors.length, vectors.length);
+      for (var index = 0; index < vectors.length; index += 1) {
+        expect(crossRuntimeVectors[index], vectors[index]);
+      }
+
       for (final vector in vectors) {
         final payload = _materializedPayload()..['fileUri'] = vector.uri;
         final result = _decode(codec, payload);
@@ -145,6 +356,41 @@ void main() {
           reason: vector.id,
         );
       }
+      for (final value in _objectList(transfer['fileUriLengthCases'])) {
+        final item = _objectMap(value);
+        final length = item['totalLength']! as int;
+        final uri = 'file:///${_repeat('a', length - 8)}';
+        final result = _decode(
+          codec,
+          _materializedPayload()..['fileUri'] = uri,
+        );
+        expect(
+          result is MediaCaptureCallSuccess<MediaCaptureMaterializedMedia>,
+          item['valid'],
+          reason: '$length',
+        );
+      }
+
+      expect(_objectMap(crossRuntime['lifecycle']), const {
+        'cleanupOrder': [
+          'import_store_commit',
+          'release_transfer',
+          'release_source_lease',
+        ],
+        'lateCompletion': 'cleanup_without_delivery',
+        'engineDetach': 'delete_transfer_before_boundary_completion',
+        'releaseAfterTombstone': 'idempotent_success',
+      });
+      expect(_objectMap(crossRuntime['redaction']), const {
+        'forbiddenPersistentKeys': [
+          'fileUri',
+          'mediaHandle',
+          'exportHandle',
+          'absolutePath',
+        ],
+        'failureDetailsMayContainLocator': false,
+        'logsMayContainLocator': false,
+      });
     });
 
     test('uses ASCII code-unit length at the 4096 boundary', () {
@@ -538,6 +784,30 @@ MediaCaptureConfirmedMedia _confirmedMedia() {
 }
 
 List<({String id, String uri, bool valid})> _fileUriGoldenVectors() {
+  final directory = _repositoryRoot();
+  final contract = jsonDecode(
+    File(
+      '${directory.path}/docs/bridge/contracts/media-capture.wire.json',
+    ).readAsStringSync(),
+  );
+  final root = _objectMap(contract);
+  final transferStore = _objectMap(root['transferStore']);
+  return _fileUriVectors(transferStore['fileUriGoldenVectors']);
+}
+
+Map<String, Object?> _crossRuntimeGolden() {
+  final directory = _repositoryRoot();
+  return _objectMap(
+    jsonDecode(
+      File(
+        '${directory.path}/app/packages/app_media_capture_bridge/'
+        'test/contracts/media-capture-v4-v3.golden.json',
+      ).readAsStringSync(),
+    ),
+  );
+}
+
+Directory _repositoryRoot() {
   var directory = Directory.current.absolute;
   while (!File(
     '${directory.path}/docs/bridge/contracts/media-capture.wire.json',
@@ -548,14 +818,11 @@ List<({String id, String uri, bool valid})> _fileUriGoldenVectors() {
     }
     directory = parent;
   }
-  final contract = jsonDecode(
-    File(
-      '${directory.path}/docs/bridge/contracts/media-capture.wire.json',
-    ).readAsStringSync(),
-  );
-  final root = _objectMap(contract);
-  final transferStore = _objectMap(root['transferStore']);
-  final vectors = transferStore['fileUriGoldenVectors']! as List<Object?>;
+  return directory;
+}
+
+List<({String id, String uri, bool valid})> _fileUriVectors(Object? value) {
+  final vectors = _objectList(value);
   return <({String id, String uri, bool valid})>[
     for (final item in vectors)
       (
@@ -565,6 +832,8 @@ List<({String id, String uri, bool valid})> _fileUriGoldenVectors() {
       ),
   ];
 }
+
+List<Object?> _objectList(Object? value) => value! as List<Object?>;
 
 Map<String, Object?> _wireMap(Object? value) => _objectMap(value);
 

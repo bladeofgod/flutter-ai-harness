@@ -1,0 +1,132 @@
+## Command
+
+```text
+bash scripts/quality/test-harness.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+[harness-test] Harness 配置与失败 Fixture 通过。
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+错误：docs/reviews/security-media-capture-native-ui-flow-wire-evolution.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-render-surface-capability-evolution.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-export-wire-evolution.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-bridge-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-export-capability-evolution.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-thumbnail-capability-evolution.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-capability-contract.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-android-flutter-presentation-dismissal.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-media-capture-wire-v2-capability-v3-compatibility.md 的 implementationDigest 与当前实现不一致
+错误：docs/reviews/security-native-harness-agent-standards.md 的 implementationDigest 与当前实现不一致
+make: *** [harness-check] Error 1
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

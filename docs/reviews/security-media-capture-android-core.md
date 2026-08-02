@@ -18,7 +18,7 @@ implementationFiles:
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/FrameworkContracts.kt
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/rendering/MediaCaptureRenderView.kt
   - docs/infrastructure/media-capture-android.md
-implementationDigest: e2784a5a40ee5e00f44319e851c6d81e600b5bdfd8cdc621103ba00a0ce66767
+implementationDigest: 1d64c68c30d0d93dbb036bf1a79861b709da82ad1e936e8609a684d19ffec1cf
 ---
 
 # Security Review: Android Media Capture Native Core
@@ -75,3 +75,8 @@ typed sink 流式导出，并把复制区段显式调度到 Factory 注入的 IO
 权限、CSPRNG handle、App 私有存储、metadata 净化、render surface 或供应链边界；新增 export 的资源
 预算、source lease、sink callback 和取消清理由后续任务的独立 Security Review 负责。本报告据此同步
 原 implementationFiles 的当前摘要。
+
+## 跨 Runtime 集成影响
+
+最终集成只更新 Android 状态文档和跨 Runtime consumer test，没有修改 Core 生产代码。JVM/Robolectric、
+APK 与设备验证边界已准确区分，独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

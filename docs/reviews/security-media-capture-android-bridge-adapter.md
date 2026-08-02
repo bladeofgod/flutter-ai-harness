@@ -14,10 +14,14 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCapturePermissionDelegate.kt
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
-implementationDigest: 286554d4fe5129d92f88fb3099d6fa469b4ecc96d6e93ea660547d52f5b3bc53
+implementationDigest: 94f3d7ecbf089d5bf3fcb9cb8ebdab31d248fa82ab1dc24563a589f008229880
 ---
 
 # Security Review: Android Media Capture Bridge Adapter
+
+> 后续 Transfer Store 文件身份修正只在本报告绑定范围内增加 AndroidTest 固定依赖并更新平台边界文档；
+> Channel、权限、Controller、Plugin 与 Wire codec 语义未变化。该修正的独立 Security Review 最终为
+> P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要，原结论继续成立。
 
 ## 权限预检增量审查
 

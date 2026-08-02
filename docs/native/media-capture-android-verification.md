@@ -1,6 +1,6 @@
 # Android Media Capture 单平台验证
 
-> 当前状态：2026-07-28 专项静态 Gate 已通过；本机没有 ready emulator，因此 instrumented test 未运行。
+> 当前状态：2026-08-01 专项静态 Gate 已通过；本机没有 ready emulator，因此 instrumented test 未运行。
 > 该结果不等价于 Flutter Host 构建或真机验收。
 
 [返回原生架构](../native-architecture.md) ·
@@ -25,11 +25,12 @@ metadata。脚本还会拒绝错误的 wrapper/Flutter 版本、Gradle 输入摘
    assembleRelease`。
 2. 三个工程的 `debugRuntimeClasspath` 依赖解析，保留可复现的实际依赖图；任何 Gradle build/settings/
    properties 或 verification metadata 变化都必须显式更新 reviewed digest。
-3. 直接读取当前 Capability V3 与 Wire V2 JSON，再与 Android Core enum/API、Native UI config、Adapter
+3. 直接读取当前 Capability V4 与 Wire V3 JSON，再与 Android Core enum/API、Native UI config、Adapter
    method/event/error/channel/boundary 对齐；同时强制重跑 renderer、attachment、thumbnail、UI lifecycle、
    Bridge lifecycle 和 bounded transport 契约类，并逐类检查非空、0 skipped、0 failure。
-4. 每次静态 Gate 都编译独立的无 Camera instrumented lifecycle/UI suite；只在恰好存在一个 ready emulator
-   且没有物理设备连接时，以私下绑定的 emulator serial 运行。否则明确输出未运行原因，不记录设备 ID。
+4. 每次静态 Gate 都编译独立的无 Camera lifecycle/UI suite，以及直接使用生产 Transfer Store/Android
+   `Os` 的文件身份 suite；只在恰好存在一个 ready emulator 且没有物理设备连接时，以私下绑定的 emulator
+   serial 运行。否则明确输出未运行原因，不记录设备 ID。
 
 本平台 Gate 直接消费现有 Capability/Wire JSON，不创建 Android 私有副本。后续跨 Runtime Integration
 仍负责新增同一组 Dart/Kotlin/Swift 共同消费的 JSON/golden case；它们补充跨 Runtime 编解码 parity，不
@@ -69,7 +70,7 @@ Bridge       -> Android Core / Native UI / Flutter embedding API / AndroidX / Co
 | Photo/video preview | 私有 source、generation、retake/confirm、terminal cleanup、旧 callback 丢弃 |
 | Renderer production wiring | CameraX `SurfaceProvider` 实际安装/清空、照片方向修正、真实 `VideoView` source/player target 清理 |
 | Native UI | 拍照/录像、长按、三终态、surface retirement、Activity/Lifecycle、cleanup ownership |
-| Bridge | 14 methods、5 events、权限身份、Activity/Engine replacement、bounded decode、严格 Wire V2 |
+| Bridge | 17 methods、5 events、权限身份、Activity/Engine replacement、bounded decode、严格 Wire V3、Transfer Store identity/no-replace |
 | Thumbnail | 64..512 edge、524288-byte bound、固定 video poster、并发/内存预算、metadata 拒绝 |
 
 `MediaCaptureRenderViewTest` 和 Gate 注入的 `MediaCaptureRenderBackgroundGateTest` 直接针对 concrete
@@ -82,17 +83,17 @@ background、owner destroy 和 terminal path 会使旧 mutation gate 失效并�
 
 | 层级 | 本任务状态 | 能证明什么 | 不能证明什么 |
 | --- | --- | --- | --- |
-| Local unit（Debug/Release） | 通过：Core 66/66、UI 38/38、Adapter 37/37，0 skipped/failure | 类型化状态机、Contract JSON、Wire codec、边界容量和确定性竞态 | Android Framework/真实硬件行为 |
+| Local unit（Debug/Release） | 通过：Core 88/88、UI 42/42、Adapter 71/71，0 skipped/failure | 类型化状态机、Contract JSON、Wire codec、边界容量、文件身份 Fake、descriptor 首次检查失败的关闭语义和确定性竞态 | Android Framework/真实硬件行为 |
 | Framework Fake | 通过，包含在上述双变体测试 | Camera/文件/权限异常与资源 ownership 顺序 | CameraX、系统权限 UI 和厂商实现 |
 | Robolectric | 通过，包含在上述双变体测试 | Android Lifecycle/View、生产 wrapper 和 renderer 接线 | 真实出帧、编码器、设备性能 |
-| Instrumented | APK 编译通过；运行未执行：没有 ready emulator | 有唯一 emulator 时验证 Activity recreate、Core/UI/Bridge load 和 Native-only surface API | 当前无运行结果不得当作通过 |
-| Flutter Host | 未接线、未构建 | 后续证明 plugin registration、Manifest、Gradle 和 APK | 本专项 Gate 不是 Host build |
+| Instrumented | 两个 APK suite 编译通过；运行未执行：没有 ready emulator | 有唯一 emulator 时验证 Activity recreate、Core/UI/Bridge load，以及生产 `Os` symlink/hard-link/length/final 冲突；Gate 会读取 emulator SDK | 当前无运行结果不得当作通过；只有 SDK 23 的结果可关闭 API 23 runtime 缺口 |
+| Flutter Host | Debug APK 已构建 | plugin registration、Manifest、Gradle 和 Host dependency graph | Host build 不证明设备系统能力 |
 | 真机 | 未运行 | 后续验证 Camera/Microphone、权限、拍照、录像、中断与性能 | Fake/Robolectric 不能替代 |
 
 ## 设备与集成缺口
 
-当前任务不修改 Android Host、Manifest 权限、Flutter plugin registration、根 Makefile 或 CI。这些共享入口
-由跨 Runtime Integration 任务统一接线。本任务也不保存设备标识或真实媒体。
+跨 Runtime Integration 已完成 Android Host、Manifest 权限、Flutter plugin registration、根 Makefile 与
+CI 接线。本验证文档不保存设备标识或真实媒体。
 
 本次 Gate 同时完成三个工程的 lint、Debug/Release AAR assemble、`debugRuntimeClasspath` 解析、Gate
 fixture lint/assemble/instrumented compile 和重点契约矩阵重跑。Core/UI/Adapter 的六个 AAR 均生成；未
@@ -105,3 +106,5 @@ fixture lint/assemble/instrumented compile 和重点契约矩阵重跑。Core/UI
 - Activity 配置变更和进程恢复时 provider/player/lease 的实际释放。
 - 大尺寸照片、视频 poster、并发 thumbnail 的内存峰值与性能。
 - Flutter Debug Host 的标准 plugin registration、全屏 Native UI 和 Dart -> Adapter -> Core 闭环。
+- API 23 emulator/device 上运行生产 Transfer Store instrumented suite，确认最低版本的 `Os.open` flag、
+  `fstat/lstat`、hard-link 发布和 descriptor close 行为。

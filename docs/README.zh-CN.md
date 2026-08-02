@@ -88,7 +88,7 @@ flutter-ai-harness/
 
 ## 当前状态
 
-Harness 基线和第一批完整 Demo UI 已经实现，当前 Demo 任务均已归档。应用使用确定性本地数据，不代表生产服务。Android Debug 构建和运行验证已具备；iOS 无签名构建及原生权限流程仍依赖可用的 Apple 工具链和设备环境。
+Harness 基线、Demo UI、Flutter 媒体资源与 Android/iOS 原生拍摄集成已经实现。应用使用确定性本地业务数据，不代表生产服务；Android Debug APK 与 iOS no-codesign Runner 已通过构建。Android 模拟器/真机拍摄流程，以及 iOS Camera、Microphone、系统中断与性能仍保留为人工设备验收项。
 
 ## 许可证
 

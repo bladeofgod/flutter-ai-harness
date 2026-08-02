@@ -29,6 +29,7 @@ securityReview: required
 - 不修改 Capability/Wire/Dart Client/Core、Runner/Info.plist、Feature 或 Android。
 - 不接受 Dart 指定 path/URL，不保存 Photos，不增加 Entitlement，不通过 Channel 传 raw Data。
 - 不把 transfer URL 当作持久消息资源。
+- 不修改真实 Demo Host，不增加 CocoaPods fallback 或本机 Flutter framework path。
 
 ## 实现要求
 
@@ -43,25 +44,37 @@ securityReview: required
 5. release/TTL/Engine detach/plugin detach/App restart/late completion 先 abort/delete并写 tombstone；删除
    failure 有界重试。source lease 不因 materialize 或 export release 自动释放。
 6. 与 Android 保持相同 failure、容量、TTL、tombstone 和顺序；平台差异只限 Foundation/MainActor API。
-7. 更新 iOS Bridge 详情与专项 gate；不修改 Host 接线路线，若现有 SwiftPM Plugin 不能编译则回到原
-   iOS Adapter/quality task解决，不能现场增加 CocoaPods fallback。
+7. Transfer Store、Core sink、容量/TTL/tombstone 与 cleanup 都进入既有 `MediaCaptureBridgeCore`
+   target；Plugin target 只增加 Flutter payload/result 映射，不复制资源状态机。
+8. 沿用 Base Adapter 的临时 Host 验证入口证明 Flutter Plugin target；不修改真实 Host。若既有
+   SwiftPM 路线失败，返回 SwiftPM Host 架构决策复审，不能现场增加 CocoaPods fallback。
 
 ## 测试与验收
 
 - Fake Core/temporary cache 测试成功、release、TTL、容量、restart、detach、symlink/traversal、长度漂移、
   write failure、late result、MainActor completion 和 redaction。
 - Swift/Dart contract vectors 与 Android 同值；成功 payload 外没有 URL/path，输出 URL位于 canonical root。
-- generic iOS Simulator Adapter compile 与 Runner no-codesign build 通过。
+- Bridge Core generic iOS Simulator compile/tests 与临时 Flutter Host no-codesign build 通过；不得把临时
+  Host 误述为真实 Demo Runner 已接线。
 
 ```bash
-(cd app/packages/app_media_capture_bridge/ios/app_media_capture_bridge && xcodebuild -scheme app_media_capture_bridge -destination 'generic/platform=iOS Simulator' -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build)
-bash scripts/quality/media-capture-ios.sh
-TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign
+(cd app/packages/app_media_capture_bridge/ios/app_media_capture_bridge && xcodebuild -scheme MediaCaptureBridgeCore -destination 'generic/platform=iOS Simulator' -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build)
+bash app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
 make harness-check
 git diff --check
 ```
 
 ## 环境限制
 
-需要 macOS/Xcode/Flutter。generic iOS Simulator compile mandatory；没有真机时不宣称 Camera 或真实视频
-导入已验证。
+需要 macOS/Xcode/Flutter。Bridge Core SDK compile 与临时 Host build mandatory；真实 Runner build
+属于最终 Integration，没有真机时不宣称 Camera 或真实视频导入已验证。
+
+## 执行结果
+
+- iOS Adapter 已实现 Wire V3 materialize/release、App private descriptor-relative transfer store、
+  4 active/100 MiB/50 MiB、300 秒 TTL、release claim/tombstone 和 restart/detach/late cleanup。
+- 独立普通 Review 与 Security Review 最终均为 P0/P1/P2 0；Base Adapter 两个既有 P2 已关闭并刷新摘要。
+- 最终 evidence：安全复制 fixture、69 项 XCTest、generic Bridge Core build、临时 Flutter Host
+  SwiftPM/no-codesign build、lint、Harness 和 diff check 全部通过，证据脱敏检查通过。
+- 真实 Demo Runner 接线、codesign 安装、Camera/Microphone 与真机文件保护仍由 Quality Gate、最终
+  Integration 和人工真机验收承担。

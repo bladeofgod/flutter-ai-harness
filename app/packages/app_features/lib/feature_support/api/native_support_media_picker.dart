@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app_media/app_media.dart';
 import 'package:app_media_capture_bridge/app_media_capture_bridge.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -113,6 +114,14 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
     if (_disposeRequested ||
         _clearDraftsFuture != null ||
         _activePick != null) {
+      _reportPickerUnavailable(
+        _SupportMediaPickerStateException(
+          disposeRequested: _disposeRequested,
+          clearingDrafts: _clearDraftsFuture != null,
+          pickActive: _activePick != null,
+        ),
+        context: 'while starting a Support media pick',
+      );
       return Future<SupportMediaPickResult>.value(_unavailableFailure);
     }
     final generation = _generation;
@@ -206,12 +215,20 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
   Future<SupportMediaPickResult> _capture(int generation) async {
     await _retryRetainedCleanup(attempts: 1);
     if (_retainedMedia.isNotEmpty || _retainedExports.isNotEmpty) {
+      _reportPickerUnavailable(
+        _SupportMediaCleanupPendingException(
+          retainedMediaCount: _retainedMedia.length,
+          retainedExportCount: _retainedExports.length,
+        ),
+        context: 'while cleaning up a previous Support capture',
+      );
       return _unavailableFailure;
     }
     MediaCaptureConfirmedMedia? confirmed;
     MediaCaptureExportHandle? exportHandle;
     OwnedMediaResource? owned;
     var attachmentTransferred = false;
+    var stage = _SupportCaptureStage.presentation;
     try {
       final outcome = await _cameraGateway.presentCaptureFlow(
         MediaCaptureConfig(
@@ -230,9 +247,17 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
               ? const SupportMediaPickCanceled()
               : _unavailableFailure;
         case MediaCaptureFlowFailure(:final failure):
-          return _isCurrent(generation)
-              ? SupportMediaPickFailed(_mapCaptureFailure(failure))
-              : _unavailableFailure;
+          if (!_isCurrent(generation)) {
+            return _unavailableFailure;
+          }
+          final mapped = _mapCaptureFailure(failure);
+          if (mapped.code == SupportMediaPickFailureCode.unavailable) {
+            _reportPickerUnavailable(
+              failure,
+              context: 'while presenting the native Support capture flow',
+            );
+          }
+          return SupportMediaPickFailed(mapped);
         case MediaCaptureFlowConfirmed(:final media):
           confirmed = media;
       }
@@ -240,6 +265,7 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
         return _unavailableFailure;
       }
 
+      stage = _SupportCaptureStage.materialization;
       final materializedResult = await _cameraGateway.materializeMedia(
         confirmed,
       );
@@ -248,7 +274,14 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
         case MediaCaptureCallFailure<MediaCaptureMaterializedMedia>(
           :final failure,
         ):
-          return SupportMediaPickFailed(_mapCaptureFailure(failure));
+          final mapped = _mapCaptureFailure(failure);
+          if (mapped.code == SupportMediaPickFailureCode.unavailable) {
+            _reportPickerUnavailable(
+              failure,
+              context: 'while materializing captured Support media',
+            );
+          }
+          return SupportMediaPickFailed(mapped);
         case MediaCaptureCallSuccess<MediaCaptureMaterializedMedia>(
           :final value,
         ):
@@ -258,6 +291,7 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
       if (!_isCurrent(generation)) {
         return _unavailableFailure;
       }
+      stage = _SupportCaptureStage.importing;
       final imported = await _store.importFile(
         MediaImportRequest(
           sourceUri: materialized.fileUri,
@@ -278,6 +312,7 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
       }
       owned = (imported as MediaResourceSuccess<OwnedMediaResource>).value;
 
+      stage = _SupportCaptureStage.releasingNativeMedia;
       await _releaseOrRetainExport(exportHandle);
       exportHandle = null;
       await _releaseOrRetainMedia(confirmed);
@@ -286,6 +321,7 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
       if (!_isCurrent(generation)) {
         return _unavailableFailure;
       }
+      stage = _SupportCaptureStage.preparingAttachment;
       final result = await _prepareAttachment(
         owned,
         label: owned.kind == MediaResourceKind.image
@@ -294,7 +330,12 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
       );
       attachmentTransferred = result is SupportMediaPickSuccess;
       return result;
-    } on Object {
+    } on Object catch (error, stackTrace) {
+      _reportPickerUnavailable(
+        error,
+        stackTrace: stackTrace,
+        context: 'during Support capture ${stage.description}',
+      );
       return _unavailableFailure;
     } finally {
       if (exportHandle != null) {
@@ -603,6 +644,67 @@ final class NativeSupportMediaPicker implements SupportMediaPicker {
           SupportMediaPickFailureCode.readFailed,
         _ => SupportMediaPickFailureCode.unavailable,
       });
+
+  void _reportPickerUnavailable(
+    Object exception, {
+    required String context,
+    StackTrace? stackTrace,
+  }) {
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: exception,
+        stack: stackTrace ?? StackTrace.current,
+        library: 'app_features',
+        context: ErrorDescription(context),
+      ),
+    );
+  }
+}
+
+enum _SupportCaptureStage {
+  presentation('presentation'),
+  materialization('materialization'),
+  importing('import'),
+  releasingNativeMedia('native cleanup'),
+  preparingAttachment('video preparation');
+
+  const _SupportCaptureStage(this.description);
+
+  final String description;
+}
+
+final class _SupportMediaPickerStateException implements Exception {
+  const _SupportMediaPickerStateException({
+    required this.disposeRequested,
+    required this.clearingDrafts,
+    required this.pickActive,
+  });
+
+  final bool disposeRequested;
+  final bool clearingDrafts;
+  final bool pickActive;
+
+  @override
+  String toString() =>
+      'SupportMediaPickerStateException('
+      'disposeRequested: $disposeRequested, '
+      'clearingDrafts: $clearingDrafts, pickActive: $pickActive)';
+}
+
+final class _SupportMediaCleanupPendingException implements Exception {
+  const _SupportMediaCleanupPendingException({
+    required this.retainedMediaCount,
+    required this.retainedExportCount,
+  });
+
+  final int retainedMediaCount;
+  final int retainedExportCount;
+
+  @override
+  String toString() =>
+      'SupportMediaCleanupPendingException('
+      'retainedMediaCount: $retainedMediaCount, '
+      'retainedExportCount: $retainedExportCount)';
 }
 
 final class _GalleryMedia {

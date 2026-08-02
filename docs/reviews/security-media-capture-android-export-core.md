@@ -11,7 +11,7 @@ implementationFiles:
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/AndroidStorageAndThumbnail.kt
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/FrameworkContracts.kt
   - docs/infrastructure/media-capture-android.md
-implementationDigest: 5cfe68d13c4991c36b90a2f0326cea7ac0e00687f5a28240c8007fe925723d0a
+implementationDigest: 803c030b5ffa1323519cac1f5d996084d23a90bd0c77957af002f9e0d4a82595
 ---
 
 # Security Review: Android Media Capture Export Core
@@ -53,3 +53,8 @@ instrumented/device 命令，因此尚未证明真机 50 MiB I/O/RSS、厂商文
 时序；这些留给 Android Quality Gate 与最终 capture-to-export 集成。
 
 本轮 Reviewer 未读取普通 Review 报告，未运行命令，也未修改实现。
+
+## 跨 Runtime 集成影响
+
+最终集成只更新 Android 状态文档和跨 Runtime consumer test，没有修改 Export Core 生产代码或 sink
+ownership。设备缺口表述更严格，独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

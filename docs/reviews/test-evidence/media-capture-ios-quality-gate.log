@@ -1,0 +1,192 @@
+## Command
+
+```text
+bash scripts/quality/media-capture-ios.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+[media-capture-ios] Validate macOS, Xcode, Flutter and repository inputs
+[media-capture-ios] Flutter 3.35.7; Xcode 26.5 Build version 17F42
+
+[media-capture-ios] Validate Swift Package graph and import boundaries
+[media-capture-ios] Package graph and import allowlists passed.
+
+[media-capture-ios] Validate Wire V3 transfer limits and shared file URI vectors
+[media-capture-ios] Wire V3/Capability V4 limits and 20 shared URI vectors passed.
+
+[media-capture-ios] Validate lifecycle, rendering, UI and Adapter regression matrix
+[media-capture-ios] XCTest source matrix: Core/Rendering 101, UI 51, Bridge Core 69.
+
+[media-capture-ios] Compile every iOS package product against the generic Simulator SDK
+[media-capture-ios] MediaCapture generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureAppleRendering generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureUI generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureBridgeCore generic iOS Simulator SDK compile passed.
+
+[media-capture-ios] Run Simulator lifecycle and UI tests when an iPhone Simulator is available
+[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.
+[media-capture-ios] MediaCapture-Package Simulator runtime tests passed (101 tests, 0 skipped).
+[media-capture-ios] MediaCaptureUI Simulator runtime tests passed (51 tests, 0 skipped).
+[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (69 tests).
+
+[media-capture-ios] Verify safe-copy policy and temporary Flutter SwiftPM Host route
+Safe workspace copy fixture passed.
+[media-capture-ios] Temporary Flutter Host no-codesign build and plugin discovery passed.
+[media-capture-ios] Real Demo Host and user Flutter configuration remained unchanged.
+
+[media-capture-ios] Result
+[media-capture-ios] PASS
+[media-capture-ios] Remaining device-only checks: live camera frames, system permission UI, microphone, hardware interruption and performance.
+[media-capture-ios] The temporary Host route does not claim that the real Demo Runner is integrated.
+
+```
+
+## Command
+
+```text
+bash scripts/quality/media-capture-ios.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+[media-capture-ios] Validate macOS, Xcode, Flutter and repository inputs
+[media-capture-ios] Flutter 3.35.7; Xcode 26.5 Build version 17F42
+
+[media-capture-ios] Validate Swift Package graph and import boundaries
+[media-capture-ios] Package graph and import allowlists passed.
+
+[media-capture-ios] Validate Wire V3 transfer limits and shared file URI vectors
+[media-capture-ios] Wire V3/Capability V4 limits and 20 shared URI vectors passed.
+
+[media-capture-ios] Validate lifecycle, rendering, UI and Adapter regression matrix
+[media-capture-ios] XCTest source matrix: Core/Rendering 101, UI 51, Bridge Core 69.
+
+[media-capture-ios] Compile every iOS package product against the generic Simulator SDK
+[media-capture-ios] MediaCapture generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureAppleRendering generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureUI generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureBridgeCore generic iOS Simulator SDK compile passed.
+
+[media-capture-ios] Run Simulator lifecycle and UI tests when an iPhone Simulator is available
+[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.
+[media-capture-ios] MediaCapture-Package Simulator runtime tests passed (101 tests, 0 skipped).
+[media-capture-ios] MediaCaptureUI Simulator runtime tests passed (51 tests, 0 skipped).
+[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (69 tests).
+
+[media-capture-ios] Verify safe-copy policy and temporary Flutter SwiftPM Host route
+Safe workspace copy fixture passed.
+[media-capture-ios] Temporary Flutter Host no-codesign build and plugin discovery passed.
+[media-capture-ios] Real Demo Host and user Flutter configuration remained unchanged.
+
+[media-capture-ios] Result
+[media-capture-ios] PASS
+[media-capture-ios] Remaining device-only checks: live camera frames, system permission UI, microphone, hardware interruption and performance.
+[media-capture-ios] The temporary Host route does not claim that the real Demo Runner is integrated.
+
+```
+
+## Command
+
+```text
+bash scripts/quality/media-capture-ios.sh
+```
+
+Exit code: 1
+
+## Output
+
+```text
+
+[media-capture-ios] Validate macOS, Xcode, Flutter and repository inputs
+[media-capture-ios] Flutter 3.35.7; Xcode 26.5 Build version 17F42
+
+[media-capture-ios] Validate reviewed executable build inputs
+[media-capture-ios] Reviewed manifest and helper digests passed.
+
+[media-capture-ios] Validate Swift Package graph and import boundaries
+[media-capture-ios] Package graph and import allowlists passed.
+
+[media-capture-ios] Validate Wire V3 transfer limits and shared file URI vectors
+[media-capture-ios] Wire V3/Capability V4 limits and 20 shared URI vectors passed.
+
+[media-capture-ios] Validate lifecycle, rendering, UI and Adapter regression matrix
+[media-capture-ios] XCTest source matrix: Core/Rendering 101, UI 51, Bridge Core 69.
+
+[media-capture-ios] Compile every iOS package product against the generic Simulator SDK
+[media-capture-ios] MediaCapture generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureAppleRendering generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureUI generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureBridgeCore generic iOS Simulator SDK compile passed.
+
+[media-capture-ios] Run Simulator lifecycle and UI tests when an iPhone Simulator is available
+[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.
+[media-capture-ios] MediaCapture-Package Simulator runtime tests passed (101 tests, 0 skipped).
+[media-capture-ios] MediaCaptureUI Simulator runtime tests passed (51 tests, 0 skipped).
+[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (69 tests).
+
+[media-capture-ios] Verify safe-copy policy and temporary Flutter SwiftPM Host route
+Safe workspace copy fixture passed.
+[media-capture-ios] private build output was not emitted
+[media-capture-ios] error: temporary Flutter SwiftPM Host verification failed
+
+```
+
+## Command
+
+```text
+bash scripts/quality/media-capture-ios.sh
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+[media-capture-ios] Validate macOS, Xcode, Flutter and repository inputs
+[media-capture-ios] Flutter 3.35.7; Xcode 26.5 Build version 17F42
+
+[media-capture-ios] Validate reviewed executable build inputs
+[media-capture-ios] Reviewed manifest and helper digests passed.
+
+[media-capture-ios] Validate Swift Package graph and import boundaries
+[media-capture-ios] Package graph and import allowlists passed.
+
+[media-capture-ios] Validate Wire V3 transfer limits and shared file URI vectors
+[media-capture-ios] Wire V3/Capability V4 limits and 20 shared URI vectors passed.
+
+[media-capture-ios] Validate lifecycle, rendering, UI and Adapter regression matrix
+[media-capture-ios] XCTest source matrix: Core/Rendering 101, UI 51, Bridge Core 69.
+
+[media-capture-ios] Compile every iOS package product against the generic Simulator SDK
+[media-capture-ios] MediaCapture generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureAppleRendering generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureUI generic iOS Simulator SDK compile passed.
+[media-capture-ios] MediaCaptureBridgeCore generic iOS Simulator SDK compile passed.
+
+[media-capture-ios] Run Simulator lifecycle and UI tests when an iPhone Simulator is available
+[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.
+[media-capture-ios] MediaCapture-Package Simulator runtime tests passed (101 tests, 0 skipped).
+[media-capture-ios] MediaCaptureUI Simulator runtime tests passed (51 tests, 0 skipped).
+[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (69 tests).
+
+[media-capture-ios] Verify safe-copy policy and temporary Flutter SwiftPM Host route
+Safe workspace copy fixture passed.
+[media-capture-ios] Temporary Flutter Host no-codesign build and plugin discovery passed.
+[media-capture-ios] Real Demo Host and user Flutter configuration remained unchanged.
+
+[media-capture-ios] Result
+[media-capture-ios] PASS
+[media-capture-ios] Remaining device-only checks: live camera frames, system permission UI, microphone, hardware interruption and performance.
+[media-capture-ios] The temporary Host route does not claim that the real Demo Runner is integrated.
+
+```

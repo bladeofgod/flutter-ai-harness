@@ -88,7 +88,7 @@ flutter-ai-harness/
 
 ## Project Status
 
-The Harness baseline and first complete Demo UI batch are implemented. All current Demo tasks are archived, and the app uses deterministic local data rather than production services. Android Debug build and runtime verification are available; iOS no-codesign builds and native permission flows still depend on a suitable Apple toolchain and device environment.
+The Harness baseline, Demo UI, shared media resources, and Android/iOS Media Capture integration are implemented. The app uses deterministic local business data rather than production services. Android Debug and iOS no-codesign builds are verified; Android emulator/device capture flows and iOS camera, microphone, interruption, and performance acceptance remain manual device checks.
 
 ## License
 

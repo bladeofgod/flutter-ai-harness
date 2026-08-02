@@ -1,0 +1,768 @@
+## Command
+
+```text
+bash -lc 'cd app/native/ios/MediaCapture && xcodebuild test -scheme MediaCapture-Package -destination '"'"'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5'"'"' CODE_SIGNING_ALLOWED=NO -only-testing:MediaCaptureTests/MediaExportTests'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -scheme MediaCapture-Package -destination "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5" CODE_SIGNING_ALLOWED=NO "-only-testing:MediaCaptureTests/MediaExportTests"
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+2026-08-01 01:39:04.542 xcodebuild[35163:14586481] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (7 targets)
+    Target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCaptureTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCapturePublicConsumerTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCaptureAppleRenderingTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 57b9d6bed3fcb777bb15048e3f0a1a6e
+Build description path: <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/XCBuildData/57b9d6bed3fcb777bb15048e3f0a1a6e.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -o <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+
+ProcessInfoPlistFile <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/Info.plist <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureTests.build/empty-MediaCaptureTests.plist (in target 'MediaCaptureTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-infoPlistUtility <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureTests.build/empty-MediaCaptureTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/Info.plist
+
+ProcessInfoPlistFile <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/Info.plist <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapturePublicConsumerTests.build/empty-MediaCapturePublicConsumerTests.plist (in target 'MediaCapturePublicConsumerTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-infoPlistUtility <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapturePublicConsumerTests.build/empty-MediaCapturePublicConsumerTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/Info.plist
+
+ProcessInfoPlistFile <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/Info.plist <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.build/empty-MediaCaptureAppleRenderingTests.plist (in target 'MediaCaptureAppleRenderingTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-infoPlistUtility <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.build/empty-MediaCaptureAppleRenderingTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/Info.plist
+
+CopySwiftLibs <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest (in target 'MediaCapturePublicConsumerTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/MediaCapturePublicConsumerTests --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/Frameworks --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/PlugIns --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/SystemExtensions --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapturePublicConsumerTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapturePublicConsumerTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+CopySwiftLibs <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest (in target 'MediaCaptureTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/MediaCaptureTests --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/Frameworks --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/PlugIns --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/SystemExtensions --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+CopySwiftLibs <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest (in target 'MediaCaptureAppleRenderingTests' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-swiftStdLibTool --copy --verbose --scan-executable <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/MediaCaptureAppleRenderingTests --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/Frameworks --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/PlugIns --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/SystemExtensions --scan-folder <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCaptureAppleRenderingTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+Test Suite 'Selected tests' started at 2026-08-01 01:39:11.529.
+Test Suite 'MediaCaptureTests.xctest' started at 2026-08-01 01:39:11.529.
+Test Suite 'MediaExportTests' started at 2026-08-01 01:39:11.530.
+Test Case '-[MediaCaptureTests.MediaExportTests testCallerCancellationAbortsCancellableSinkAndAllowsRetry]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCallerCancellationAbortsCancellableSinkAndAllowsRetry]' passed (0.152 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCapacityRejectsConflictAndFifthJobBeforeOpeningSourceOrSink]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCapacityRejectsConflictAndFifthJobBeforeOpeningSourceOrSink]' passed (0.257 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitPhaseTerminalTriggersKeepFirstFailureAndAbortLateSuccess]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitPhaseTerminalTriggersKeepFirstFailureAndAbortLateSuccess]' passed (0.077 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitReturnWinsLateReleaseAndCallerCancellation]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitReturnWinsLateReleaseAndCallerCancellation]' passed (0.035 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedJPEGStreamsInBoundedSequentialChunks]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedJPEGStreamsInBoundedSequentialChunks]' passed (0.201 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedVideoExportsAsMP4]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedVideoExportsAsMP4]' passed (0.050 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testDeadlineAbortsOnceAndLateWorkCannotCommit]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testDeadlineAbortsOnceAndLateWorkCannotCommit]' passed (0.038 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testExactFiftyMiBBoundaryUsesBoundedGeneratedChunks]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testExactFiftyMiBBoundaryUsesBoundedGeneratedChunks]' passed (13.986 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testFailuresUseClosedExportTaxonomyAndAbortOnce]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testFailuresUseClosedExportTaxonomyAndAbortOnce]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testFailureWinnerDropsDataHeldByExecutorBeforeSinkWrite]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testFailureWinnerDropsDataHeldByExecutorBeforeSinkWrite]' passed (0.008 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testLengthGuardsRejectDeclaredOversizeTruncationAndGrowth]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testLengthGuardsRejectDeclaredOversizeTruncationAndGrowth]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testProductionExportExecutorRunsFileWorkOffMainThread]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testProductionExportExecutorRunsFileWorkOffMainThread]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testReleaseExpiryAndCloseWinActiveExportWithStableFailures]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testReleaseExpiryAndCloseWinActiveExportWithStableFailures]' passed (0.055 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSourceCloseWipesChunkReturnedByLateRead]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSourceCloseWipesChunkReturnedByLateRead]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSpontaneousCancellationUsesPhaseSpecificExportFailure]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSpontaneousCancellationUsesPhaseSpecificExportFailure]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSuccessfulExportKeepsLeaseActiveUntilExplicitRelease]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSuccessfulExportKeepsLeaseActiveUntilExplicitRelease]' passed (0.006 seconds).
+Test Suite 'MediaExportTests' passed at 2026-08-01 01:39:26.416.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 14.880 (14.887) seconds
+Test Suite 'MediaCaptureTests.xctest' passed at 2026-08-01 01:39:26.417.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 14.880 (14.887) seconds
+Test Suite 'Selected tests' passed at 2026-08-01 01:39:26.417.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 14.880 (14.888) seconds
+2026-08-01 01:39:26.733 xcodebuild[35163:14586481] [MT] IDETestOperationsObserverDebug: 21.021 elapsed -- Testing started completed.
+2026-08-01 01:39:26.733 xcodebuild[35163:14586481] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-08-01 01:39:26.733 xcodebuild[35163:14586481] [MT] IDETestOperationsObserverDebug: 21.021 sec, +21.021 sec -- end
+
+Test session results, code coverage, and logs:
+	<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Logs/Test/Test-MediaCapture-Package-2026.08.01_01-39-04-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+
+```
+
+## Command
+
+```text
+bash -lc 'cd app/native/ios/MediaCapture && xcodebuild test -scheme MediaCapture-Package -destination '"'"'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5'"'"' CODE_SIGNING_ALLOWED=NO'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -scheme MediaCapture-Package -destination "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5" CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Resolve Package Graph
+2026-08-01 01:39:42.738 xcodebuild[36136:14590854] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (7 targets)
+    Target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCaptureTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCapturePublicConsumerTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCaptureAppleRenderingTests' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+    Target 'MediaCaptureAppleRendering' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -o <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+
+Test Suite 'All tests' started at 2026-08-01 01:39:49.990.
+Test Suite 'MediaCaptureAppleRenderingTests.xctest' started at 2026-08-01 01:39:49.990.
+Test Suite 'MediaCaptureRenderViewTests' started at 2026-08-01 01:39:49.990.
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testConcreteSurfaceDeinitInvalidatesBackingEndpoint]' started.
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testConcreteSurfaceDeinitInvalidatesBackingEndpoint]' passed (1.377 seconds).
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testFactoryCreatesOneConcreteFreshSurfacePerOwner]' started.
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testFactoryCreatesOneConcreteFreshSurfacePerOwner]' passed (0.012 seconds).
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testInvalidationAfterAsyncValidationDropsQueuedMutation]' started.
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testInvalidationAfterAsyncValidationDropsQueuedMutation]' passed (0.014 seconds).
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testLiveSourceMountsPreviewLayerAndCleanupDisconnectsIt]' started.
+2026-08-01 01:39:51.464697+0800 xctest[36220:14591539] [] <<<< FigCaptureSessionSimulator >>>> signalled err=-12782 at <>:297
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testLiveSourceMountsPreviewLayerAndCleanupDisconnectsIt]' passed (0.098 seconds).
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testPhotoSourceMountsDecodedContentAndCleanupClearsIt]' started.
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testPhotoSourceMountsDecodedContentAndCleanupClearsIt]' passed (0.001 seconds).
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testVideoSourceMountsPlayerLayerAndCleanupClearsPlayer]' started.
+2026-08-01 01:39:51.588480+0800 xctest[36220:14592081] [] <<<< FigFile >>>> signalled err=-17913 at <>:745
+Test Case '-[MediaCaptureAppleRenderingTests.MediaCaptureRenderViewTests testVideoSourceMountsPlayerLayerAndCleanupClearsPlayer]' passed (0.154 seconds).
+Test Suite 'MediaCaptureRenderViewTests' passed at 2026-08-01 01:39:51.649.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 1.655 (1.658) seconds
+Test Suite 'MediaCaptureAppleRenderingTests.xctest' passed at 2026-08-01 01:39:51.649.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 1.655 (1.659) seconds
+Test Suite 'All tests' passed at 2026-08-01 01:39:51.653.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 1.655 (1.663) seconds
+Test Suite 'All tests' started at 2026-08-01 01:39:55.910.
+Test Suite 'MediaCapturePublicConsumerTests.xctest' started at 2026-08-01 01:39:55.941.
+Test Suite 'PublicConsumerTests' started at 2026-08-01 01:39:55.948.
+Test Case '-[MediaCapturePublicConsumerTests.PublicConsumerTests testConsumerCompilesAgainstPackageProductWithoutFlutterOrWireTypes]' started.
+Test Case '-[MediaCapturePublicConsumerTests.PublicConsumerTests testConsumerCompilesAgainstPackageProductWithoutFlutterOrWireTypes]' passed (0.011 seconds).
+Test Case '-[MediaCapturePublicConsumerTests.PublicConsumerTests testIndependentPackageCanUseBothProductsAndConcreteSurface]' started.
+Test Case '-[MediaCapturePublicConsumerTests.PublicConsumerTests testIndependentPackageCanUseBothProductsAndConcreteSurface]' passed (0.047 seconds).
+Test Suite 'PublicConsumerTests' passed at 2026-08-01 01:39:56.011.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.058 (0.063) seconds
+Test Suite 'MediaCapturePublicConsumerTests.xctest' passed at 2026-08-01 01:39:56.011.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.058 (0.070) seconds
+Test Suite 'All tests' passed at 2026-08-01 01:39:56.013.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.058 (0.103) seconds
+Test Suite 'All tests' started at 2026-08-01 01:39:57.388.
+Test Suite 'MediaCaptureTests.xctest' started at 2026-08-01 01:39:57.389.
+Test Suite 'AVFoundationCapturePlatformTests' started at 2026-08-01 01:39:57.389.
+Test Case '-[MediaCaptureTests.AVFoundationCapturePlatformTests testConfigurationIsCommittedBeforeSessionStarts]' started.
+Test Case '-[MediaCaptureTests.AVFoundationCapturePlatformTests testConfigurationIsCommittedBeforeSessionStarts]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.AVFoundationCapturePlatformTests testFailedConfigurationIsCommittedWithoutStartingSession]' started.
+Test Case '-[MediaCaptureTests.AVFoundationCapturePlatformTests testFailedConfigurationIsCommittedWithoutStartingSession]' passed (0.004 seconds).
+Test Suite 'AVFoundationCapturePlatformTests' passed at 2026-08-01 01:39:57.396.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.005 (0.007) seconds
+Test Suite 'MediaCaptureCoreTests' started at 2026-08-01 01:39:57.396.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testCameraPermissionIsRequestedOnlyAfterExplicitStart]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testCameraPermissionIsRequestedOnlyAfterExplicitStart]' passed (0.010 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testInvalidInputDoesNotChangeReadyState]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testInvalidInputDoesNotChangeReadyState]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testLeaseExpiryUsesExpiryGraceWithoutRefreshingLease]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testLeaseExpiryUsesExpiryGraceWithoutRefreshingLease]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testMicrophoneIsRequestedOnlyWhenAudioRecordingStarts]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testMicrophoneIsRequestedOnlyWhenAudioRecordingStarts]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testMutedRecordingNeverRequestsMicrophone]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testMutedRecordingNeverRequestsMicrophone]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPermanentlyDeniedPermissionProducesStableTerminalEvent]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPermanentlyDeniedPermissionProducesStableTerminalEvent]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPhotoFlowDoesNotRequestMicrophoneAndConfirmedReadIsCallbackScoped]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPhotoFlowDoesNotRequestMicrophoneAndConfirmedReadIsCallbackScoped]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPlatformInterruptionIsNotMappedToUserCancellation]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPlatformInterruptionIsNotMappedToUserCancellation]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPreviewTimeoutDeletesMediaAndFailsSession]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testPreviewTimeoutDeletesMediaAndFailsSession]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRecordingDeadlineAutomaticallyCreatesPreview]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRecordingDeadlineAutomaticallyCreatesPreview]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testReleaseAndExpiryDenyNewReadsThenDeleteAfterGrace]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testReleaseAndExpiryDenyNewReadsThenDeleteAfterGrace]' passed (0.006 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRestrictedPermissionProducesStableTerminalEvent]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRestrictedPermissionProducesStableTerminalEvent]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRetakeDeletesPreviewAndReturnsSessionToReady]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testRetakeDeletesPreviewAndReturnsSessionToReady]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSingleActiveSessionAndIdempotentCancellation]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSingleActiveSessionAndIdempotentCancellation]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSwitchCameraRejectsUnsupportedSessionWithoutCallingPlatform]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSwitchCameraRejectsUnsupportedSessionWithoutCallingPlatform]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSwitchCameraSucceedsAndKeepsSessionReady]' started.
+Test Case '-[MediaCaptureTests.MediaCaptureCoreTests testSwitchCameraSucceedsAndKeepsSessionReady]' passed (0.003 seconds).
+Test Suite 'MediaCaptureCoreTests' passed at 2026-08-01 01:39:57.452.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.049 (0.056) seconds
+Test Suite 'MediaExportTests' started at 2026-08-01 01:39:57.452.
+Test Case '-[MediaCaptureTests.MediaExportTests testCallerCancellationAbortsCancellableSinkAndAllowsRetry]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCallerCancellationAbortsCancellableSinkAndAllowsRetry]' passed (0.061 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCapacityRejectsConflictAndFifthJobBeforeOpeningSourceOrSink]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCapacityRejectsConflictAndFifthJobBeforeOpeningSourceOrSink]' passed (0.087 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitPhaseTerminalTriggersKeepFirstFailureAndAbortLateSuccess]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitPhaseTerminalTriggersKeepFirstFailureAndAbortLateSuccess]' passed (0.039 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitReturnWinsLateReleaseAndCallerCancellation]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testCommitReturnWinsLateReleaseAndCallerCancellation]' passed (0.014 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedJPEGStreamsInBoundedSequentialChunks]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedJPEGStreamsInBoundedSequentialChunks]' passed (0.095 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedVideoExportsAsMP4]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testConfirmedVideoExportsAsMP4]' passed (0.061 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testDeadlineAbortsOnceAndLateWorkCannotCommit]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testDeadlineAbortsOnceAndLateWorkCannotCommit]' passed (0.026 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testExactFiftyMiBBoundaryUsesBoundedGeneratedChunks]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testExactFiftyMiBBoundaryUsesBoundedGeneratedChunks]' passed (8.175 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testFailuresUseClosedExportTaxonomyAndAbortOnce]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testFailuresUseClosedExportTaxonomyAndAbortOnce]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testFailureWinnerDropsDataHeldByExecutorBeforeSinkWrite]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testFailureWinnerDropsDataHeldByExecutorBeforeSinkWrite]' passed (0.008 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testLengthGuardsRejectDeclaredOversizeTruncationAndGrowth]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testLengthGuardsRejectDeclaredOversizeTruncationAndGrowth]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testProductionExportExecutorRunsFileWorkOffMainThread]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testProductionExportExecutorRunsFileWorkOffMainThread]' passed (0.110 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testReleaseExpiryAndCloseWinActiveExportWithStableFailures]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testReleaseExpiryAndCloseWinActiveExportWithStableFailures]' passed (0.053 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSourceCloseWipesChunkReturnedByLateRead]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSourceCloseWipesChunkReturnedByLateRead]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSpontaneousCancellationUsesPhaseSpecificExportFailure]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSpontaneousCancellationUsesPhaseSpecificExportFailure]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.MediaExportTests testSuccessfulExportKeepsLeaseActiveUntilExplicitRelease]' started.
+Test Case '-[MediaCaptureTests.MediaExportTests testSuccessfulExportKeepsLeaseActiveUntilExplicitRelease]' passed (0.006 seconds).
+Test Suite 'MediaExportTests' passed at 2026-08-01 01:40:06.206.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 8.747 (8.754) seconds
+Test Suite 'PackageSmokeTests' started at 2026-08-01 01:40:06.206.
+Test Case '-[MediaCaptureTests.PackageSmokeTests testPublicFailureUsesStableIdentifier]' started.
+Test Case '-[MediaCaptureTests.PackageSmokeTests testPublicFailureUsesStableIdentifier]' passed (0.001 seconds).
+Test Suite 'PackageSmokeTests' passed at 2026-08-01 01:40:06.207.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'RenderAttachmentTests' started at 2026-08-01 01:40:06.207.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testBackgroundRevokesBothAttachmentKinds]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testBackgroundRevokesBothAttachmentKinds]' passed (0.009 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testConcreteSurfacePipelineReplacesAndRejectsStaleGeneration]' started.
+2026-08-01 01:40:06.237944+0800 xctest[36321:14592623] [] <<<< FigCaptureSessionSimulator >>>> signalled err=-12782 at <>:297
+2026-08-01 01:40:06.244235+0800 xctest[36321:14592623] [] <<<< FigCaptureSessionSimulator >>>> signalled err=-12782 at <>:297
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testConcreteSurfacePipelineReplacesAndRejectsStaleGeneration]' passed (0.029 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testGenerationHighWatermarkIdentityAndReplacementOrder]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testGenerationHighWatermarkIdentityAndReplacementOrder]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testLiveOwnerDestroyRevokesAndDetachesBinding]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testLiveOwnerDestroyRevokesAndDetachesBinding]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testMissingConcreteSurfaceIsRejectedBeforeGenerationMutation]' started.
+2026-08-01 01:40:06.256235+0800 xctest[36321:14592623] [] <<<< FigCaptureSessionSimulator >>>> signalled err=-12782 at <>:297
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testMissingConcreteSurfaceIsRejectedBeforeGenerationMutation]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testOwnerDestroyInvalidatesPendingUnconfirmedMountBeforeSurfaceMutation]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testOwnerDestroyInvalidatesPendingUnconfirmedMountBeforeSurfaceMutation]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testReplacementWaitsForPriorRendererCleanupBeforeMounting]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testReplacementWaitsForPriorRendererCleanupBeforeMounting]' passed (0.005 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRestartRevokesBindingAndInvalidatesOldScope]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRestartRevokesBindingAndInvalidatesOldScope]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRotationAndReleasedTargetStillDetachOwnedBinding]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRotationAndReleasedTargetStillDetachOwnedBinding]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRotationInvalidatesPendingLiveMountBeforeSurfaceMutation]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testRotationInvalidatesPendingLiveMountBeforeSurfaceMutation]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testUnconfirmedAttachmentRevokesBeforeConfirmAndOwnerDestroy]' started.
+Test Case '-[MediaCaptureTests.RenderAttachmentTests testUnconfirmedAttachmentRevokesBeforeConfirmAndOwnerDestroy]' passed (0.004 seconds).
+Test Suite 'RenderAttachmentTests' passed at 2026-08-01 01:40:06.280.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.069 (0.073) seconds
+Test Suite 'ReviewFixRegressionTests' started at 2026-08-01 01:40:06.280.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testAVFoundationCloseExplicitlyRemovesObservers]' started.
+2026-08-01 01:40:06.288078+0800 xctest[36321:14592780] [] <<<< FigCaptureSourceSimulator >>>> signalled err=-12784 at <>:259
+2026-08-01 01:40:06.288243+0800 xctest[36321:14592780] [] <<<< FigCaptureSourceSimulator >>>> signalled err=-12784 at <>:259
+2026-08-01 01:40:06.288483+0800 xctest[36321:14592780] [] <<<< FormatDescription >>>> signalled err=-12710 at <>:1002
+2026-08-01 01:40:06.288561+0800 xctest[36321:14592780] [] (Fig) signalled err=-12710 at <>:601
+2026-08-01 01:40:06.288656+0800 xctest[36321:14592780] [] <<<< FormatDescription >>>> signalled err=-12710 at <>:1002
+2026-08-01 01:40:06.288732+0800 xctest[36321:14592780] [] (Fig) signalled err=-12710 at <>:601
+2026-08-01 01:40:06.288876+0800 xctest[36321:14592780] [] <<<< FormatDescription >>>> signalled err=-12710 at <>:1002
+2026-08-01 01:40:06.288965+0800 xctest[36321:14592780] [] (Fig) signalled err=-12710 at <>:601
+2026-08-01 01:40:06.289077+0800 xctest[36321:14592780] [] <<<< FigCaptureSourceSimulator >>>> signalled err=-12784 at <>:259
+2026-08-01 01:40:06.289157+0800 xctest[36321:14592780] [] <<<< FigCaptureSourceSimulator >>>> signalled err=-12784 at <>:259
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testAVFoundationCloseExplicitlyRemovesObservers]' passed (0.014 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testConcurrentDeadlineProcessingDeletesGraceMediaOnce]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testConcurrentDeadlineProcessingDeletesGraceMediaOnce]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testConfirmRaceCannotOverwriteConcurrentCancellation]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testConfirmRaceCannotOverwriteConcurrentCancellation]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testControlFailureIsMappedToOperationAllowlistAndTerminatesSession]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testControlFailureIsMappedToOperationAllowlistAndTerminatesSession]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testControlRaceCannotReviveCancelledSession]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testControlRaceCannotReviveCancelledSession]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testDeadlineTasksAreRemovedAtTerminalCleanup]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testDeadlineTasksAreRemovedAtTerminalCleanup]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testDirectoryCleanupSerializesRegistrationAndDeletion]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testDirectoryCleanupSerializesRegistrationAndDeletion]' passed (0.113 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testInvalidReadySnapshotDoesNotExposeEncodingFailure]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testInvalidReadySnapshotDoesNotExposeEncodingFailure]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testLeaseExpiryDuringSourceOpenRejectsLateReadAndClosesSource]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testLeaseExpiryDuringSourceOpenRejectsLateReadAndClosesSource]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilCancelTeardownCompletes]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilCancelTeardownCompletes]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilConfirmTeardownCompletes]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilConfirmTeardownCompletes]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilFailureTeardownCompletes]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilFailureTeardownCompletes]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilRestartTeardownCompletes]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testNewSessionIsRejectedUntilRestartTeardownCompletes]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testOperationCompletionIsExactlyOnce]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testOperationCompletionIsExactlyOnce]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionCancellableAwaiterWaitsForBottomCompletionBeforeCancellation]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionCancellableAwaiterWaitsForBottomCompletionBeforeCancellation]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionExportCancellationWaitsForExportCompletion]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionExportCancellationWaitsForExportCompletion]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionFileHandleSerializesReadAndClose]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionFileHandleSerializesReadAndClose]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionFileStorePhysicallyDeletesMediaAndPartialRecording]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionFileStorePhysicallyDeletesMediaAndPartialRecording]' passed (0.027 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionMovieDelegateCancellationWaitsForFinalRecordingCallback]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionMovieDelegateCancellationWaitsForFinalRecordingCallback]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionPhotoDelegateCancellationWaitsForFinalCaptureCallback]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionPhotoDelegateCancellationWaitsForFinalCaptureCallback]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionVideoSanitizationRemovesContainerAndTrackMetadata]' started.
+2026-08-01 01:40:06.552116+0800 xctest[36321:14592780] [] (Fig) signalled err=0 at <>:85
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testProductionVideoSanitizationRemovesContainerAndTrackMetadata]' passed (0.227 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testReadGraceRevokesBlockingReadBeforeDeletionEvent]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testReadGraceRevokesBlockingReadBeforeDeletionEvent]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testRecordingCancellationDiscardsPartialDestination]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testRecordingCancellationDiscardsPartialDestination]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testReleaseDuringSourceOpenRejectsLateReadAndClosesSource]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testReleaseDuringSourceOpenRejectsLateReadAndClosesSource]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSanitizedCompositionPreservesRelativeTrackOffsets]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSanitizedCompositionPreservesRelativeTrackOffsets]' passed (0.018 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSecondCoreStartupDoesNotDeleteFirstCoreActiveLease]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSecondCoreStartupDoesNotDeleteFirstCoreActiveLease]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSecureGeneratorProducesUniqueOpaqueHandles]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testSecureGeneratorProducesUniqueOpaqueHandles]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testUnavailableCameraPreservesUnsupportedCapability]' started.
+Test Case '-[MediaCaptureTests.ReviewFixRegressionTests testUnavailableCameraPreservesUnsupportedCapability]' passed (0.002 seconds).
+Test Suite 'ReviewFixRegressionTests' passed at 2026-08-01 01:40:06.754.
+	 Executed 28 tests, with 0 failures (0 unexpected) in 0.465 (0.474) seconds
+Test Suite 'ThumbnailTests' started at 2026-08-01 01:40:06.754.
+Test Case '-[MediaCaptureTests.ThumbnailTests testApplePhotoThumbnailIsBoundedJPEGWithoutSensitiveMetadata]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testApplePhotoThumbnailIsBoundedJPEGWithoutSensitiveMetadata]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testBoundsAndCallerCopySurviveSourceRelease]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testBoundsAndCallerCopySurviveSourceRelease]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testInvalidGeneratedBufferIsWipedBeforeFailureDelivery]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testInvalidGeneratedBufferIsWipedBeforeFailureDelivery]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGExhaustedRetriesWipeEveryCandidate]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGExhaustedRetriesWipeEveryCandidate]' passed (0.002 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGPostEncodeCancellationWipesCandidate]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGPostEncodeCancellationWipesCandidate]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGRetryWipesRejectedCandidateBeforeReturningSuccess]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testJPEGRetryWipesRejectedCandidateBeforeReturningSuccess]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testModuleRejectsThirdConcurrentJobBeforeSourceAccess]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testModuleRejectsThirdConcurrentJobBeforeSourceAccess]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testPerMediaOverloadAndReleaseWinsInFlightGeneration]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testPerMediaOverloadAndReleaseWinsInFlightGeneration]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testPosterSelectionPrefersTargetOrAfterThenNearestBefore]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testPosterSelectionPrefersTargetOrAfterThenNearestBefore]' passed (0.001 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testRestartCancelsWorkerBeforeReturningMediaInvalid]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testRestartCancelsWorkerBeforeReturningMediaInvalid]' passed (0.004 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testTaskCancellationPropagatesCancellationErrorAfterCleanup]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testTaskCancellationPropagatesCancellationErrorAfterCleanup]' passed (0.003 seconds).
+Test Case '-[MediaCaptureTests.ThumbnailTests testVideoThumbnailReceivesBoundedDecodeRequestAndDeterministicPosterTarget]' started.
+Test Case '-[MediaCaptureTests.ThumbnailTests testVideoThumbnailReceivesBoundedDecodeRequestAndDeterministicPosterTarget]' passed (0.002 seconds).
+Test Suite 'ThumbnailTests' passed at 2026-08-01 01:40:06.784.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.026 (0.030) seconds
+Test Suite 'MediaCaptureTests.xctest' passed at 2026-08-01 01:40:06.785.
+	 Executed 86 tests, with 0 failures (0 unexpected) in 9.363 (9.396) seconds
+Test Suite 'All tests' passed at 2026-08-01 01:40:06.785.
+	 Executed 86 tests, with 0 failures (0 unexpected) in 9.363 (9.397) seconds
+2026-08-01 01:40:07.085 xcodebuild[36136:14590854] [MT] IDETestOperationsObserverDebug: 22.602 elapsed -- Testing started completed.
+2026-08-01 01:40:07.085 xcodebuild[36136:14590854] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-08-01 01:40:07.085 xcodebuild[36136:14590854] [MT] IDETestOperationsObserverDebug: 22.602 sec, +22.602 sec -- end
+
+Test session results, code coverage, and logs:
+	<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Logs/Test/Test-MediaCapture-Package-2026.08.01_01-39-42-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+
+```
+
+## Command
+
+```text
+bash -lc 'cd app/native/ios/MediaCapture && xcodebuild -scheme MediaCapture -destination '"'"'generic/platform=iOS Simulator'"'"' -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme MediaCapture -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+Resolve Package Graph
+2026-08-01 01:40:26.825 xcodebuild[36702:14594774] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -o <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/MediaCapture.modulemap <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/MediaCapture.modulemap (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/MediaCapture.modulemap <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator
+
+SwiftDriver MediaCapture normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver MediaCapture normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ InternalDependencies.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/InternalDependencies.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/InternalDependencies.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ MediaCaptureCore.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureCore.swift (in target 'MediaCapture' from project 'MediaCapture')
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureCore.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ MediaCapture (in target 'MediaCapture' from project 'MediaCapture')
+
+EmitSwiftModule normal arm64 (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ MediaCaptureRenderBoundary.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureRenderBoundary.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureRenderBoundary.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ MediaExportControl.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaExportControl.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaExportControl.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ AppleMediaStorage.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/AppleMediaStorage.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/AppleMediaStorage.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ AVFoundationCapturePlatform.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/AVFoundationCapturePlatform.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/AVFoundationCapturePlatform.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftDriver\ Compilation MediaCapture normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal x86_64 Emitting\ module\ for\ MediaCapture (in target 'MediaCapture' from project 'MediaCapture')
+
+EmitSwiftModule normal x86_64 (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftCompile normal arm64 Compiling\ MediaCaptureModels.swift <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureModels.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftCompile normal arm64 <repo>/app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureModels.swift (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+
+
+SwiftDriverJobDiscovery normal arm64 Compiling MediaExportControl.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Compiling MediaCaptureRenderBoundary.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for MediaCapture (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriver\ Compilation\ Requirements MediaCapture normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.swiftmodule <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.swiftdoc <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftdoc (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftdoc <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.abi.json <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.abi.json (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.abi.json <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftsourceinfo (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftsourceinfo <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal x86_64 Emitting module for MediaCapture (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriver\ Compilation\ Requirements MediaCapture normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target x86_64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/x86_64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/MediaCapture-Swift.h <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-Swift.h <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-Swift.h (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-swiftHeaderTool -arch arm64 <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-Swift.h -arch x86_64 <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture-Swift.h -o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/MediaCapture-Swift.h
+
+Copy <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/x86_64-apple-ios-simulator.abi.json <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.abi.json (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.abi.json <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.swiftmodule/x86_64-apple-ios-simulator.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling InternalDependencies.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Compiling AVFoundationCapturePlatform.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Compiling MediaCaptureModels.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Compiling AppleMediaStorage.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriverJobDiscovery normal arm64 Compiling MediaCaptureCore.swift (in target 'MediaCapture' from project 'MediaCapture')
+
+SwiftDriver\ Compilation MediaCapture normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MediaCapture -Onone @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -target arm64-apple-ios13.0-simulator -g -module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc <home>/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache -output-file-map <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule -validate-clang-modules-once -clang-build-session-file <home>/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -package-name mediacapture -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_const_extract_protocols.json -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/include -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources-normal/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources/arm64 -Xcc -I<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-Swift.h -working-directory <repo>/app/native/ios/MediaCapture/.swiftpm/xcode -experimental-emit-module-separately -disable-cmo
+
+Ld <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/Binary/MediaCapture.o normal arm64 (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios13.0-simulator -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -O0 -F<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk/Developer/Library/Frameworks -filelist <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_lto.o -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.swiftmodule @<home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture-linker-args.resp -o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/Binary/MediaCapture.o
+
+CreateUniversalBinary <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.o normal arm64\ x86_64 (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/Binary/MediaCapture.o <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/Binary/MediaCapture.o -output <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.o
+
+ExtractAppIntentsMetadata (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name MediaCapture --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk --xcode-version 17F42 --platform-family iOS --deployment-target 13.0 --bundle-identifier mediacapture.MediaCapture --output <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.appintents --target-triple arm64-apple-ios13.0-simulator --target-triple x86_64-apple-ios13.0-simulator --binary-file <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.o --dependency-file <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture_dependency_info.dat --dependency-file <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture_dependency_info.dat --stringsdata-file <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.SwiftFileList --source-file-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.SwiftFileList --metadata-file-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/MediaCapture.DependencyMetadataFileList --static-metadata-file-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/MediaCapture.DependencyStaticMetadataFileList --swift-const-vals-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/arm64/MediaCapture.SwiftConstValuesFileList --swift-const-vals-list <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Intermediates.noindex/MediaCapture.build/Debug-iphonesimulator/MediaCapture.build/Objects-normal/x86_64/MediaCapture.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-08-01 01:40:30.360 appintentsmetadataprocessor[36732:14594997] Starting appintentsmetadataprocessor export
+2026-08-01 01:40:30.385 appintentsmetadataprocessor[36732:14594997] Extracted no relevant App Intents symbols, skipping writing output
+
+RegisterExecutionPolicyException <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.o (in target 'MediaCapture' from project 'MediaCapture')
+    cd <repo>/app/native/ios/MediaCapture
+    builtin-RegisterExecutionPolicyException <home>/Library/Developer/Xcode/DerivedData/MediaCapture-fpgwhxosyjbetyfddycycryfpzdh/Build/Products/Debug-iphonesimulator/MediaCapture.o
+
+** BUILD SUCCEEDED **
+
+
+```
+
+## Command
+
+```text
+bash -lc 'cd app/native/ios/MediaCapture && xcodebuild -scheme MediaCapture -destination '"'"'generic/platform=iOS Simulator'"'"' -sdk iphonesimulator -configuration Release CODE_SIGNING_ALLOWED=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES -derivedDataPath /tmp/media-capture-ios-export-interface build'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme MediaCapture -destination "generic/platform=iOS Simulator" -sdk iphonesimulator -configuration Release CODE_SIGNING_ALLOWED=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES -derivedDataPath /tmp/media-capture-ios-export-interface build
+
+Build settings from command line:
+    BUILD_LIBRARY_FOR_DISTRIBUTION = YES
+    CODE_SIGNING_ALLOWED = NO
+    SDKROOT = iphonesimulator26.5
+
+Resolve Package Graph
+2026-08-01 01:40:42.758 xcodebuild[37048:14595859] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+
+Resolved source packages:
+  MediaCapture: <repo>/app/native/ios/MediaCapture
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'MediaCapture' in project 'MediaCapture'
+        ➜ Explicit dependency on target 'MediaCapture' in project 'MediaCapture'
+    Target 'MediaCapture' in project 'MediaCapture' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk /tmp/media-capture-ios-export-interface/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+    cd <repo>/app/native/ios/MediaCapture/.swiftpm/xcode
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk -o /tmp/media-capture-ios-export-interface/SDKStatCaches.noindex/iphonesimulator26.5-23F73-6cfe768891a92b912361537c460fe42b.sdkstatcache
+
+** BUILD SUCCEEDED **
+
+
+```
+
+## Command
+
+```text
+bash -lc '! rg -n '"'"'Flutter|UIKit|AVFoundation|FileHandle|\bURL\b'"'"' /tmp/media-capture-ios-export-interface/Build/Products/Release-iphonesimulator/MediaCapture.swiftmodule/*-apple-ios-simulator.swiftinterface'
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```

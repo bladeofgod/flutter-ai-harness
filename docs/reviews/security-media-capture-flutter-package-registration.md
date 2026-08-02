@@ -17,7 +17,7 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 3daa5a1f998bcdb7084339f6a779234a6f451d3dcbf19471a948856b0c5f8cd0
+implementationDigest: 8e6b1d621e3b8f45bd5d2f1da848a1f065833a31664840f1f8b43a3fdc839861
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -69,3 +69,8 @@ regular-directory/symlink 防护和依赖方向保持不变。当前实现 `P0=0
 plugin；discovery 仍要求唯一插件、预期路径、regular directory、no-symlink 和 canonical identity。
 媒体预览 hosted 依赖没有放宽 Bridge plugin discovery、依赖方向或发布能力。当前结论仍为
 `P0=0`、`P1=0`、`P2=0`。
+
+## 跨 Runtime 集成影响
+
+真实 Demo 已启用项目级 SwiftPM；根 `xml` 仅为 Harness 直接 dev dependency，不进入 Plugin Runtime。
+Host 仍使用标准注册、仓库相对依赖且无远程 SPM/本机 framework，独立安全复审为 0/0/0。

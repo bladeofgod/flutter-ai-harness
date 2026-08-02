@@ -48,7 +48,7 @@ internal struct CapturedPhoto: Sendable {
     let encodedData: Data
 }
 
-internal protocol CapturePlatform: AnyObject {
+internal protocol CapturePlatform: AnyObject, Sendable {
     func events() -> AsyncStream<PlatformEvent>
     func permissionState(for resource: PermissionResource) async -> PermissionState
     func requestPermission(for resource: PermissionResource) async -> PermissionState
@@ -78,6 +78,34 @@ internal struct SystemMediaCaptureClock: MediaCaptureClock {
         let interval = max(0, deadline.timeIntervalSinceNow)
         let nanoseconds = UInt64(min(interval, 9_223_372_036) * 1_000_000_000)
         try await Task.sleep(nanoseconds: nanoseconds)
+    }
+}
+
+internal protocol MediaExportExecuting: Sendable {
+    func execute<T: Sendable>(
+        _ operation: @escaping @Sendable () throws -> T
+    ) async throws -> T
+}
+
+internal protocol MediaExportBufferAccounting: Sendable {
+    func allocationChanged(jobIdentifier: UUID, delta: Int)
+}
+
+internal final class DispatchMediaExportExecutor: MediaExportExecuting, @unchecked Sendable {
+    private let queue = DispatchQueue(
+        label: "com.example.media_capture.export",
+        qos: .userInitiated,
+        attributes: .concurrent
+    )
+
+    func execute<T: Sendable>(
+        _ operation: @escaping @Sendable () throws -> T
+    ) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async {
+                continuation.resume(with: Result(catching: operation))
+            }
+        }
     }
 }
 
@@ -134,11 +162,14 @@ internal final class FileHandleSourceBackend: MediaSourceBackend, @unchecked Sen
         lock.lock()
         defer { lock.unlock() }
         guard let handle else { throw MediaCaptureFailure(.invalidState) }
-        var bytes = [UInt8](repeating: 0, count: maximumLength)
-        let count = Darwin.read(handle.fileDescriptor, &bytes, maximumLength)
+        var data = Data(count: maximumLength)
+        let count = data.withUnsafeMutableBytes { buffer in
+            Darwin.read(handle.fileDescriptor, buffer.baseAddress, maximumLength)
+        }
         guard count >= 0 else { throw MediaCaptureFailure(.invalidState) }
         guard count > 0 else { return nil }
-        return Data(bytes.prefix(count))
+        data.removeSubrange(count ..< data.count)
+        return data
     }
 
     func close() {
@@ -156,17 +187,24 @@ internal final class FileHandleSourceBackend: MediaSourceBackend, @unchecked Sen
 internal final class MediaSourceAccess: @unchecked Sendable {
     let fileURL: URL?
     private let backend: any MediaSourceBackend
+    private let discardedChunkObserver: (@Sendable (Int, Bool) -> Void)?
     private let lock = NSLock()
     private var closed = false
 
     init(fileURL: URL) throws {
         self.fileURL = fileURL
         backend = try FileHandleSourceBackend(url: fileURL)
+        discardedChunkObserver = nil
     }
 
-    init(fileURL: URL? = nil, backend: any MediaSourceBackend) {
+    init(
+        fileURL: URL? = nil,
+        backend: any MediaSourceBackend,
+        discardedChunkObserver: (@Sendable (Int, Bool) -> Void)? = nil
+    ) {
         self.fileURL = fileURL
         self.backend = backend
+        self.discardedChunkObserver = discardedChunkObserver
     }
 
     func readAll() async throws -> Data {
@@ -182,6 +220,21 @@ internal final class MediaSourceAccess: @unchecked Sendable {
         }
     }
 
+    func readChunk(maximumLength: Int) throws -> Data? {
+        try ensureOpen()
+        var chunk = try backend.readChunk(maximumLength: maximumLength)
+        do {
+            try ensureOpen()
+        } catch {
+            if var discarded = chunk {
+                wipeDiscardedChunk(&discarded)
+                chunk = nil
+            }
+            throw error
+        }
+        return chunk
+    }
+
     func close() {
         lock.lock()
         closed = true
@@ -194,6 +247,19 @@ internal final class MediaSourceAccess: @unchecked Sendable {
         let isOpen = !closed
         lock.unlock()
         guard isOpen else { throw MediaCaptureFailure(.invalidState) }
+    }
+
+    private func wipeDiscardedChunk(_ data: inout Data) {
+        let byteCount = data.count
+        if byteCount > 0 {
+            data.withUnsafeMutableBytes { buffer in
+                if let baseAddress = buffer.baseAddress {
+                    memset(baseAddress, 0, buffer.count)
+                }
+            }
+        }
+        discardedChunkObserver?(byteCount, data.allSatisfy { $0 == 0 })
+        data.removeAll(keepingCapacity: false)
     }
 }
 

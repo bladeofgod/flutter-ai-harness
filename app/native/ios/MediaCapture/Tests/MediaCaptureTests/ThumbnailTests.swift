@@ -250,7 +250,7 @@ final class ThumbnailTests: XCTestCase {
         await fixture.core.close()
     }
 
-    func testApplePhotoThumbnailIsBoundedJPEGWithoutExifOrGPS() async throws {
+    func testApplePhotoThumbnailIsBoundedJPEGWithoutSensitiveMetadata() async throws {
         let sourceData = try jpegWithMetadata()
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
@@ -283,7 +283,12 @@ final class ThumbnailTests: XCTestCase {
             return XCTFail("Generated JPEG could not be decoded")
         }
         let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [CFString: Any]
-        XCTAssertNil(properties?[kCGImagePropertyExifDictionary])
+        let exif = properties?[kCGImagePropertyExifDictionary] as? [CFString: Any]
+        XCTAssertNil(exif?[kCGImagePropertyExifUserComment])
+        XCTAssertNil(exif?[kCGImagePropertyExifBodySerialNumber])
+        let tiff = properties?[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
+        XCTAssertNil(tiff?[kCGImagePropertyTIFFMake])
+        XCTAssertNil(tiff?[kCGImagePropertyTIFFModel])
         XCTAssertNil(properties?[kCGImagePropertyGPSDictionary])
     }
 
@@ -307,8 +312,15 @@ final class ThumbnailTests: XCTestCase {
             throw MediaCaptureFailure(.encodingFailed)
         }
         CGImageDestinationAddImage(destination, image, [
-            kCGImagePropertyExifDictionary: [kCGImagePropertyExifUserComment: "private-device"],
+            kCGImagePropertyExifDictionary: [
+                kCGImagePropertyExifUserComment: "private-device",
+                kCGImagePropertyExifBodySerialNumber: "private-serial",
+            ],
             kCGImagePropertyGPSDictionary: [kCGImagePropertyGPSLatitude: 31.2],
+            kCGImagePropertyTIFFDictionary: [
+                kCGImagePropertyTIFFMake: "private-make",
+                kCGImagePropertyTIFFModel: "private-model",
+            ],
         ] as CFDictionary)
         guard CGImageDestinationFinalize(destination) else {
             throw MediaCaptureFailure(.encodingFailed)

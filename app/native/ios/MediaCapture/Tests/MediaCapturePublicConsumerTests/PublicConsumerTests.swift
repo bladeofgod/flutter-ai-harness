@@ -16,6 +16,12 @@ final class PublicConsumerTests: XCTestCase {
         XCTAssertEqual(options.preferredCamera, .rear)
         XCTAssertEqual(handle.rawValue, "consumer_owned_opaque_handle")
         XCTAssertEqual(MediaCaptureFailure(.mediaInvalid).id.rawValue, "media_invalid")
+        XCTAssertEqual(
+            MediaCaptureFailure(.mediaExportTimedOut).id.rawValue,
+            "media_export_timed_out"
+        )
+        let sink: any MediaCopySink = PublicConsumerSink()
+        XCTAssertNotNil(sink)
         XCTAssertNotNil(MediaCaptureCore.self)
     }
 
@@ -27,4 +33,13 @@ final class PublicConsumerTests: XCTestCase {
         XCTAssertNotNil(view.layer)
         XCTAssertTrue(view.surfaceOwner === owner)
     }
+}
+
+private struct PublicConsumerSink: MediaCopySink {
+    func begin(mediaType: MediaType, contentType: String, byteLength: Int) async throws {}
+    func write(_ chunk: MediaCopyChunk) async throws {
+        _ = try chunk.copyBytes()
+    }
+    func commit(byteLength: Int) async throws {}
+    func abort() async throws {}
 }

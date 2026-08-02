@@ -2,10 +2,9 @@
 
 ## 当前状态
 
-当前仓库只有 Flutter Demo 的 Android/iOS Host：Android 宿主位于
-`app/apps/demo/android/`，iOS 宿主位于 `app/apps/demo/ios/`。仓库尚未创建通用
-Native Module 或能力 Bridge Package；下文定义首个真实消费者出现后必须遵守的
-布局和边界，不表示这些模块已经实现。
+当前仓库已经包含 Flutter Demo 的 Android/iOS Host、双端 Media Capture Native Module 和聚焦
+Bridge Package。Android 宿主位于 `app/apps/demo/android/`，iOS 宿主位于
+`app/apps/demo/ios/`；下文既约束后续原生模块，也记录当前已实现模块的真实路径和依赖边界。
 
 以下结构化块是 Harness 判断当前实现状态、布局、组件与依赖边的唯一输入。正文用于解释
 约束，不作为实现状态推断来源。
@@ -26,8 +25,24 @@ Native Module 或能力 Bridge Package；下文定义首个真实消费者出现
       "status": "implemented"
     }
   ],
-  "nativeModules": [],
-  "bridgePackages": [],
+  "nativeModules": [
+    {
+      "platform": "android",
+      "path": "app/native/android/media_capture/",
+      "status": "implemented"
+    },
+    {
+      "platform": "ios",
+      "path": "app/native/ios/MediaCapture/",
+      "status": "implemented"
+    }
+  ],
+  "bridgePackages": [
+    {
+      "path": "app/packages/app_media_capture_bridge/",
+      "status": "implemented"
+    }
+  ],
   "layoutTemplates": {
     "androidNativeModule": "app/native/android/<module>/",
     "iosNativeModule": "app/native/ios/<Module>/",
@@ -182,8 +197,9 @@ include 路径与 Plugin 构建接线，再把实际命令写入模块文档；�
 
 ### iOS
 
-iOS 默认使用 Swift、Swift Concurrency、本地 Swift Package 与 Apple Framework。Flutter
-Plugin 仍可由 CocoaPods 管理；具体 UI 技术和 System API 由真实模块决定。
+iOS 默认使用 Swift、Swift Concurrency、本地 Swift Package 与 Apple Framework。具体 UI 技术和
+System API 由真实模块决定。当前首个真实模块 Media Capture 已锁定 Flutter SwiftPM Plugin 路线；
+现有 Host 可以继续通过 CocoaPods 管理其他插件，但 CocoaPods 不是 Media Capture 的 fallback。
 
 ```text
 iOS Native Consumer
@@ -205,17 +221,40 @@ Flutter Host
   `app/packages/app_<capability>_bridge/ios/app_<capability>_bridge/Package.swift`；该 manifest
   通过版本库相对路径（从 manifest 目录到 Module 时为
   `../../../../native/ios/<Module>`）声明本地 Native Package 和 Product dependency。
-- 若沿用 CocoaPods，Native Module 在
-  `app/native/ios/<Module>/<Module>.podspec` 提供可解析的 Pod；Plugin 的
-  `app/packages/app_<capability>_bridge/ios/app_<capability>_bridge.podspec` 只使用
-  `s.dependency '<Module>'` 声明名称依赖，不传递 `:path`。最终 Flutter Host 在
-  `app/apps/demo/ios/Podfile` 使用仓库相对
-  `pod '<Module>', :path => '../../../native/ios/<Module>'` 提供本地来源。
 
-首个真实模块必须先用仓库锁定的 Flutter、Xcode、Swift 和 CocoaPods 组合验证所选接线
-方式，并在 SwiftPM 与 CocoaPods 两条路线中选择且只保留一条。无论选择哪种集成，
-Adapter 到 Native Module 的构建依赖必须
-进入版本控制，不得靠本机配置，也不得把 Wire 映射退回 Runner 或 AppDelegate。
+Flutter 官方 Plugin Package 不把 `Flutter.xcframework` 声明为自身可独立解析的 binary target。
+开启 SwiftPM 的 Flutter Host 会生成 `FlutterGeneratedPluginSwiftPackage`，由它把 Flutter 构建依赖和
+本地 Plugin Package 注入 Host 图。因此包含 `import Flutter` 的 Plugin target 不能用 Package 目录中的
+独立 `xcodebuild` 证明；不得为使该命令通过而写入本机 Flutter framework 绝对路径、复制 Flutter
+binary 或增加远程包装依赖。
+
+Media Capture Plugin Package 分成两个 target：
+
+```text
+Flutter Host
+    -> FlutterGeneratedPluginSwiftPackage       # Flutter 工具生成，不入库
+    -> app_media_capture_bridge Plugin target   # Flutter Channel、registrar、owner lookup
+    -> MediaCaptureBridgeCore target             # Wire/Native mapper、registry、lifecycle
+    -> MediaCapture / MediaCaptureUI products
+```
+
+`MediaCaptureBridgeCore` 不 import Flutter，可独立执行 generic iOS Simulator SDK compile 和聚焦测试；
+Plugin target 必须在可清理的临时 Flutter Host 中编译。临时 Host 只在自身 `pubspec.yaml` 副本写入
+以下项目级配置；项目配置优先于用户全局设置，因此不调用 `flutter config`、不依赖或修改用户全局状态，
+也不修改真实 Demo Host。最终 Integration 在 `app/apps/demo/pubspec.yaml` 提交同一配置：
+
+```yaml
+flutter:
+  config:
+    enable-swift-package-manager: true
+```
+
+锁定 Flutter 工具据此迁移并提交必要的 Runner Xcode project 变化，再执行 no-codesign Host build。
+`Flutter/ephemeral/Packages` 等生成目录不得入库。
+
+Adapter 到 Native Module 的 manifest、本地 Product dependency 和最终 Host 集成点都必须进入版本控制，
+不得靠本机配置，也不得把 Wire 映射退回 Runner 或 AppDelegate。Media Capture 的这条路线失败时必须
+回到独立架构决策复审，不能现场增加 CocoaPods fallback。
 
 ## Host 装配
 
@@ -226,10 +265,10 @@ Host 只负责：
 3. 创建进程级依赖并装配 Native Module。
 4. 通过插件注册机制或显式装配点注册对应平台 Bridge Adapter。
 
-当前 Android `MainActivity` 只是 `FlutterActivity`，iOS `AppDelegate` 只调用生成的插件
-注册入口；这说明宿主已存在，不说明任何通用原生能力已经接线。后续实现不得把业务
-状态机、采集会话、文件所有权或 Wire DTO 映射堆积在 `MainActivity`、`AppDelegate`
-或 Runner 中。
+当前 Android `MainActivity` 仍只是 `FlutterActivity`，iOS `AppDelegate` 仍只调用生成的插件注册入口；
+Media Capture 通过标准 Plugin registration、仓库相对 Gradle dependency 和
+`FlutterGeneratedPluginSwiftPackage` 接线。Host 没有业务状态机、采集会话、文件所有权或 Wire DTO
+映射；后续实现也不得把这些职责堆积在 `MainActivity`、`AppDelegate` 或 Runner 中。
 
 ## Bridge 边界
 

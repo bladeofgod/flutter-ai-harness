@@ -298,19 +298,19 @@ validate_transfer_adapter() {
 validate_dependency_boundaries() {
   stage "Validate dependency direction and reproducibility"
 
-  assert_file_digest 5a941a4d4d499bc4dd5cae79ed1193ca07e05d9c6bb63031aa96d002af231b2b \
+  assert_file_digest 9dfee90fa6fbfb281f69cf79a5eb418651abf18aa7545c6bea612874c455afa5 \
     "$GATE/build.gradle.kts"
   assert_file_digest 26134db70bb57177212f147d6920d21f59ee6fa829b73ae6f84d5ae2f974dce0 \
     "$GATE/settings.gradle.kts"
   assert_file_digest 1d08c6e29614f2fab4b44b677c91ce283e81b45c3e4351eee54b040fe8267137 \
     "$GATE/gradle.properties"
-  assert_file_digest e05d0a92beb12f4bba52517326870aeaf2bac5f1c0dea40edd3876009899e325 \
+  assert_file_digest 9d219b0a0926db5bf25dd1afb739a8745c5b815ba02c83c60ecfd818e7dd995b \
     "$GATE/gradle/verification-metadata.xml"
   assert_file_digest a5c6a687855975640608e035c0709f134890590305e9802a21a820dd66e3455f \
     "$CORE/build.gradle.kts"
-  assert_file_digest 00e0c74778a47e62b272aa0978a5609957ef0cd33048e8c1465ee23c0372ca57 \
+  assert_file_digest 9bc4a2fc03e2e2e1863204518e8aa7b15278d929f6ade977c1f8a29bade8c805 \
     "$CORE/settings.gradle.kts"
-  assert_file_digest 2685962ca4585887bab41e0cf2e8183365a648e8cc3e933a7a272675bc6075f7 \
+  assert_file_digest 858c2b8f6ce36e56bb8f50642411c175459aec77175820fe97392e559c7973a4 \
     "$CORE/gradle.properties"
   assert_file_digest 7c762ec9dbc0cf890e735872697ad73de5054d556905cfa4203215d335fea6fe \
     "$UI/build.gradle.kts"
@@ -318,7 +318,7 @@ validate_dependency_boundaries() {
     "$UI/settings.gradle.kts"
   assert_file_digest 858c2b8f6ce36e56bb8f50642411c175459aec77175820fe97392e559c7973a4 \
     "$UI/gradle.properties"
-  assert_file_digest f6331882a86ea7f2ab7bc9ec08082f509e33436992e58af2c227a7dc74679557 \
+  assert_file_digest 01661dcd32e26a21f529e0bf244ef4f9ef38e66376d96b4a17864ecc850f84af \
     "$ADAPTER/build.gradle.kts"
   assert_file_digest f5358f99ff97e50bad3520b1024a7ef4bab2ff8459adf353ccb348f6da11b8e5 \
     "$ADAPTER/settings.gradle.kts"
@@ -489,7 +489,7 @@ run_contract_matrix() {
     com.example.media_capture.MediaCaptureWireCodecTest 5 \
     com.example.media_capture.MediaCaptureBridgeControllerTest 40 \
     com.example.media_capture.BoundedCommandHandlerTest 3 \
-    com.example.media_capture.MediaCaptureTransferStoreTest 6 \
+    com.example.media_capture.MediaCaptureTransferStoreTest 12 \
     com.example.media_capture.AndroidContractVectorGateTest 3
 }
 
@@ -497,6 +497,7 @@ run_gate_fixture() {
   stage "Compile the cross-module Gate and emulator-only lifecycle/UI suite"
   run_gradle \
     :clean :lint :assembleDebug :assembleRelease :assembleDebugAndroidTest \
+    :media_capture_bridge:assembleDebugAndroidTest \
     --rerun-tasks
 }
 
@@ -531,9 +532,22 @@ run_optional_instrumented_tests() {
   local emulator_serial
   emulator_serial="$($adb_bin devices 2>/dev/null |
     awk '$1 ~ /^emulator-/ && $2 == "device" { print $1 }')"
+  local emulator_sdk
+  emulator_sdk="$($adb_bin -s "$emulator_serial" shell getprop ro.build.version.sdk 2>/dev/null |
+    tr -d '\r[:space:]')"
+  [[ "$emulator_sdk" =~ ^[0-9]+$ ]] || fail "unable to determine emulator Android SDK level"
+  if [[ "$emulator_sdk" == "23" ]]; then
+    echo "[media-capture-android] API 23 emulator selected; minimum-SDK Store runtime will be verified"
+  else
+    echo "[media-capture-android] emulator SDK $emulator_sdk selected; suites will run, but API 23 Store runtime remains unverified"
+  fi
   ANDROID_SERIAL="$emulator_serial" run_gradle \
     :connectedDebugAndroidTest \
     -Pandroid.testInstrumentationRunnerArguments.class=com.example.mediacapture.gate.MediaCaptureGateInstrumentedTest \
+    --rerun-tasks
+  ANDROID_SERIAL="$emulator_serial" run_gradle \
+    :media_capture_bridge:connectedDebugAndroidTest \
+    -Pandroid.testInstrumentationRunnerArguments.class=com.example.media_capture.MediaCaptureTransferStoreInstrumentedTest \
     --rerun-tasks
 }
 
@@ -543,7 +557,7 @@ validate_dependency_boundaries
 validate_transfer_adapter
 run_module_gate "Core" media_capture_core "$CORE" 88
 run_module_gate "Native UI" media_capture_ui "$UI" 42
-run_module_gate "Bridge Adapter" media_capture_bridge "$ADAPTER" 65
+run_module_gate "Bridge Adapter" media_capture_bridge "$ADAPTER" 71
 run_contract_matrix
 run_gate_fixture
 run_optional_instrumented_tests

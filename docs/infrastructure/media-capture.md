@@ -1,13 +1,13 @@
 # 原生媒体拍摄基础能力
 
-> 决策状态：已批准。实现状态：分层实施中；静态契约、Core、Renderer、UI 与 Bridge 状态见下表。
+> 决策状态：已批准。实现状态：Capability V4/Wire V3、双端 Core/UI/Adapter、Flutter Client、Host 与平台 Gate 已实现；Android 设备流程与 iOS 真机系统能力待人工验收。
 
 [返回基础模块索引](../infrastructure-modules.md)
 
-Media Capture 是项目批准的基础能力，首个真实消费者是 Shoppe 订单评价。它同时服务纯原生
-业务与 Flutter 业务，但能力本身归 Android/iOS Native Module 所有。仓库已经存在双端 Core
-源码和 Wire V2 Contract；Capability V4 已定义受控导出，V3 concrete surface、V4 export 实现、Native UI、Dart Client、双端 Bridge Adapter、Host
-接线与平台 Gate 仍由后续活动任务完成。
+Media Capture 是项目批准的基础能力，首个真实消费者是 Shoppe 订单评价。它同时服务纯原生业务与
+Flutter 业务，但能力本身归 Android/iOS Native Module 所有。仓库已经完成双端 Core、concrete surface、
+V4 有界导出、Native UI、Wire V3、Dart Client、Bridge Adapter 和 Host 接线；Customer Support 通过
+`app_media` Store 保存资源 ID，并复用图片/视频 Thumbnail 与 Viewer。
 
 结构化事实源：
 
@@ -19,16 +19,17 @@ Media Capture 是项目批准的基础能力，首个真实消费者是 Shoppe �
 
 | 层级 | 当前状态 | 边界 |
 | --- | --- | --- |
-| Capability V4 Contract / Schema / Harness | 本轮实现已落库，等待普通与安全复审 | 定义受控流式导出；只证明静态结构和失败 Fixture，不证明平台复制实现或真实出帧 |
-| Android Core | 源码已存在，Core 任务仍活动 | V1/V2 Core 行为已有实现；V3 concrete surface 与最终平台 Gate 尚未完成 |
-| iOS Core | 源码已存在，Core 任务仍活动 | V1/V2 Core 行为已有实现；V3 Rendering product 与 mandatory Xcode 平台门禁尚未完成 |
-| Android/iOS concrete surface | 待平台 Core 任务实现 | Module 提供 `MediaCaptureRenderView` 与 module-internal mount endpoint |
-| Android/iOS Native UI | 待后续任务实现 | 只组合 concrete surface 和 Core API，不持有 source、renderer 或 backing target |
-| Wire | Wire V2 Contract 已存在；V4 export projection 待独立任务 | V3 surface 始终 Native-only；V4 sink 也不进入 Channel，Wire 只派生一次性 transfer copy |
-| Dart Client / Bridge Adapter / Host | 待后续任务实现 | 不能反向拥有 Core 状态、媒体文件或 render binding |
+| Capability V4 Contract / Schema / Harness | 已实现并通过静态门禁 | 定义受控流式导出、历史投影和跨 Runtime golden；静态门禁不替代真机 |
+| Android Core | 已实现并通过专项 Gate | CameraX、concrete surface、缩略图、V4 export 与资源清理均有本地/构建证据 |
+| iOS Core | 已实现并通过专项 Gate | AVFoundation、Rendering product、严格并发 compile 与 Simulator XCTest 已通过 |
+| Android/iOS concrete surface | 已实现 | Module 提供 `MediaCaptureRenderView` 与 module-internal mount endpoint |
+| Android/iOS Native UI | 已实现 | 只组合 concrete surface 和 Core API，不持有 source、renderer 或 backing target |
+| Wire | Wire V3 已实现 | V3 surface 与 V4 sink 保持 Native-only；Channel 只提供短期一次性 transfer copy |
+| Dart Client / Bridge Adapter / Host | 已实现 | 双端标准 Plugin 注册；Host 不拥有 Core 状态、媒体文件或 render binding |
 
-本页不声明双端 renderer 已实现、模拟器/设备测试已通过或真实相机已经出帧。上述平台事实只能由对应
-Core 与 Quality Gate 任务的最新构建、测试和真机证据确认。
+Android 专项静态 Gate、JVM/Robolectric、Debug APK、iOS 专项 Gate、Simulator XCTest 与真实 Demo
+no-codesign Runner build 已通过。Android instrumented/真机拍摄流程未运行；iOS 真机 Camera/Microphone、
+系统权限弹窗、硬件中断或性能也未验收。这些项目保留给人工设备验收。
 
 ## 依赖边界
 
@@ -60,8 +61,8 @@ Adapter 是另一条消费者链路，只负责把后续 Wire 语义映射到本
   与 generation 语义，新增模块定义的 concrete platform render surface、实际挂载、所有权和撤销模型。
   Capability Version 与 Wire Version 继续独立。
 - Version 4 是 additive 演进：保留 Version 1-3 全部语义，新增从 active confirmed media 到调用方提供的
-  Native-only typed sink 的有界流式复制。当前 Wire V2 仍保持 Version 2 投影；后续 Wire 演进必须显式
-  声明 Capability V4 派生关系，并继续把 platform render surface 与 Native sink 关闭为 Native-only。
+  Native-only typed sink 的有界流式复制。Wire V3 已显式派生 Capability V4，同时保留 Wire V1/V2 历史
+  投影，并继续把 platform render surface 与 Native sink 关闭为 Native-only。
 
 ## Version 1 公共能力
 
@@ -376,20 +377,19 @@ Android 与 iOS 必须提供相同的操作、状态、结果、取消、Failure
 异步类型、回调方式、UI 上下文切换、私有缓存目录选择和权限可重试判断遵循各平台惯例，
 由平台 API 显式映射；不得为了表面对称复制另一平台的 SDK 结构。
 
-## 消费者与验证计划
+## 消费者与验证
 
-首个消费者 Shoppe 订单评价将在后续任务中增加拍摄入口、预览结果与附件状态。Android/iOS
-Core 必须只读取 Capability Contract 就能设计类型化 API；后续 Bridge Contract 只能映射
-既有能力，不能改写状态机、取消、权限或文件所有权。
+Customer Support 已接入拍摄/相册入口、图片/视频消息、缩略图和全屏预览；Shoppe 图片搜索复用同一
+picker/Store 导入链路。Android/iOS Core 仍只从 Capability Contract 设计类型化 API，Bridge Contract
+只能映射既有能力，不能改写状态机、取消、权限或文件所有权。
 
 当前静态门禁验证固定 Schema/实例路径、Schema 完整摘要、版本历史、字段 validation、
 result/event/failure emission、双平台语义、禁止的传输/SDK 类型、handle/lease/cleanup、Render
 attachment、bounded thumbnail 与 streaming export 安全策略以及索引/详情链接。Base Schema 只提供可复用结构，
 不内置 session/media、尺寸、EXIF、poster frame 或租约常量；这些均由 Media Capture Profile 精确
-约束。平台实现出现后，各自文档还必须增加纯
-单测、平台 Framework Fake、Host 编译、模拟器/设备测试和真机权限/拍摄证据；未运行的真机
-验证不得宣称通过。Android/iOS Core/Gate 还必须使用大尺寸照片/视频和并发 thumbnail 请求验证
+约束。平台文档已经记录纯单测、Framework Fake、Host 编译与 iOS Simulator 证据；Android instrumented/
+真机流程和 iOS 真机验证均不宣称通过。Android/iOS Core/Gate 使用大尺寸照片/视频和并发 thumbnail 请求验证
 decode-time subsampling、decoded-pixel/working-memory 预算、稳定 overload Failure、完整 cleanup
-顺序与 commit 后 caller copy 独立性。双端 V4 Core 任务还必须用 50 MiB 边界、复制中增长/截断、并发
-job、never-returning sink、取消、deadline、release/expiry/Core close 竞态证明 bounded buffer、唯一终态和
-清理顺序；静态契约不能替代这些实现证据。
+顺序与 commit 后 caller copy 独立性。双端 V4 Core 已用 50 MiB 边界、复制中增长/截断、并发 job、
+never-returning sink、取消、deadline、release/expiry/Core close 竞态证明 bounded buffer、唯一终态和
+清理顺序；静态契约仍不能替代真机系统能力证据。

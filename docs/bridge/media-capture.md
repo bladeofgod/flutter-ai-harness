@@ -113,7 +113,7 @@ Native Core 当成新的 operation，也不能让 Core 读取 Wire Contract。
 `dismiss_capture_flow` 是 Wire V3 的 Adapter-only 生命周期补丁。Flutter Client 只能提交自己当前
 `present_capture_flow` 的 opaque `presentationRequestId`；Adapter 仅在该 ID 与活动 presentation 完全
 匹配时 dismiss，并让原请求以正常 cancelled 终态完成。payload 不接受 Session/Media handle、路径、
-URI 或自由文本。Android 当前支持；iOS Adapter 完成前显式为 unsupported。
+URI 或自由文本。Android/iOS Adapter 均支持该操作，并遵守同一 request correlation 与幂等关闭语义。
 
 ### 全屏 Native UI Flow
 
@@ -420,7 +420,7 @@ Module 内消费，不生成 Wire event。
 
 ## 平台一致性
 
-16 个 method、5 个 event 与 1 个 async failure 在 Android/iOS 的支持矩阵均为 `supported`，Payload、
+17 个 method、5 个 event 与 1 个 async failure 在 Android/iOS 的支持矩阵均为 `supported`，Payload、
 错误码、取消、presentation owner、去重和完成语义一致。两端只在 UI callback 调度机制和实际 owner
 类型、私有 cache/temporary transfer root API 上有实现差异。Capability V3 的 Android/iOS concrete surface artifact 各自有独立 coverage，但两端
 都保持 Native-only，因而不形成 Wire 平台差异。权限可重试判断、私有临时目录等
@@ -445,10 +445,10 @@ Module 内消费，不生成 Wire event。
 
 ## 实现与验证位置
 
-本任务只建立 Contract，不创建 Adapter。后续实现固定落在原生架构约定的
-`app/packages/app_media_capture_bridge/`：Dart Client 在 `lib/`，Android/iOS Adapter 分别在
-`android/` 与 `ios/`。两端 Adapter 必须用 Native Module Fake 覆盖 Payload 映射、版本、错误、
-去重、listener、detach、线程和 exactly-once；再用真实模块与 Host 构建证据验收。
+Contract 的实现固定落在原生架构约定的 `app/packages/app_media_capture_bridge/`：Dart Client 在
+`lib/`，Android/iOS Adapter 分别在 `android/` 与 `ios/`。两端 Adapter 已用 Native Module Fake 覆盖
+Payload 映射、版本、错误、去重、listener、detach、线程和 exactly-once，并由双端 Gate 与 Host build
+验收真实依赖图。
 
 Harness 当前验证固定 Schema/Profile 路径、Wire V3 对 Capability V4 的精确兼容、Wire V2 history
 projection、全部 operation/result/event/failure/resource/ownership-scope 和 V3 Native artifact coverage、
@@ -459,8 +459,8 @@ fresh generation、支持矩阵、Channel 基础类型、
 emission、opaque handle 长度、signed-64、缩略图 bytes/尺寸/长度/JPEG/orientation/poster/EXIF/无路径
 fallback、CSPRNG export handle、native sink/fixed-length input coverage、transfer result MIME/长度/完整性、
 精确 file URI golden vectors、严格有序 cleanup、TTL、容量、独立有界 tombstone、redaction、有限去重表、listener
-generation、双生命周期清理、late lease/copy/transfer 清理、数据分类和安全策略以及本文档链接。不要求
-尚未建立的 Adapter 文件。
+generation、双生命周期清理、late lease/copy/transfer 清理、数据分类和安全策略以及本文档链接。最终
+Integration 还要求 Dart/Kotlin/Swift 直接消费同一份 V4/V3 golden，并锁定真实 Host SwiftPM/Gradle 接线。
 
 ## 变更日志
 

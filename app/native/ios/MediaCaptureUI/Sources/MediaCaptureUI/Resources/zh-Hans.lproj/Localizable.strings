@@ -1,0 +1,11 @@
+"media_capture_close" = "关闭相机";
+"media_capture_retake" = "重新拍摄";
+"media_capture_photo" = "拍照";
+"media_capture_record" = "录制视频";
+"media_capture_stop" = "停止录制";
+"media_capture_switch_camera" = "切换镜头";
+"media_capture_flash_off" = "关闭闪光灯";
+"media_capture_flash_on" = "打开闪光灯";
+"media_capture_flash_auto" = "自动闪光灯";
+"media_capture_flash_torch" = "常亮闪光灯";
+"media_capture_confirm" = "发送";

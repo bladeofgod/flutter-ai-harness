@@ -1853,7 +1853,7 @@
       "completion": "exactly_once",
       "platformSupport": {
         "android": "supported",
-        "ios": "unsupported"
+        "ios": "supported"
       }
     }
   ],
@@ -4652,7 +4652,7 @@
       "compatibleCapabilityVersions": [
         4
       ],
-      "description": "Adds scoped one-time materialize and release methods for Capability V4 bounded export using an Adapter-owned private cache store, plus a request-correlated Adapter presentation dismiss method for Flutter lifecycle cleanup. Transfer uses 128-bit CSPRNG export handles, fixed native sink and length bindings, canonical short-lived file URI locators, closed media metadata, optional SHA-256 integrity, bounded tombstones, and ordered cleanup while preserving Wire V1/V2 history; dismiss is Android-supported and explicitly deferred on iOS."
+      "description": "Adds scoped one-time materialize and release methods for Capability V4 bounded export using an Adapter-owned private cache store, plus a request-correlated Adapter presentation dismiss method for Flutter lifecycle cleanup. Transfer uses 128-bit CSPRNG export handles, fixed native sink and length bindings, canonical short-lived file URI locators, closed media metadata, optional SHA-256 integrity, bounded tombstones, and ordered cleanup while preserving Wire V1/V2 history; dismiss is supported by both Android and iOS adapters."
     }
   ],
   "transferStore": {

@@ -1,0 +1,11 @@
+"media_capture_close" = "Close camera";
+"media_capture_retake" = "Retake";
+"media_capture_photo" = "Take photo";
+"media_capture_record" = "Record video";
+"media_capture_stop" = "Stop recording";
+"media_capture_switch_camera" = "Switch camera";
+"media_capture_flash_off" = "Flash off";
+"media_capture_flash_on" = "Flash on";
+"media_capture_flash_auto" = "Flash auto";
+"media_capture_flash_torch" = "Torch on";
+"media_capture_confirm" = "Send";

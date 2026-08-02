@@ -78,6 +78,14 @@ public actor MediaCaptureCore {
         var finalized = false
     }
 
+    private struct ExportJob {
+        let identifier: UUID
+        let mediaHandle: MediaHandle
+        let control: MediaExportControl
+        var worker: Task<MediaExportResult, Error>?
+        var deadline: Task<Void, Never>?
+    }
+
     private struct DeadlineTaskRecord {
         let identifier: UUID
         let task: Task<Void, Never>
@@ -116,6 +124,9 @@ public actor MediaCaptureCore {
     private let clock: any MediaCaptureClock
     private let handleGenerator: any HandleGenerating
     private let thumbnailGenerator: any ThumbnailGenerating
+    private let exportExecutor: any MediaExportExecuting
+    private let exportBufferAccounting: (any MediaExportBufferAccounting)?
+    private let exportCommitReturned: (@Sendable () async -> Void)?
 
     private var sessions: [SessionHandle: SessionRecord] = [:]
     private var media: [MediaHandle: MediaRecord] = [:]
@@ -128,6 +139,8 @@ public actor MediaCaptureCore {
     private var readScopes: [UUID: (mediaHandle: MediaHandle, source: MediaSourceAccess)] = [:]
     private var thumbnailJobs: [UUID: ThumbnailJob] = [:]
     private var thumbnailDrainWaiters: [CheckedContinuation<Void, Never>] = []
+    private var exportJobs: [MediaHandle: ExportJob] = [:]
+    private var exportDrainWaiters: [CheckedContinuation<Void, Never>] = []
     private var attachmentOperationCount = 0
     private var attachmentOperationWaiters: [CheckedContinuation<Void, Never>] = []
     private var attachmentCleanupTasks: [UUID: Task<Void, Never>] = [:]
@@ -138,6 +151,11 @@ public actor MediaCaptureCore {
     private var lifecycleEpoch: UInt64 = 0
     private let thumbnailJobWorkingBytes = 8_388_608
     private let thumbnailModuleWorkingBytes = 16_777_216
+    private let exportReadBufferBytes = 131_072
+    private let exportReservedWorkingBytes = 262_144
+    private let exportModuleWorkingBytes = 1_048_576
+    private let maximumExportBytes = 52_428_800
+    private let exportDeadlineSeconds: TimeInterval = 120
 
     public init() {
         configuration = MediaCaptureConfiguration()
@@ -146,6 +164,9 @@ public actor MediaCaptureCore {
         clock = SystemMediaCaptureClock()
         handleGenerator = SecureHandleGenerator()
         thumbnailGenerator = AppleThumbnailGenerator()
+        exportExecutor = DispatchMediaExportExecutor()
+        exportBufferAccounting = nil
+        exportCommitReturned = nil
     }
 
     internal init(
@@ -154,7 +175,10 @@ public actor MediaCaptureCore {
         fileStore: any MediaFileStoring,
         clock: any MediaCaptureClock,
         handleGenerator: any HandleGenerating,
-        thumbnailGenerator: any ThumbnailGenerating
+        thumbnailGenerator: any ThumbnailGenerating,
+        exportExecutor: any MediaExportExecuting = DispatchMediaExportExecutor(),
+        exportBufferAccounting: (any MediaExportBufferAccounting)? = nil,
+        exportCommitReturned: (@Sendable () async -> Void)? = nil
     ) {
         self.configuration = configuration
         self.platform = platform
@@ -162,6 +186,9 @@ public actor MediaCaptureCore {
         self.clock = clock
         self.handleGenerator = handleGenerator
         self.thumbnailGenerator = thumbnailGenerator
+        self.exportExecutor = exportExecutor
+        self.exportBufferAccounting = exportBufferAccounting
+        self.exportCommitReturned = exportCommitReturned
     }
 
     public func events() -> AsyncStream<MediaCaptureEvent> {
@@ -396,12 +423,18 @@ public actor MediaCaptureCore {
         }
         do {
             let updated = try await platform.switchCamera()
-            try Task.checkCancellation()
             let snapshot = try publicSnapshot(updated, handle: sessionHandle)
-            var current = try validatedSessionOperation(token, allowedStates: [.ready])
+            var current = try validatedSessionOperationAfterPlatformCommit(
+                token,
+                allowedStates: [.ready]
+            )
             current.readySnapshot = snapshot
+            current.flashMode = snapshot.supportedFlashModes.contains(.off)
+                ? .off
+                : snapshot.supportedFlashModes[0]
             current.operationInFlight = false
             sessions[sessionHandle] = current
+            yield(.sessionReady(snapshot))
             return sessionHandle
         } catch is CancellationError {
             clearOperation(sessionHandle, generation: token.generation)
@@ -679,21 +712,31 @@ public actor MediaCaptureCore {
 
     @discardableResult
     public func releaseMedia(mediaHandle: MediaHandle) async throws -> MediaHandle {
-        try ensureOpen()
+        try ensureMediaReleaseAllowed()
         await processDeadlines()
         guard var record = media[mediaHandle] else {
             throw MediaCaptureFailure(.mediaInvalid)
         }
         if record.state == .released { return mediaHandle }
         if record.state == .releaseGrace { return mediaHandle }
+        if [.discarded, .expiryGrace, .expired].contains(record.state) {
+            throw MediaCaptureFailure(.mediaInvalid)
+        }
         guard record.state == .leased else {
             throw MediaCaptureFailure(.invalidState)
         }
         markThumbnailJobs(for: mediaHandle, winner: .release)
+        let exportWorker = claimExportFailure(
+            mediaHandle: mediaHandle,
+            failure: .invalidState
+        )
         record.state = .releaseGrace
         record.stateDeadline = clock.now.addingTimeInterval(configuration.readGracePeriod)
         media[mediaHandle] = record
         scheduleDeadline(key: mediaDeadlineKey(mediaHandle), at: record.stateDeadline ?? clock.now)
+        if let exportWorker {
+            _ = await exportWorker.result
+        }
         return mediaHandle
     }
 
@@ -783,6 +826,100 @@ public actor MediaCaptureCore {
         } catch {
             let winner = completeThumbnailFailure(identifier: identifier, proposedWinner: .decoderFailure)
             throw thumbnailFailure(for: winner)
+        }
+    }
+
+    public func copyConfirmedMediaToSink(
+        mediaHandle: MediaHandle,
+        sink: any MediaCopySink,
+        maximumLength: Int
+    ) async throws -> MediaExportResult {
+        try ensureOpen()
+        await processDeadlines()
+        guard (1 ... maximumExportBytes).contains(maximumLength) else {
+            throw MediaCaptureFailure(.invalidArgument)
+        }
+        guard let record = media[mediaHandle] else {
+            throw MediaCaptureFailure(.mediaInvalid)
+        }
+        guard record.state == .leased,
+              let leaseDeadline = record.stateDeadline,
+              leaseDeadline > clock.now
+        else {
+            throw MediaCaptureFailure(.invalidState)
+        }
+        try validateExportSource(record.storedMedia, maximumLength: maximumLength)
+        if exportJobs[mediaHandle] != nil {
+            throw MediaCaptureFailure(.mediaExportConflict)
+        }
+        let reservedWorkingBytes = exportJobs.count * exportReservedWorkingBytes
+        guard exportJobs.count < 4,
+              reservedWorkingBytes + exportReservedWorkingBytes <= exportModuleWorkingBytes
+        else {
+            throw MediaCaptureFailure(.mediaExportOverloaded)
+        }
+
+        let identifier = UUID()
+        let control = MediaExportControl()
+        exportJobs[mediaHandle] = ExportJob(
+            identifier: identifier,
+            mediaHandle: mediaHandle,
+            control: control
+        )
+        let worker = Task { [weak self] in
+            guard let self else { throw MediaCaptureFailure(.systemInterrupted) }
+            return try await self.executeExport(
+                identifier: identifier,
+                mediaHandle: mediaHandle,
+                storedMedia: record.storedMedia,
+                sink: sink,
+                control: control
+            )
+        }
+        let deadlineAt = clock.now.addingTimeInterval(exportDeadlineSeconds)
+        let clock = self.clock
+        let deadline = Task { [weak self] in
+            do {
+                try await clock.sleep(until: deadlineAt)
+                if !Task.isCancelled {
+                    await self?.exportDeadlineElapsed(
+                        mediaHandle: mediaHandle,
+                        identifier: identifier
+                    )
+                }
+            } catch is CancellationError {
+            } catch {
+                await self?.exportDeadlineElapsed(
+                    mediaHandle: mediaHandle,
+                    identifier: identifier
+                )
+            }
+        }
+        guard var registered = exportJobs[mediaHandle],
+              registered.identifier == identifier
+        else {
+            worker.cancel()
+            deadline.cancel()
+            throw MediaCaptureFailure(.systemInterrupted)
+        }
+        registered.worker = worker
+        registered.deadline = deadline
+        exportJobs[mediaHandle] = registered
+
+        do {
+            return try await withTaskCancellationHandler {
+                try await worker.value
+            } onCancel: {
+                if control.claimFailure(.mediaExportCancelled) {
+                    worker.cancel()
+                }
+            }
+        } catch let failure as MediaCaptureFailure {
+            throw failure
+        } catch is CancellationError {
+            throw MediaCaptureFailure(control.failure(or: .mediaExportCancelled))
+        } catch {
+            throw MediaCaptureFailure(control.failure(or: .mediaExportReadFailed))
         }
     }
 
@@ -1312,6 +1449,7 @@ public actor MediaCaptureCore {
         moduleLifecycleState = .restarting
         lifecycleEpoch &+= 1
         let partialRecordings = invalidateRegistriesForShutdown()
+        let exportWorkers = claimAllExportFailures(.systemInterrupted)
         preparationTasks.values.forEach { $0.cancel() }
         deadlineTasks.values.forEach { $0.task.cancel() }
         preparationTasks.removeAll()
@@ -1325,6 +1463,10 @@ public actor MediaCaptureCore {
             await fileStore.discardRecording(at: destination)
         }
         await waitForThumbnailJobsToDrain()
+        for worker in exportWorkers {
+            _ = await worker.result
+        }
+        await waitForExportJobsToDrain()
         readScopes.values.forEach { $0.source.close() }
         readScopes.removeAll()
         for record in media.values {
@@ -1345,6 +1487,7 @@ public actor MediaCaptureCore {
         moduleLifecycleState = .closed
         lifecycleEpoch &+= 1
         let partialRecordings = invalidateRegistriesForShutdown()
+        let exportWorkers = claimAllExportFailures(.systemInterrupted)
         preparationTasks.values.forEach { $0.cancel() }
         deadlineTasks.values.forEach { $0.task.cancel() }
         preparationTasks.removeAll()
@@ -1358,6 +1501,10 @@ public actor MediaCaptureCore {
             await fileStore.discardRecording(at: destination)
         }
         await waitForThumbnailJobsToDrain()
+        for worker in exportWorkers {
+            _ = await worker.result
+        }
+        await waitForExportJobsToDrain()
         platformEventTask?.cancel()
         platformEventTask = nil
         readScopes.values.forEach { $0.source.close() }
@@ -1416,11 +1563,18 @@ public actor MediaCaptureCore {
         for handle in leaseHandles {
             guard var record = media[handle], record.state == .leased else { continue }
             markThumbnailJobs(for: handle, winner: .expiry)
+            let exportWorker = claimExportFailure(
+                mediaHandle: handle,
+                failure: .invalidState
+            )
             record.state = .expiryGrace
             record.stateDeadline = now.addingTimeInterval(configuration.readGracePeriod)
             media[handle] = record
             yield(.mediaLeaseExpired(handle))
             scheduleDeadline(key: mediaDeadlineKey(handle), at: record.stateDeadline ?? now)
+            if let exportWorker {
+                _ = await exportWorker.result
+            }
         }
 
         let graceHandles = media.values
@@ -1430,15 +1584,18 @@ public actor MediaCaptureCore {
             }
             .map(\.handle)
         for handle in graceHandles {
-            guard var record = media[handle] else { continue }
+            guard var record = media[handle],
+                  [.releaseGrace, .expiryGrace].contains(record.state),
+                  (record.stateDeadline ?? .distantFuture) <= now
+            else { continue }
             let finalState: MediaState = record.state == .releaseGrace ? .released : .expired
-            revokeReadScopes(for: handle)
-            await fileStore.delete(record.storedMedia.reference)
             record.state = finalState
             record.stateDeadline = nil
             record.terminalAt = now
             media[handle] = record
             cancelDeadline(mediaDeadlineKey(handle))
+            revokeReadScopes(for: handle)
+            await fileStore.delete(record.storedMedia.reference)
             yield(.mediaReadRevoked(handle))
         }
 
@@ -1464,8 +1621,319 @@ public actor MediaCaptureCore {
         }
     }
 
+    private func executeExport(
+        identifier: UUID,
+        mediaHandle: MediaHandle,
+        storedMedia: StoredMedia,
+        sink: any MediaCopySink,
+        control: MediaExportControl
+    ) async throws -> MediaExportResult {
+        var activeChunk: MediaCopyChunk?
+        do {
+            let source: MediaSourceAccess
+            do {
+                source = try await fileStore.openSource(storedMedia.reference)
+            } catch is CancellationError {
+                if control.hasFailureWinner { throw CancellationError() }
+                throw MediaCaptureFailure(.mediaExportReadFailed)
+            } catch {
+                throw MediaCaptureFailure(.mediaExportReadFailed)
+            }
+            guard control.installSource(source) else {
+                throw CancellationError()
+            }
+            try control.checkActive()
+
+            do {
+                try await sink.begin(
+                    mediaType: storedMedia.mediaType,
+                    contentType: storedMedia.contentType,
+                    byteLength: storedMedia.byteLength
+                )
+                control.markSinkBegun()
+                try control.checkActive()
+            } catch is CancellationError {
+                if control.hasFailureWinner { throw CancellationError() }
+                throw MediaCaptureFailure(.mediaExportSinkRejected)
+            } catch {
+                throw MediaCaptureFailure(.mediaExportSinkRejected)
+            }
+
+            var copied = 0
+            while true {
+                try control.checkActive()
+                var bytes: Data?
+                do {
+                    bytes = try await exportExecutor.execute {
+                        try source.readChunk(maximumLength: self.exportReadBufferBytes)
+                    }
+                } catch is CancellationError {
+                    if control.hasFailureWinner { throw CancellationError() }
+                    throw MediaCaptureFailure(.mediaExportReadFailed)
+                } catch {
+                    throw MediaCaptureFailure(.mediaExportReadFailed)
+                }
+                guard var bytes else { break }
+                exportBufferAccounting?.allocationChanged(
+                    jobIdentifier: identifier,
+                    delta: bytes.count
+                )
+                do {
+                    try control.checkActive()
+                } catch {
+                    wipeExportReadBuffer(&bytes, identifier: identifier)
+                    throw error
+                }
+                guard !bytes.isEmpty, bytes.count <= exportReadBufferBytes else {
+                    wipeExportReadBuffer(&bytes, identifier: identifier)
+                    throw MediaCaptureFailure(.mediaExportTooLarge)
+                }
+                let (nextLength, overflow) = copied.addingReportingOverflow(bytes.count)
+                guard !overflow,
+                      nextLength <= storedMedia.byteLength,
+                      nextLength <= maximumExportBytes
+                else {
+                    wipeExportReadBuffer(&bytes, identifier: identifier)
+                    throw MediaCaptureFailure(.mediaExportTooLarge)
+                }
+                let chunk = MediaCopyChunk(bytes)
+                exportBufferAccounting?.allocationChanged(
+                    jobIdentifier: identifier,
+                    delta: chunk.byteCount
+                )
+                wipeExportReadBuffer(&bytes, identifier: identifier)
+                activeChunk = chunk
+                do {
+                    try await sink.write(chunk)
+                } catch is CancellationError {
+                    if control.hasFailureWinner { throw CancellationError() }
+                    throw MediaCaptureFailure(.mediaExportWriteFailed)
+                } catch {
+                    throw MediaCaptureFailure(.mediaExportWriteFailed)
+                }
+                invalidateExportChunk(chunk, identifier: identifier)
+                activeChunk = nil
+                copied = nextLength
+                try control.checkActive()
+            }
+            guard copied == storedMedia.byteLength else {
+                throw MediaCaptureFailure(.mediaExportTooLarge)
+            }
+            guard prepareExportCommit(
+                mediaHandle: mediaHandle,
+                identifier: identifier,
+                storedMedia: storedMedia,
+                control: control
+            ) else {
+                throw CancellationError()
+            }
+
+            do {
+                try control.checkActive()
+                try await sink.commit(byteLength: copied)
+            } catch is CancellationError {
+                if control.hasFailureWinner { throw CancellationError() }
+                throw MediaCaptureFailure(.mediaExportSinkRejected)
+            } catch {
+                throw MediaCaptureFailure(.mediaExportSinkRejected)
+            }
+            if let exportCommitReturned {
+                await exportCommitReturned()
+            }
+            switch control.completeSuccessfulCommit() {
+            case .succeeded:
+                break
+            case let .failed(failure):
+                throw MediaCaptureFailure(failure)
+            }
+
+            if let activeChunk {
+                invalidateExportChunk(activeChunk, identifier: identifier)
+            }
+            control.closeSource()
+            finishExportRegistration(mediaHandle: mediaHandle, identifier: identifier)
+            return MediaExportResult(
+                mediaHandle: mediaHandle,
+                mediaType: storedMedia.mediaType,
+                contentType: storedMedia.contentType,
+                byteLength: copied
+            )
+        } catch {
+            if let activeChunk {
+                invalidateExportChunk(activeChunk, identifier: identifier)
+            }
+            let fallback = exportFailureID(for: error)
+            let failure = control.finishCommitFailure(fallback: fallback)
+            if control.claimAbortIfNeeded() {
+                let abortTask = Task {
+                    try? await sink.abort()
+                }
+                await abortTask.value
+            }
+            control.closeSource()
+            finishExportRegistration(mediaHandle: mediaHandle, identifier: identifier)
+            throw MediaCaptureFailure(failure)
+        }
+    }
+
+    private func prepareExportCommit(
+        mediaHandle: MediaHandle,
+        identifier: UUID,
+        storedMedia: StoredMedia,
+        control: MediaExportControl
+    ) -> Bool {
+        guard exportJobs[mediaHandle]?.identifier == identifier,
+              var record = media[mediaHandle],
+              record.storedMedia.reference == storedMedia.reference
+        else {
+            control.claimFailure(.invalidState)
+            return false
+        }
+        guard record.state == .leased else {
+            control.claimFailure(.invalidState)
+            return false
+        }
+        guard let leaseDeadline = record.stateDeadline,
+              leaseDeadline > clock.now
+        else {
+            markThumbnailJobs(for: mediaHandle, winner: .expiry)
+            record.state = .expiryGrace
+            record.stateDeadline = clock.now.addingTimeInterval(configuration.readGracePeriod)
+            media[mediaHandle] = record
+            control.claimFailure(.invalidState)
+            yield(.mediaLeaseExpired(mediaHandle))
+            scheduleDeadline(
+                key: mediaDeadlineKey(mediaHandle),
+                at: record.stateDeadline ?? clock.now
+            )
+            return false
+        }
+        return control.prepareCommit()
+    }
+
+    private func validateExportSource(
+        _ storedMedia: StoredMedia,
+        maximumLength: Int
+    ) throws {
+        let expectedContentType: String
+        switch storedMedia.mediaType {
+        case .photo:
+            expectedContentType = "image/jpeg"
+        case .video:
+            expectedContentType = "video/mp4"
+        }
+        guard storedMedia.contentType == expectedContentType else {
+            throw MediaCaptureFailure(.invalidState)
+        }
+        guard storedMedia.byteLength > 0,
+              storedMedia.byteLength <= maximumLength,
+              storedMedia.byteLength <= maximumExportBytes
+        else {
+            throw MediaCaptureFailure(.mediaExportTooLarge)
+        }
+    }
+
+    private func exportFailureID(for error: Error) -> MediaCaptureFailure.ID {
+        if error is CancellationError {
+            return .systemInterrupted
+        }
+        if let failure = error as? MediaCaptureFailure {
+            switch failure.id {
+            case .mediaExportTooLarge, .mediaExportSinkRejected,
+                 .mediaExportReadFailed, .mediaExportWriteFailed:
+                return failure.id
+            default:
+                return .mediaExportReadFailed
+            }
+        }
+        return .mediaExportReadFailed
+    }
+
+    private func exportDeadlineElapsed(mediaHandle: MediaHandle, identifier: UUID) {
+        guard let job = exportJobs[mediaHandle], job.identifier == identifier else { return }
+        if job.control.claimFailure(.mediaExportTimedOut) {
+            job.worker?.cancel()
+        }
+    }
+
+    private func claimExportFailure(
+        mediaHandle: MediaHandle,
+        failure: MediaCaptureFailure.ID
+    ) -> Task<MediaExportResult, Error>? {
+        guard let job = exportJobs[mediaHandle] else { return nil }
+        if job.control.claimFailure(failure) {
+            job.worker?.cancel()
+        }
+        return job.worker
+    }
+
+    private func claimAllExportFailures(
+        _ failure: MediaCaptureFailure.ID
+    ) -> [Task<MediaExportResult, Error>] {
+        exportJobs.values.compactMap { job in
+            if job.control.claimFailure(failure) {
+                job.worker?.cancel()
+            }
+            return job.worker
+        }
+    }
+
+    private func finishExportRegistration(mediaHandle: MediaHandle, identifier: UUID) {
+        guard let job = exportJobs[mediaHandle], job.identifier == identifier else { return }
+        job.deadline?.cancel()
+        exportJobs.removeValue(forKey: mediaHandle)
+        if exportJobs.isEmpty {
+            let waiters = exportDrainWaiters
+            exportDrainWaiters.removeAll()
+            waiters.forEach { $0.resume() }
+        }
+    }
+
+    private func waitForExportJobsToDrain() async {
+        if exportJobs.isEmpty { return }
+        await withCheckedContinuation { continuation in
+            exportDrainWaiters.append(continuation)
+        }
+    }
+
+    private func wipe(_ data: inout Data) {
+        if !data.isEmpty {
+            data.withUnsafeMutableBytes { buffer in
+                if let baseAddress = buffer.baseAddress {
+                    memset(baseAddress, 0, buffer.count)
+                }
+            }
+            data.removeAll(keepingCapacity: false)
+        }
+    }
+
+    private func wipeExportReadBuffer(_ data: inout Data, identifier: UUID) {
+        let byteCount = data.count
+        wipe(&data)
+        if byteCount > 0 {
+            exportBufferAccounting?.allocationChanged(
+                jobIdentifier: identifier,
+                delta: -byteCount
+            )
+        }
+    }
+
+    private func invalidateExportChunk(_ chunk: MediaCopyChunk, identifier: UUID) {
+        let releasedBytes = chunk.invalidate()
+        if releasedBytes > 0 {
+            exportBufferAccounting?.allocationChanged(
+                jobIdentifier: identifier,
+                delta: -releasedBytes
+            )
+        }
+    }
+
     internal func pendingDeadlineTaskCount() -> Int {
         deadlineTasks.count
+    }
+
+    internal func exportReservationSnapshot() -> (jobCount: Int, reservedWorkingBytes: Int) {
+        (exportJobs.count, exportJobs.count * exportReservedWorkingBytes)
     }
 
     private func prepareSession(_ handle: SessionHandle) async {
@@ -1753,6 +2221,20 @@ public actor MediaCaptureCore {
         return session
     }
 
+    private func validatedSessionOperationAfterPlatformCommit(
+        _ token: SessionOperationToken,
+        allowedStates: [SessionState]
+    ) throws -> SessionRecord {
+        guard let session = sessions[token.handle],
+              session.operationInFlight,
+              session.operationGeneration == token.generation,
+              allowedStates.contains(session.state)
+        else {
+            throw MediaCaptureFailure(.invalidState)
+        }
+        return session
+    }
+
     private func validateSessionOperation(
         _ handle: SessionHandle,
         generation: UInt64,
@@ -1841,7 +2323,12 @@ public actor MediaCaptureCore {
         let task = Task { [weak self] in
             do {
                 try await clock.sleep(until: deadline)
-                if !Task.isCancelled {
+                if !Task.isCancelled,
+                   await self?.beginExecutingDeadlineTask(
+                       key: key,
+                       identifier: identifier
+                   ) == true {
+                    try Task.checkCancellation()
                     _ = try await self?.finishRecording(sessionHandle: handle, automatic: true)
                 }
             } catch is CancellationError {
@@ -1853,6 +2340,12 @@ public actor MediaCaptureCore {
             await self?.deadlineTaskFinished(key: key, identifier: identifier)
         }
         deadlineTasks[key] = DeadlineTaskRecord(identifier: identifier, task: task)
+    }
+
+    private func beginExecutingDeadlineTask(key: String, identifier: UUID) -> Bool {
+        guard deadlineTasks[key]?.identifier == identifier else { return false }
+        deadlineTasks.removeValue(forKey: key)
+        return true
     }
 
     private func scheduleDeadline(key: String, at deadline: Date) {
@@ -2460,6 +2953,17 @@ public actor MediaCaptureCore {
     private func ensureOpen() throws {
         guard !closed, moduleLifecycleState != .closed,
               moduleLifecycleState != .tearingDown,
+              moduleLifecycleState != .restarting
+        else {
+            throw MediaCaptureFailure(.invalidState)
+        }
+    }
+
+    private func ensureMediaReleaseAllowed() throws {
+        guard !closed, moduleLifecycleState != .closed else {
+            throw MediaCaptureFailure(.mediaInvalid)
+        }
+        guard moduleLifecycleState != .tearingDown,
               moduleLifecycleState != .restarting
         else {
             throw MediaCaptureFailure(.invalidState)

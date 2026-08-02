@@ -10,10 +10,16 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 749e0b60592f105cd479fd6fb45c267de7ff8bf56cd3b4d8312cad109d2d4cef
+implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
 ---
 
 # Security Review: Media Capture Native Preview 与缩略图 Capability 演进
+
+## iOS dismiss 支持状态影响复审
+
+后续 Wire/Harness 变化只提升 Adapter dismissal 的 iOS support；Native preview generation、thumbnail
+source/decoder cleanup、工作预算、bounded JPEG copy 与路径禁入规则均未变化。独立 Security Reviewer
+确认 P0 0、P1 0、P2 0，摘要已绑定当前共享文件。
 
 ## 首轮结论
 
@@ -71,6 +77,11 @@ commit ownership 与工作预算已通过复审，原 P1-2 和 P2 关闭。仍�
 “adapter B attach 被拒后不能 detach adapter A”负例。
 
 当前仍不可刷新三份旧 Security Review 摘要。
+
+## 跨 Runtime 集成影响
+
+最终集成未修改 thumbnail 能力，只更新共享 Harness、状态文档和跨 Runtime vectors；bounded copy、
+内存预算与 Native-only source 边界不变。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
 
 ## V4 Harness 最终复审
 

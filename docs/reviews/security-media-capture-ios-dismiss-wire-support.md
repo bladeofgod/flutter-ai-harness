@@ -1,0 +1,44 @@
+---
+task: media-capture-ios-dismiss-wire-support
+status: passed
+p0: 0
+p1: 0
+p2: 0
+implementationFiles:
+  - docs/bridge/contracts/media-capture.wire.json
+  - docs/bridge/media-capture.md
+  - app/tool/harness_check.dart
+  - scripts/quality/test-harness.sh
+implementationDigest: 9cdf5814d50b19c4b5971b19a679b1d1164cdf8fbfbc26682e33abdaf2925575
+---
+
+# Security Review: iOS Capture Flow Dismiss Wire 支持状态
+
+## 结论
+
+独立 Security Review 通过，P0 0、P1 0、P2 0。本次只把既有 `dismiss_capture_flow` 的 iOS support
+提升为 `supported`，没有新增 Runtime 入口或权限，也没有放宽请求与资源边界。
+
+## 已确认边界
+
+- method 仍是 commands Channel 的 Adapter operation，只接受 originating `presentationRequestId`；payload
+  拒绝未知字段，不接受 Session/Media handle、路径、URI 或自由文本。
+- request ID 保持专用 opaque format；协议 error allowlist、exactly-once completion、匹配 flow 后幂等
+  dismiss、lifecycle cleanup 和 ID 日志脱敏均未改变。
+- Validator 精确要求 Android/iOS 均 supported；mutation 从合法 baseline 回退 iOS support 时必须失败，
+  request ID format 和 Session-handle payload 漂移负例继续保留。
+- Wire V1/V2 history projection 不包含 V3-only dismiss；Capability、transfer、thumbnail 和 Native Render
+  安全边界未变化。
+
+## 验证边界
+
+静态 Contract 与 Harness 不证明 iOS Runtime 已实现或可发布。iOS Adapter、Flutter SwiftPM Plugin、Host
+编译与 Quality Gate 是后续独立门禁；Camera/权限与硬件行为最终由用户真机验收。
+
+本轮 Reviewer 未读取普通 Review 结论，未运行命令或修改文件；受共享文件影响的 10 份既有 Security
+报告已由同一次独立影响复审覆盖并刷新摘要。
+
+## 跨 Runtime 集成影响
+
+最终集成只修正 Wire current method 计数并把 dismiss 纳入三端 current set，没有改变 iOS dismiss 的
+request correlation、终态或清理语义。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

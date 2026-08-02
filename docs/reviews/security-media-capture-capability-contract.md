@@ -11,10 +11,16 @@ implementationFiles:
   - docs/infrastructure-modules.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: ffea5789725fe74c24d53b4549ef9b03f3c3f78d2ff883dd6e3afce4be5807dc
+implementationDigest: 327136a7493a0574c4f0f81cefb786d995703b42d83486f0da8e95b8fd216f1e
 ---
 
 # Security Review：Media Capture 能力契约
+
+## iOS dismiss 支持状态影响复审
+
+后续变更只提升 Wire Adapter dismissal 的 iOS support；Capability 的输入、权限、opaque handle、媒体文件、
+受控读取、租约清理和隐私日志规则均未变化。独立 Security Reviewer 确认 P0 0、P1 0、P2 0，摘要已
+绑定当前共享文件。
 
 ## 结论
 
@@ -84,3 +90,8 @@ grace、重启失效与隐私日志约束均未回归；本报告摘要同步到
 独立 Security Reviewer 确认后续 Validator 与 mutation Fixture 扩展没有放宽 Capability 的闭合集合、
 opaque handle、权限、文件所有权、读取/导出、清理或日志边界，也没有扩大 Agent、MCP、CI 权限。
 当前结论仍为 `P0=0`、`P1=0`、`P2=0`。
+
+## 跨 Runtime 集成影响
+
+最终集成把 Capability V1-V4 current/history/failure 集合纳入三端直接消费，并修正设备证据表述；既有
+权限、handle、lease、文件所有权和日志边界未放宽。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。

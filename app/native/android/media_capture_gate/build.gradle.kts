@@ -76,6 +76,9 @@ project(":media_capture_bridge").plugins.withId("com.android.library") {
         sourceSets.getByName("test").resources.srcDirs(
             rootProject.file("../../../../docs/infrastructure/contracts"),
             rootProject.file("../../../../docs/bridge/contracts"),
+            rootProject.file(
+                "../../../../app/packages/app_media_capture_bridge/test/contracts",
+            ),
         )
     }
     project(":media_capture_bridge").dependencies.add(

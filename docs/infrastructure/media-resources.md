@@ -1,6 +1,6 @@
 # Flutter 媒体资源与预览基础件
 
-> 决策状态：已批准。实现状态：资源 Store 与 Flutter 通用预览已实现，业务接入待后续任务完成。
+> 决策状态：已批准。实现状态：资源 Store、Flutter 通用预览和 Customer Support 图片/视频消息接入已实现。
 
 [返回基础模块索引](../infrastructure-modules.md)
 

@@ -1,5 +1,6 @@
 @preconcurrency import AVFoundation
 import CoreGraphics
+import CoreVideo
 import ImageIO
 import MobileCoreServices
 import XCTest
@@ -65,6 +66,14 @@ final class ReviewFixRegressionTests: XCTestCase {
     }
 
     func testProductionMovieDelegateCancellationWaitsForFinalRecordingCallback() async throws {
+        let playableDelegate = MovieCaptureDelegate()
+        playableDelegate.finishRecording(error: NSError(
+            domain: AVFoundationErrorDomain,
+            code: AVError.Code.sessionWasInterrupted.rawValue,
+            userInfo: [AVErrorRecordingSuccessfullyFinishedKey: true]
+        ))
+        try await playableDelegate.value(onCancel: {})
+
         let delegate = MovieCaptureDelegate()
         let cancellation = CancellationSignal()
         let finished = LockedFlag()
@@ -343,6 +352,188 @@ final class ReviewFixRegressionTests: XCTestCase {
         await store.removeTemporaryResidue()
     }
 
+    func testProductionVideoSanitizationRemovesContainerAndTrackMetadata() async throws {
+        let store = AppleMediaFileStore()
+        await store.removeTemporaryResidue()
+        let recordingURL = try await store.recordingDestination()
+        try await makeProductionMOVWithSensitiveMetadata(at: recordingURL)
+        let sourceAsset = AVURLAsset(url: recordingURL)
+        let sourceMetadata = sourceAsset.metadata + sourceAsset.tracks.flatMap(\.metadata)
+        let sourceValues = sourceMetadata.compactMap(\.stringValue)
+        XCTAssertTrue(sourceValues.contains("+31.2000+121.5000/"))
+        XCTAssertTrue(sourceValues.contains("private-make"))
+        XCTAssertTrue(sourceValues.contains("private-model"))
+
+        let stored = try await store.finalizeRecording(at: recordingURL)
+        let source = try await store.openSource(stored.reference)
+        let sanitizedURL = try XCTUnwrap(source.fileURL)
+        XCTAssertEqual(stored.contentType, "video/mp4")
+        XCTAssertEqual(sanitizedURL.pathExtension, "mp4")
+        let asset = AVURLAsset(url: sanitizedURL)
+        let metadata = asset.metadata + asset.tracks.flatMap(\.metadata)
+        let values = metadata.compactMap(\.stringValue)
+        let videoTrack = try XCTUnwrap(asset.tracks(withMediaType: .video).first)
+        let format = try XCTUnwrap(videoTrack.formatDescriptions.first) as! CMFormatDescription
+
+        XCTAssertFalse(values.contains("+31.2000+121.5000/"))
+        XCTAssertFalse(values.contains("private-make"))
+        XCTAssertFalse(values.contains("private-model"))
+        XCTAssertEqual(CMFormatDescriptionGetMediaSubType(format), kCMVideoCodecType_H264)
+        let outputDurationMilliseconds = Int(
+            (CMTimeGetSeconds(asset.duration) * 1_000).rounded(.down)
+        )
+        XCTAssertEqual(stored.durationMilliseconds, outputDurationMilliseconds)
+        source.close()
+        await store.removeTemporaryResidue()
+    }
+
+    func testSecondCoreStartupDoesNotDeleteFirstCoreActiveLease() async throws {
+        let firstPlatform = FakeCapturePlatform()
+        await firstPlatform.setCapturedPhotoData(try makeProductionJPEG())
+        let firstCore = productionStorageCore(platform: firstPlatform)
+        let firstSession = try await startReadySession(core: firstCore, mediaTypes: [.photo])
+        let preview = try await firstCore.takePhoto(sessionHandle: firstSession)
+        let confirmed = try await firstCore.confirm(mediaHandle: preview.mediaHandle)
+
+        let secondCore = productionStorageCore(platform: FakeCapturePlatform())
+        _ = try await startReadySession(core: secondCore, mediaTypes: [.photo])
+        await secondCore.appRestarted()
+
+        let bytes = try await firstCore.withMediaRead(
+            mediaHandle: confirmed.metadata.mediaHandle
+        ) { access in
+            try await access.readAll()
+        }
+        XCTAssertFalse(bytes.isEmpty)
+        let thumbnail = try await firstCore.readMediaThumbnail(
+            mediaHandle: confirmed.metadata.mediaHandle,
+            maximumPixelEdge: 64
+        )
+        XCTAssertLessThanOrEqual(max(thumbnail.pixelWidth, thumbnail.pixelHeight), 64)
+        await secondCore.close()
+        await firstCore.close()
+    }
+
+    func testDirectoryCleanupSerializesRegistrationAndDeletion() async throws {
+        let parent = FileManager.default.temporaryDirectory
+            .appendingPathComponent("MediaCaptureRegistryTests-\(UUID().uuidString)", isDirectory: true)
+        let staleDirectory = parent.appendingPathComponent("stale", isDirectory: true)
+        let activeDirectory = parent.appendingPathComponent("active", isDirectory: true)
+        try FileManager.default.createDirectory(
+            at: staleDirectory,
+            withIntermediateDirectories: true
+        )
+        defer { try? FileManager.default.removeItem(at: parent) }
+
+        let registry = AppleMediaDirectoryRegistry()
+        let removalStarted = DispatchSemaphore(value: 0)
+        let allowRemoval = DispatchSemaphore(value: 0)
+        let registrationFinished = DispatchSemaphore(value: 0)
+        let cleanup = Task.detached {
+            registry.removeInactiveDirectories(
+                in: parent,
+                fileManager: .default,
+                remove: { directory in
+                    removalStarted.signal()
+                    allowRemoval.wait()
+                    try? FileManager.default.removeItem(at: directory)
+                }
+            )
+        }
+        XCTAssertEqual(removalStarted.wait(timeout: .now() + 2), .success)
+
+        let registration = Task.detached {
+            registry.register(activeDirectory)
+            try? FileManager.default.createDirectory(
+                at: activeDirectory,
+                withIntermediateDirectories: true
+            )
+            registrationFinished.signal()
+        }
+        XCTAssertEqual(registrationFinished.wait(timeout: .now() + 0.1), .timedOut)
+
+        allowRemoval.signal()
+        await cleanup.value
+        XCTAssertEqual(registrationFinished.wait(timeout: .now() + 2), .success)
+        await registration.value
+
+        registry.removeInactiveDirectories(
+            in: parent,
+            fileManager: .default,
+            remove: { try? FileManager.default.removeItem(at: $0) }
+        )
+        XCTAssertTrue(FileManager.default.fileExists(atPath: activeDirectory.path))
+        registry.unregister(activeDirectory)
+    }
+
+    func testConcurrentDeadlineProcessingDeletesGraceMediaOnce() async throws {
+        let fixture = CoreFixture(configuration: MediaCaptureConfiguration(
+            previewTimeToLive: 10,
+            mediaLeaseTimeToLive: 20,
+            readGracePeriod: 5,
+            tombstoneTimeToLive: 3
+        ))
+        let confirmed = try await fixture.confirmedPhoto()
+        _ = try await fixture.core.releaseMedia(mediaHandle: confirmed.metadata.mediaHandle)
+        fixture.clock.advance(by: 5)
+        let gate = TestAsyncGate()
+        await fixture.files.configureDeleteGate(gate)
+
+        let firstCleanup = Task { await fixture.core.processDeadlines() }
+        let deletionStarted = await waitUntil { await fixture.files.deleteStarted }
+        XCTAssertTrue(deletionStarted)
+        let competingCleanup = Task { await fixture.core.processDeadlines() }
+        await competingCleanup.value
+        gate.release()
+        await firstCleanup.value
+
+        let deletedReferences = await fixture.files.deletedReferences
+        XCTAssertEqual(deletedReferences.count, 1)
+        await fixture.core.close()
+    }
+
+    func testSanitizedCompositionPreservesRelativeTrackOffsets() async throws {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("mov")
+        try await makeProductionMOVWithSensitiveMetadata(at: url)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let asset = AVURLAsset(url: url)
+        let sourceTrack = try XCTUnwrap(asset.tracks(withMediaType: .video).first)
+        let source = AVMutableComposition()
+        let firstTrack = try XCTUnwrap(source.addMutableTrack(
+            withMediaType: .video,
+            preferredTrackID: kCMPersistentTrackID_Invalid
+        ))
+        let secondTrack = try XCTUnwrap(source.addMutableTrack(
+            withMediaType: .video,
+            preferredTrackID: kCMPersistentTrackID_Invalid
+        ))
+        try firstTrack.insertTimeRange(
+            sourceTrack.timeRange,
+            of: sourceTrack,
+            at: CMTime(seconds: 0.25, preferredTimescale: 600)
+        )
+        try secondTrack.insertTimeRange(
+            sourceTrack.timeRange,
+            of: sourceTrack,
+            at: CMTime(seconds: 0.75, preferredTimescale: 600)
+        )
+
+        let sanitized = try AppleVideoProcessor.sanitizedComposition(from: source)
+        let starts = sanitized.tracks(withMediaType: .video)
+            .compactMap { track in
+                track.segments.first(where: { !$0.isEmpty }).map {
+                    CMTimeGetSeconds($0.timeMapping.target.start)
+                }
+            }
+            .sorted()
+
+        XCTAssertEqual(starts.count, 2)
+        XCTAssertEqual(starts[0], 0, accuracy: 0.001)
+        XCTAssertEqual(starts[1], 0.5, accuracy: 0.001)
+    }
+
     func testReadGraceRevokesBlockingReadBeforeDeletionEvent() async throws {
         let fixture = CoreFixture(configuration: MediaCaptureConfiguration(
             previewTimeToLive: 10,
@@ -496,10 +687,6 @@ private extension FakeCapturePlatform {
         prepareFailure = failure
     }
 
-    func configureStopSession(_ gate: TestAsyncGate?) {
-        stopSessionGate = gate
-        stopSessionStarted = false
-    }
 }
 
 private func testSessionOptions() throws -> SessionOptions {
@@ -543,6 +730,121 @@ private func makeProductionJPEG() throws -> Data {
     return data as Data
 }
 
+private func makeProductionMOVWithSensitiveMetadata(at url: URL) async throws {
+    let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
+    let input = AVAssetWriterInput(
+        mediaType: .video,
+        outputSettings: [
+            AVVideoCodecKey: AVVideoCodecType.h264,
+            AVVideoWidthKey: 16,
+            AVVideoHeightKey: 16,
+        ]
+    )
+    input.expectsMediaDataInRealTime = false
+    let adaptor = AVAssetWriterInputPixelBufferAdaptor(
+        assetWriterInput: input,
+        sourcePixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+            kCVPixelBufferWidthKey as String: 16,
+            kCVPixelBufferHeightKey as String: 16,
+        ]
+    )
+    writer.metadata = [
+        metadataItem(
+            key: .quickTimeMetadataKeyLocationISO6709,
+            value: "+31.2000+121.5000/"
+        ),
+        metadataItem(key: .quickTimeMetadataKeyMake, value: "private-make"),
+    ]
+    input.metadata = [
+        metadataItem(key: .quickTimeMetadataKeyModel, value: "private-model"),
+    ]
+    guard writer.canAdd(input) else { throw MediaCaptureFailure(.encodingFailed) }
+    writer.add(input)
+    guard writer.startWriting() else { throw MediaCaptureFailure(.encodingFailed) }
+    writer.startSession(atSourceTime: .zero)
+
+    var pixelBuffer: CVPixelBuffer?
+    let status = CVPixelBufferCreate(
+        kCFAllocatorDefault,
+        16,
+        16,
+        kCVPixelFormatType_32BGRA,
+        nil,
+        &pixelBuffer
+    )
+    guard status == kCVReturnSuccess, let pixelBuffer else {
+        throw MediaCaptureFailure(.encodingFailed)
+    }
+    CVPixelBufferLockBaseAddress(pixelBuffer, [])
+    if let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer) {
+        memset(baseAddress, 0, CVPixelBufferGetDataSize(pixelBuffer))
+    }
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, [])
+    guard adaptor.append(pixelBuffer, withPresentationTime: .zero),
+          adaptor.append(pixelBuffer, withPresentationTime: CMTime(value: 1, timescale: 1))
+    else {
+        throw MediaCaptureFailure(.encodingFailed)
+    }
+    input.markAsFinished()
+
+    let writerBox = TestUncheckedSendableBox(writer)
+    try await withCheckedThrowingContinuation { continuation in
+        writerBox.value.finishWriting {
+            if writerBox.value.status == .completed {
+                continuation.resume()
+            } else {
+                continuation.resume(throwing: MediaCaptureFailure(.encodingFailed))
+            }
+        }
+    }
+}
+
+private func productionStorageCore(platform: FakeCapturePlatform) -> MediaCaptureCore {
+    MediaCaptureCore(
+        platform: platform,
+        fileStore: AppleMediaFileStore(),
+        clock: ManualClock(),
+        handleGenerator: SequentialHandleGenerator(),
+        thumbnailGenerator: ImmediateThumbnailGenerator()
+    )
+}
+
+private func startReadySession(
+    core: MediaCaptureCore,
+    mediaTypes: Set<MediaType>
+) async throws -> SessionHandle {
+    let stream = await core.events()
+    let created = try await core.startSession(options: SessionOptions(
+        enabledMediaTypes: mediaTypes,
+        audioEnabled: false,
+        maxVideoDurationMilliseconds: 1_000
+    ))
+    for await event in stream {
+        if case let .sessionReady(snapshot) = event,
+           snapshot.sessionHandle == created.sessionHandle {
+            return created.sessionHandle
+        }
+    }
+    throw MediaCaptureFailure(.systemInterrupted)
+}
+
+private func metadataItem(key: AVMetadataKey, value: String) -> AVMetadataItem {
+    let item = AVMutableMetadataItem()
+    item.keySpace = .quickTimeMetadata
+    item.key = key as NSString
+    item.value = value as NSString
+    return item.copy() as? AVMetadataItem ?? item
+}
+
+private final class TestUncheckedSendableBox<Value>: @unchecked Sendable {
+    let value: Value
+
+    init(_ value: Value) {
+        self.value = value
+    }
+}
+
 private final class LockedFlag: @unchecked Sendable {
     private let lock = NSLock()
     private var storedValue = false
@@ -567,5 +869,11 @@ private extension FakeMediaFileStore {
 
     func blockSourceOpen(on gate: TestAsyncGate) {
         openSourceGate = gate
+    }
+}
+
+private extension FakeCapturePlatform {
+    func setCapturedPhotoData(_ data: Data) {
+        capturedPhotoData = data
     }
 }

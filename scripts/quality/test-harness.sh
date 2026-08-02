@@ -19,8 +19,13 @@ mkdir -p \
   "$FIXTURE_ROOT/.claude/skills/swift-ios-standards" \
   "$FIXTURE_ROOT/.github/workflows" \
   "$FIXTURE_ROOT/app/apps/demo/android/app/src/main" \
+  "$FIXTURE_ROOT/app/apps/demo/android/app/src/main/kotlin/com/example/demo_app" \
   "$FIXTURE_ROOT/app/apps/demo/ios/Runner.xcodeproj" \
   "$FIXTURE_ROOT/app/apps/demo/ios/Runner" \
+  "$FIXTURE_ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture" \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests" \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/tool" \
+  "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/contracts" \
   "$FIXTURE_ROOT/app/lib" \
   "$FIXTURE_ROOT/app" \
   "$FIXTURE_ROOT/docs/tasks/done" \
@@ -62,10 +67,12 @@ jobs:
   android-build:
     runs-on: ubuntu-latest
     steps:
+      - run: make media-capture-android
       - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
   ios-build:
     runs-on: macos-15
     steps:
+      - run: make media-capture-ios
       - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign
 YAML
 cat > "$FIXTURE_ROOT/app/pubspec.yaml" <<'YAML'
@@ -80,9 +87,41 @@ printf '%s\n' '# Guide' > "$FIXTURE_ROOT/docs/guide.md"
 printf '\211PNG\r\n\032\n' > "$FIXTURE_ROOT/docs/image.png"
 printf '%s\n' '#!/usr/bin/env bash' 'set -euo pipefail' > "$FIXTURE_ROOT/scripts/check.sh"
 printf '%s\n' 'plugins {}' > "$FIXTURE_ROOT/app/apps/demo/android/app/build.gradle.kts"
-printf '%s\n' '<manifest />' > "$FIXTURE_ROOT/app/apps/demo/android/app/src/main/AndroidManifest.xml"
-printf '%s\n' '// project' > "$FIXTURE_ROOT/app/apps/demo/ios/Runner.xcodeproj/project.pbxproj"
-printf '%s\n' '<plist />' > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist"
+cat > "$FIXTURE_ROOT/app/apps/demo/android/app/src/main/AndroidManifest.xml" <<'XML'
+<manifest>
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+</manifest>
+XML
+printf '%s\n' 'class MainActivity : FlutterActivity()' \
+  > "$FIXTURE_ROOT/app/apps/demo/android/app/src/main/kotlin/com/example/demo_app/MainActivity.kt"
+cat > "$FIXTURE_ROOT/Makefile" <<'MAKE'
+media-capture-android:
+	bash scripts/quality/media-capture-android.sh
+media-capture-ios:
+	bash scripts/quality/media-capture-ios.sh
+MAKE
+cat > "$FIXTURE_ROOT/app/apps/demo/pubspec.yaml" <<'YAML'
+name: demo_fixture
+flutter:
+  config:
+    enable-swift-package-manager: true
+YAML
+cat > "$FIXTURE_ROOT/app/apps/demo/ios/Runner.xcodeproj/project.pbxproj" <<'TEXT'
+FlutterGeneratedPluginSwiftPackage in Frameworks
+XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage"
+productName = FlutterGeneratedPluginSwiftPackage;
+TEXT
+cat > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist" <<'XML'
+<plist><dict>
+<key>NSCameraUsageDescription</key><string>Camera</string>
+<key>NSMicrophoneUsageDescription</key><string>Microphone</string>
+</dict></plist>
+XML
+cat > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/AppDelegate.swift" <<'SWIFT'
+GeneratedPluginRegistrant.register(with: self)
+SWIFT
+printf '%s\n' 'Flutter/ephemeral/' > "$FIXTURE_ROOT/app/apps/demo/ios/.gitignore"
 
 write_security_target() {
   printf '%s\n' 'const secureValue = true;' \
@@ -106,7 +145,7 @@ MARKDOWN
   cat > "$FIXTURE_ROOT/docs/infrastructure-modules.md" <<'MARKDOWN'
 # Infrastructure modules
 [Native architecture](./native-architecture.md)
-| 原生媒体拍摄 | Android `app/native/android/media_capture/`；iOS `app/native/ios/MediaCapture/` | Android/iOS Media Capture Native Module | 已批准 | 未实现 | Shoppe 订单评价；用户批准归类为项目基础能力 | [media-capture.md](./infrastructure/media-capture.md) |
+| 原生媒体拍摄 | Android `app/native/android/media_capture/`；iOS `app/native/ios/MediaCapture/` | Android/iOS Media Capture Native Module | 已批准 | 已实现 | Customer Support 媒体消息与 Shoppe 订单评价 | [media-capture.md](./infrastructure/media-capture.md) |
 MARKDOWN
   cat > "$FIXTURE_ROOT/docs/bridge/README.md" <<'MARKDOWN'
 # Bridge
@@ -186,6 +225,16 @@ write_wire_contract_documents() {
     "$FIXTURE_ROOT/docs/bridge/contracts/media-capture.wire.json"
   cp "$ROOT/docs/bridge/media-capture.md" \
     "$FIXTURE_ROOT/docs/bridge/media-capture.md"
+  cp "$ROOT/app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json"
+  cp "$ROOT/app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart"
+  cp "$ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt" \
+    "$FIXTURE_ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt"
+  cp "$ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift"
+  cp "$ROOT/app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh"
 }
 
 write_wire_contract_documents
@@ -592,7 +641,7 @@ fi
 write_native_architecture_documents
 
 sed -i.bak \
-  's#"bridgePackages": \[\]#"bridgePackages": [{"path":"app/packages/app_media_capture_bridge/","status":"implemented"}]#' \
+  's#"bridgePackages": \[\]#"bridgePackages": [{"path":"app/packages/app_missing_bridge/","status":"implemented"}]#' \
   "$FIXTURE_ROOT/docs/native-architecture.md"
 rm -f -- "$FIXTURE_ROOT/docs/native-architecture.md.bak"
 if run_check >/dev/null 2>&1; then
@@ -3767,10 +3816,10 @@ fi
 cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
 
 mutate_wire_with_jq \
-  '(.methods[] | select(.id == "dismiss_capture_flow") | .platformSupport.ios) = "supported"'
-assert_wire_contract_mutated "dismiss capture flow premature iOS support"
+  '(.methods[] | select(.id == "dismiss_capture_flow") | .platformSupport.ios) = "unsupported"'
+assert_wire_contract_mutated "dismiss capture flow iOS support regression"
 if run_check >/dev/null 2>&1; then
-  echo "错误：Harness Check 未拒绝尚无实现证据的 iOS dismiss 支持声明。" >&2
+  echo "错误：Harness Check 未拒绝 iOS dismiss 支持矩阵回退。" >&2
   exit 1
 fi
 cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
@@ -4925,6 +4974,104 @@ if run_check >/dev/null 2>&1; then
 fi
 mv "$FIXTURE_ROOT/.github/workflows/ci.yml.valid" \
   "$FIXTURE_ROOT/.github/workflows/ci.yml"
+
+cp "$FIXTURE_ROOT/.github/workflows/ci.yml" \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml.valid"
+sed -i.bak '/make media-capture-ios/d' \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml"
+rm -f -- "$FIXTURE_ROOT/.github/workflows/ci.yml.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝缺少 iOS Media Capture 门禁的 CI。" >&2
+  exit 1
+fi
+mv "$FIXTURE_ROOT/.github/workflows/ci.yml.valid" \
+  "$FIXTURE_ROOT/.github/workflows/ci.yml"
+
+golden="$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json"
+cp "$golden" "$golden.valid"
+sed -i.bak 's/"maxFileBytes": 52428800/"maxFileBytes": 52428801/' "$golden"
+rm -f -- "$golden.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝跨 Runtime transfer limit 漂移。" >&2
+  exit 1
+fi
+mv "$golden.valid" "$golden"
+
+swift_consumer="$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift"
+mv "$swift_consumer" "$swift_consumer.valid"
+printf '%s\n' '// media-capture-v4-v3.golden.json' > "$swift_consumer"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝只保留 golden 文件名的 Swift 空消费者。" >&2
+  exit 1
+fi
+mv "$swift_consumer.valid" "$swift_consumer"
+
+dart_consumer="$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart"
+mv "$dart_consumer" "$dart_consumer.valid"
+printf '%s\n' '// media-capture-v4-v3.golden.json' > "$dart_consumer"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝只保留 golden 文件名的 Dart 空消费者。" >&2
+  exit 1
+fi
+mv "$dart_consumer.valid" "$dart_consumer"
+
+kotlin_consumer="$FIXTURE_ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt"
+mv "$kotlin_consumer" "$kotlin_consumer.valid"
+printf '%s\n' '// media-capture-v4-v3.golden.json' > "$kotlin_consumer"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝只保留 golden 文件名的 Kotlin 空消费者。" >&2
+  exit 1
+fi
+mv "$kotlin_consumer.valid" "$kotlin_consumer"
+
+demo_pubspec="$FIXTURE_ROOT/app/apps/demo/pubspec.yaml"
+cp "$demo_pubspec" "$demo_pubspec.valid"
+sed -i.bak 's/enable-swift-package-manager: true/enable-swift-package-manager: false/' \
+  "$demo_pubspec"
+rm -f -- "$demo_pubspec.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 Demo Host 关闭 SwiftPM。" >&2
+  exit 1
+fi
+mv "$demo_pubspec.valid" "$demo_pubspec"
+
+demo_plist="$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist"
+cp "$demo_plist" "$demo_plist.valid"
+sed -i.bak 's#<string>Camera</string>#<string> </string>#' "$demo_plist"
+rm -f -- "$demo_plist.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝空 Camera 权限用途说明。" >&2
+  exit 1
+fi
+cp "$demo_plist.valid" "$demo_plist"
+
+sed -i.bak 's#<string>Camera</string>#<true/>#' "$demo_plist"
+rm -f -- "$demo_plist.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝非 String Camera 权限用途说明。" >&2
+  exit 1
+fi
+cp "$demo_plist.valid" "$demo_plist"
+
+sed -i.bak \
+  's#<key>NSCameraUsageDescription</key>#<!-- <key>NSCameraUsageDescription</key> -->#' \
+  "$demo_plist"
+rm -f -- "$demo_plist.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝仅在注释中声明 Camera 权限 key。" >&2
+  exit 1
+fi
+cp "$demo_plist.valid" "$demo_plist"
+
+sed -i.bak \
+  's#</dict>#<key>NSCameraUsageDescription</key><string>Duplicate</string></dict>#' \
+  "$demo_plist"
+rm -f -- "$demo_plist.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝重复 Camera 权限 key。" >&2
+  exit 1
+fi
+mv "$demo_plist.valid" "$demo_plist"
 
 cat > "$FIXTURE_ROOT/.claude/skills/sample-skill/SKILL.md" <<'MARKDOWN'
 ---

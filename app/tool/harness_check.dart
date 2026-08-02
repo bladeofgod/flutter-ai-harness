@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 
 import 'codex_adapters.dart';
@@ -138,6 +139,7 @@ class _HarnessChecker {
       command:
           'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh '
           'build apk --debug',
+      gateCommand: 'make media-capture-android',
     );
     _validateCiBuildJob(
       jobs,
@@ -147,6 +149,7 @@ class _HarnessChecker {
       command:
           'TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh '
           'build ios --debug --no-codesign',
+      gateCommand: 'make media-capture-ios',
     );
   }
 
@@ -156,6 +159,7 @@ class _HarnessChecker {
     required String name,
     required String runnerPrefix,
     required String command,
+    required String gateCommand,
   }) {
     final job = jobs[name];
     if (job is! YamlMap) {
@@ -170,6 +174,10 @@ class _HarnessChecker {
     if (steps is! YamlList ||
         !steps.whereType<YamlMap>().any((step) => step['run'] == command)) {
       errors.add('$path 的 $name 缺少构建命令：$command');
+    }
+    if (steps is! YamlList ||
+        !steps.whereType<YamlMap>().any((step) => step['run'] == gateCommand)) {
+      errors.add('$path 的 $name 缺少平台专项门禁：$gateCommand');
     }
   }
 
@@ -1176,9 +1184,9 @@ class _HarnessChecker {
       'app/native/ios/MediaCapture/',
       'Android/iOS Media Capture Native Module',
       '已批准',
-      '未实现',
+      '已实现',
+      'Customer Support',
       'Shoppe 订单评价',
-      '用户批准归类为项目基础能力',
     ]) {
       if (!row.contains(requiredValue)) {
         errors.add('原生媒体拍摄索引行缺少：$requiredValue');
@@ -7041,6 +7049,9 @@ class _HarnessChecker {
     const capabilityPath =
         'docs/infrastructure/contracts/media-capture.capability.json';
     const detailPath = 'docs/bridge/media-capture.md';
+    const goldenPath =
+        'app/packages/app_media_capture_bridge/test/contracts/'
+        'media-capture-v4-v3.golden.json';
 
     final schema = _readJsonObject(schemaPath, 'Wire JSON Schema');
     final contract = _readJsonObject(
@@ -7050,6 +7061,10 @@ class _HarnessChecker {
     final capability = _readJsonObject(
       capabilityPath,
       'Media Capture Capability Contract',
+    );
+    final golden = _readJsonObject(
+      goldenPath,
+      'Media Capture cross-runtime golden vectors',
     );
     final detail = _file(detailPath);
 
@@ -7075,6 +7090,546 @@ class _HarnessChecker {
     }
     if (contract != null && capability != null) {
       _validateMediaCaptureWire(contract, capability, contractPath);
+      final methods = _wireObjectsById(
+        contract['methods'],
+        'id',
+        '$contractPath methods',
+      );
+      if (detail.existsSync() &&
+          !detail.readAsStringSync().contains('${methods.length} 个 method')) {
+        errors.add('$detailPath 的平台一致性 method 数量必须与 Wire current shape 一致');
+      }
+      if (golden != null) {
+        _validateMediaCaptureCrossRuntimeGolden(
+          golden,
+          contract,
+          capability,
+          goldenPath,
+        );
+      }
+    }
+    _validateMediaCaptureIntegrationHost();
+  }
+
+  void _validateMediaCaptureCrossRuntimeGolden(
+    Map<String, Object?> golden,
+    Map<String, Object?> wire,
+    Map<String, Object?> capability,
+    String path,
+  ) {
+    _validateCapabilityExactKeys(golden, const {
+      'schemaVersion',
+      'contractId',
+      'consumerBindings',
+      'current',
+      'history',
+      'transfer',
+      'lifecycle',
+      'redaction',
+    }, '$path 根节点');
+    if (golden['schemaVersion'] != 1 ||
+        golden['contractId'] != 'media_capture_cross_runtime_golden') {
+      errors.add('$path 必须声明稳定 Schema 与 Contract ID');
+    }
+
+    final current = _capabilityObject(golden['current'], '$path current');
+    _validateCapabilityExactKeys(current ?? const {}, const {
+      'capabilityVersion',
+      'wireVersion',
+      'compatibleCapabilityVersions',
+      'capabilityOperationIds',
+      'capabilityEventIds',
+      'capabilityFailureIds',
+      'methodIds',
+      'eventIds',
+      'failureIds',
+      'mappedCapabilityFailureIds',
+      'wireProtocolFailureIds',
+    }, '$path current');
+    final methodIds = _capabilityStringSet(
+      current?['methodIds'],
+      '$path current.methodIds',
+    );
+    final eventIds = _capabilityStringSet(
+      current?['eventIds'],
+      '$path current.eventIds',
+    );
+    final failureIds = _capabilityStringSet(
+      current?['failureIds'],
+      '$path current.failureIds',
+    );
+    final capabilityOperationIds = _capabilityStringSet(
+      current?['capabilityOperationIds'],
+      '$path current.capabilityOperationIds',
+    );
+    final capabilityEventIds = _capabilityStringSet(
+      current?['capabilityEventIds'],
+      '$path current.capabilityEventIds',
+    );
+    final capabilityFailureIds = _capabilityStringSet(
+      current?['capabilityFailureIds'],
+      '$path current.capabilityFailureIds',
+    );
+    final mappedCapabilityFailureIds = _capabilityStringSet(
+      current?['mappedCapabilityFailureIds'],
+      '$path current.mappedCapabilityFailureIds',
+    );
+    final wireProtocolFailureIds = _capabilityStringSet(
+      current?['wireProtocolFailureIds'],
+      '$path current.wireProtocolFailureIds',
+    );
+    final wireMethodIds = _wireObjectsById(
+      wire['methods'],
+      'id',
+      '$path Wire methods',
+    ).keys.toSet();
+    final wireEventIds = _wireObjectsById(
+      wire['events'],
+      'id',
+      '$path Wire events',
+    ).keys.toSet();
+    final wireFailures = _wireObjectsById(
+      wire['errors'],
+      'code',
+      '$path Wire failures',
+    );
+    final wireFailureIds = wireFailures.keys.toSet();
+    final expectedMappedCapabilityFailures = wireFailures.entries
+        .where((entry) => entry.value['source'] == 'capability_failure')
+        .map((entry) => entry.key)
+        .toSet();
+    final expectedWireProtocolFailures = wireFailures.entries
+        .where((entry) => entry.value['source'] == 'wire_protocol')
+        .map((entry) => entry.key)
+        .toSet();
+    final nativeCapabilityOperationIds = _wireObjectsById(
+      capability['operation'],
+      'id',
+      '$path Capability operations',
+    ).keys.toSet();
+    final nativeCapabilityEventIds = _wireObjectsById(
+      capability['event'],
+      'id',
+      '$path Capability events',
+    ).keys.toSet();
+    final nativeCapabilityFailureIds = _wireObjectsById(
+      capability['failure'],
+      'id',
+      '$path Capability failures',
+    ).keys.toSet();
+    if (current?['capabilityVersion'] != capability['capabilityVersion'] ||
+        current?['wireVersion'] != wire['wireVersion'] ||
+        !_wireJsonEquals(
+          current?['compatibleCapabilityVersions'],
+          wire['capability'] is Map<String, Object?>
+              ? (wire['capability']
+                    as Map<String, Object?>)['compatibleCapabilityVersions']
+              : null,
+        ) ||
+        methodIds == null ||
+        !_sameStringSet(methodIds, wireMethodIds) ||
+        eventIds == null ||
+        !_sameStringSet(eventIds, wireEventIds) ||
+        failureIds == null ||
+        !_sameStringSet(failureIds, wireFailureIds) ||
+        capabilityOperationIds == null ||
+        !_sameStringSet(capabilityOperationIds, nativeCapabilityOperationIds) ||
+        capabilityEventIds == null ||
+        !_sameStringSet(capabilityEventIds, nativeCapabilityEventIds) ||
+        capabilityFailureIds == null ||
+        !_sameStringSet(capabilityFailureIds, nativeCapabilityFailureIds) ||
+        mappedCapabilityFailureIds == null ||
+        !_sameStringSet(
+          mappedCapabilityFailureIds,
+          expectedMappedCapabilityFailures,
+        ) ||
+        wireProtocolFailureIds == null ||
+        !_sameStringSet(wireProtocolFailureIds, expectedWireProtocolFailures)) {
+      errors.add('$path current 必须精确绑定 Capability V4 与 Wire V3 shape');
+    }
+
+    final consumerBindings = _capabilityObjectList(
+      golden['consumerBindings'],
+      '$path consumerBindings',
+    );
+    const expectedConsumerPaths = {
+      'app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart',
+      'app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt',
+      'app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift',
+      'app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh',
+    };
+    final boundConsumerPaths = <String>{};
+    for (final binding in consumerBindings ?? const <Map<String, Object?>>[]) {
+      _validateCapabilityExactKeys(binding, const {
+        'path',
+        'implementationDigest',
+      }, '$path consumer binding');
+      final consumerPath = binding['path'];
+      final digest = binding['implementationDigest'];
+      if (consumerPath is! String ||
+          !expectedConsumerPaths.contains(consumerPath)) {
+        errors.add('$path consumer binding 包含未知路径：$consumerPath');
+        continue;
+      }
+      if (!boundConsumerPaths.add(consumerPath)) {
+        errors.add('$path consumer binding 重复声明：$consumerPath');
+        continue;
+      }
+      if (digest is! String || !RegExp(r'^[0-9a-f]{64}$').hasMatch(digest)) {
+        errors.add('$path consumer binding 必须声明小写 SHA-256：$consumerPath');
+        continue;
+      }
+      try {
+        final actual = calculateImplementationDigest(root, [consumerPath]);
+        if (actual != digest) {
+          errors.add('$consumerPath 与跨 Runtime golden 的 consumer binding 不一致');
+        }
+      } on FileSystemException {
+        errors.add('$consumerPath 必须存在并直接消费跨 Runtime golden vectors');
+      } on FormatException catch (error) {
+        errors.add('$path consumer binding 无效：${error.message}');
+      }
+    }
+    if (!_sameStringSet(boundConsumerPaths, expectedConsumerPaths)) {
+      errors.add('$path consumerBindings 必须精确绑定三端消费者与 iOS loader');
+    }
+
+    final history = _capabilityObject(golden['history'], '$path history');
+    final capabilityHistory = _capabilityObjectList(
+      history?['capability'],
+      '$path history.capability',
+    );
+    final wireHistory = _capabilityObjectList(
+      history?['wire'],
+      '$path history.wire',
+    );
+    const expectedCapabilityHistory = <Object?>[
+      {
+        'version': 1,
+        'operationCount': 13,
+        'eventCount': 5,
+        'nativeReadScope': true,
+        'nativeRenderScope': 'none',
+        'boundedExport': false,
+      },
+      {
+        'version': 2,
+        'operationCount': 18,
+        'eventCount': 6,
+        'nativeReadScope': true,
+        'nativeRenderScope': 'callback_adapter',
+        'boundedExport': false,
+      },
+      {
+        'version': 3,
+        'operationCount': 18,
+        'eventCount': 6,
+        'nativeReadScope': true,
+        'nativeRenderScope': 'module_concrete_surface',
+        'boundedExport': false,
+      },
+      {
+        'version': 4,
+        'operationCount': 19,
+        'eventCount': 6,
+        'nativeReadScope': true,
+        'nativeRenderScope': 'module_concrete_surface',
+        'boundedExport': true,
+      },
+    ];
+    const expectedWireHistory = <Object?>[
+      {
+        'version': 1,
+        'compatibleCapabilityVersions': [1],
+        'methodCount': 12,
+        'eventCount': 5,
+        'exposesNativeRead': false,
+        'exposesNativeRender': false,
+        'exposesTransfer': false,
+      },
+      {
+        'version': 2,
+        'compatibleCapabilityVersions': [2, 3],
+        'methodCount': 14,
+        'eventCount': 5,
+        'exposesNativeRead': false,
+        'exposesNativeRender': false,
+        'exposesTransfer': false,
+      },
+      {
+        'version': 3,
+        'compatibleCapabilityVersions': [4],
+        'methodCount': 17,
+        'eventCount': 5,
+        'exposesNativeRead': false,
+        'exposesNativeRender': false,
+        'exposesTransfer': true,
+      },
+    ];
+    if (!_wireJsonEquals(capabilityHistory, expectedCapabilityHistory) ||
+        !_wireJsonEquals(wireHistory, expectedWireHistory)) {
+      errors.add('$path history 必须固定 V1-V4 Capability 与 V1-V3 Wire 投影边界');
+    }
+
+    final transfer = _capabilityObject(golden['transfer'], '$path transfer');
+    final goldenLimits = _capabilityObject(
+      transfer?['limits'],
+      '$path transfer.limits',
+    );
+    final wireTransfer = _capabilityObject(
+      wire['transferStore'],
+      '$path Wire transferStore',
+    );
+    final wireLimits = _capabilityObject(
+      wireTransfer?['limits'],
+      '$path Wire transferStore.limits',
+    );
+    if (!_wireJsonEquals(transfer?['mimeCases'], const <Object?>[
+          {'mediaType': 'photo', 'contentType': 'image/jpeg', 'valid': true},
+          {'mediaType': 'photo', 'contentType': 'video/mp4', 'valid': false},
+          {'mediaType': 'video', 'contentType': 'video/mp4', 'valid': true},
+          {
+            'mediaType': 'video',
+            'contentType': 'video/quicktime',
+            'valid': false,
+          },
+        ]) ||
+        !_wireJsonEquals(transfer?['signed64Cases'], const <Object?>[
+          {'decimal': '-9223372036854775808', 'valid': true},
+          {'decimal': '9223372036854775807', 'valid': true},
+          {'decimal': '-9223372036854775809', 'valid': false},
+          {'decimal': '9223372036854775808', 'valid': false},
+        ])) {
+      errors.add('$path transfer 必须固定 MIME 与 signed-64 边界 vectors');
+    }
+    for (final key in const {
+      'maxFileBytes',
+      'ttlSeconds',
+      'maxActiveExportsPerEngineAttachment',
+      'maxActiveBytesPerEngineAttachment',
+      'releaseTombstoneSeconds',
+      'maxReleaseTombstones',
+    }) {
+      if (goldenLimits?[key] != wireLimits?[key]) {
+        errors.add('$path transfer limit $key 与 Wire Contract 漂移');
+      }
+    }
+
+    List<Object?> normalizedUriCases(Object? value, String label) => <Object?>[
+      for (final item
+          in _capabilityObjectList(value, label) ??
+              const <Map<String, Object?>>[])
+        {'id': item['id'], 'uri': item['uri'], 'valid': item['valid']},
+    ];
+    final goldenUriCases = normalizedUriCases(
+      transfer?['fileUriCases'],
+      '$path transfer.fileUriCases',
+    );
+    final contractUriCases = normalizedUriCases(
+      wireTransfer?['fileUriGoldenVectors'],
+      '$path Wire fileUriGoldenVectors',
+    );
+    if (!_wireJsonEquals(goldenUriCases, contractUriCases) ||
+        !_wireJsonEquals(transfer?['fileUriLengthCases'], const <Object?>[
+          {'totalLength': 4096, 'valid': true},
+          {'totalLength': 4097, 'valid': false},
+        ])) {
+      errors.add('$path file URI vectors 必须与 Wire Contract 和 4096 边界一致');
+    }
+
+    final lifecycle = _capabilityObject(golden['lifecycle'], '$path lifecycle');
+    if (!_wireJsonEquals(lifecycle?['cleanupOrder'], const [
+          'import_store_commit',
+          'release_transfer',
+          'release_source_lease',
+        ]) ||
+        lifecycle?['lateCompletion'] != 'cleanup_without_delivery' ||
+        lifecycle?['engineDetach'] !=
+            'delete_transfer_before_boundary_completion' ||
+        lifecycle?['releaseAfterTombstone'] != 'idempotent_success') {
+      errors.add('$path lifecycle 必须固定 Store commit 后 transfer/source 清理顺序');
+    }
+    final redaction = _capabilityObject(golden['redaction'], '$path redaction');
+    final forbiddenKeys = _capabilityStringSet(
+      redaction?['forbiddenPersistentKeys'],
+      '$path redaction.forbiddenPersistentKeys',
+    );
+    if (forbiddenKeys == null ||
+        !_sameStringSet(forbiddenKeys, const {
+          'fileUri',
+          'mediaHandle',
+          'exportHandle',
+          'absolutePath',
+        }) ||
+        redaction?['failureDetailsMayContainLocator'] != false ||
+        redaction?['logsMayContainLocator'] != false) {
+      errors.add('$path redaction 必须拒绝 locator/handle 持久化与日志泄漏');
+    }
+  }
+
+  void _validateMediaCaptureIntegrationHost() {
+    const pubspecPath = 'app/apps/demo/pubspec.yaml';
+    const plistPath = 'app/apps/demo/ios/Runner/Info.plist';
+    const projectPath = 'app/apps/demo/ios/Runner.xcodeproj/project.pbxproj';
+    const appDelegatePath = 'app/apps/demo/ios/Runner/AppDelegate.swift';
+    const ignorePath = 'app/apps/demo/ios/.gitignore';
+    const androidManifestPath =
+        'app/apps/demo/android/app/src/main/AndroidManifest.xml';
+    const androidActivityPath =
+        'app/apps/demo/android/app/src/main/kotlin/com/example/demo_app/MainActivity.kt';
+
+    final pubspec = _file(pubspecPath);
+    if (!pubspec.existsSync()) {
+      errors.add('缺少 Demo Host pubspec：$pubspecPath');
+    } else {
+      try {
+        final value = loadYaml(pubspec.readAsStringSync());
+        if (value is! YamlMap ||
+            value['flutter'] is! YamlMap ||
+            (value['flutter'] as YamlMap)['config'] is! YamlMap ||
+            ((value['flutter'] as YamlMap)['config']
+                    as YamlMap)['enable-swift-package-manager'] !=
+                true) {
+          errors.add('$pubspecPath 必须启用项目级 Flutter Swift Package Manager');
+        }
+      } on YamlException catch (error) {
+        errors.add('$pubspecPath YAML 无效：${error.message}');
+      }
+    }
+
+    final plist = _file(plistPath);
+    if (!plist.existsSync()) {
+      errors.add('缺少 Demo Host Info.plist：$plistPath');
+    } else {
+      try {
+        final document = XmlDocument.parse(plist.readAsStringSync());
+        final plistElements = document.findAllElements('plist').toList();
+        final dictionaries = plistElements.length == 1
+            ? plistElements.single.children
+                  .whereType<XmlElement>()
+                  .where((element) => element.name.local == 'dict')
+                  .toList()
+            : const <XmlElement>[];
+        if (dictionaries.length != 1) {
+          errors.add('$plistPath 必须包含唯一的 plist/dict 根节点');
+        } else {
+          final entries = dictionaries.single.children
+              .whereType<XmlElement>()
+              .toList();
+          for (final key in const [
+            'NSCameraUsageDescription',
+            'NSMicrophoneUsageDescription',
+          ]) {
+            final indexes = <int>[
+              for (var index = 0; index < entries.length; index += 1)
+                if (entries[index].name.local == 'key' &&
+                    entries[index].innerText == key)
+                  index,
+            ];
+            final valid =
+                indexes.length == 1 &&
+                indexes.single + 1 < entries.length &&
+                entries[indexes.single + 1].name.local == 'string' &&
+                entries[indexes.single + 1].innerText.trim().isNotEmpty;
+            if (!valid) {
+              errors.add('$plistPath 必须精确声明一个非空 String $key');
+            }
+          }
+        }
+      } on XmlParserException catch (error) {
+        errors.add('$plistPath XML 无效：${error.message}');
+      }
+    }
+
+    final project = _file(projectPath);
+    final projectContent = project.existsSync()
+        ? project.readAsStringSync()
+        : '';
+    for (final required in const [
+      'FlutterGeneratedPluginSwiftPackage in Frameworks',
+      'XCLocalSwiftPackageReference "Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage"',
+      'productName = FlutterGeneratedPluginSwiftPackage;',
+    ]) {
+      if (!projectContent.contains(required)) {
+        errors.add('$projectPath 缺少真实 Runner SwiftPM 接线：$required');
+      }
+    }
+    if (RegExp(
+      r'/(Users|home)/|Flutter\.xcframework',
+    ).hasMatch(projectContent)) {
+      errors.add('$projectPath 不得包含本机绝对路径或 Flutter binary 手工接线');
+    }
+
+    final appDelegate = _file(appDelegatePath);
+    final appDelegateContent = appDelegate.existsSync()
+        ? appDelegate.readAsStringSync()
+        : '';
+    if (RegExp(
+          r'GeneratedPluginRegistrant\.register\(with: self\)',
+        ).allMatches(appDelegateContent).length !=
+        1) {
+      errors.add('$appDelegatePath 必须只使用标准 GeneratedPluginRegistrant 装配');
+    }
+    for (final forbidden in const [
+      'MethodChannel',
+      'fileUri',
+      'mediaHandle',
+      'exportHandle',
+      'MediaCaptureCore',
+    ]) {
+      if (appDelegateContent.contains(forbidden)) {
+        errors.add('$appDelegatePath 不得处理 Media Capture 状态、Wire 或 locator');
+      }
+    }
+
+    final ignore = _file(ignorePath);
+    if (!ignore.existsSync() ||
+        !ignore.readAsStringSync().contains('Flutter/ephemeral/')) {
+      errors.add('$ignorePath 必须排除 Flutter ephemeral package');
+    }
+
+    final androidManifest = _file(androidManifestPath);
+    final androidManifestContent = androidManifest.existsSync()
+        ? androidManifest.readAsStringSync()
+        : '';
+    for (final permission in const [
+      'android.permission.CAMERA',
+      'android.permission.RECORD_AUDIO',
+    ]) {
+      if (RegExp(
+            RegExp.escape(permission),
+          ).allMatches(androidManifestContent).length !=
+          1) {
+        errors.add('$androidManifestPath 必须精确声明一个 $permission');
+      }
+    }
+    if (RegExp(
+      r'READ_EXTERNAL_STORAGE|WRITE_EXTERNAL_STORAGE|READ_MEDIA_',
+    ).hasMatch(androidManifestContent)) {
+      errors.add('$androidManifestPath 不得为 Media Capture 增加共享存储权限');
+    }
+    final androidActivity = _file(androidActivityPath);
+    final activityContent = androidActivity.existsSync()
+        ? androidActivity.readAsStringSync()
+        : '';
+    if (!activityContent.contains('class MainActivity : FlutterActivity()') ||
+        RegExp(
+          r'MethodChannel|fileUri|mediaHandle|exportHandle|MediaCapture',
+        ).hasMatch(activityContent)) {
+      errors.add('$androidActivityPath 必须保持纯 FlutterActivity Host 装配边界');
+    }
+
+    final makefile = _file('Makefile');
+    final makefileContent = makefile.existsSync()
+        ? makefile.readAsStringSync()
+        : '';
+    for (final required in const [
+      'media-capture-android:\n\tbash scripts/quality/media-capture-android.sh',
+      'media-capture-ios:\n\tbash scripts/quality/media-capture-ios.sh',
+    ]) {
+      if (!makefileContent.contains(required)) {
+        errors.add('Makefile 缺少独立 Media Capture 平台门禁');
+      }
     }
   }
 
@@ -8943,10 +9498,8 @@ class _HarnessChecker {
         !_sameStringSet(actualErrors, protocolErrors) ||
         method['completion'] != 'exactly_once' ||
         platformSupport?['android'] != 'supported' ||
-        platformSupport?['ios'] != 'unsupported') {
-      errors.add(
-        '$label 必须按 presentation requestId 精确关闭 Android flow，并显式后置 iOS',
-      );
+        platformSupport?['ios'] != 'supported') {
+      errors.add('$label 必须按 presentation requestId 精确关闭 Android/iOS flow');
     }
   }
 
@@ -11694,7 +12247,7 @@ class _HarnessChecker {
       3: (
         versions: [4],
         description:
-            'Adds scoped one-time materialize and release methods for Capability V4 bounded export using an Adapter-owned private cache store, plus a request-correlated Adapter presentation dismiss method for Flutter lifecycle cleanup. Transfer uses 128-bit CSPRNG export handles, fixed native sink and length bindings, canonical short-lived file URI locators, closed media metadata, optional SHA-256 integrity, bounded tombstones, and ordered cleanup while preserving Wire V1/V2 history; dismiss is Android-supported and explicitly deferred on iOS.',
+            'Adds scoped one-time materialize and release methods for Capability V4 bounded export using an Adapter-owned private cache store, plus a request-correlated Adapter presentation dismiss method for Flutter lifecycle cleanup. Transfer uses 128-bit CSPRNG export handles, fixed native sink and length bindings, canonical short-lived file URI locators, closed media metadata, optional SHA-256 integrity, bounded tombstones, and ordered cleanup while preserving Wire V1/V2 history; dismiss is supported by both Android and iOS adapters.',
       ),
     };
     if (byVersion.length != 3 ||

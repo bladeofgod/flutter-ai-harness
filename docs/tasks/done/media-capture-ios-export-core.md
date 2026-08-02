@@ -14,6 +14,8 @@ securityReview: required
 
 - Capability V4 bounded sink export、50 MiB 上限、256 KiB buffer 与 source lease 竞态。
 - 已完成的 iOS Media Capture Core/Swift Package、App private media 和 callback-scoped read。
+- 执行时发现既有净化视频仍输出 `video/quicktime`，与 V4 闭合的 `video/mp4` source format 不一致；本任务
+  必须先把净化容器和 metadata 对齐为 MP4，不能只改 MIME 文案。
 - Swift/iOS 生产规范和 Native Testing Strategy。
 
 ## 目标
@@ -25,7 +27,7 @@ securityReview: required
 ## 非目标
 
 - 不创建 Bridge cache/file URL/export handle，不修改 Adapter、Runner、Info.plist、Flutter 或 Android。
-- 不自动 release source，不改变 capture/preview/thumbnail 和权限。
+- 不自动 release source；除上述净化视频 MP4 契约对齐外，不改变 capture/preview/thumbnail 和权限行为。
 - 不把 URL、FileHandle、Data 全量副本或 AVFoundation 类型暴露在 Core 公共 API。
 
 ## 实现要求

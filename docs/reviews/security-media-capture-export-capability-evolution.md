@@ -10,10 +10,16 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 749e0b60592f105cd479fd6fb45c267de7ff8bf56cd3b4d8312cad109d2d4cef
+implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
 ---
 
 # Security Review: Media Capture Export Capability V4
+
+## iOS dismiss 支持状态影响复审
+
+后续 Wire/Harness 变化只提升 Adapter dismissal 的 iOS support；Capability V4 typed sink、buffer、deadline、
+commit/abort、路径禁入和 source lease 语义均未变化。独立 Security Reviewer 确认 P0 0、P1 0、P2 0，
+摘要已绑定当前共享文件。
 
 ## 结论
 
@@ -37,3 +43,8 @@ transition、resource、ownership、cleanup、privacy、streaming policy 和 his
 
 静态 Capability/Harness 不能证明 Android/iOS 实现始终使用 bounded buffer，也不能证明真实文件复制、
 不合作 sink、release/expiry/Core close 竞态和平台内存行为。对应证据由后续双端 Core 和质量门禁任务提供。
+
+## 跨 Runtime 集成影响
+
+最终集成通过三端 current/history/failure source 和 bounded transfer vectors 验证既有 V4 能力，没有改变
+Native sink 或 Core ownership。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
