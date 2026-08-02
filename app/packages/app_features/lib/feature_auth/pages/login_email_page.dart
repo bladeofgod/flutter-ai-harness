@@ -45,69 +45,11 @@ final class _LoginEmailPageState extends State<LoginEmailPage> {
           global: false,
           autoRemove: false,
           builder: (controller) => AuthFlowPageFrame(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 394),
-                const Text('Login', style: AuthFlowTextStyles.largeTitle),
-                const SizedBox(height: 4),
-                const Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        'Good to see you back!',
-                        style: AuthFlowTextStyles.description,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    ExcludeSemantics(
-                      child: Icon(
-                        Icons.favorite,
-                        size: 18,
-                        color: AppColors.textStrong,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 19),
-                AuthCapsuleTextField(
-                  key: const ValueKey('login-email'),
-                  controller: controller.emailController,
-                  hintText: 'Email',
-                  semanticsLabel: 'Email',
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.done,
-                  autofillHints: const [AutofillHints.email],
-                  enabled: !controller.isFindingAccount,
-                  onSubmitted: (_) => _findAccount(controller),
-                  errorText: _emailErrorText(controller.emailError),
-                ),
-                if (controller.formError case LoginFormError.unavailable) ...[
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Login is unavailable. Try again.',
-                    textAlign: TextAlign.center,
-                    style: AuthTextStyles.fieldError,
-                  ),
-                ],
-                const SizedBox(height: 36.625),
-                AuthPrimaryButton(
-                  key: const ValueKey('login-next'),
-                  label: 'Next',
-                  isLoading: controller.isFindingAccount,
-                  onPressed: controller.isFindingAccount
-                      ? null
-                      : () => _findAccount(controller),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  child: AuthCancelButton(
-                    key: const ValueKey('login-cancel'),
-                    onPressed: () => _cancel(controller),
-                  ),
-                ),
-                const SizedBox(height: 15),
-              ],
+            liftForKeyboard: true,
+            child: _LoginEmailContent(
+              controller: controller,
+              onSubmit: () => _findAccount(controller),
+              onCancel: () => _cancel(controller),
             ),
           ),
         ),
@@ -130,6 +72,92 @@ final class _LoginEmailPageState extends State<LoginEmailPage> {
     controller.resetFlow();
     widget.onCancel();
   }
+}
+
+final class _LoginEmailContent extends StatelessWidget {
+  const _LoginEmailContent({
+    required this.controller,
+    required this.onSubmit,
+    required this.onCancel,
+  });
+
+  final LoginController controller;
+  final VoidCallback onSubmit;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) => SingleChildScrollView(
+      key: const ValueKey('login-email-scroll'),
+      physics: const ClampingScrollPhysics(),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: constraints.maxHeight),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('Login', style: AuthFlowTextStyles.largeTitle),
+            const SizedBox(height: 4),
+            const Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    'Good to see you back!',
+                    style: AuthFlowTextStyles.description,
+                  ),
+                ),
+                SizedBox(width: 8),
+                ExcludeSemantics(
+                  child: Icon(
+                    Icons.favorite,
+                    size: 18,
+                    color: AppColors.textStrong,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 19),
+            AuthCapsuleTextField(
+              key: const ValueKey('login-email'),
+              controller: controller.emailController,
+              hintText: 'Email',
+              semanticsLabel: 'Email',
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.email],
+              enabled: !controller.isFindingAccount,
+              onSubmitted: (_) => onSubmit(),
+              errorText: _emailErrorText(controller.emailError),
+            ),
+            if (controller.formError case LoginFormError.unavailable) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Login is unavailable. Try again.',
+                textAlign: TextAlign.center,
+                style: AuthTextStyles.fieldError,
+              ),
+            ],
+            const SizedBox(height: 36.625),
+            AuthPrimaryButton(
+              key: const ValueKey('login-next'),
+              label: 'Next',
+              isLoading: controller.isFindingAccount,
+              onPressed: controller.isFindingAccount ? null : onSubmit,
+            ),
+            const SizedBox(height: 10),
+            Align(
+              child: AuthCancelButton(
+                key: const ValueKey('login-cancel'),
+                onPressed: onCancel,
+              ),
+            ),
+            const SizedBox(height: 15),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 String? _emailErrorText(LoginEmailError? error) => switch (error) {

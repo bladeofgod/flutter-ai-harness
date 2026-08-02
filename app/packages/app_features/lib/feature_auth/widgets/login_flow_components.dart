@@ -69,56 +69,94 @@ abstract final class AuthFlowTextStyles {
 }
 
 final class AuthFlowPageFrame extends StatelessWidget {
-  const AuthFlowPageFrame({required this.child, super.key});
+  const AuthFlowPageFrame({
+    required this.child,
+    this.liftForKeyboard = false,
+    super.key,
+  });
 
   static const referenceSafeHeight = 734.0;
+  static const keyboardAnimationDuration = Duration(milliseconds: 250);
 
   final Widget child;
+  final bool liftForKeyboard;
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: authFlowSystemUiStyle,
-    child: Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        clipBehavior: Clip.hardEdge,
-        children: [
-          const Positioned(
-            left: -131.97,
-            top: -205.67,
-            child: AuthBubbleBackground(),
-          ),
-          SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) => SingleChildScrollView(
-                key: const ValueKey('auth-flow-scroll'),
-                physics: const ClampingScrollPhysics(),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: authContentMaxWidth,
-                      minHeight: math.max(
-                        referenceSafeHeight,
-                        constraints.maxHeight,
+  Widget build(BuildContext context) {
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: authFlowSystemUiStyle,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            const Positioned(
+              left: -131.97,
+              top: -205.67,
+              child: AuthBubbleBackground(),
+            ),
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (liftForKeyboard) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: authContentMaxWidth,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: authHorizontalPadding,
+                                ),
+                                child: child,
+                              ),
+                            ),
+                          ),
+                        ),
+                        AnimatedContainer(
+                          key: const ValueKey('auth-keyboard-spacer'),
+                          duration: keyboardAnimationDuration,
+                          curve: Curves.easeOutCubic,
+                          height: keyboardInset,
+                        ),
+                      ],
+                    );
+                  }
+                  return SingleChildScrollView(
+                    key: const ValueKey('auth-flow-scroll'),
+                    physics: const ClampingScrollPhysics(),
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: authContentMaxWidth,
+                          minHeight: math.max(
+                            referenceSafeHeight,
+                            constraints.maxHeight,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: authHorizontalPadding,
+                          ),
+                          child: child,
+                        ),
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: authHorizontalPadding,
-                      ),
-                      child: child,
-                    ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 final class LoginUserAvatar extends StatelessWidget {

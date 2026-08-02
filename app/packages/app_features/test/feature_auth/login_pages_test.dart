@@ -277,12 +277,109 @@ void main() {
       expect(targetRect.top, greaterThanOrEqualTo(0));
       expect(
         targetRect.bottom,
-        lessThanOrEqualTo(testCase.size.height - testCase.inset),
+        lessThanOrEqualTo(
+          testCase.step == 0
+              ? testCase.size.height - testCase.inset
+              : testCase.size.height,
+        ),
       );
 
       await tester.pumpWidget(const SizedBox());
       router.dispose();
     }
+  });
+
+  testWidgets('lifts the focused email form with the keyboard animation', (
+    tester,
+  ) async {
+    final router = _router(_FakeAuthApi());
+    final keyboardInset = ValueNotifier<double>(0);
+    addTearDown(router.dispose);
+    addTearDown(keyboardInset.dispose);
+    await _setViewport(tester, const Size(375, 812));
+    await tester.pumpWidget(
+      ValueListenableBuilder<double>(
+        valueListenable: keyboardInset,
+        builder: (context, inset, child) => MaterialApp.router(
+          theme: AppTheme.light,
+          routerConfig: router,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              padding: const EdgeInsets.only(top: 44, bottom: 34),
+              viewPadding: const EdgeInsets.only(top: 44, bottom: 34),
+              viewInsets: EdgeInsets.only(bottom: inset),
+            ),
+            child: child!,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.tap(_emailField);
+    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, isNotNull);
+    final initialFieldRect = tester.getRect(_emailField);
+    keyboardInset.value = 300;
+    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, isNotNull);
+    expect(
+      MediaQuery.viewInsetsOf(tester.element(find.byType(Scaffold))).bottom,
+      300,
+    );
+    final spacer = find.byKey(const ValueKey('auth-keyboard-spacer'));
+    expect(spacer, findsOneWidget);
+    await tester.pump(AuthFlowPageFrame.keyboardAnimationDuration ~/ 2);
+    final intermediateSpacerHeight = tester.getSize(spacer).height;
+    expect(intermediateSpacerHeight, greaterThan(0));
+    expect(intermediateSpacerHeight, lessThan(300));
+    expect(tester.getRect(_emailField).top, lessThan(initialFieldRect.top));
+    await tester.pump(AuthFlowPageFrame.keyboardAnimationDuration ~/ 2);
+
+    expect(tester.getSize(spacer).height, 300);
+    final fieldRect = tester.getRect(_emailField);
+    expect(fieldRect.top, greaterThanOrEqualTo(0));
+    expect(fieldRect.bottom, lessThanOrEqualTo(512));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('does not lift the password layout for the keyboard', (
+    tester,
+  ) async {
+    final router = _router(_FakeAuthApi());
+    final keyboardInset = ValueNotifier<double>(0);
+    addTearDown(router.dispose);
+    addTearDown(keyboardInset.dispose);
+    await _setViewport(tester, const Size(375, 812));
+    await tester.pumpWidget(
+      ValueListenableBuilder<double>(
+        valueListenable: keyboardInset,
+        builder: (context, inset, child) => MaterialApp.router(
+          theme: AppTheme.light,
+          routerConfig: router,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              padding: const EdgeInsets.only(top: 44, bottom: 34),
+              viewPadding: const EdgeInsets.only(top: 44, bottom: 34),
+              viewInsets: EdgeInsets.only(bottom: inset),
+            ),
+            child: child!,
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await _goToPassword(tester);
+    final dots = find.byKey(const ValueKey('login-password-dots'));
+    final initialTop = tester.getRect(dots).top;
+
+    keyboardInset.value = 300;
+    await tester.pump();
+    await tester.pump(AuthFlowPageFrame.keyboardAnimationDuration);
+
+    expect(find.byKey(const ValueKey('auth-keyboard-spacer')), findsNothing);
+    expect(tester.getRect(dots).top, initialTop);
+    expect(tester.takeException(), isNull);
   });
 }
 
