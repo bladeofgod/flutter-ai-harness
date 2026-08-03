@@ -24,7 +24,7 @@ implementationFiles:
   - app/tool/check_package_dependencies.dart
   - scripts/lint/repository-boundaries.sh
   - scripts/lint/test-repository-boundaries.sh
-implementationDigest: da3779919e896744720bc40749f0875b3b5c9e1f92eef46efaaee6d2dd9c6a65
+implementationDigest: 4dd7c28583d68a06a4c82678c6db69a55088a2478a6a04beb17cec11ae951d00
 ---
 
 # Security Review: Flutter 媒体资源存储基础件
@@ -98,3 +98,10 @@ pubspec、lockfile 和依赖门禁继续保留在实现文件集合中；当前�
 
 根 Workspace 新增的 `xml` 仅是 Harness 的直接 dev dependency，用于结构化校验 iOS plist；不进入
 `app_media` Runtime。Store ownership、locator 隔离和 cleanup 语义不变，独立安全复审为 0/0/0。
+
+## Workspace SwiftPM Bootstrap 配置影响
+
+根 Workspace 新增项目级 SwiftPM 布尔配置，只影响 Flutter Plugin 的构建选择，不增加 Runtime 依赖、
+媒体输入、文件访问、网络来源或权限。`app_media` Store、canonicalization、lease 和 cleanup 实现未改，
+锁文件内容保持不变。隔离 Runner 配置下的 bootstrap 已通过，本报告 P0/P1/P2 维持 0/0/0，并按原文件
+集合重新绑定摘要；独立增量安全复核未发现新的供应链或 Runtime 信任边界风险。

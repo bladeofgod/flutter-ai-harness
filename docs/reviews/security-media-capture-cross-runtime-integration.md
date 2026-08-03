@@ -35,7 +35,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: d60a139e9030e9206b18a99160029061f9adb44e1bd00b886677c03b35dd2304
+implementationDigest: 401eac6215d04f703e0cd235be3fa223bca27b4f363b6a7b1738d84a9950a1b2
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -72,3 +72,15 @@ Android API 23 instrumented、Camera/Gallery 主动流程和 iOS 真机 Camera/M
 input 生命周期和 retake 文件状态边界进一步收紧；Bridge Gate 的 Simulator 输入、结构化诊断与单次重试
 均 fail closed。独立 Security Reviewer 确认 P0/P1/P2 0/0/0；完整 Gate 以 107/52/69 精确测试数通过，
 方向适配明确不在本轮范围内。
+
+## Workspace SwiftPM Bootstrap 配置复核
+
+Workspace 根 `app/pubspec.yaml` 现在与 Demo Host 一样使用项目级
+`flutter.config.enable-swift-package-manager: true`，使 Melos 从 Workspace 根执行的 `flutter pub get`
+不依赖用户或 CI Runner 的全局 Flutter 配置。该配置没有新增 Package、远程 URL、脚本、CI 权限或发布
+能力，`pubspec.lock` 内容保持不变；Bridge 仍只通过仓库内本地 Package 和相对路径接线。
+
+隔离 `HOME`/XDG 配置下的 `melos bootstrap` 与完整 `make bootstrap` 均通过，确认默认 Runner 环境不会
+再因 SwiftPM 全局开关缺失而失败。既有依赖来源、Host、Plugin discovery 和安全结论不变，当前
+P0/P1/P2 仍为 0/0/0；独立增量安全复核未发现新的供应链、凭据或外部写入通道风险，本报告按原
+implementationFiles 集合重新绑定摘要。

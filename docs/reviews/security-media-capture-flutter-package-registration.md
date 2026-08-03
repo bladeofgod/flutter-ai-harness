@@ -17,7 +17,7 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 8e6b1d621e3b8f45bd5d2f1da848a1f065833a31664840f1f8b43a3fdc839861
+implementationDigest: 1e2139f218d2693ddaf9e86f3e3ec91a7de5d3fb3d591e409ca2d25395d70bfd
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -74,3 +74,11 @@ plugin；discovery 仍要求唯一插件、预期路径、regular directory、no
 
 真实 Demo 已启用项目级 SwiftPM；根 `xml` 仅为 Harness 直接 dev dependency，不进入 Plugin Runtime。
 Host 仍使用标准注册、仓库相对依赖且无远程 SPM/本机 framework，独立安全复审为 0/0/0。
+
+## Workspace SwiftPM Bootstrap 配置复核
+
+根 Workspace 与 Demo Host 现在都显式启用项目级 SwiftPM，保证 Workspace 根的 `flutter pub get` 与最终
+Host 使用同一 Plugin 构建方式，不读取或修改全局 Flutter 配置。Bridge Package 仍为 Workspace 本地、
+`publish_to: none`，依赖清单和 lockfile 均未改变，也没有新增远程 SPM、脚本或发布能力。隔离配置下的
+Melos bootstrap 与完整 `make bootstrap` 已通过；独立增量安全复核确认 P0/P1/P2 维持 0/0/0，本报告
+按原文件集合刷新摘要。
