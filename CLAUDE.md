@@ -17,7 +17,7 @@
 
 ### Flutter
 
-- Flutter 3.35.7 / Dart 3.9
+- Flutter 3.41.9 / Dart 3.11
 - 状态管理与轻量 DI：GetX 精简版 fork（公开 Git 源，固定 Commit）
 - 路由：`go_router ^15.1.2`
 - 网络：`dio ^5.7.0` + Protocol Buffers `^6.0.0`

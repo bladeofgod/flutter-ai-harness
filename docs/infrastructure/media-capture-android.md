@@ -16,7 +16,7 @@ Bridge Adapter 直接依赖。模块拥有 Session/Media 状态机、CameraX 采
 
 | 项目 | 固定值 |
 | --- | --- |
-| Flutter Host 基线 | Flutter 3.35.7 |
+| Flutter Host 基线 | Flutter 3.41.9 |
 | Gradle | 8.12，复用 Demo Host wrapper |
 | Android Gradle Plugin | 8.9.1 |
 | Kotlin | 2.1.0 |

@@ -17,7 +17,7 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 1e2139f218d2693ddaf9e86f3e3ec91a7de5d3fb3d591e409ca2d25395d70bfd
+implementationDigest: 8b32a8f5eb1ff2f47ba539e182c4d230314ff7ff7320c5b2a0a01200664c14e6
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -41,7 +41,7 @@ production dependency、native build、预期路径和 dependency graph 的失�
 ## 已确认边界
 
 - `resolution: workspace` 与 `publish_to: none` 没有新增远程或 Git 依赖来源。
-- lockfile 只把 Flutter SDK 下限对齐到仓库锁定的 3.35.7，没有改变 Package 版本、来源或校验值。
+- lockfile 随 Flutter 3.41.9 / Dart 3.11 更新 SDK 约束相关传递依赖，没有新增 Package 来源。
 - 新增检查通过固定参数调用，不加入 shell 拼接、安装脚本、CI/Agent 权限或发布能力。
 - `CLAUDE.md` 和两份 HTML 只同步依赖事实，没有扩大 Agent 工具或注入可执行内容。
 

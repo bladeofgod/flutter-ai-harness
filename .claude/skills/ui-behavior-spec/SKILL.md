@@ -115,7 +115,7 @@ environment:
   osVersion: Android 15
   deviceKind: emulator
   buildMode: debug
-  flutterVersion: 3.35.7
+  flutterVersion: 3.41.9
   marionetteVersion: 0.6.0
 items:
   - id: open-profile

@@ -689,8 +689,8 @@ class _SpecChecker {
     if (value['buildMode'] != 'debug') {
       errors.add('$environmentPath 的 buildMode 必须是 debug');
     }
-    if (value['flutterVersion'] != '3.35.7') {
-      errors.add('$environmentPath 的 flutterVersion 必须是 3.35.7');
+    if (value['flutterVersion'] != '3.41.9') {
+      errors.add('$environmentPath 的 flutterVersion 必须是 3.41.9');
     }
     if (value['marionetteVersion'] != '0.6.0') {
       errors.add('$environmentPath 的 marionetteVersion 必须是 0.6.0');

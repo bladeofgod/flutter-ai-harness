@@ -126,18 +126,19 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.byKey(const ValueKey('open-recently-viewed')));
-    await tester.pump();
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(router.canPop(), isTrue);
     expect(
       find.byKey(const ValueKey('recent-product-today-0')),
       findsOneWidget,
     );
+    final todaySemantics = find.byWidgetPredicate(
+      (widget) => widget is Semantics && widget.properties.label == 'Today',
+      description: 'Semantics labeled Today',
+    );
+    expect(todaySemantics, findsOneWidget);
     expect(
-      tester
-          .getSemantics(find.bySemanticsLabel('Today'))
-          .flagsCollection
-          .isSelected,
+      tester.widget<Semantics>(todaySemantics).properties.selected,
       isTrue,
     );
 
@@ -149,11 +150,13 @@ void main() {
     );
     await tester.tap(find.byKey(const ValueKey('calendar-day-17')));
     await tester.pump();
+    final selectedDaySemantics = find.byWidgetPredicate(
+      (widget) => widget is Semantics && widget.properties.label == '2026-4-17',
+      description: 'Semantics labeled 2026-4-17',
+    );
+    expect(selectedDaySemantics, findsOneWidget);
     expect(
-      tester
-          .getSemantics(find.bySemanticsLabel('2026-4-17'))
-          .flagsCollection
-          .isSelected,
+      tester.widget<Semantics>(selectedDaySemantics).properties.selected,
       isTrue,
     );
     await tester.tap(find.byKey(const ValueKey('calendar-apply')));

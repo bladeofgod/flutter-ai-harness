@@ -10,7 +10,7 @@ implementationFiles:
   - docs/bridge/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 314935ede2df8012b34d0e6b0390ca4e4a40fd31ab4407b009a64ac0b1b0da80
+implementationDigest: c07947b6e85f90d3fe77e61d447efcb6b82e24d23b9aa9257bcbc475eab32e47
 ---
 
 # Security Review: Media Capture Wire V2 / Capability V3 Compatibility

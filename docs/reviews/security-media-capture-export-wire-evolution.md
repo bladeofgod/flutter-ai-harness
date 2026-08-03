@@ -11,7 +11,7 @@ implementationFiles:
   - docs/bridge/README.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 27c2a069b085b0c2dea019bfd63ba54d3620d4572734a8274b470c624756bcad
+implementationDigest: 7ba96668bfc86b7a8629971de2a4138943b68a956077947f1f991fc1e053b8d5
 ---
 
 # Security Review: Media Capture Transfer Wire V3

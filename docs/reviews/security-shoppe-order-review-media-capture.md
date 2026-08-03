@@ -16,7 +16,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: 4a2a4f9d71bc34f05ad16c7f847c5a822772d496122a67924107978cad597c3b
+implementationDigest: 0ee0a77e4713f6d0556292998784a8ff8e924fa526d26628f00b7a9b8cc67c28
 ---
 
 # Security Review：Order Review Media Capture

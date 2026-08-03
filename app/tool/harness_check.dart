@@ -123,7 +123,7 @@ class _HarnessChecker {
     }
     final content = file.readAsStringSync();
     for (final required in const [
-      'flutter-version: "3.35.7"',
+      'flutter-version: "3.41.9"',
       'run: make bootstrap',
       'run: make check',
     ]) {
@@ -7564,11 +7564,26 @@ class _HarnessChecker {
     final appDelegateContent = appDelegate.existsSync()
         ? appDelegate.readAsStringSync()
         : '';
-    if (RegExp(
-          r'GeneratedPluginRegistrant\.register\(with: self\)',
-        ).allMatches(appDelegateContent).length !=
-        1) {
-      errors.add('$appDelegatePath 必须只使用标准 GeneratedPluginRegistrant 装配');
+    final registrantCalls = RegExp(
+      r'GeneratedPluginRegistrant\.register\(',
+    ).allMatches(appDelegateContent).length;
+    final implicitEngineRegistrations = RegExp(
+      r'GeneratedPluginRegistrant\.register\(\s*with:\s*engineBridge\.pluginRegistry\s*\)',
+    ).allMatches(appDelegateContent).length;
+    final implicitEngineCallbacks = RegExp(
+      r'func\s+didInitializeImplicitFlutterEngine\(\s*_\s+engineBridge:\s*FlutterImplicitEngineBridge\s*\)',
+    ).allMatches(appDelegateContent).length;
+    final implicitEngineDelegates = RegExp(
+      r'\bFlutterImplicitEngineDelegate\b',
+    ).allMatches(appDelegateContent).length;
+    if (registrantCalls != 1 ||
+        implicitEngineRegistrations != 1 ||
+        implicitEngineCallbacks != 1 ||
+        implicitEngineDelegates != 1) {
+      errors.add(
+        '$appDelegatePath 必须只使用 Flutter 3.41 UIScene 标准 '
+        'GeneratedPluginRegistrant 装配',
+      );
     }
     for (final forbidden in const [
       'MethodChannel',

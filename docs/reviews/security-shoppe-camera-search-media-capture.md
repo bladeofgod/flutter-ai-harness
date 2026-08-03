@@ -17,7 +17,7 @@ implementationFiles:
   - app/packages/app_features/lib/app_features.dart
   - app/packages/app_features/pubspec.yaml
   - app/apps/demo/lib/router/demo_router.dart
-implementationDigest: 688b134e4c460441150fc140be6e1b0f89db004e99e10fbc3cbb856de4414b43
+implementationDigest: 4372ec48e8d8882de98d763747fe3482f267d5f2e6b511f0686cb5640c69bfff
 ---
 
 # Security Review: Search 图片来源选择

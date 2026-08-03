@@ -11,7 +11,7 @@ implementationFiles:
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/AndroidStorageAndThumbnail.kt
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/FrameworkContracts.kt
   - docs/infrastructure/media-capture-android.md
-implementationDigest: 803c030b5ffa1323519cac1f5d996084d23a90bd0c77957af002f9e0d4a82595
+implementationDigest: 5a87d5eb1c15d97d90ac51f30fa1e6ebc9e7779b5ccc35a8a30f26f6c5d3c1e9
 ---
 
 # Security Review: Android Media Capture Export Core

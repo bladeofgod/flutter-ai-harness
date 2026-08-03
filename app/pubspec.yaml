@@ -3,7 +3,7 @@ description: Flutter AI Harness 工作区
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.0
 
 workspace:
   - apps/demo

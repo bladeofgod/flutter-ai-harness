@@ -16,7 +16,7 @@ Android 专项门禁使用 `app/native/android/media_capture_gate/` 内可提交
 bash scripts/quality/media-capture-android.sh
 ```
 
-调用环境必须提供 JDK 17 或更高版本、Android SDK 和仓库锁定的 Flutter 3.35.7。wrapper jar 和
+调用环境必须提供 JDK 17 或更高版本、Android SDK 和仓库锁定的 Flutter 3.41.9。wrapper jar 和
 distribution 分别校验 Gradle 官方 SHA-256；所有外部 artifact 使用 strict dependency verification
 metadata。脚本还会拒绝错误的 wrapper/Flutter 版本、Gradle 输入摘要、动态依赖、本机仓库、本机绝对
 路径、symlink、未批准的生产依赖和逆向模块引用，然后执行：

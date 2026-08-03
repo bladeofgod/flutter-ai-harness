@@ -246,8 +246,8 @@ validate_toolchain() {
   local flutter_version
   flutter_version="$("$FLUTTER_ROOT/bin/flutter" --version --machine |
     sed -nE 's/^[[:space:]]*"flutterVersion": "([^"]+)",?$/\1/p')"
-  [[ "$flutter_version" == "3.35.7" ]] ||
-    fail "expected Flutter 3.35.7, got ${flutter_version:-unknown}"
+  [[ "$flutter_version" == "3.41.9" ]] ||
+    fail "expected Flutter 3.41.9, got ${flutter_version:-unknown}"
 }
 
 validate_transfer_adapter() {
@@ -304,7 +304,7 @@ validate_dependency_boundaries() {
     "$GATE/settings.gradle.kts"
   assert_file_digest 1d08c6e29614f2fab4b44b677c91ce283e81b45c3e4351eee54b040fe8267137 \
     "$GATE/gradle.properties"
-  assert_file_digest 9d219b0a0926db5bf25dd1afb739a8745c5b815ba02c83c60ecfd818e7dd995b \
+  assert_file_digest d69f88c2aa8b192c1d9f3a3fbe7c0cc4f801a487c8b3085b5ad242e623448807 \
     "$GATE/gradle/verification-metadata.xml"
   assert_file_digest a5c6a687855975640608e035c0709f134890590305e9802a21a820dd66e3455f \
     "$CORE/build.gradle.kts"

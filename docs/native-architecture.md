@@ -216,7 +216,7 @@ Flutter Host
 - 纯原生消费者在自身 `Package.swift` 或 Xcode Package Dependencies 中直接声明本地
   Package 与 Product dependency。
 - iOS Bridge Adapter 源码与注册入口位于
-  `app/packages/app_<capability>_bridge/ios/`。Flutter 3.35.7 的 SwiftPM Plugin manifest
+  `app/packages/app_<capability>_bridge/ios/`。Flutter 3.41.9 的 SwiftPM Plugin manifest
   固定位于
   `app/packages/app_<capability>_bridge/ios/app_<capability>_bridge/Package.swift`；该 manifest
   通过版本库相对路径（从 manifest 目录到 Module 时为

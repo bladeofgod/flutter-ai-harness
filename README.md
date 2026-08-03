@@ -49,7 +49,7 @@ Product input or Figma
 
 ## Quick Start
 
-Prerequisites: Claude Code 2.1.198 or later, `ripgrep`, and either FVM or Flutter 3.35.7.
+Prerequisites: Claude Code 2.1.198 or later, `ripgrep`, and either FVM or Flutter 3.41.9.
 
 ```bash
 git clone https://github.com/bladeofgod/flutter-ai-harness.git

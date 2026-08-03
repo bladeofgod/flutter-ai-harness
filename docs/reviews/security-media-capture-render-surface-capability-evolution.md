@@ -10,7 +10,7 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: cd029d43af8db65ba19c2998a4faf775695b5e9dc0e15a917fd108f50498d50d
+implementationDigest: 503ca52c6f127855ea8cbf230a2316123851c9098c134b2beafdc5beba0a0601
 ---
 
 # Security Review: Media Capture Render Surface Capability V3

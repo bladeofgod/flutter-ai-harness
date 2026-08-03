@@ -6,7 +6,7 @@ iOS Adapter 位于 `app/packages/app_media_capture_bridge/ios/`，注册入口�
 
 ## Package 与 Host 边界
 
-Plugin 采用 Flutter 3.35.7 官方 SwiftPM 路线，不提供 CocoaPods fallback，也不声明本机 Flutter
+Plugin 采用 Flutter 3.41.9 官方 SwiftPM 路线，不提供 CocoaPods fallback，也不声明本机 Flutter
 framework 路径。`Package.swift` 将实现拆为两个 target：
 
 - `MediaCaptureBridgeCore` 不 import Flutter，包含 Wire Codec、类型化 Core/UI wrapper、request/listener

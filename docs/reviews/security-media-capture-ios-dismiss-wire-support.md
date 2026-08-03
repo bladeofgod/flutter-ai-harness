@@ -9,7 +9,7 @@ implementationFiles:
   - docs/bridge/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 9cdf5814d50b19c4b5971b19a679b1d1164cdf8fbfbc26682e33abdaf2925575
+implementationDigest: 3fc58a7e1693b9d4fc861580d859c2eb2e6c8e28530eb98ee41d40217f4a382b
 ---
 
 # Security Review: iOS Capture Flow Dismiss Wire 支持状态

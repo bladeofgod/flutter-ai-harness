@@ -22,7 +22,7 @@ implementationFiles:
   - app/tool/redact_evidence.dart
   - scripts/quality/evidence-lint.sh
   - scripts/quality/test-evidence.sh
-implementationDigest: bd668b9edace1ab75c0f9127e76d3088c6aaa73d8d9b1c5129ee42f2ad2e7751
+implementationDigest: edcd6ee08c440740e0cdad85c3a6aae76131357f19bb129226924fdc3c87a817
 ---
 
 # Security Review：Flutter 媒体预览组件

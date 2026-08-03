@@ -10,7 +10,7 @@ implementationFiles:
   - docs/tasks/done/media-capture-ios-export-bridge-adapter.md
   - docs/tasks/done/media-capture-ios-quality-gate.md
   - docs/tasks/done/media-capture-cross-runtime-integration.md
-implementationDigest: 58f91d044c2805d2c8f8303c30664ea8a7b368b90e37c597fe8de540b5fff8c4
+implementationDigest: 44ede6296f2b94a15c57799875aa34a9b4183db4eef11f6fb174cc3630480d24
 ---
 
 # Security Review：iOS Media Capture SwiftPM Host 架构
@@ -50,7 +50,7 @@ implementationDigest: 58f91d044c2805d2c8f8303c30664ea8a7b368b90e37c597fe8de540b5
 
 ## 已确认边界
 
-- Media Capture 只采用 Flutter 3.35.7 官方 SwiftPM Plugin 路线；CocoaPods 仅可继续服务其它既有插件，
+- Media Capture 只采用 Flutter 3.41.9 官方 SwiftPM Plugin 路线；CocoaPods 仅可继续服务其它既有插件，
   不是 fallback。任务禁止远程 wrapper、本机 `Flutter.xcframework` 路径和手工 binary 接线。
 - `MediaCaptureBridgeCore` 不 import Flutter，独立 SDK compile 不伪造 Flutter 注入环境；Plugin target
   必须由临时 Flutter Host 中的 `FlutterGeneratedPluginSwiftPackage` 编译。

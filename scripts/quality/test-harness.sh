@@ -51,7 +51,7 @@ cat > "$FIXTURE_ROOT/.claude/settings.json" <<'JSON'
 }
 JSON
 printf '%s\n' '{"mcpServers":{}}' > "$FIXTURE_ROOT/.mcp.json"
-printf '%s\n' '{"flutter":"3.35.7"}' > "$FIXTURE_ROOT/app/.fvmrc"
+printf '%s\n' '{"flutter":"3.41.9"}' > "$FIXTURE_ROOT/app/.fvmrc"
 cat > "$FIXTURE_ROOT/.github/workflows/ci.yml" <<'YAML'
 name: CI
 on: [push]
@@ -61,7 +61,7 @@ jobs:
     steps:
       - uses: example/flutter-action@fixture
         with:
-          flutter-version: "3.35.7"
+          flutter-version: "3.41.9"
       - run: make bootstrap
       - run: make check
   android-build:
@@ -119,7 +119,22 @@ cat > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist" <<'XML'
 </dict></plist>
 XML
 cat > "$FIXTURE_ROOT/app/apps/demo/ios/Runner/AppDelegate.swift" <<'SWIFT'
-GeneratedPluginRegistrant.register(with: self)
+import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+  }
+}
 SWIFT
 printf '%s\n' 'Flutter/ephemeral/' > "$FIXTURE_ROOT/app/apps/demo/ios/.gitignore"
 
@@ -5034,6 +5049,25 @@ if run_check >/dev/null 2>&1; then
   exit 1
 fi
 mv "$demo_pubspec.valid" "$demo_pubspec"
+
+app_delegate="$FIXTURE_ROOT/app/apps/demo/ios/Runner/AppDelegate.swift"
+cp "$app_delegate" "$app_delegate.valid"
+sed -i.bak 's/engineBridge\.pluginRegistry/self/' "$app_delegate"
+rm -f -- "$app_delegate.bak"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 UIScene Host 中的旧 AppDelegate registrant 路线。" >&2
+  exit 1
+fi
+mv "$app_delegate.valid" "$app_delegate"
+
+cp "$app_delegate" "$app_delegate.valid"
+printf '%s\n' 'GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)' \
+  >> "$app_delegate"
+if run_check >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝重复 GeneratedPluginRegistrant 装配。" >&2
+  exit 1
+fi
+mv "$app_delegate.valid" "$app_delegate"
 
 demo_plist="$FIXTURE_ROOT/app/apps/demo/ios/Runner/Info.plist"
 cp "$demo_plist" "$demo_plist.valid"

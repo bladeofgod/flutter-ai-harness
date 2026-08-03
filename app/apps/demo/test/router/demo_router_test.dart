@@ -330,7 +330,8 @@ void main() {
               ),
             )
             .flagsCollection
-            .isSelected,
+            .isSelected
+            .toBoolOrNull(),
         isTrue,
         reason: link.path,
       );

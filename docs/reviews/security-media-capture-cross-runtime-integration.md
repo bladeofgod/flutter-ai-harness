@@ -12,8 +12,10 @@ implementationFiles:
   - app/pubspec.lock
   - app/apps/demo/pubspec.yaml
   - app/apps/demo/ios/Podfile.lock
+  - app/apps/demo/ios/Flutter/AppFrameworkInfo.plist
   - app/apps/demo/ios/Runner.xcodeproj/project.pbxproj
   - app/apps/demo/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme
+  - app/apps/demo/ios/Runner/AppDelegate.swift
   - app/apps/demo/ios/Runner/Info.plist
   - app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt
   - app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json
@@ -35,7 +37,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 401eac6215d04f703e0cd235be3fa223bca27b4f363b6a7b1738d84a9950a1b2
+implementationDigest: 1ca90708853d5cb72e4784dbc560c0ab4280fc2e20af27383a55f04015a66d0a
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -84,3 +86,16 @@ Workspace 根 `app/pubspec.yaml` 现在与 Demo Host 一样使用项目级
 再因 SwiftPM 全局开关缺失而失败。既有依赖来源、Host、Plugin discovery 和安全结论不变，当前
 P0/P1/P2 仍为 0/0/0；独立增量安全复核未发现新的供应链、凭据或外部写入通道风险，本报告按原
 implementationFiles 集合重新绑定摘要。
+
+## Flutter 3.41.9 UIScene Host 复审
+
+Flutter 3.41.9 将 Runner 迁移到单场景 `FlutterSceneDelegate`，`AppDelegate` 通过
+`FlutterImplicitEngineDelegate` 把原有生成插件集注册到隐式 Engine 的 registry。Camera、
+Microphone 和 Photo Library 用途说明不变，没有新增 Entitlement、后台模式、多窗口、远程代码
+或动态插件路径。`AppFrameworkInfo.plist` 移除 Framework 元数据中的最低系统字段，Runner
+deployment target 未改变。
+
+Harness 只接受单一 `didInitializeImplicitFlutterEngine` 回调和单一
+`engineBridge.pluginRegistry` 注册，并用失败 Fixture 拒绝旧 `with: self` 及重复装配。独立
+Security Reviewer 确认 P0/P1/P2 0/0/0；iOS 原生 Gate、临时 SwiftPM Host 和真实 Runner
+no-codesign Debug Build 通过。真机首次 scene 激活、权限 UI 和后台恢复仍属人工验收边界。

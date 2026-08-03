@@ -11,7 +11,7 @@ implementationFiles:
   - docs/infrastructure-modules.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 50437fc383b903be34b17d7b5787e04793b6a62980aeec4f4b3156fc0ebd8bd3
+implementationDigest: 14e94d0cf744850cee45878b5d3000f79eeb6e72d371fd77c000f3e01e1a03f5
 ---
 
 # Security Review：Media Capture 能力契约

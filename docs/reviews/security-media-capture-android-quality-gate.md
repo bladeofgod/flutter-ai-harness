@@ -19,7 +19,7 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: 16c6d61e4abdcf925eb80983ac18b44eb0bc84fe70ef795d353a879be74f034c
+implementationDigest: 3ea36a5476f8b925fd18d4fc9326de78cf095bd3b0b7c58278df391a99f52317
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
@@ -65,3 +65,11 @@ Integration 创建。这些限制均在平台验证文档与 evidence 中明确�
 
 Android Contract Vector Gate 现在逐节消费完整 V4/V3 golden，验证结果仍为 Core 88、UI 42、Bridge 71；
 文档明确保留无 ready emulator/API 23/真机缺口。生产模块未改，独立安全复审为 P0/P1/P2 0/0/0。
+
+## Flutter 3.41.9 Gradle verification 复审
+
+工具链升级后，Gradle 官方 `--write-verification-metadata sha256` 只补充了
+`androidx.exifinterface:1.4.1` 的 AAR/module 和当前 Flutter Engine commit 对应 embedding
+JAR/POM 的精确 SHA-256。repository 集合、strict verification 模式、依赖选择逻辑和执行权限
+均未变；Gate 的已审查整文件摘要同步更新。独立 Security Reviewer 确认
+P0/P1/P2 0/0/0，完整 Android Gate 和 Debug APK 构建均通过。

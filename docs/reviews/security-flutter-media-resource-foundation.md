@@ -24,7 +24,7 @@ implementationFiles:
   - app/tool/check_package_dependencies.dart
   - scripts/lint/repository-boundaries.sh
   - scripts/lint/test-repository-boundaries.sh
-implementationDigest: 4dd7c28583d68a06a4c82678c6db69a55088a2478a6a04beb17cec11ae951d00
+implementationDigest: 24781a8dca9fdefa11a45b2449b6acabf926805d8eae0f50fb512afa2c9860df
 ---
 
 # Security Review: Flutter 媒体资源存储基础件

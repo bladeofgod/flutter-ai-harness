@@ -49,7 +49,7 @@ Shoppe 风格 Demo 包含 Welcome、Auth、Shop、Categories、Product Detail、
 
 ## 快速开始
 
-前置环境：Claude Code 2.1.198 或更高版本、`ripgrep`，以及 FVM 或 Flutter 3.35.7。
+前置环境：Claude Code 2.1.198 或更高版本、`ripgrep`，以及 FVM 或 Flutter 3.41.9。
 
 ```bash
 git clone https://github.com/bladeofgod/flutter-ai-harness.git

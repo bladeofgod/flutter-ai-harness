@@ -3,7 +3,7 @@ description: Feature、跨 Feature API、Controller、页面与路由包边界
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.0
 
 resolution: workspace
 

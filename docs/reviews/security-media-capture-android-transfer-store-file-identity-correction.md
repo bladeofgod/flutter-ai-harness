@@ -15,7 +15,7 @@ implementationFiles:
   - scripts/quality/media-capture-android.sh
   - docs/bridge/media-capture-android.md
   - docs/native/media-capture-android-verification.md
-implementationDigest: 0a650124eb6ec4bbc008a3ab797b2bf20f9bd621d208b15ec1e062a03d558f1c
+implementationDigest: 09a2291c2dd3a642d017fb87a97815c4f7be216091db3c615ca913fc8cbdffd5
 ---
 
 # Security Review：Android Transfer Store 文件身份修正

@@ -23,7 +23,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: 96ed0e63496439246b943b9bc16ddb3ca65d70954b9790fbe8b4adff0092027e
+implementationDigest: 73e49e1dd456c393e8873b8e1813b6481d7825f338ebd0d910f2e994e7a85539
 ---
 
 # Security Review：Support Media Resource Preview

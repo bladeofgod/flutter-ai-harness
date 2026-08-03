@@ -10,7 +10,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: 700542234576e301ac9ccc3c4948217272e5fc9788669a5a02e4bc99adfb96b7
+implementationDigest: 808db0e5ca3663c729782c43bac957b59092cafba4d1e8c680640c67cce2b908
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁

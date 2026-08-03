@@ -29,7 +29,7 @@ void main() {
       expect(find.bySemanticsLabel(label), findsOneWidget);
     }
     final categories = tester.getSemantics(find.bySemanticsLabel('Categories'));
-    expect(categories.flagsCollection.isSelected, isTrue);
+    expect(categories.flagsCollection.isSelected.toBoolOrNull(), isTrue);
 
     await tester.tap(find.byKey(const ValueKey('main-navigation-profile')));
     expect(selectedIndex, 4);

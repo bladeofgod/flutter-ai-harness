@@ -19,7 +19,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - docs/bridge/media-capture-ios.md
-implementationDigest: 906c8a2fe2ba8c554bc915bd1d2a2be26b10f2fc42a49dc7e8793581e76ed8ad
+implementationDigest: 75bbf2bf1d23d17ed6ccb7beb17068ffff9065484e0bec8704ae6df9da78149f
 ---
 
 # Security Review: iOS Media Capture Transfer Bridge Adapter

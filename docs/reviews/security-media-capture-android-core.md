@@ -18,7 +18,7 @@ implementationFiles:
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/framework/FrameworkContracts.kt
   - app/native/android/media_capture/src/main/kotlin/com/example/mediacapture/rendering/MediaCaptureRenderView.kt
   - docs/infrastructure/media-capture-android.md
-implementationDigest: 1d64c68c30d0d93dbb036bf1a79861b709da82ad1e936e8609a684d19ffec1cf
+implementationDigest: 6e0125d9e770ea474d793a84863ebf768d4cc9c28ae48f7f4b121e948b279f41
 ---
 
 # Security Review: Android Media Capture Native Core

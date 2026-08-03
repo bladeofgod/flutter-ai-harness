@@ -7,7 +7,7 @@
 bash scripts/quality/media-capture-ios.sh
 ```
 
-脚本要求 macOS、当前 Xcode、仓库锁定的 Flutter 3.35.7、Ruby 和可用的 iOS Simulator SDK。脚本使用
+脚本要求 macOS、当前 Xcode、仓库锁定的 Flutter 3.41.9、Ruby 和可用的 iOS Simulator SDK。脚本使用
 权限仅限当前用户的临时目录，并在退出时清理自己的 DerivedData、日志与中间文件。
 
 ## 验证层级
@@ -18,7 +18,7 @@ bash scripts/quality/media-capture-ios.sh
 | Framework Fake | 在可用 Simulator 上运行 Package XCTest | 权限、Camera、Clock、文件、生命周期等窄边界下的确定性编排语义 | 系统权限弹窗、Camera/Microphone 硬件行为、真实中断 |
 | generic iOS SDK compile | 分别在各自 Package 目录编译 `MediaCapture`、`MediaCaptureAppleRendering`、`MediaCaptureUI`、`MediaCaptureBridgeCore` | iOS 13 API 基线、Package product 解析、UIKit/AVFoundation 接线、完整并发检查下没有告警 | 运行时图像帧、真实 Engine 注册、系统权限 |
 | Simulator runtime | 有可用 iPhone Simulator 时运行 Core Package、UI 和 69 个 Bridge Core XCTest | 不要求真实 Camera 的 session/lease、render attachment、UI 三终态、ViewController/Engine 与 transfer 生命周期 | 真机 Camera、Microphone、性能或系统授权 UI |
-| 临时 Flutter Host | 安全复制 Workspace，只在临时 `pubspec.yaml` 开启 SwiftPM，并执行 Debug no-codesign iOS build | Flutter 3.35.7 能生成 `FlutterGeneratedPluginSwiftPackage`，发现 Plugin，并解析 Flutter API、Bridge Core、Core/UI products | 真实 Demo Runner 已迁移或已提交 Host 配置 |
+| 临时 Flutter Host | 安全复制 Workspace，只在临时 `pubspec.yaml` 开启 SwiftPM，并执行 Debug no-codesign iOS build | Flutter 3.41.9 能生成 `FlutterGeneratedPluginSwiftPackage`，发现 Plugin，并解析 Flutter API、Bridge Core、Core/UI products | 真实 Demo Runner 已迁移或已提交 Host 配置 |
 | 真实 Runner | 最终跨 Runtime Integration 修改并构建 `app/apps/demo/ios/` | 真实 Runner 的 SwiftPM 配置、Plugin 注册与 no-codesign Host 构建 | 真机系统能力，除非另有设备证据 |
 | 真机 | 人工在受控设备执行拍摄、录像、权限和中断验收 | live frame、Camera/Microphone、系统授权 UI、硬件中断与设备性能 | 其他未测试机型或系统版本 |
 

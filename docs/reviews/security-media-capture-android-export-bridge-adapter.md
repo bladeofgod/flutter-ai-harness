@@ -14,7 +14,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
   - scripts/quality/media-capture-android.sh
-implementationDigest: b85dcb364580e7af706512680edccb710c999a862a599b41a1a290e22ff0edd9
+implementationDigest: ce453c179cb10f5a975a9074d7a513b3a194db9cee73585a3679e32a60a01c4b
 ---
 
 # Security Review：Android Transfer Bridge Adapter

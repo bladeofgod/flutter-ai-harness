@@ -391,7 +391,8 @@ void main() {
             ),
           )
           .flagsCollection
-          .isSelected,
+          .isSelected
+          .toBoolOrNull(),
       isTrue,
     );
     await tester.binding.handlePopRoute();

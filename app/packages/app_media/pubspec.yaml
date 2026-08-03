@@ -3,7 +3,7 @@ description: App private media resource lifecycle and preview infrastructure
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.0
 
 resolution: workspace
 

@@ -302,8 +302,8 @@ validate_toolchain() {
   flutter_json="$(cd "$ROOT/app" && fvm flutter --version --machine)"
   flutter_version="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterVersion", "")' <<<"$flutter_json")"
   flutter_root="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterRoot", "")' <<<"$flutter_json")"
-  [[ "$flutter_version" == "3.35.7" ]] ||
-    fail "expected Flutter 3.35.7, got ${flutter_version:-unknown}"
+  [[ "$flutter_version" == "3.41.9" ]] ||
+    fail "expected Flutter 3.41.9, got ${flutter_version:-unknown}"
   [[ "$flutter_root" == /* && -d "$flutter_root" && ! -L "$flutter_root" ]] ||
     fail "reviewed Flutter SDK root is unavailable or unsafe"
   FLUTTER_EXECUTABLE="$flutter_root/bin/flutter"

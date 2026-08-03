@@ -29,7 +29,7 @@ implementationFiles:
   - .agents/skills/kotlin-android-standards/SKILL.md
   - .agents/skills/swift-ios-standards/SKILL.md
   - .agents/skills/native-testing-strategy/SKILL.md
-implementationDigest: 999108cc55eab465b97d011b343dec996a571d04428467cc12870f6228bcf06f
+implementationDigest: fc299dbccf31c0fa9146dd2e6999d425392355cac9d3bf83b0d1218f6b63b021
 ---
 
 # Security Review：原生 Agent 与编码规范
@@ -140,3 +140,14 @@ push 或 publish 能力。新增、替换或迁移技术栈只能由可信人工
 两份 Agent 继续以 `CLAUDE.md` 为权威入口，并保留任务卡、Capability/Wire Contract 和原生 Skill；移除
 `docs/native-architecture.md` 的重复显式索引不会绕过项目契约。独立 Security Reviewer 确认
 P0/P1/P2 0/0/0，本报告按原 implementationFiles 集合重新绑定当前摘要。
+
+## Flutter 3.41.9 工具链影响复审
+
+本轮统一 CI、FVM、Workspace SDK 约束和质量脚本到 Flutter 3.41.9 / Dart 3.11，以修复
+Linux CI 对 SwiftPM-only Plugin 的依赖解析。CI Action 仍锁定原 commit，没有新增依赖来源、凭据、
+网络脚本、Agent 权限或发布能力；独立 Security Reviewer 确认 P0/P1/P2 均为 0。
+
+Flutter 3.41 UIScene 迁移后，共享 Harness 将 iOS Host 装配收紧为单一
+`FlutterImplicitEngineDelegate` 回调和单一 `engineBridge.pluginRegistry` 注册，并拒绝旧
+AppDelegate registry 及重复注册。这不改变 Agent 工具、任务路由、网络、凭据或发布权限；
+独立 Security Reviewer 确认 P0/P1/P2 0/0/0。
