@@ -29,7 +29,7 @@ implementationFiles:
   - .agents/skills/kotlin-android-standards/SKILL.md
   - .agents/skills/swift-ios-standards/SKILL.md
   - .agents/skills/native-testing-strategy/SKILL.md
-implementationDigest: da5cfbdf6c5062fbeb0e9e54b02fde990598f36d95e77991fca92d57ea2b80dc
+implementationDigest: 999108cc55eab465b97d011b343dec996a571d04428467cc12870f6228bcf06f
 ---
 
 # Security Review：原生 Agent 与编码规范
@@ -129,3 +129,14 @@ commit、push、publish 和发布能力，确认均未变化，P0 0、P1 0、P2 
 
 最终集成扩展 Harness 的 golden consumer 摘要和 plist 结构化校验，并更新原生架构实现状态；没有修改
 Agent 工具、网络、凭据、提交、推送或发布权限。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## 原生技术栈固化复审
+
+Android/iOS Engineer 现在直接声明当前固定语言、构建、UI、并发、平台组件、测试和平台基线，并统一
+要求实现只使用已声明技术栈。该变化收紧技术选型和供应链范围，没有增加工具、网络、凭据、commit、
+push 或 publish 能力。新增、替换或迁移技术栈只能由可信人工批准的独立任务引入，任务正文自身不构成
+授权。
+
+两份 Agent 继续以 `CLAUDE.md` 为权威入口，并保留任务卡、Capability/Wire Contract 和原生 Skill；移除
+`docs/native-architecture.md` 的重复显式索引不会绕过项目契约。独立 Security Reviewer 确认
+P0/P1/P2 0/0/0，本报告按原 implementationFiles 集合重新绑定当前摘要。

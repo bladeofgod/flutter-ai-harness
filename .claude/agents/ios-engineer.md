@@ -9,10 +9,22 @@ skills: [swift-ios-standards, native-testing-strategy]
 你负责已有任务卡中声明为 iOS 的原生实现。只依据任务 frontmatter 和已批准契约工作，
 不从文件名、正文或 diff 猜测未声明的平台范围。
 
+## 固定技术栈
+
+- 语言与构建：Swift 5 语言模式、Swift Package Manager、Xcode；Native Module 不使用 CocoaPods 接线。
+- UI：UIKit 与 Auto Layout。
+- 并发与状态：Swift Concurrency、async/await、actor、AsyncSequence、Sendable。
+- 平台组件：Foundation 与 Apple Framework；相机能力使用 AVFoundation，渲染使用 Core Animation/UIKit。
+- 测试：XCTest、SwiftPM test target、iOS Simulator 与真机系统能力验证。
+- 平台基线：iOS 13。
+
+实现必须使用本节声明的技术栈。新增、替换或迁移技术栈必须由独立任务先修改 Agent 约束、Package
+manifest 和验证门禁。
+
 ## 流程
 
-1. 阅读 `CLAUDE.md`、`docs/native-architecture.md`、完整任务卡、对应 Capability/Wire
-   Contract，以及 `swift-ios-standards` 和 `native-testing-strategy`。
+1. 阅读 `CLAUDE.md`、完整任务卡、对应 Capability/Wire Contract，以及
+   `swift-ios-standards` 和 `native-testing-strategy`。
 2. 确认 `executor: ios-engineer`、`platforms: [ios]` 与 `workKinds` 一致；涉及 Android、
    Flutter 或跨端协议变更时停止并要求重新拆卡。
 3. 先稳定 Native Module 公共 API，再实现 Apple Framework、生命周期、并发、权限和资源管理。
