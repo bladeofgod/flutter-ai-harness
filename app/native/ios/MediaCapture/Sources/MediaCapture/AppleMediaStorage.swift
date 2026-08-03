@@ -413,7 +413,7 @@ internal enum AppleVideoProcessor {
         }
         guard let export = AVAssetExportSession(
             asset: composition,
-            presetName: AVAssetExportPresetHighestQuality
+            presetName: AVAssetExportPresetPassthrough
         )
         else {
             MediaCaptureDiagnostics.emit("video_export_session_unavailable")
@@ -428,7 +428,7 @@ internal enum AppleVideoProcessor {
         }
         export.outputURL = outputURL
         export.outputFileType = .mp4
-        export.shouldOptimizeForNetworkUse = true
+        export.shouldOptimizeForNetworkUse = false
         export.metadata = []
         export.metadataItemFilter = .forSharing()
         let exportBox = UncheckedSendableBox(export)
@@ -437,7 +437,7 @@ internal enum AppleVideoProcessor {
         }
         MediaCaptureDiagnostics.emit(
             "video_export_started",
-            details: "preset=highest_quality output_type=public.mpeg-4"
+            details: "preset=passthrough output_type=public.mpeg-4 optimize_for_network=false"
         )
         export.exportAsynchronously {
             let result: Result<Void, Error>

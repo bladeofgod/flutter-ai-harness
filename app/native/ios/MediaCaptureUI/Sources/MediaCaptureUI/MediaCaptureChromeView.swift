@@ -84,10 +84,14 @@ internal final class MediaCaptureChromeView: UIView {
             isPreview = true
             isRecording = false
             isBusy = false
-        case .startingRecording, .recording, .stoppingRecording:
+        case .startingRecording, .recording:
             isPreview = false
             isRecording = true
             isBusy = false
+        case .stoppingRecording:
+            isPreview = false
+            isRecording = false
+            isBusy = true
         case .live:
             isPreview = false
             isRecording = false

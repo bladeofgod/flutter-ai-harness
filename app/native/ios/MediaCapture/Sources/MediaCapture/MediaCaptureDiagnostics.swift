@@ -11,7 +11,14 @@ internal enum MediaCaptureDiagnostics {
         details: String? = nil
     ) {
 #if DEBUG
-        var fields = ["[MediaCapture]", "stage=\(stage)"]
+        let uptimeMilliseconds = Int(
+            (ProcessInfo.processInfo.systemUptime * 1_000).rounded(.down)
+        )
+        var fields = [
+            "[MediaCapture]",
+            "uptime_ms=\(uptimeMilliseconds)",
+            "stage=\(stage)",
+        ]
         if let details, !details.isEmpty {
             fields.append(details)
         }

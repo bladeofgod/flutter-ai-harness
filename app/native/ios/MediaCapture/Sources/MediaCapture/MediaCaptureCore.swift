@@ -2013,6 +2013,8 @@ public actor MediaCaptureCore {
         let operationEpoch = lifecycleEpoch
         sessions[sessionHandle] = session
         cancelDeadline(recordingDeadlineKey(sessionHandle))
+        // Stop capture immediately; render teardown must not extend the recorded duration.
+        async let platformStop: Void = platform.stopRecording()
         await revokeLiveAttachment(sessionHandle: sessionHandle)
         var pendingStoredMedia: StoredMedia?
         do {
@@ -2022,7 +2024,7 @@ public actor MediaCaptureCore {
                 epoch: operationEpoch,
                 allowedStates: [.recording]
             )
-            try await platform.stopRecording()
+            try await platformStop
             try Task.checkCancellation()
             try validateSessionOperation(
                 sessionHandle,

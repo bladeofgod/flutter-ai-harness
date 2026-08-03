@@ -114,7 +114,8 @@ owner UI thread，并在每次渲染前同时核对 active scope 与 owner gener
 
 Rotation、后台、owner destroy、Core close、App restart 都按
 `invalidate generation -> stop callbacks -> detach -> state/resource cleanup` 顺序撤销两类 attachment。
-Live preview 在拍照、手动/自动停止录像或 Session terminal 前同样先撤销；未确认预览在 retake、
+Live preview 在拍照或 Session terminal 前先撤销。手动/自动停止录像必须先立即发出底层 stop 请求，
+并发撤销 Live preview，并在两者都完成后提交 preview；Surface 清理不得延长实际录像。未确认预览在 retake、
 cancel、confirm、failure 或 preview timeout 前先撤销，再删除或转移媒体。前台恢复必须由新的 UI
 owner generation 显式 attach，Core 不暗中保留已销毁 owner。
 

@@ -13,6 +13,7 @@ actor FakeCapturePlatform: CapturePlatform {
     var availableCameras: [CameraPosition] = [.rear, .front]
     var configuredRecordingAudio: [Bool] = []
     var recording = false
+    var stopRecordingStarted = false
     var stoppedSessionCount = 0
     var switchCameraCallCount = 0
     var switchCameraFailure: PlatformFailure?
@@ -89,6 +90,7 @@ actor FakeCapturePlatform: CapturePlatform {
     }
 
     func stopRecording() async throws {
+        stopRecordingStarted = true
         guard recording else { throw PlatformFailure.interrupted }
         recording = false
     }

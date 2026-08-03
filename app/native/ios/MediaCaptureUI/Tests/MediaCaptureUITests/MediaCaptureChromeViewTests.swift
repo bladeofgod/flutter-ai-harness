@@ -45,6 +45,18 @@ final class MediaCaptureChromeViewTests: XCTestCase {
         XCTAssertEqual(progressAnimation.duration, 9, accuracy: 0.001)
         XCTAssertNotNil(progressAnimation.timingFunction)
 
+        view.apply(MediaCaptureUiSnapshot(
+            phase: .stoppingRecording,
+            ready: ready,
+            flashMode: .off,
+            recordingProgress: 0.4,
+            photoEnabled: true,
+            videoEnabled: true
+        ))
+        XCTAssertFalse(view.shutterButton.isUserInteractionEnabled)
+        XCTAssertNil(view.shutterButton.recordingProgressAnimationForTesting)
+        XCTAssertEqual(view.shutterButton.recordingProgressForTesting, 0)
+
         let metadata = try MediaMetadata(
             mediaHandle: MediaHandle(rawValue: String(repeating: "m", count: 32)),
             mediaType: .photo,

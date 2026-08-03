@@ -74,6 +74,7 @@ final class MediaCaptureCoreTests: XCTestCase {
         await fixture.core.close()
     }
 
+    @MainActor
     func testMicrophoneIsRequestedOnlyWhenAudioRecordingStarts() async throws {
         let fixture = CoreFixture()
         await fixture.platform.setMicrophonePermission(.notDetermined)
@@ -85,7 +86,27 @@ final class MediaCaptureCoreTests: XCTestCase {
         XCTAssertTrue(started.audioIncluded)
         let requestedAfterRecording = await fixture.platform.requestedPermissions
         XCTAssertTrue(requestedAfterRecording.contains(.microphone))
-        let preview = try await fixture.core.stopRecording(sessionHandle: session)
+        let live = FakeRenderTarget(ownerGeneration: 1)
+        _ = try await fixture.core.attachLivePreview(
+            sessionHandle: session,
+            surfaceOwner: live.surfaceOwner
+        )
+        let binding = try XCTUnwrap(live.bindings.first)
+        let revokeGate = TestAsyncGate()
+        binding.revokeGate = revokeGate
+        let stop = Task {
+            try await fixture.core.stopRecording(sessionHandle: session)
+        }
+        let platformStopStarted = await waitUntil {
+            await fixture.platform.stopRecordingStarted
+        }
+        let revokeStarted = await waitUntil {
+            await MainActor.run { binding.revokeStarted }
+        }
+        XCTAssertTrue(platformStopStarted)
+        XCTAssertTrue(revokeStarted)
+        revokeGate.release()
+        let preview = try await stop.value
         let repeatedStop = try await fixture.core.stopRecording(sessionHandle: session)
         XCTAssertEqual(preview.mediaType, .video)
         XCTAssertEqual(repeatedStop, preview)

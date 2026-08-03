@@ -168,8 +168,9 @@ live Session 和未确认 preview 分别持有单调 generation high-watermark�
    `attachment_target_conflict`。
 4. retired generation 返回 `attachment_generation_retired`，不能影响当前 binding；detach 也必须同时匹配
    generation 和 instance identity，否则是保持当前 binding 的 no-op。
-5. 拍照、停止录像、重拍、确认、取消、失败、超时、旋转、后台、owner destroy、restart 和 close 都先撤销
-   相应 attachment，再处理状态或媒体所有权。
+5. 停止录像先立即向 `AVCaptureMovieFileOutput` 发出 stop 请求，并与 Live Preview revoke 并发收口；
+   两者完成后才净化并提交 preview，Surface 清理不能延长录像时长。拍照、重拍、确认、取消、失败、超时、
+   旋转、后台、owner destroy、restart 和 close 仍先撤销相应 attachment，再处理状态或媒体所有权。
 
 前台恢复和旋转后必须由新 UI owner generation 显式重新 attach，Core 不保留已经销毁的 UI owner。
 

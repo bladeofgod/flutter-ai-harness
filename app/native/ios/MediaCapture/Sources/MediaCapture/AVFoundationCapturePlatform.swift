@@ -199,6 +199,7 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
             let operation = MovieCaptureOperation(destination: destination)
             operation.delegate.didStartHandler = { [weak self, weak operation] in
                 guard let self, let operation, operation.stopRequested else { return }
+                MediaCaptureDiagnostics.emit("movie_stop_applied_after_start")
                 self.sessionQueue.async {
                     if self.movieOperation === operation, self.movieOutput.isRecording {
                         self.movieOutput.stopRecording()
@@ -219,7 +220,12 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
                 throw PlatformFailure.interrupted
             }
             operation.requestStop()
-            if self.movieOutput.isRecording { self.movieOutput.stopRecording() }
+            let outputIsRecording = self.movieOutput.isRecording
+            MediaCaptureDiagnostics.emit(
+                "movie_stop_requested",
+                details: "output_is_recording=\(outputIsRecording)"
+            )
+            if outputIsRecording { self.movieOutput.stopRecording() }
             return operation
         }
         do {
@@ -656,6 +662,7 @@ internal final class MovieCaptureDelegate: NSObject, AVCaptureFileOutputRecordin
         didStartRecordingTo fileURL: URL,
         from connections: [AVCaptureConnection]
     ) {
+        MediaCaptureDiagnostics.emit("movie_capture_started")
         didStartHandler?()
     }
 
