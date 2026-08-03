@@ -11,7 +11,7 @@ implementationFiles:
   - app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureModels.swift
   - app/native/ios/MediaCapture/Sources/MediaCapture/MediaExportControl.swift
   - docs/infrastructure/media-capture-ios.md
-implementationDigest: a31b6321771f2e5e8f123de43d19f96d5a7814c4c5c237380637617afd04b575
+implementationDigest: 6a769e689121575bd7b26306f113e0cc5efcb9c8d89ad4f0451dc5d69fd60398
 ---
 
 # Security Review: iOS Media Capture Export Core
@@ -59,3 +59,9 @@ expiry、close 仍会领取 export 终态、取消 worker 并保持既有 abort/
 后续严格并发 correction 在重叠文件中只为与 Export 无关的内部 `CapturePlatform` 增加 `Sendable` 协议
 约束；Export executor、source/sink、预算、deadline、commit/abort 与 lease 语义均未改变。完整严格并发
 编译通过，本报告摘要机械更新到当前共享实现快照。
+
+## iOS 综合修正后的影响复审
+
+本轮共享 Core 仅收紧单次带声录像的 audio input 生命周期，并把 retake 的 discarded/ready 提交提前到
+异步删除之前；Export executor、source/sink、预算、lease 与文件路径边界未改变。独立 Security Reviewer
+确认 P0/P1/P2 0/0/0，本报告按当前实现文件重新绑定摘要。方向适配不在本轮范围内。

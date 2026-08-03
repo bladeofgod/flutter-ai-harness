@@ -63,6 +63,8 @@ revoke 与 Task cancellation。生产 backend 的 POSIX throwing read 与 FileHa
 
 - Camera 只在明确调用 `startSession` 后检查或请求。
 - Microphone 只在 `audioEnabled` 的录像真正开始时检查或请求；拍照和静音录像不请求。
+- 带声录像的 Audio Input 只属于单次 recording operation：最终 movie callback 收口后立即从仍运行的
+  Capture Session 移除；录像启动失败或取消同样释放，预览、重拍和后续拍照不会继续占用麦克风。
 - Photo Library 不属于能力范围，模块没有任何相册权限调用。
 - iOS `.denied` 映射为 `permanently_denied`，`.restricted` 映射为 `restricted`；不虚构系统不存在的再次弹窗能力。
 - AVCaptureSession 在模块私有串行队列配置和启停。每次 photo/movie operation 使用独立 UUID、delegate 和
@@ -169,8 +171,10 @@ live Session 和未确认 preview 分别持有单调 generation high-watermark�
 4. retired generation 返回 `attachment_generation_retired`，不能影响当前 binding；detach 也必须同时匹配
    generation 和 instance identity，否则是保持当前 binding 的 no-op。
 5. 停止录像先立即向 `AVCaptureMovieFileOutput` 发出 stop 请求，并与 Live Preview revoke 并发收口；
-   两者完成后才净化并提交 preview，Surface 清理不能延长录像时长。拍照、重拍、确认、取消、失败、超时、
-   旋转、后台、owner destroy、restart 和 close 仍先撤销相应 attachment，再处理状态或媒体所有权。
+   最终 recording callback 后释放 Audio Input，两者完成后才净化并提交 preview，Surface 清理不能延长
+   录像时长。重拍在删除文件前先原子提交旧媒体 `discarded` 和 Session `ready`，文件删除期间发生的
+   rotation/background 不会留下仍指向已删除文件的 preview 状态。拍照、确认、取消、失败、超时、旋转、
+   后台、owner destroy、restart 和 close 仍先撤销相应 attachment，再处理状态或媒体所有权。
 
 前台恢复和旋转后必须由新 UI owner generation 显式重新 attach，Core 不保留已经销毁的 UI owner。
 
@@ -204,10 +208,11 @@ teardown/restart 对新 Session 的 gate、阻塞读取强制撤销、production
 串行、真实文件删除、partial recording 删除、photo/movie/export cancel-and-await、delegate/observer cleanup、
 concrete surface 全链路 replacement/stale generation、rotation/background/restart/双类 owner destroy、thumbnail
 budget/first-winner/cancel-and-await/JPEG retry buffer wipe、poster 选择、照片 metadata 净化、真实输入 MOV
-到净化 MP4 的 container/track 位置与设备 metadata 清除，以及 V4 export 的 50 MiB 边界、长度漂移、
+到净化 MP4 的 container/track 位置与设备 metadata 清除、录像停止/启动失败后的 Audio Input 释放、
+重拍文件删除与 rotation 的交错，以及 V4 export 的 50 MiB 边界、长度漂移、
 4-job/1-MiB 预算、sink/source failure、取消、deadline、release/expiry/close 和 exactly-once cleanup。
 `Tests/MediaCaptureAppleRenderingTests/` 直接核对真实 layer tree、live session/photo content/video player source
-binding、fresh factory 与 revoke/detach 清空。`Tests/MediaCapturePublicConsumerTests/` 是独立 SwiftPM test
+binding、Preview Layer device-point 转换、fresh factory 与 revoke/detach 清空。`Tests/MediaCapturePublicConsumerTests/` 是独立 SwiftPM test
 target，普通 import 两个 product 并创建 concrete surface，不使用 `@testable`、Flutter 或 Wire model。
 
 iOS SDK 编译命令：

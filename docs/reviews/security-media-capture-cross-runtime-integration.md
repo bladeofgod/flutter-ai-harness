@@ -35,7 +35,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: c2e9b00c219bb6666b8d2f37c4950a96eb68086a650fbeb24da799a87276668b
+implementationDigest: d60a139e9030e9206b18a99160029061f9adb44e1bd00b886677c03b35dd2304
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -65,3 +65,10 @@ implementationDigest: c2e9b00c219bb6666b8d2f37c4950a96eb68086a650fbeb24da799a872
 Android API 23 instrumented、Camera/Gallery 主动流程和 iOS 真机 Camera/Microphone、系统权限 UI、硬件中断、
 真实帧及性能仍需人工设备验收。现有构建、Simulator 与静态门禁只证明可编译、契约和软件层行为，不把这些
 结果提升为硬件能力已通过。
+
+## iOS 综合修正后的最终复审
+
+本轮没有修改 Capability/Wire 结构或 Flutter/Android 消费语义。iOS 对焦转换保持 Native-only；audio
+input 生命周期和 retake 文件状态边界进一步收紧；Bridge Gate 的 Simulator 输入、结构化诊断与单次重试
+均 fail closed。独立 Security Reviewer 确认 P0/P1/P2 0/0/0；完整 Gate 以 107/52/69 精确测试数通过，
+方向适配明确不在本轮范围内。

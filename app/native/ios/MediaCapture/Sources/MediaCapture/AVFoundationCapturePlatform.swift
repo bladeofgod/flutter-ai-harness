@@ -365,6 +365,12 @@ internal final class AVFoundationCapturePlatform: NSObject, CapturePlatform, @un
         await withCheckedContinuation { continuation in
             sessionQueue.async {
                 if self.session.isRunning { self.session.stopRunning() }
+                if let audioInput = self.audioInput {
+                    self.session.beginConfiguration()
+                    self.session.removeInput(audioInput)
+                    self.audioInput = nil
+                    self.session.commitConfiguration()
+                }
                 continuation.resume()
             }
         }

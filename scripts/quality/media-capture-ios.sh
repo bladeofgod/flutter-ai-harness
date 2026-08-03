@@ -322,7 +322,7 @@ validate_reviewed_inputs() {
     "$UI/Package.swift"
   assert_file_digest 228bb4d2af645fc0808e431cb089df25aebf8552960991c50035807034b095c7 \
     "$ADAPTER/Package.swift"
-  assert_file_digest 672ed5f5012464a215618a3a775b1a518e75fe3112ee4859a8481c70d49e2bca \
+  assert_file_digest 45083c7e8012d3b91ac8c05f17702c8961d62862715a9be2433d3c5df1b3d97f \
     "$ADAPTER_TOOL/verify-core-tests.sh"
   assert_file_digest a590b38d5c3300aa3442ba512184c1c054311430776d663c2439fd9f556f1fcb \
     "$ADAPTER_TOOL/verify-host-route.sh"
@@ -413,6 +413,8 @@ RUBY
 validate_test_matrix() {
   stage "Validate lifecycle, rendering, UI and Adapter regression matrix"
 
+  bash "$ADAPTER_TOOL/verify-core-tests.sh" --self-test-result-policy
+
   local core_tests="$CORE/Tests"
   local ui_tests="$UI/Tests"
   local adapter_tests="$ADAPTER/Tests"
@@ -424,10 +426,16 @@ validate_test_matrix() {
   require_test "$core_tests" testRotationInvalidatesPendingLiveMountBeforeSurfaceMutation
   require_test "$core_tests" testLiveOwnerDestroyRevokesAndDetachesBinding
   require_test "$core_tests" testLiveSourceMountsPreviewLayerAndCleanupDisconnectsIt
+  require_test "$core_tests" testLiveSourceConvertsViewPointThroughPreviewLayer
   require_test "$core_tests" testPhotoSourceMountsDecodedContentAndCleanupClearsIt
   require_test "$core_tests" testVideoSourceMountsPlayerLayerAndCleanupClearsPlayer
   require_test "$core_tests" testBoundsAndCallerCopySurviveSourceRelease
   require_test "$core_tests" testVideoThumbnailReceivesBoundedDecodeRequestAndDeterministicPosterTarget
+  require_test "$core_tests" testRecordingStartFailureReleasesConfiguredMicrophoneInput
+  require_test "$core_tests" testCancellingRecordingStartReleasesMicrophoneInputOnce
+  require_test "$core_tests" testStopRecordingFailureReleasesMicrophoneInputOnce
+  require_test "$core_tests" testConcurrentCancelAndStopReleaseMicrophoneInputOnce
+  require_test "$core_tests" testRetakeCommitsReadyStateBeforeAsynchronousFileDeletion
 
   require_test "$ui_tests" testPresentationRegistryRejectsConcurrentOwnerAndAdvancesGeneration
   require_test "$ui_tests" testStartPermissionFailureIsNotReportedAsCancellation
@@ -436,6 +444,7 @@ validate_test_matrix() {
   require_test "$ui_tests" testViewControllerDeinitTriggersSystemInterruptionCleanup
   require_test "$ui_tests" testRotationAndForegroundUseStrictlyNewSurfaceGenerations
   require_test "$ui_tests" testPhotoPreviewConfirmCompletesAfterSurfaceCleanup
+  require_test "$ui_tests" testFocusUsesRenderDevicePointConversion
 
   require_test "$adapter_tests" testDirectOperationsCoverFullBaseLifecycleOnMainActor
   require_test "$adapter_tests" testPresentationThreeOutcomesConflictAndDismissAreDistinct
@@ -450,8 +459,8 @@ validate_test_matrix() {
   core_count="$(rg -n '^[[:space:]]{4}func test[A-Za-z0-9_]+\(' "$core_tests" --glob '*.swift' | wc -l | tr -d ' ')"
   ui_count="$(rg -n '^[[:space:]]{4}func test[A-Za-z0-9_]+\(' "$ui_tests" --glob '*.swift' | wc -l | tr -d ' ')"
   adapter_count="$(rg -n '^[[:space:]]{4}func test[A-Za-z0-9_]+\(' "$adapter_tests" --glob '*.swift' | wc -l | tr -d ' ')"
-  [[ "$core_count" -eq 101 ]] || fail "expected exactly 101 Core/Rendering XCTest methods"
-  [[ "$ui_count" -eq 51 ]] || fail "expected exactly 51 UI XCTest methods"
+  [[ "$core_count" -eq 107 ]] || fail "expected exactly 107 Core/Rendering XCTest methods"
+  [[ "$ui_count" -eq 52 ]] || fail "expected exactly 52 UI XCTest methods"
   [[ "$adapter_count" -eq 69 ]] || fail "expected exactly 69 Bridge Core XCTest methods"
 
   printf '[media-capture-ios] XCTest source matrix: Core/Rendering %s, UI %s, Bridge Core %s.\n' \
@@ -566,14 +575,15 @@ run_simulator_tests() {
   fi
 
   printf '%s\n' '[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.'
-  run_runtime_test "$CORE" MediaCapture-Package core-package "$simulator_id" 101
-  run_runtime_test "$UI" MediaCaptureUI ui "$simulator_id" 51
+  run_runtime_test "$CORE" MediaCapture-Package core-package "$simulator_id" 107
+  run_runtime_test "$UI" MediaCaptureUI ui "$simulator_id" 52
 
   local adapter_log="$TEMP_ROOT/runtime-adapter.log"
   local adapter_result="$TEMP_ROOT/runtime-adapter.xcresult"
   local status
   set +e
   MEDIA_CAPTURE_CORE_TEST_RESULT_BUNDLE="$adapter_result" \
+    MEDIA_CAPTURE_SIMULATOR_ID="$simulator_id" \
     bash "$ADAPTER_TOOL/verify-core-tests.sh" >"$adapter_log" 2>&1
   status=$?
   set -e

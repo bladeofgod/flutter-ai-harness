@@ -3,6 +3,11 @@ import Foundation
 @testable import MediaCaptureUI
 
 actor FakeMediaCaptureService: MediaCaptureServicing {
+    struct FocusPoint: Sendable, Equatable {
+        let x: Double
+        let y: Double
+    }
+
     enum ReleaseFailure: Sendable {
         case media(MediaCaptureFailure.ID)
         case unexpected
@@ -25,6 +30,7 @@ actor FakeMediaCaptureService: MediaCaptureServicing {
         let rotationCount: Int
         let zoomFactors: [Double]
         let focusCount: Int
+        let focusPoints: [FocusPoint]
         let switchCameraCount: Int
         let retakeCount: Int
         let flashModes: [FlashMode]
@@ -74,6 +80,7 @@ actor FakeMediaCaptureService: MediaCaptureServicing {
     private var rotationCount = 0
     private var zoomFactors: [Double] = []
     private var focusCount = 0
+    private var focusPoints: [FocusPoint] = []
     private var switchCameraCount = 0
     private var retakeCount = 0
     private var flashModes: [FlashMode] = []
@@ -169,6 +176,7 @@ actor FakeMediaCaptureService: MediaCaptureServicing {
         normalizedY: Double
     ) async throws -> SessionHandle {
         focusCount += 1
+        focusPoints.append(FocusPoint(x: normalizedX, y: normalizedY))
         return sessionHandle
     }
     func setZoomFactor(sessionHandle: SessionHandle, factor: Double) async throws -> SessionHandle {
@@ -351,6 +359,7 @@ actor FakeMediaCaptureService: MediaCaptureServicing {
             rotationCount: rotationCount,
             zoomFactors: zoomFactors,
             focusCount: focusCount,
+            focusPoints: focusPoints,
             switchCameraCount: switchCameraCount,
             retakeCount: retakeCount,
             flashModes: flashModes,

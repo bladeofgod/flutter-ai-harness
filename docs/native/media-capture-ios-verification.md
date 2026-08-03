@@ -50,10 +50,12 @@ bash scripts/quality/media-capture-ios.sh
 并发 transfer、100 MiB 聚合容量、300 秒 TTL、4096 项 tombstone，以及 18 个 URI 内容向量和 2 个 URI
 长度向量与 Swift XCTest 完全一致。脚本不修改 Contract，也不允许用平台差异覆盖共享事实。
 
-源码矩阵固定为 Core/Rendering 101、UI 51、Bridge Core 69，多或少一项都失败。Simulator runtime 使用
+源码矩阵固定为 Core/Rendering 107、UI 52、Bridge Core 69，多或少一项都失败。Simulator runtime 使用
 每次 `xcodebuild test` 生成的 `.xcresult` 结构化摘要，把源码矩阵与实际执行结果绑定：三个层级均要求
 passed 等于精确 total，failed、skipped 和 expected failure 都为 0；Bridge Core helper 与主 Gate 会对
-同一个 69 项 result bundle 分别执行结构化校验，不依赖日志正则。
+同一个 69 项 result bundle 分别执行结构化校验，不依赖日志正则。父 Gate 把已选定的 iPhone Simulator
+传给 Bridge helper；若没有可解析的测试失败，helper 只重试一次，并在最终失败时输出脱敏的结果计数和
+合法测试标识，不输出 Simulator ID、构建日志或本机路径。
 
 ## 临时 Host 安全边界
 

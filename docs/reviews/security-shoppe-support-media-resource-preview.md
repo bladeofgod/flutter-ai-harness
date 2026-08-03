@@ -23,7 +23,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: 5ef645c231cad5fe16db796bcc2c0c8510ee5fafcf1e9a93312d5a03a75e123c
+implementationDigest: 96ed0e63496439246b943b9bc16ddb3ca65d70954b9790fbe8b4adff0092027e
 ---
 
 # Security Review：Support Media Resource Preview
@@ -36,3 +36,9 @@ release export/native lease 之前；会话接纳、reset、dispose 串行且失
 
 最终集成只更新共享 lockfile、Host、golden、Harness 与状态文档，没有修改 Support 生产消息、resource ID
 或 cleanup。根 `xml` 仍是 Harness dev dependency；独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## iOS 综合修正后的影响复审
+
+本轮没有修改 Support 消息模型、`MediaResourceId`、Store adoption 或预览 cleanup。变化限于 iOS Core、
+Rendering、UI、共享 Gate/golden 与说明文档；独立 Security Reviewer 复核跨 Runtime 边界后确认
+P0/P1/P2 0/0/0，本报告按当前实现文件重新绑定摘要。

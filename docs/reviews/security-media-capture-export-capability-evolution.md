@@ -10,7 +10,7 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
+implementationDigest: cd029d43af8db65ba19c2998a4faf775695b5e9dc0e15a917fd108f50498d50d
 ---
 
 # Security Review: Media Capture Export Capability V4
@@ -48,3 +48,9 @@ transition、resource、ownership、cleanup、privacy、streaming policy 和 his
 
 最终集成通过三端 current/history/failure source 和 bounded transfer vectors 验证既有 V4 能力，没有改变
 Native sink 或 Core ownership。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## iOS 综合修正后的复审
+
+独立 Security Reviewer 复核共享 Gate、golden、Core、Rendering、UI 与文档增量后，确认本轮没有修改
+Capability/Wire 结构、export ownership、权限或 Agent 能力。最终结论为 P0/P1/P2 0/0/0，本报告按当前
+实现文件重新绑定摘要；方向适配明确不在本轮范围内。

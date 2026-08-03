@@ -2,6 +2,8 @@ import MediaCapture
 import MediaCaptureAppleRendering
 import UIKit
 
+internal typealias MediaCaptureDevicePointConverter = (MediaCaptureRenderView, CGPoint) -> CGPoint?
+
 @MainActor
 internal final class MediaCaptureChromeView: UIView {
     let renderContainer = UIView()
@@ -25,6 +27,7 @@ internal final class MediaCaptureChromeView: UIView {
 
     private let controlsBackground = UIView()
     private let focusIndicator = UIView()
+    private let devicePointConverter: MediaCaptureDevicePointConverter
     private var controlsHeight: NSLayoutConstraint?
     private(set) weak var renderView: MediaCaptureRenderView?
 
@@ -33,7 +36,20 @@ internal final class MediaCaptureChromeView: UIView {
     }
 
     override init(frame: CGRect) {
+        devicePointConverter = { renderView, point in
+            renderView.captureDevicePoint(fromViewPoint: point)
+        }
         super.init(frame: frame)
+        configureView()
+    }
+
+    init(devicePointConverter: @escaping MediaCaptureDevicePointConverter) {
+        self.devicePointConverter = devicePointConverter
+        super.init(frame: .zero)
+        configureView()
+    }
+
+    private func configureView() {
         backgroundColor = .black
         isAccessibilityElement = false
         configureHierarchy()
@@ -73,6 +89,12 @@ internal final class MediaCaptureChromeView: UIView {
 
     func removeRenderView() {
         renderView?.removeFromSuperview()
+    }
+
+    func captureDevicePoint(fromRenderPoint point: CGPoint) -> CGPoint? {
+        guard renderContainer.bounds.contains(point), let renderView else { return nil }
+        let pointInRenderView = renderView.convert(point, from: renderContainer)
+        return devicePointConverter(renderView, pointInRenderView)
     }
 
     func apply(_ snapshot: MediaCaptureUiSnapshot) {

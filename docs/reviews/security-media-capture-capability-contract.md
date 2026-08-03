@@ -11,7 +11,7 @@ implementationFiles:
   - docs/infrastructure-modules.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 327136a7493a0574c4f0f81cefb786d995703b42d83486f0da8e95b8fd216f1e
+implementationDigest: 50437fc383b903be34b17d7b5787e04793b6a62980aeec4f4b3156fc0ebd8bd3
 ---
 
 # Security Review：Media Capture 能力契约
@@ -95,3 +95,9 @@ opaque handle、权限、文件所有权、读取/导出、清理或日志边界
 
 最终集成把 Capability V1-V4 current/history/failure 集合纳入三端直接消费，并修正设备证据表述；既有
 权限、handle、lease、文件所有权和日志边界未放宽。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## iOS 综合修正后的复审
+
+独立 Security Reviewer 复核共享 Gate、golden、Core、Rendering、UI 与文档增量后，确认本轮没有修改
+Capability/Wire 结构、opaque handle、权限或 Agent 能力。最终结论为 P0/P1/P2 0/0/0，本报告按当前
+实现文件重新绑定摘要；方向适配明确不在本轮范围内。

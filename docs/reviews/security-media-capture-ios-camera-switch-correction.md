@@ -7,7 +7,7 @@ p2: 0
 implementationFiles:
   - app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureCore.swift
   - docs/infrastructure/media-capture-ios.md
-implementationDigest: cc2acd1d8a9798c7dc6645b617386467d645e0fe29e43cb65e99375335f1e5f6
+implementationDigest: 0be316a053bf8e239f7dcc3009870ee609619466811b1ba666b4b48884f83998
 ---
 
 # Security Review: iOS 镜头切换提交与能力快照修正
@@ -36,3 +36,9 @@ implementationDigest: cc2acd1d8a9798c7dc6645b617386467d645e0fe29e43cb65e99375335
 Simulator/Fake 不证明真机权限 UI、硬件镜头切换或系统中断，这些保留给 iOS Quality Gate。
 
 本轮 Reviewer 未读取普通 Review，未运行构建或修改实现；摘要由主流程按其确认的实现文件计算。
+
+## iOS 综合修正后的影响复审
+
+本轮共享 Core 仅收紧单次带声录像的 audio input 生命周期，并把 retake 的 discarded/ready 提交提前到
+异步删除之前；camera switch 的 generation、snapshot 和脱敏边界未改变。独立 Security Reviewer 复核
+最终 diff 后确认 P0/P1/P2 0/0/0，摘要按当前实现文件重新绑定。方向适配不在本轮范围内。

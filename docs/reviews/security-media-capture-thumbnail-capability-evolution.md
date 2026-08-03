@@ -10,7 +10,7 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
+implementationDigest: cd029d43af8db65ba19c2998a4faf775695b5e9dc0e15a917fd108f50498d50d
 ---
 
 # Security Review: Media Capture Native Preview 与缩略图 Capability 演进
@@ -77,6 +77,12 @@ commit ownership 与工作预算已通过复审，原 P1-2 和 P2 关闭。仍�
 “adapter B attach 被拒后不能 detach adapter A”负例。
 
 当前仍不可刷新三份旧 Security Review 摘要。
+
+## iOS 综合修正后的最终复审
+
+上面的阶段性限制已由后续实现和复审关闭。独立 Security Reviewer 重新核对共享 Gate、golden、Core、
+Rendering、UI 与文档增量，确认本轮没有修改 Capability/Wire 结构、thumbnail ownership、权限或 Agent
+能力。最终结论为 P0/P1/P2 0/0/0，本报告按当前实现文件重新绑定摘要；方向适配不在本轮范围内。
 
 ## 跨 Runtime 集成影响
 

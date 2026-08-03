@@ -10,7 +10,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: eaee514d0f9916ad753634d1211125abf8f956b9f36b7e58957c923db66c0349
+implementationDigest: 700542234576e301ac9ccc3c4948217272e5fc9788669a5a02e4bc99adfb96b7
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁
@@ -40,3 +40,10 @@ implementationDigest: eaee514d0f9916ad753634d1211125abf8f956b9f36b7e58957c923db6
 临时 Host 会从公开、锁定的 Flutter/Dart/CocoaPods 来源解析隔离 cache；Gate 不注入凭据，也不增加发布、
 签名、commit 或 push 能力。Simulator/临时 Host 仍不能证明真机 Camera、Microphone、权限、硬件中断和
 性能；证据中没有用户名、主机路径、Simulator ID、UUID、真实媒体或凭据。
+
+## iOS 综合修正后的最终复审
+
+Gate 将已选 Simulator 通过受控环境变量交给 Bridge helper，并在运行前执行 result-policy fixture。输入必须
+精确匹配 available iPhone；诊断仅允许固定分类、整数计数和白名单测试标识。仅无结构化测试失败时重试
+一次，最终成功要求 Core/Rendering 107、UI 52、Bridge 69 项精确通过。独立 Security Reviewer 确认
+P0/P1/P2 0/0/0；无新增网络、凭据、权限、依赖或 Agent 能力。

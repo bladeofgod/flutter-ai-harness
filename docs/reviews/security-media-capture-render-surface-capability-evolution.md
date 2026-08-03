@@ -10,7 +10,7 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: d62b814a0b8fe6777df1e8f06d41c13c107252cc47fcbf7809f7fee77c8249cb
+implementationDigest: cd029d43af8db65ba19c2998a4faf775695b5e9dc0e15a917fd108f50498d50d
 ---
 
 # Security Review: Media Capture Render Surface Capability V3
@@ -81,3 +81,9 @@ Capability、文档与共享 Harness。真实双端 surface 行为仍由平台�
 
 最终集成的 current/history vectors 继续把 concrete surface 固定为 Native-only，只更新已实现状态和
 设备证据边界。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。
+
+## iOS 综合修正后的复审
+
+独立 Security Reviewer 复核共享 Gate、golden、Core、Rendering、UI 与文档增量后，确认本轮没有修改
+Capability/Wire 结构、surface ownership、权限或 Agent 能力。最终结论为 P0/P1/P2 0/0/0，本报告按当前
+实现文件重新绑定摘要；方向适配明确不在本轮范围内。

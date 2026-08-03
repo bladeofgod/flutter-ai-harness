@@ -17,7 +17,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
-implementationDigest: 66f5bfe53866209c1f3ea9a632551d037b6380e88eb99f3defc27fc785b52eb8
+implementationDigest: 6a9d85d0188429613791a8aa7cebc89d68bb9724dfdce202ce754547dfb0d21b
 ---
 
 # Security Review: iOS Media Capture Bridge Adapter
@@ -66,3 +66,9 @@ generic build 通过，本报告摘要机械更新到当前实现快照。
 Framework Fake、Simulator 与 no-codesign Host build 不证明真实 Camera/Microphone、系统权限弹窗、前后
 摄像头、带音频录像、中断、存储压力、后台恢复、真实缩略图内存行为、最终 Runner 的 Info.plist/注册或
 codesigned 安装。上述能力仍由最终 Integration/Quality Gate 和用户真机验收确认。
+
+## iOS 综合修正后的最终复审
+
+Bridge helper 现在复用父 Gate 选定并精确验证的 Simulator，结构化结果只输出固定分类、整数计数和最多
+五个白名单测试标识；原始日志、failure text、路径、UUID 与设备标识不外显。重试只覆盖无结构化测试
+失败的基础设施类失败，断言失败不重试。独立 Security Reviewer 确认 P0/P1/P2 0/0/0，69 项测试通过。

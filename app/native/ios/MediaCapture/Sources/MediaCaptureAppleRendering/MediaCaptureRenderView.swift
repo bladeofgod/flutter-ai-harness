@@ -22,9 +22,14 @@ public final class MediaCaptureRenderView: UIView, @unchecked Sendable {
     package var mountEndpoint: MediaCaptureRenderMountEndpoint?
     private var mountedContent: MountedContent?
     private var attachmentContext: RenderAttachmentContext?
+    private let devicePointConverter: ((AVCaptureVideoPreviewLayer, CGPoint) -> CGPoint)?
 
-    package init(surfaceOwner: MediaCaptureRenderSurfaceOwner) {
+    package init(
+        surfaceOwner: MediaCaptureRenderSurfaceOwner,
+        devicePointConverter: ((AVCaptureVideoPreviewLayer, CGPoint) -> CGPoint)? = nil
+    ) {
         self.surfaceOwner = surfaceOwner
+        self.devicePointConverter = devicePointConverter
         super.init(frame: .zero)
         clipsToBounds = true
         backgroundColor = .black
@@ -44,6 +49,11 @@ public final class MediaCaptureRenderView: UIView, @unchecked Sendable {
     public override func layoutSubviews() {
         super.layoutSubviews()
         mountedContent?.layer.frame = bounds
+    }
+
+    public func captureDevicePoint(fromViewPoint viewPoint: CGPoint) -> CGPoint? {
+        guard bounds.contains(viewPoint) else { return nil }
+        return mountedContent?.captureDevicePoint(fromLayerPoint: viewPoint)
     }
 
     package func makeMountEndpoint() -> MediaCaptureRenderMountEndpoint {
@@ -78,7 +88,11 @@ public final class MediaCaptureRenderView: UIView, @unchecked Sendable {
             mountedContent?.revoke()
             mountedContent?.detach()
 
-            let content = MountedContent(source: source, frame: bounds)
+            let content = MountedContent(
+                source: source,
+                frame: bounds,
+                devicePointConverter: devicePointConverter
+            )
             layer.addSublayer(content.layer)
             mountedContent = content
 
@@ -137,7 +151,14 @@ private final class MountedContent {
     private var revoked = false
     private var detached = false
 
-    init(source: MediaCaptureRenderSource, frame: CGRect) {
+    private let devicePointConverter: ((AVCaptureVideoPreviewLayer, CGPoint) -> CGPoint)?
+
+    init(
+        source: MediaCaptureRenderSource,
+        frame: CGRect,
+        devicePointConverter: ((AVCaptureVideoPreviewLayer, CGPoint) -> CGPoint)?
+    ) {
+        self.devicePointConverter = devicePointConverter
         switch source {
         case let .live(session):
             let previewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -173,6 +194,14 @@ private final class MountedContent {
             self.playerLayer = playerLayer
             player.play()
         }
+    }
+
+    func captureDevicePoint(fromLayerPoint point: CGPoint) -> CGPoint? {
+        guard !revoked, liveSession != nil, let previewLayer else { return nil }
+        if let devicePointConverter {
+            return devicePointConverter(previewLayer, point)
+        }
+        return previewLayer.captureDevicePointConverted(fromLayerPoint: point)
     }
 
     func revoke() {

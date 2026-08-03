@@ -110,6 +110,141 @@ final class MediaCaptureCoreTests: XCTestCase {
         let repeatedStop = try await fixture.core.stopRecording(sessionHandle: session)
         XCTAssertEqual(preview.mediaType, .video)
         XCTAssertEqual(repeatedStop, preview)
+        let configuredAfterFirstStop = await fixture.platform.configuredRecordingAudio
+        XCTAssertEqual(configuredAfterFirstStop, [true, false])
+        let audioActiveAfterFirstStop = await fixture.platform.recordingAudioActive
+        XCTAssertFalse(audioActiveAfterFirstStop)
+        let releaseCountAfterFirstStop = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertEqual(releaseCountAfterFirstStop, 1)
+
+        _ = try await fixture.core.retake(mediaHandle: preview.mediaHandle)
+        _ = try await fixture.core.startRecording(sessionHandle: session)
+        _ = try await fixture.core.stopRecording(sessionHandle: session)
+        let configuredAfterRetake = await fixture.platform.configuredRecordingAudio
+        XCTAssertEqual(configuredAfterRetake, [true, false, true, false])
+        let audioActiveAfterRetake = await fixture.platform.recordingAudioActive
+        XCTAssertFalse(audioActiveAfterRetake)
+        let releaseCountAfterRetake = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertEqual(releaseCountAfterRetake, 2)
+        await fixture.core.close()
+    }
+
+    func testRecordingStartFailureReleasesConfiguredMicrophoneInput() async throws {
+        let fixture = CoreFixture()
+        let session = try await fixture.startReadySession(mediaTypes: [.video], audioEnabled: true)
+        await fixture.platform.configureStartRecordingFailure(.resourceInUse)
+
+        let failure = await captureFailure {
+            _ = try await fixture.core.startRecording(sessionHandle: session)
+        }
+
+        XCTAssertEqual(failure?.id, .resourceInUse)
+        let configuredAudio = await fixture.platform.configuredRecordingAudio
+        XCTAssertEqual(configuredAudio, [true, false])
+        let audioActive = await fixture.platform.recordingAudioActive
+        XCTAssertFalse(audioActive)
+        let releaseCount = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertEqual(releaseCount, 1)
+        await fixture.core.close()
+    }
+
+    func testCancellingRecordingStartReleasesMicrophoneInputOnce() async throws {
+        let fixture = CoreFixture()
+        let session = try await fixture.startReadySession(mediaTypes: [.video], audioEnabled: true)
+        let startGate = TestAsyncGate()
+        await fixture.platform.configureStartRecordingGate(startGate)
+
+        let start = Task {
+            try await fixture.core.startRecording(sessionHandle: session)
+        }
+        let startReachedPlatform = await waitUntil { await fixture.platform.startRecordingStarted }
+        XCTAssertTrue(startReachedPlatform)
+
+        start.cancel()
+        startGate.release()
+        do {
+            _ = try await start.value
+            XCTFail("Cancelled recording start must throw CancellationError")
+        } catch is CancellationError {
+        }
+
+        let audioActive = await fixture.platform.recordingAudioActive
+        let releaseCount = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertFalse(audioActive)
+        XCTAssertEqual(releaseCount, 1)
+        await fixture.core.close()
+    }
+
+    func testStopRecordingFailureReleasesMicrophoneInputOnce() async throws {
+        let fixture = CoreFixture()
+        let session = try await fixture.startReadySession(mediaTypes: [.video], audioEnabled: true)
+        _ = try await fixture.core.startRecording(sessionHandle: session)
+        await fixture.platform.configureStopRecording(failure: .interrupted)
+
+        let failure = await captureFailure {
+            _ = try await fixture.core.stopRecording(sessionHandle: session)
+        }
+
+        XCTAssertEqual(failure?.id, .systemInterrupted)
+        let audioActive = await fixture.platform.recordingAudioActive
+        let releaseCount = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertFalse(audioActive)
+        XCTAssertEqual(releaseCount, 1)
+        await fixture.core.close()
+    }
+
+    func testConcurrentCancelAndStopReleaseMicrophoneInputOnce() async throws {
+        let fixture = CoreFixture()
+        let session = try await fixture.startReadySession(mediaTypes: [.video], audioEnabled: true)
+        _ = try await fixture.core.startRecording(sessionHandle: session)
+        let stopGate = TestAsyncGate()
+        await fixture.platform.configureStopRecording(gate: stopGate)
+
+        let stop = Task {
+            try await fixture.core.stopRecording(sessionHandle: session)
+        }
+        let stopReachedPlatform = await waitUntil { await fixture.platform.stopRecordingStarted }
+        XCTAssertTrue(stopReachedPlatform)
+
+        let cancelledSession = try await fixture.core.cancel(sessionHandle: session)
+        XCTAssertEqual(cancelledSession, session)
+        stopGate.release()
+        let stopFailure = await captureFailure {
+            _ = try await stop.value
+        }
+
+        XCTAssertEqual(stopFailure?.id, .systemInterrupted)
+        let audioActive = await fixture.platform.recordingAudioActive
+        let releaseCount = await fixture.platform.recordingAudioReleaseCount
+        XCTAssertFalse(audioActive)
+        XCTAssertEqual(releaseCount, 1)
+        await fixture.core.close()
+    }
+
+    func testRetakeCommitsReadyStateBeforeAsynchronousFileDeletion() async throws {
+        let fixture = CoreFixture()
+        let session = try await fixture.startReadySession(mediaTypes: [.photo])
+        let preview = try await fixture.core.takePhoto(sessionHandle: session)
+        let deleteGate = TestAsyncGate()
+        await fixture.files.configureDeleteGate(deleteGate)
+
+        let retake = Task {
+            try await fixture.core.retake(mediaHandle: preview.mediaHandle)
+        }
+        let deleteStarted = await waitUntil { await fixture.files.deleteStarted }
+        XCTAssertTrue(deleteStarted)
+
+        await fixture.core.displayRotationChanged()
+        let nextPreview = try await fixture.core.takePhoto(sessionHandle: session)
+        XCTAssertNotEqual(nextPreview.mediaHandle, preview.mediaHandle)
+        let oldMediaFailure = await captureFailure {
+            _ = try await fixture.core.confirm(mediaHandle: preview.mediaHandle)
+        }
+        XCTAssertEqual(oldMediaFailure?.id, .invalidState)
+
+        deleteGate.release()
+        let retakeSession = try await retake.value
+        XCTAssertEqual(retakeSession, session)
         await fixture.core.close()
     }
 

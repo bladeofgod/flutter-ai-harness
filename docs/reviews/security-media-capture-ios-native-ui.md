@@ -17,7 +17,7 @@ implementationFiles:
   - app/native/ios/MediaCaptureUI/Sources/MediaCaptureUI/Resources/en.lproj/Localizable.strings
   - app/native/ios/MediaCaptureUI/Sources/MediaCaptureUI/Resources/zh-Hans.lproj/Localizable.strings
   - docs/native/media-capture-ios-ui.md
-implementationDigest: adf89123b6d1636409a649bca6ac126acb9b487dbdf152127cb0f1e9945cb025
+implementationDigest: cc666fb98c62c2ef4e620713cba93080f81d9fbdaf53303d4450f52c009aab53
 ---
 
 # Security Review: iOS Media Capture Native UI
@@ -73,3 +73,9 @@ Simulator/Fake 不能证明真机 Camera/Microphone 权限 UI、真实 preview/�
 `matches` 保证。Observer token 增加 MainActor `invalidate()`，rebind 先解除旧注册，deinit 只做隔离明确的
 幂等兜底。权限、owner registry、surface generation、flow cleanup、媒体边界和依赖均未改变；51 个 UI
 XCTest 与完整严格并发 generic Simulator build 通过，本报告摘要机械更新到当前实现快照。
+
+## iOS 综合修正后的最终复审
+
+点按对焦先做 UIKit bounds 校验，再由未 revoke 的 live PreviewLayer 完成 aspect-fill/mirror 坐标转换；
+转换结果进入 Core 前限制在 `[0,1]`。PreviewLayer 没有进入公开 API 或 Wire，测试注入保持 package/internal。
+独立 Security Reviewer 确认 P0/P1/P2 0/0/0；当前 UI 52 项测试和完整 Gate 已通过，方向适配不在本轮范围内。

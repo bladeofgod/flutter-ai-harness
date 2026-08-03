@@ -10,7 +10,7 @@ implementationFiles:
   - app/native/ios/MediaCaptureUI/Sources/MediaCaptureUI/MediaCaptureFlowCoordinator.swift
   - docs/infrastructure/media-capture-ios.md
   - docs/native/media-capture-ios-ui.md
-implementationDigest: e40bfc8e1012044a6870cc4e29abe6dd6599851a67f2184966887d062d7e2527
+implementationDigest: d6fca7b53f3a6ba7cb3d257f8e7e95581741b00ea503d718af9aab10afb9b871
 ---
 
 # Security Review: iOS Media Cleanup 永久终态
@@ -44,3 +44,9 @@ build、lint、harness-check 与 diff check 由任务最终 evidence 记录。Si
 中断、文件保护与性能验证，这些保留给 iOS Quality Gate 和用户最终真机验收。
 
 本轮 Security Reviewer 未读取普通 Review，未运行构建或修改实现。
+
+## iOS 综合修正后的影响复审
+
+retake 现在以 discarded/ready 状态提交为线性化点，再执行异步文件删除；删除期间旧 media 不可 confirm，
+新 capture 使用不同 handle，不会保留指向已删除文件的有效 preview。既有 cleanup terminal outcome、deferred
+hold 和 release 语义未放宽。独立 Security Reviewer 确认 P0/P1/P2 0/0/0，并允许按当前文件刷新摘要。

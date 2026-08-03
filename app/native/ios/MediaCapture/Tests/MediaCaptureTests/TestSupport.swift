@@ -12,8 +12,14 @@ actor FakeCapturePlatform: CapturePlatform {
     var preparedOptions: [SessionOptions] = []
     var availableCameras: [CameraPosition] = [.rear, .front]
     var configuredRecordingAudio: [Bool] = []
+    private(set) var recordingAudioActive = false
+    private(set) var recordingAudioReleaseCount = 0
     var recording = false
+    var startRecordingGate: TestAsyncGate?
+    private(set) var startRecordingStarted = false
     var stopRecordingStarted = false
+    var stopRecordingGate: TestAsyncGate?
+    var stopRecordingFailure: PlatformFailure?
     var stoppedSessionCount = 0
     var switchCameraCallCount = 0
     var switchCameraFailure: PlatformFailure?
@@ -26,6 +32,7 @@ actor FakeCapturePlatform: CapturePlatform {
     var flashCallStarted = false
     var invalidReadySnapshot = false
     var prepareFailure: PlatformFailure?
+    var startRecordingFailure: PlatformFailure?
     var stopSessionGate: TestAsyncGate?
     var stopSessionStarted = false
 
@@ -82,15 +89,24 @@ actor FakeCapturePlatform: CapturePlatform {
 
     func configureRecordingAudio(enabled: Bool) async throws {
         configuredRecordingAudio.append(enabled)
+        if !enabled, recordingAudioActive {
+            recordingAudioReleaseCount += 1
+        }
+        recordingAudioActive = enabled
     }
 
     func startRecording(to destination: URL) async throws {
+        startRecordingStarted = true
+        if let startRecordingGate { await startRecordingGate.wait() }
+        if let startRecordingFailure { throw startRecordingFailure }
         try Data([4, 5, 6]).write(to: destination)
         recording = true
     }
 
     func stopRecording() async throws {
         stopRecordingStarted = true
+        if let stopRecordingGate { await stopRecordingGate.wait() }
+        if let stopRecordingFailure { throw stopRecordingFailure }
         guard recording else { throw PlatformFailure.interrupted }
         recording = false
     }
@@ -126,11 +142,19 @@ actor FakeCapturePlatform: CapturePlatform {
         stopSessionStarted = true
         if let stopSessionGate { await stopSessionGate.wait() }
         recording = false
+        if recordingAudioActive {
+            recordingAudioReleaseCount += 1
+        }
+        recordingAudioActive = false
         stoppedSessionCount += 1
     }
 
     func close() async {
         recording = false
+        if recordingAudioActive {
+            recordingAudioReleaseCount += 1
+        }
+        recordingAudioActive = false
         eventContinuation.finish()
     }
 
@@ -146,6 +170,24 @@ actor FakeCapturePlatform: CapturePlatform {
     func configureStopSession(_ gate: TestAsyncGate?) {
         stopSessionGate = gate
         stopSessionStarted = false
+    }
+
+    func configureStartRecordingFailure(_ failure: PlatformFailure?) {
+        startRecordingFailure = failure
+    }
+
+    func configureStartRecordingGate(_ gate: TestAsyncGate?) {
+        startRecordingGate = gate
+        startRecordingStarted = false
+    }
+
+    func configureStopRecording(
+        gate: TestAsyncGate? = nil,
+        failure: PlatformFailure? = nil
+    ) {
+        stopRecordingGate = gate
+        stopRecordingFailure = failure
+        stopRecordingStarted = false
     }
 }
 

@@ -327,6 +327,7 @@ public actor MediaCaptureCore {
         let operationEpoch = lifecycleEpoch
         sessions[sessionHandle] = session
         var pendingDestination: URL?
+        var recordingAudioConfigured = false
         do {
             if session.options.audioEnabled {
                 let microphoneState = try await resolvePermission(.microphone)
@@ -341,6 +342,7 @@ public actor MediaCaptureCore {
                 }
             }
             try await platform.configureRecordingAudio(enabled: session.options.audioEnabled)
+            recordingAudioConfigured = session.options.audioEnabled
             try validateSessionOperation(
                 sessionHandle,
                 generation: operationGeneration,
@@ -382,10 +384,16 @@ public actor MediaCaptureCore {
             )
         } catch is CancellationError {
             try? await platform.stopRecording()
+            if recordingAudioConfigured {
+                try? await platform.configureRecordingAudio(enabled: false)
+            }
             if let pendingDestination { await fileStore.discardRecording(at: pendingDestination) }
             clearOperation(sessionHandle, generation: operationGeneration)
             throw CancellationError()
         } catch {
+            if recordingAudioConfigured {
+                try? await platform.configureRecordingAudio(enabled: false)
+            }
             if let pendingDestination { await fileStore.discardRecording(at: pendingDestination) }
             clearOperation(sessionHandle, generation: operationGeneration)
             let failure = mapFailure(error, for: .startRecording)
@@ -566,8 +574,6 @@ public actor MediaCaptureCore {
             await revokePreviewAttachment(mediaHandle: mediaHandle)
             try Task.checkCancellation()
             var (mediaRecord, session) = try validatedMediaTransition(token)
-            await fileStore.delete(mediaRecord.storedMedia.reference)
-            (mediaRecord, session) = try validatedMediaTransition(token)
             cancelDeadline(mediaDeadlineKey(mediaHandle))
             mediaRecord.state = .discarded
             mediaRecord.stateDeadline = nil
@@ -579,6 +585,7 @@ public actor MediaCaptureCore {
             session.state = .ready
             session.operationInFlight = false
             sessions[session.handle] = session
+            await fileStore.delete(mediaRecord.storedMedia.reference)
             return session.handle
         } catch {
             clearMediaTransition(token)
@@ -2014,7 +2021,9 @@ public actor MediaCaptureCore {
         sessions[sessionHandle] = session
         cancelDeadline(recordingDeadlineKey(sessionHandle))
         // Stop capture immediately; render teardown must not extend the recorded duration.
-        async let platformStop: Void = platform.stopRecording()
+        async let platformStop: Void = stopRecordingAndReleaseAudio(
+            audioEnabled: session.options.audioEnabled
+        )
         await revokeLiveAttachment(sessionHandle: sessionHandle)
         var pendingStoredMedia: StoredMedia?
         do {
@@ -2077,6 +2086,20 @@ public actor MediaCaptureCore {
             let failure = mapFailure(error, for: .stopRecording)
             if failure.terminal { await failSession(sessionHandle, failure: failure) }
             throw failure
+        }
+    }
+
+    private func stopRecordingAndReleaseAudio(audioEnabled: Bool) async throws {
+        do {
+            try await platform.stopRecording()
+        } catch {
+            if audioEnabled {
+                try? await platform.configureRecordingAudio(enabled: false)
+            }
+            throw error
+        }
+        if audioEnabled {
+            try? await platform.configureRecordingAudio(enabled: false)
         }
     }
 

@@ -19,7 +19,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - docs/bridge/media-capture-ios.md
-implementationDigest: 3cfad98c9cbcb26ab3acf471f18ecdd9e17ee30df37a10e688988d5e217e6df0
+implementationDigest: 906c8a2fe2ba8c554bc915bd1d2a2be26b10f2fc42a49dc7e8793581e76ed8ad
 ---
 
 # Security Review: iOS Media Capture Transfer Bridge Adapter
@@ -63,3 +63,9 @@ lint、diff 和 evidence lint 均通过。Simulator 不能替代真机文件保�
 MainActor 隔离；reservation、staging、TTL deadline、cleanup、tombstone 和 locator 规则均未改变。TTL
 回归测试扩大 callback/TTL 时间差并使用小于新 TTL 的有界条件等待，继续证明 deadline 在 callback 前开始，
 同时消除调度抖动。本报告摘要机械更新到当前共享实现快照。
+
+## iOS 综合修正后的最终复审
+
+Bridge helper 现在只接受与 available iPhone Simulator 精确匹配的受限标识；结构化结果只输出固定分类、
+整数计数和白名单测试标识，原始日志、failure text、路径、UUID 与设备标识继续保留在私有临时目录。仅无
+结构化测试失败时重试一次，精确 69/69 才通过。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。

@@ -5,6 +5,37 @@ import XCTest
 
 @MainActor
 final class MediaCaptureFlowCoordinatorTests: XCTestCase {
+    func testFocusUsesRenderDevicePointConversion() async throws {
+        var converterInput: CGPoint?
+        let expectedDevicePoint = CGPoint(x: 0.72, y: 0.31)
+        let fixture = try await makeReadyFixture(
+            enabled: [.photo],
+            devicePointConverter: { _, point in
+                converterInput = point
+                return expectedDevicePoint
+            }
+        )
+        fixture.viewController.view.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+        fixture.viewController.view.layoutIfNeeded()
+        let renderPoint = CGPoint(x: 52, y: 96)
+
+        XCTAssertTrue(fixture.viewController.focus(atRenderPoint: renderPoint))
+        let focusDelivered = await eventually {
+            await fixture.core.snapshot().focusPoints.count == 1
+        }
+        XCTAssertTrue(focusDelivered)
+
+        let snapshot = await fixture.core.snapshot()
+        XCTAssertEqual(converterInput, renderPoint)
+        XCTAssertEqual(snapshot.focusPoints, [FakeMediaCaptureService.FocusPoint(
+            x: Double(expectedDevicePoint.x),
+            y: Double(expectedDevicePoint.y)
+        )])
+        XCTAssertFalse(fixture.viewController.focus(atRenderPoint: CGPoint(x: -1, y: 96)))
+        let finalFocusCount = await fixture.core.snapshot().focusCount
+        XCTAssertEqual(finalFocusCount, 1)
+    }
+
     func testPhotoPreviewConfirmCompletesAfterSurfaceCleanup() async throws {
         let fixture = try await makeReadyFixture(enabled: [.photo])
 
@@ -1040,14 +1071,16 @@ final class MediaCaptureFlowCoordinatorTests: XCTestCase {
         enabled: Set<MediaType>,
         mediaType: MediaType = .photo,
         cleanupOwner: MediaCaptureLeaseCleanupOwner = .shared,
-        settleTimeoutNanoseconds: UInt64 = 5_000_000_000
+        settleTimeoutNanoseconds: UInt64 = 5_000_000_000,
+        devicePointConverter: MediaCaptureDevicePointConverter? = nil
     ) async throws -> CoordinatorFixture {
         let core = try FakeMediaCaptureService(mediaType: mediaType)
         let fixture = try await makeStartedFixture(
             core: core,
             enabled: enabled,
             cleanupOwner: cleanupOwner,
-            settleTimeoutNanoseconds: settleTimeoutNanoseconds
+            settleTimeoutNanoseconds: settleTimeoutNanoseconds,
+            devicePointConverter: devicePointConverter
         )
         core.emit(.sessionReady(makeReadySnapshot(sessionHandle: core.sessionHandle)))
         let livePreviewReady = await eventually {
@@ -1065,7 +1098,8 @@ final class MediaCaptureFlowCoordinatorTests: XCTestCase {
         core: FakeMediaCaptureService,
         enabled: Set<MediaType>,
         cleanupOwner: MediaCaptureLeaseCleanupOwner = .shared,
-        settleTimeoutNanoseconds: UInt64 = 5_000_000_000
+        settleTimeoutNanoseconds: UInt64 = 5_000_000_000,
+        devicePointConverter: MediaCaptureDevicePointConverter? = nil
     ) async throws -> CoordinatorFixture {
         let options = try makeSessionOptions(enabled)
         let releaseCounter = LockedCounter()
@@ -1079,7 +1113,10 @@ final class MediaCaptureFlowCoordinatorTests: XCTestCase {
             settleTimeoutNanoseconds: settleTimeoutNanoseconds,
             releasePresentationSlot: { releaseCounter.increment() }
         )
-        let viewController = MediaCaptureViewController(coordinator: coordinator)
+        let viewController = MediaCaptureViewController(
+            coordinator: coordinator,
+            devicePointConverter: devicePointConverter
+        )
         coordinator.install(viewController: viewController)
         viewController.loadViewIfNeeded()
         coordinator.beginIfNeeded()

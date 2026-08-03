@@ -95,7 +95,7 @@ internal final class MediaCaptureLifecycleObservation {
 
 @MainActor
 internal final class MediaCaptureViewController: UIViewController {
-    private let chromeView = MediaCaptureChromeView()
+    private let chromeView: MediaCaptureChromeView
     private let coordinator: MediaCaptureFlowCoordinator
     private var gestureController = CaptureGestureController()
     private var snapshot = MediaCaptureUiSnapshot(
@@ -109,8 +109,16 @@ internal final class MediaCaptureViewController: UIViewController {
     private var expectedDismissal = false
     private var lifecycleObservation: MediaCaptureLifecycleObservation?
 
-    init(coordinator: MediaCaptureFlowCoordinator) {
+    init(
+        coordinator: MediaCaptureFlowCoordinator,
+        devicePointConverter: MediaCaptureDevicePointConverter? = nil
+    ) {
         self.coordinator = coordinator
+        if let devicePointConverter {
+            chromeView = MediaCaptureChromeView(devicePointConverter: devicePointConverter)
+        } else {
+            chromeView = MediaCaptureChromeView()
+        }
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
         modalPresentationCapturesStatusBarAppearance = true
@@ -278,15 +286,23 @@ internal final class MediaCaptureViewController: UIViewController {
 
     @objc private func focusTapped(_ recognizer: UITapGestureRecognizer) {
         guard recognizer.state == .ended else { return }
-        let bounds = chromeView.renderContainer.bounds
-        guard bounds.width > 0, bounds.height > 0 else { return }
         let point = recognizer.location(in: chromeView.renderContainer)
-        guard bounds.contains(point) else { return }
-        let normalizedX = min(max(Double(point.x / bounds.width), 0), 1)
-        let normalizedY = min(max(Double(point.y / bounds.height), 0), 1)
-        if coordinator.focus(normalizedX: normalizedX, normalizedY: normalizedY) {
-            chromeView.showFocus(at: point)
+        focus(atRenderPoint: point)
+    }
+
+    @discardableResult
+    func focus(atRenderPoint point: CGPoint) -> Bool {
+        guard let devicePoint = chromeView.captureDevicePoint(fromRenderPoint: point) else {
+            return false
         }
+        if coordinator.focus(
+            normalizedX: min(max(Double(devicePoint.x), 0), 1),
+            normalizedY: min(max(Double(devicePoint.y), 0), 1)
+        ) {
+            chromeView.showFocus(at: point)
+            return true
+        }
+        return false
     }
 
     private func perform(_ action: CaptureGestureAction) {

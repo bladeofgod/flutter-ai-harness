@@ -57,7 +57,10 @@ Home Indicator 区域露出；按钮触控目标至少 48 pt，快门固定为 8
 - 录像开始仍在 Core 返回途中时松手，会记录 pending stop，并在 start 成功后立即 stop。
 - 录像中纵向滑动以相邻 move 的增量按最新 `SessionReadySnapshot` zoom 范围换算并钳制；zoom 调用在途
   松手会进入 stopping phase，并在 zoom 收敛后立即 stop。
-- 点按画面只在 Core 声明支持 focus 时发送 `[0, 1]` 归一化坐标。
+- 点按画面只在 Core 声明支持 focus 时处理；UI 把触点交给当前 `MediaCaptureRenderView`，由持有真实
+  `AVCaptureVideoPreviewLayer` 的 Apple Rendering 边界通过
+  `captureDevicePointConverted(fromLayerPoint:)` 处理 aspect-fill 裁剪和镜像，再向 Core 发送 `[0, 1]`
+  device point。UI 和 Core 都不持有或暴露 Preview Layer。
 - 切换镜头、闪光模式和按钮显隐都来自最新 capability snapshot；录像和预览阶段隐藏不适用操作。
 - Core 自动录制时限产生的 preview event 与手动 stop 使用同一去重 preview 路径。
 - 预览阶段左上角操作变为重拍，底部蓝色操作确认当前媒体。

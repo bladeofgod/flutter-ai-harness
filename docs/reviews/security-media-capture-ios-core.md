@@ -14,7 +14,7 @@ implementationFiles:
   - app/native/ios/MediaCapture/Sources/MediaCapture/MediaCaptureRenderBoundary.swift
   - app/native/ios/MediaCapture/Sources/MediaCaptureAppleRendering/MediaCaptureRenderView.swift
   - docs/infrastructure/media-capture-ios.md
-implementationDigest: 9041af1d976abba1257fc3d67347a88e7ee0b4d6e99033b4c3138f3aa38884a8
+implementationDigest: 298e7dd737a5897b74a46abb358fa55620aa3d4fc0157ef78be6e9c552c9274d
 ---
 
 # Security Review: iOS Media Capture Native Core
@@ -122,3 +122,10 @@ operation completion 泛型的既有并发保证显式表达为 `Sendable`，并
 完整严格并发编译。没有新增 `@unchecked Sendable`、资源所有权、权限、文件、媒体、日志或依赖行为；
 既有安全控制与结论不变。完整 Core Package XCTest 和两个 generic Simulator product build 均在 warning
 作为 error 时通过，本报告摘要机械更新到当前共享实现快照。
+
+## iOS 综合修正后的最终复审
+
+带声录像现在在正常停止、启动失败、取消、停止失败、并发 cancel/stop 与 Session 停止路径释放 audio
+input；retake 先提交旧媒体 discarded 和 Session ready，再异步删除文件。PreviewLayer 对焦转换只在本地
+Rendering 边界完成，不暴露原生对象或扩大跨 Runtime 输入。独立 Security Reviewer 确认 P0/P1/P2
+0/0/0；Core/Rendering 107 项测试及完整 Gate 已通过，方向适配明确不在本轮范围内。
