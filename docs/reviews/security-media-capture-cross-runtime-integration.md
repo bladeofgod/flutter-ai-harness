@@ -26,6 +26,8 @@ implementationFiles:
   - scripts/quality/test-harness.sh
   - scripts/quality/media-capture-android.sh
   - scripts/quality/media-capture-ios.sh
+  - scripts/flutter-tool.sh
+  - scripts/install-ripgrep.sh
   - docs/README.zh-CN.md
   - docs/architecture.md
   - docs/bridge/media-capture.md
@@ -37,7 +39,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 1ca90708853d5cb72e4784dbc560c0ab4280fc2e20af27383a55f04015a66d0a
+implementationDigest: 169f40d09816157495c922c5cd1adb0d6cb88dda2673d8022a79cd3a69a7d21f
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -99,3 +101,14 @@ Harness 只接受单一 `didInitializeImplicitFlutterEngine` 回调和单一
 `engineBridge.pluginRegistry` 注册，并用失败 Fixture 拒绝旧 `with: self` 及重复装配。独立
 Security Reviewer 确认 P0/P1/P2 0/0/0；iOS 原生 Gate、临时 SwiftPM Host 和真实 Runner
 no-codesign Debug Build 通过。真机首次 scene 激活、权限 UI 和后台恢复仍属人工验收边界。
+
+## CI 原生门禁工具链修正复审
+
+三个 CI Job 统一通过仓库脚本安装 ripgrep 15.1.0。Linux x64、macOS ARM64 和 macOS x64 分别绑定
+官方 GitHub Release 资产及固定 SHA-256；内容在解压前校验，未知平台失败关闭。安装只写
+`RUNNER_TEMP` 并通过受控 `GITHUB_PATH` 暴露，不执行 `sudo`、APT 或 Homebrew 安装脚本。下载限制
+HTTPS/TLS、连接和总超时以及有限重试，不会在失败时回退到未校验来源。
+
+iOS Gate 改由仓库 Flutter wrapper 解析 SDK，继续精确拒绝非 3.41.9 版本。独立 Security Reviewer
+复审确认此前未固定系统包的 P2 已关闭，当前 P0/P1/P2 为 0/0/0。剩余信任边界是 GitHub Release、
+Runner 自带 TLS/归档/摘要工具和托管 Runner；Release 不可用时 CI 会明确失败。

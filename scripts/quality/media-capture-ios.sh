@@ -275,7 +275,7 @@ RUBY
 validate_toolchain() {
   stage "Validate macOS, Xcode, Flutter and repository inputs"
   [[ "$(uname -s)" == "Darwin" ]] || fail "the iOS gate requires macOS"
-  for command in find fvm git rg ruby sed swift tail wc xcodebuild xcrun; do
+  for command in find git rg ruby sed swift tail wc xcodebuild xcrun; do
     require_command "$command"
   done
   for file in \
@@ -299,7 +299,7 @@ validate_toolchain() {
   local flutter_json
   local flutter_version
   local flutter_root
-  flutter_json="$(cd "$ROOT/app" && fvm flutter --version --machine)"
+  flutter_json="$(TOOL_WORKDIR="$ROOT/app" bash "$ROOT/scripts/flutter-tool.sh" --version --machine)"
   flutter_version="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterVersion", "")' <<<"$flutter_json")"
   flutter_root="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterRoot", "")' <<<"$flutter_json")"
   [[ "$flutter_version" == "3.41.9" ]] ||

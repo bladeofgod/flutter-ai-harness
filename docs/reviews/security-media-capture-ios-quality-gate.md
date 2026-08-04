@@ -6,11 +6,12 @@ p1: 0
 p2: 0
 implementationFiles:
   - scripts/quality/media-capture-ios.sh
+  - scripts/flutter-tool.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: 808db0e5ca3663c729782c43bac957b59092cafba4d1e8c680640c67cce2b908
+implementationDigest: 9f049cf76a69575c8e223bdf0e49e9df62f97f9059cd54499b4d3965978441af
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁
@@ -47,3 +48,12 @@ Gate 将已选 Simulator 通过受控环境变量交给 Bridge helper，并在�
 精确匹配 available iPhone；诊断仅允许固定分类、整数计数和白名单测试标识。仅无结构化测试失败时重试
 一次，最终成功要求 Core/Rendering 107、UI 52、Bridge 69 项精确通过。独立 Security Reviewer 确认
 P0/P1/P2 0/0/0；无新增网络、凭据、权限、依赖或 Agent 能力。
+
+## CI Flutter 入口修正复审
+
+iOS Gate 现在通过仓库 `scripts/flutter-tool.sh` 解析 Flutter，不再把本机 FVM 作为唯一入口。本地仍优先
+使用 FVM，CI 则使用固定 Commit 的 Flutter Action 提供的 SDK；Gate 继续精确校验 Flutter 3.41.9、
+绝对 SDK root 和可执行文件类型。该调整没有新增权限、凭据、动态插件来源或任意环境变量覆盖入口。
+
+独立 Security Reviewer 确认 P0/P1/P2 0/0/0。CI 所需 ripgrep 由跨 Runtime 集成门禁固定版本和摘要安装，
+不改变 iOS Gate 的测试、临时 Host 隔离或真机验收边界。
