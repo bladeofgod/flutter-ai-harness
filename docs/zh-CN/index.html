@@ -78,8 +78,8 @@
               <span>Android 与 iOS 始终是一等构建目标</span>
             </div>
             <div class="metric">
-              <strong>1 个通宵</strong>
-              <span>参考 Demo 在执行阶段无人干预完成</span>
+              <strong>3 条 CI 路径</strong>
+              <span>仓库检查与 Android、iOS 宿主构建独立运行</span>
             </div>
           </div>
         </div>
@@ -102,12 +102,13 @@
             <li><a href="#overview">01 / 为什么需要</a></li>
             <li><a href="#model">02 / 系统模型</a></li>
             <li><a href="#roles">03 / 专业角色</a></li>
-            <li><a href="#workflow">04 / 交付闭环</a></li>
-            <li><a href="#security">05 / 安全审查</a></li>
-            <li><a href="#demo">06 / 参考 Demo</a></li>
-            <li><a href="#adoption">07 / 采用方式</a></li>
-            <li><a href="#boundaries">08 / 能力边界</a></li>
-            <li><a href="#resources">09 / 事实文档</a></li>
+            <li><a href="#native">04 / 原生能力体系</a></li>
+            <li><a href="#workflow">05 / 交付闭环</a></li>
+            <li><a href="#security">06 / 安全审查</a></li>
+            <li><a href="#demo">07 / 参考 Demo</a></li>
+            <li><a href="#adoption">08 / 采用方式</a></li>
+            <li><a href="#boundaries">09 / 能力边界</a></li>
+            <li><a href="#resources">10 / 事实文档</a></li>
           </ol>
         </nav>
 
@@ -224,20 +225,36 @@
                 <div class="role-boundary">不实现应用代码。</div>
               </div>
               <div class="role">
-                <div class="role-kind">功能实现</div>
+                <div class="role-kind">Flutter / Harness</div>
                 <div>
                   <h3>Task Executor</h3>
-                  <p>按已批准的单张任务卡实现功能、测试和聚焦验证。</p>
+                  <p>执行 Dart、Flutter、文档、规划、Harness 与传输中立能力任务。</p>
                 </div>
-                <div class="role-boundary">不重新定义架构，也不自我批准。</div>
+                <div class="role-boundary">不接管单平台原生实现或跨端 Wire 集成。</div>
               </div>
               <div class="role">
-                <div class="role-kind">原生边界</div>
+                <div class="role-kind">Android 平台</div>
+                <div>
+                  <h3>Android Engineer</h3>
+                  <p>负责 Kotlin Native Module、Bridge Adapter、原生 UI、Gradle 与平台验证。</p>
+                </div>
+                <div class="role-boundary">不修改 iOS、Dart Client 或跨端 Wire Contract。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">iOS 平台</div>
+                <div>
+                  <h3>iOS Engineer</h3>
+                  <p>负责 Swift Native Module、Bridge Adapter、原生 UI、SwiftPM 与平台验证。</p>
+                </div>
+                <div class="role-boundary">不修改 Android、Dart Client 或跨端 Wire Contract。</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">跨 Runtime 契约</div>
                 <div>
                   <h3>Bridge Engineer</h3>
-                  <p>按契约优先方式维护 MethodChannel 和 EventChannel。</p>
+                  <p>负责结构化 Wire Contract、Dart Client 与多 Runtime 最终集成。</p>
                 </div>
-                <div class="role-boundary">必须保持 Android 与 iOS 行为一致。</div>
+                <div class="role-boundary">平台内部实现必须路由给对应原生 Engineer。</div>
               </div>
               <div class="role">
                 <div class="role-kind">正确性</div>
@@ -266,8 +283,74 @@
             </div>
           </section>
 
+          <section class="section" id="native">
+            <p class="section-kicker">04 / 原生能力体系</p>
+            <h2>能力属于 Native Module，Bridge 只负责跨 Runtime 委托。</h2>
+            <p class="section-lead">
+              大型混合工程不会把所有能力放在 Flutter 层。纯原生消费者直接依赖所属平台的
+              Native Module；Flutter 消费者通过聚焦的 Dart Client 和 Bridge Adapter 调用同一能力，
+              不需要让原生业务绕回 Flutter。
+            </p>
+
+            <pre class="code-block" aria-label="原生模块与 Flutter 接入关系"><code><span class="accent">Android Native Consumer</span> -&gt; Android Native Module
+<span class="accent">iOS Native Consumer</span> -&gt; iOS Native Module
+
+<span class="accent">Flutter Consumer</span> -&gt; Dart Client -&gt; Channel -&gt; Android Bridge Adapter -&gt; Android Native Module
+<span class="accent">Flutter Consumer</span> -&gt; Dart Client -&gt; Channel -&gt; iOS Bridge Adapter -&gt; iOS Native Module
+
+<span class="accent">Host</span> -&gt; Module assembly + Adapter registration
+<span class="accent">Native Module</span> -x-&gt; Flutter</code></pre>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>Android 基线</h3>
+                <p>
+                  Kotlin 2.1.0、Gradle Kotlin DSL、Android Views、AndroidX、Coroutines 与 Flow。
+                  Media Capture 使用 CameraX 1.5.1；compileSdk 35、minSdk 23。
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>iOS 基线</h3>
+                <p>
+                  Swift 5、Swift Package Manager、UIKit、Auto Layout 与 Swift Concurrency。
+                  Media Capture 使用 AVFoundation；平台基线为 iOS 13。
+                </p>
+              </div>
+            </div>
+
+            <div class="flow" aria-label="原生能力分层职责">
+              <div class="flow-step">
+                <span class="flow-number">能力</span>
+                <strong>Native Module</strong>
+                <p>拥有类型化公共 API、状态机、资源生命周期和平台 SDK 交互。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">适配</span>
+                <strong>Bridge Adapter</strong>
+                <p>只映射 Wire DTO、Native Model、错误与取消，不拥有能力本身。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">装配</span>
+                <strong>Host</strong>
+                <p>接入平台生命周期、装配 Module 并注册 Adapter，不堆积业务状态。</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">验证</span>
+                <strong>Platform Gate</strong>
+                <p>分别执行 Android 与 iOS 测试、模块构建和最终宿主编译。</p>
+              </div>
+            </div>
+
+            <p>
+              当前 Media Capture 分别落在 <code>app/native/android/media_capture/</code> 与
+              <code>app/native/ios/MediaCapture/</code>；Flutter 接入位于
+              <code>app/packages/app_media_capture_bridge/</code>。Flutter 3.41.9 Host 使用标准 Plugin
+              注册，iOS Media Capture 通过本地 SwiftPM Product 接入，不依赖本机私有路径。
+            </p>
+          </section>
+
           <section class="section" id="workflow">
-            <p class="section-kicker">04 / 交付闭环</p>
+            <p class="section-kicker">05 / 交付闭环</p>
             <h2>产物跟随任务流动，而不是围绕任务堆积。</h2>
             <p class="section-lead">
               常规闭环保持紧凑。人工参与集中在产品决策和高风险边界，Agent 在执行过程中
@@ -321,7 +404,7 @@
           </section>
 
           <section class="section" id="security">
-            <p class="section-kicker">05 / 安全审查</p>
+            <p class="section-kicker">06 / 安全审查</p>
             <h2>按风险触发、保持独立、绑定证据。</h2>
             <p class="section-lead">
               普通 UI 和说明文档不会增加额外门禁。只有任务改变信任、数据、原生、
@@ -365,11 +448,13 @@
 
           <section class="section" id="demo">
             <div class="demo-band">
-              <p class="section-kicker">06 / 参考 Demo</p>
+              <p class="section-kicker">07 / 参考 Demo</p>
               <h2>仓库提供真实证据，而不是空白占位。</h2>
               <p class="section-lead">
                 Shoppe 风格 Flutter Demo 使用确定性本地数据，覆盖认证、商品目录、搜索、
-                商品详情、购物车、结算、个人中心、设置、奖励、订单和客服流程。
+                商品详情、购物车、结算、个人中心、设置、奖励、订单和客服流程。Android 与 iOS
+                还接入同一套原生拍摄能力，支持拍照、长按录像、确认、重拍和媒体交付；图片搜索、
+                订单评价与客服附件作为三个真实业务消费者复用这条链路。
               </p>
 
               <div class="demo-grid">
@@ -407,15 +492,39 @@
                 </figure>
               </div>
 
+              <div class="flow" aria-label="Media Capture 参考实现链路">
+                <div class="flow-step">
+                  <span class="flow-number">第 01 步</span>
+                  <strong>原生拍摄</strong>
+                  <p>CameraX 或 AVFoundation 驱动模块自有预览、拍照和录像状态。</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">第 02 步</span>
+                  <strong>确认交付</strong>
+                  <p>Bridge 只交付有界 transfer，不把原生路径或采集对象暴露给业务。</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">第 03 步</span>
+                  <strong>资源入库</strong>
+                  <p><code>app_media</code> 导入资源，消息只持有稳定的 MediaResourceId。</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">第 04 步</span>
+                  <strong>预览复用</strong>
+                  <p>客服图片与视频消息复用缩略图和全屏 Viewer 基础组件。</p>
+                </div>
+              </div>
+
               <p class="proof-note">
-                开发记录：Demo 在一个通宵内完成，执行阶段没有人工介入实现。人工输入仅负责
-                选择设计稿、确认范围和处理环境授权。
+                开发记录：初始 Flutter 业务 Demo 在一个通宵内完成，执行阶段没有人工介入实现。
+                后续原生拍摄与媒体预览作为独立工程批次完成。专项 Gate 自动验证软件层与双端宿主构建；
+                Camera、Microphone、系统中断和性能继续保留为人工真机验收边界。
               </p>
             </div>
           </section>
 
           <section class="section" id="adoption">
-            <p class="section-kicker">07 / 采用方式</p>
+            <p class="section-kicker">08 / 采用方式</p>
             <h2>复用工程模式，不必复刻目录结构。</h2>
             <p class="section-lead">
               这套仓库刻意保持可改造性。采用目标是保留明确契约和反馈闭环，同时允许目标工程
@@ -463,7 +572,7 @@
           </section>
 
           <section class="section" id="boundaries">
-            <p class="section-kicker">08 / 能力边界</p>
+            <p class="section-kicker">09 / 能力边界</p>
             <h2>Harness 明确不承诺什么。</h2>
             <p class="section-lead">
               清晰的非目标可以避免参考架构演变成携带大量无效复杂度的万能框架。
@@ -509,7 +618,7 @@
           </section>
 
           <section class="section" id="resources">
-            <p class="section-kicker">09 / 事实文档</p>
+            <p class="section-kicker">10 / 事实文档</p>
             <h2>继续阅读仓库中的真实契约。</h2>
             <p class="section-lead">
               本页面面向人解释整体模式。下面的仓库文件仍然是 Agent 行为与工程规则的
@@ -530,6 +639,27 @@
               >
                 <strong>架构说明</strong>
                 <span>Package、数据流、Feature 边界和装配</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/native-architecture.md"
+              >
+                <strong>原生架构</strong>
+                <span>Native Module、Bridge Adapter、Host 与验证边界</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/infrastructure-modules.md"
+              >
+                <strong>基础模块索引</strong>
+                <span>Media Capture、媒体资源与后续基础能力入口</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/infrastructure/media-capture.md"
+              >
+                <strong>Media Capture</strong>
+                <span>双端能力状态、分层设计、生命周期与验收边界</span>
               </a>
               <a
                 class="resource-link"

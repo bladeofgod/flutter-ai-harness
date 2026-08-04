@@ -79,8 +79,8 @@
               <span>Android and iOS stay first-class build targets</span>
             </div>
             <div class="metric">
-              <strong>1 overnight</strong>
-              <span>The reference Demo completed without implementation intervention</span>
+              <strong>3 CI tracks</strong>
+              <span>Repository checks plus Android and iOS host builds</span>
             </div>
           </div>
         </div>
@@ -103,12 +103,13 @@
             <li><a href="#overview">01 / Why it exists</a></li>
             <li><a href="#model">02 / System model</a></li>
             <li><a href="#roles">03 / Specialized roles</a></li>
-            <li><a href="#workflow">04 / Delivery loop</a></li>
-            <li><a href="#security">05 / Security review</a></li>
-            <li><a href="#demo">06 / Reference Demo</a></li>
-            <li><a href="#adoption">07 / Adoption paths</a></li>
-            <li><a href="#boundaries">08 / Boundaries</a></li>
-            <li><a href="#resources">09 / Source documents</a></li>
+            <li><a href="#native">04 / Native capability system</a></li>
+            <li><a href="#workflow">05 / Delivery loop</a></li>
+            <li><a href="#security">06 / Security review</a></li>
+            <li><a href="#demo">07 / Reference Demo</a></li>
+            <li><a href="#adoption">08 / Adoption paths</a></li>
+            <li><a href="#boundaries">09 / Boundaries</a></li>
+            <li><a href="#resources">10 / Source documents</a></li>
           </ol>
         </nav>
 
@@ -235,20 +236,36 @@
                 <div class="role-boundary">Does not implement application code.</div>
               </div>
               <div class="role">
-                <div class="role-kind">Implementation</div>
+                <div class="role-kind">Flutter / Harness</div>
                 <div>
                   <h3>Task Executor</h3>
-                  <p>Implements one approved task with focused tests and validation.</p>
+                  <p>Executes Dart, Flutter, documentation, planning, Harness, and transport-neutral tasks.</p>
                 </div>
-                <div class="role-boundary">Does not redefine the architecture or self-approve.</div>
+                <div class="role-boundary">Does not own single-platform native work or final Wire integration.</div>
               </div>
               <div class="role">
-                <div class="role-kind">Native boundary</div>
+                <div class="role-kind">Android platform</div>
+                <div>
+                  <h3>Android Engineer</h3>
+                  <p>Owns Kotlin Native Modules, Bridge Adapters, native UI, Gradle, and platform validation.</p>
+                </div>
+                <div class="role-boundary">Does not modify iOS, the Dart Client, or cross-runtime Wire contracts.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">iOS platform</div>
+                <div>
+                  <h3>iOS Engineer</h3>
+                  <p>Owns Swift Native Modules, Bridge Adapters, native UI, SwiftPM, and platform validation.</p>
+                </div>
+                <div class="role-boundary">Does not modify Android, the Dart Client, or cross-runtime Wire contracts.</div>
+              </div>
+              <div class="role">
+                <div class="role-kind">Cross-runtime contract</div>
                 <div>
                   <h3>Bridge Engineer</h3>
-                  <p>Owns contract-first MethodChannel and EventChannel work across hosts.</p>
+                  <p>Owns structured Wire contracts, the Dart Client, and final multi-runtime integration.</p>
                 </div>
-                <div class="role-boundary">Must preserve Android and iOS parity.</div>
+                <div class="role-boundary">Routes platform implementation to the matching native Engineer.</div>
               </div>
               <div class="role">
                 <div class="role-kind">Correctness</div>
@@ -277,8 +294,77 @@
             </div>
           </section>
 
+          <section class="section" id="native">
+            <p class="section-kicker">04 / Native capability system</p>
+            <h2>Capabilities belong to Native Modules; Bridges only delegate across runtimes.</h2>
+            <p class="section-lead">
+              Large hybrid applications cannot place every capability in Flutter.
+              A native consumer depends directly on its platform's Native Module;
+              Flutter reaches the same capability through a focused Dart Client and
+              Bridge Adapter, without forcing native product code through Flutter.
+            </p>
+
+            <pre class="code-block" aria-label="Native modules and Flutter integration"><code><span class="accent">Android Native Consumer</span> -&gt; Android Native Module
+<span class="accent">iOS Native Consumer</span> -&gt; iOS Native Module
+
+<span class="accent">Flutter Consumer</span> -&gt; Dart Client -&gt; Channel -&gt; Android Bridge Adapter -&gt; Android Native Module
+<span class="accent">Flutter Consumer</span> -&gt; Dart Client -&gt; Channel -&gt; iOS Bridge Adapter -&gt; iOS Native Module
+
+<span class="accent">Host</span> -&gt; Module assembly + Adapter registration
+<span class="accent">Native Module</span> -x-&gt; Flutter</code></pre>
+
+            <div class="two-column">
+              <div class="column-panel">
+                <h3>Android baseline</h3>
+                <p>
+                  Kotlin 2.1.0, Gradle Kotlin DSL, Android Views, AndroidX,
+                  Coroutines, and Flow. Media Capture uses CameraX 1.5.1 with
+                  compileSdk 35 and minSdk 23.
+                </p>
+              </div>
+              <div class="column-panel">
+                <h3>iOS baseline</h3>
+                <p>
+                  Swift 5, Swift Package Manager, UIKit, Auto Layout, and Swift
+                  Concurrency. Media Capture uses AVFoundation with an iOS 13 baseline.
+                </p>
+              </div>
+            </div>
+
+            <div class="flow" aria-label="Native capability responsibilities">
+              <div class="flow-step">
+                <span class="flow-number">Capability</span>
+                <strong>Native Module</strong>
+                <p>Owns typed public APIs, state machines, resource lifecycles, and platform SDK work.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Adaptation</span>
+                <strong>Bridge Adapter</strong>
+                <p>Maps Wire DTOs, native models, failures, and cancellation without owning the capability.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Assembly</span>
+                <strong>Host</strong>
+                <p>Connects platform lifecycle, assembles the Module, and registers the Adapter.</p>
+              </div>
+              <div class="flow-step">
+                <span class="flow-number">Validation</span>
+                <strong>Platform Gate</strong>
+                <p>Runs Android and iOS tests, module builds, and final host compilation separately.</p>
+              </div>
+            </div>
+
+            <p>
+              Media Capture now lives in <code>app/native/android/media_capture/</code>
+              and <code>app/native/ios/MediaCapture/</code>. Flutter integration lives in
+              <code>app/packages/app_media_capture_bridge/</code>. The Flutter 3.41.9 Host
+              uses standard plugin registration, and iOS consumes Media Capture through
+              local SwiftPM products without private machine paths.
+            </p>
+          </section>
+
           <section class="section" id="workflow">
-            <p class="section-kicker">04 / Delivery loop</p>
+            <p class="section-kicker">05 / Delivery loop</p>
             <h2>Artifacts move with the work, not around it.</h2>
             <p class="section-lead">
               The normal loop is intentionally compact. Human review is reserved
@@ -333,7 +419,7 @@
           </section>
 
           <section class="section" id="security">
-            <p class="section-kicker">05 / Security review</p>
+            <p class="section-kicker">06 / Security review</p>
             <h2>Security is conditional, independent, and evidence-bound.</h2>
             <p class="section-lead">
               Low-risk UI and documentation work does not gain another gate.
@@ -380,12 +466,15 @@
 
           <section class="section" id="demo">
             <div class="demo-band">
-              <p class="section-kicker">06 / Reference Demo</p>
+              <p class="section-kicker">07 / Reference Demo</p>
               <h2>The repository contains evidence, not a placeholder.</h2>
               <p class="section-lead">
                 The Shoppe-inspired Flutter Demo exercises authentication, catalog,
                 search, product, cart, checkout, profile, settings, rewards, orders,
-                and support flows with deterministic local data.
+                and support flows with deterministic local data. Android and iOS use
+                the same native capture capability for photos, press-and-hold video,
+                confirmation, retake, and media delivery. Image search, order review,
+                and support attachments reuse this path as three real product consumers.
               </p>
 
               <div class="demo-grid">
@@ -423,16 +512,42 @@
                 </figure>
               </div>
 
+              <div class="flow" aria-label="Media Capture reference flow">
+                <div class="flow-step">
+                  <span class="flow-number">Step 01</span>
+                  <strong>Native capture</strong>
+                  <p>CameraX or AVFoundation drives module-owned preview, photo, and video state.</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">Step 02</span>
+                  <strong>Confirmed delivery</strong>
+                  <p>The Bridge delivers a bounded transfer without exposing native paths or capture objects.</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">Step 03</span>
+                  <strong>Resource import</strong>
+                  <p><code>app_media</code> imports the resource; messages retain only a stable MediaResourceId.</p>
+                </div>
+                <div class="flow-step">
+                  <span class="flow-number">Step 04</span>
+                  <strong>Reusable preview</strong>
+                  <p>Support photo and video messages reuse shared thumbnails and full-screen viewers.</p>
+                </div>
+              </div>
+
               <p class="proof-note">
-                Development record: the Demo implementation completed in one
-                overnight run without human intervention during execution. Human
-                input selected the design, set scope, and handled environment access.
+                Development record: the initial Flutter business Demo completed in
+                one overnight run without human implementation intervention. Native
+                capture and media preview were completed later as a separate engineering
+                batch. Focused gates verify software behavior and both host builds;
+                camera, microphone, interruption, and performance remain human-owned
+                device acceptance boundaries.
               </p>
             </div>
           </section>
 
           <section class="section" id="adoption">
-            <p class="section-kicker">07 / Adoption paths</p>
+            <p class="section-kicker">08 / Adoption paths</p>
             <h2>Reuse the pattern, not necessarily the directory tree.</h2>
             <p class="section-lead">
               This repository is intentionally adaptable. The goal is to preserve
@@ -483,7 +598,7 @@
           </section>
 
           <section class="section" id="boundaries">
-            <p class="section-kicker">08 / Boundaries</p>
+            <p class="section-kicker">09 / Boundaries</p>
             <h2>What the Harness deliberately does not promise.</h2>
             <p class="section-lead">
               Clear non-goals prevent a reference architecture from turning into a
@@ -530,7 +645,7 @@
           </section>
 
           <section class="section" id="resources">
-            <p class="section-kicker">09 / Source documents</p>
+            <p class="section-kicker">10 / Source documents</p>
             <h2>Continue with the repository facts.</h2>
             <p class="section-lead">
               This page explains the model for people. The linked repository files
@@ -551,6 +666,27 @@
               >
                 <strong>Architecture</strong>
                 <span>Packages, data flow, feature boundaries, and assembly</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/native-architecture.md"
+              >
+                <strong>Native architecture</strong>
+                <span>Native Modules, Bridge Adapters, Hosts, and validation boundaries</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/infrastructure-modules.md"
+              >
+                <strong>Infrastructure modules</strong>
+                <span>Media Capture, media resources, and future capability entry points</span>
+              </a>
+              <a
+                class="resource-link"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/infrastructure/media-capture.md"
+              >
+                <strong>Media Capture</strong>
+                <span>Platform status, layered design, lifecycle, and acceptance boundaries</span>
               </a>
               <a
                 class="resource-link"

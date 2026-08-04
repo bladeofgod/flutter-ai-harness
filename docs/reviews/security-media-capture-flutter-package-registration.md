@@ -17,7 +17,7 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 8b32a8f5eb1ff2f47ba539e182c4d230314ff7ff7320c5b2a0a01200664c14e6
+implementationDigest: 0a854d78a51599cf0ba0d5da632d00be65801b13c61f81f84783b4bf7e475ea1
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -82,3 +82,10 @@ Host 使用同一 Plugin 构建方式，不读取或修改全局 Flutter 配置�
 `publish_to: none`，依赖清单和 lockfile 均未改变，也没有新增远程 SPM、脚本或发布能力。隔离配置下的
 Melos bootstrap 与完整 `make bootstrap` 已通过；独立增量安全复核确认 P0/P1/P2 维持 0/0/0，本报告
 按原文件集合刷新摘要。
+
+## 中英文详细指南原生能力同步复核
+
+两份静态 HTML 详细指南只同步既有原生 Agent 路由、Native Module/Bridge/Host 依赖方向、已锁定平台
+技术栈、Media Capture 参考链路与现有 CI 门禁事实。页面没有增加脚本、表单、远程可执行资源、依赖源、
+Agent 能力或 CI 权限；新增外链只指向仓库内已存在的事实文档。Workspace Package、Plugin discovery、
+SwiftPM 接线及发布边界均未改变，P0/P1/P2 仍为 0/0/0，摘要按当前 implementationFiles 重新绑定。
