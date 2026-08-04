@@ -39,7 +39,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 1fe1240f9f9b72359afb761f39ebb518215b072ee06cf31d0e61d1350bb9f3e5
+implementationDigest: c743277ccfbe7dbb7f13d829da966091b0ed4714658af70bef0b790685446163
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -143,3 +143,10 @@ xcodebuild Core/UI 运行关闭并行测试，原有精确计数和一次基础�
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## 2026-08-04 CI Check 超时预算增量复核
+
+`check` Job 的有界超时由 20 分钟调整为 30 分钟，以容纳完整 Repository Check 在冷 Runner 上的正常
+执行时间。检查命令、通过标准、权限、依赖来源、网络访问和并发取消策略均未改变；超时后仍由 GitHub
+Actions 失败关闭。该调整不扩大既有信任边界，P0/P1/P2 仍为 0/0/0，摘要按当前
+implementationFiles 重新绑定。
