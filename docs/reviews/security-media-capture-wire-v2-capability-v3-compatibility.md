@@ -10,7 +10,7 @@ implementationFiles:
   - docs/bridge/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: c07947b6e85f90d3fe77e61d447efcb6b82e24d23b9aa9257bcbc475eab32e47
+implementationDigest: 4552ab75782392bb63e5460228fe049258275f8814d3071a7f1cc807bf39a4bd
 ---
 
 # Security Review: Media Capture Wire V2 / Capability V3 Compatibility
@@ -90,3 +90,12 @@ ownership、cleanup/privacy、streaming policy 和 history 均由降投影移除
 
 最终 golden 继续精确锁定 Wire V1/V2 不暴露 Native read/render/transfer，V3 才暴露 scoped transfer；
 三端消费者与 Harness 均验证完整 history。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

@@ -84,6 +84,8 @@ run_bridge_core_tests() {
   (cd "$TEMPORARY_PACKAGE" && xcodebuild \
     -scheme app_media_capture_bridge_core_tests \
     -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+    -destination-timeout 120 \
+    -parallel-testing-enabled NO \
     -derivedDataPath "$TEMPORARY_ROOT/DerivedData" \
     -resultBundlePath "$RESULT_BUNDLE" \
     -configuration Debug \
@@ -124,7 +126,8 @@ result_has_test_failure() {
 emit_sanitized_summary() {
   local summary="$1"
   local tests="${2:-}"
-  SUMMARY_JSON="$summary" ruby -rjson -e '
+  local fallback_category="${3:-xcodebuild_or_simulator}"
+  SUMMARY_JSON="$summary" FALLBACK_CATEGORY="$fallback_category" ruby -rjson -e '
     summary = JSON.parse(ENV.fetch("SUMMARY_JSON"))
     result = summary.fetch("result", "Unknown").to_s
     result = "Unknown" unless result.match?(/\A[A-Za-z]+\z/)
@@ -132,7 +135,12 @@ emit_sanitized_summary() {
       value = summary.fetch(key, -1)
       [key, value.is_a?(Integer) ? value : -1]
     end
-    warn "Bridge Core failure category: test_result; result=#{result}; " \
+    category = if counts.fetch("totalTestCount").positive? || counts.fetch("failedTests").positive?
+                 "test_result"
+               else
+                 ENV.fetch("FALLBACK_CATEGORY")
+               end
+    warn "Bridge Core failure category: #{category}; result=#{result}; " \
          "total=#{counts.fetch("totalTestCount")}; passed=#{counts.fetch("passedTests")}; " \
          "failed=#{counts.fetch("failedTests")}; skipped=#{counts.fetch("skippedTests")}; " \
          "expected_failures=#{counts.fetch("expectedFailures")}."
@@ -166,11 +174,32 @@ emit_sanitized_summary() {
   fi
 }
 
+sanitized_xcodebuild_failure_category() {
+  if rg -q \
+    'Testing cancelled because the build failed|The following build commands failed|\*\* BUILD FAILED \*\*' \
+    "$TEST_LOG"; then
+    printf '%s\n' 'test_target_build'
+  elif rg -i -q \
+    'failed to (boot|launch|prepare).*(simulator|test runner)|unable to (boot|launch).*(simulator|test runner)|lost connection.*simulator' \
+    "$TEST_LOG"; then
+    printf '%s\n' 'simulator_runtime'
+  elif rg -i -q \
+    'unable to find a destination|destination.*(not found|unavailable)|ineligible destinations' \
+    "$TEST_LOG"; then
+    printf '%s\n' 'destination_unavailable'
+  else
+    printf '%s\n' 'xcodebuild_or_simulator'
+  fi
+}
+
 emit_sanitized_failure_summary() {
   local summary
   local tests=''
+  local fallback_category
+  fallback_category="$(sanitized_xcodebuild_failure_category)"
   if [[ ! -d "$RESULT_BUNDLE" ]]; then
-    printf '%s\n' 'Bridge Core failure category: xcodebuild_or_simulator; no result bundle.' >&2
+    printf 'Bridge Core failure category: %s; no result bundle.\n' \
+      "$fallback_category" >&2
     return
   fi
   if ! summary=$(xcrun xcresulttool get test-results summary \
@@ -180,7 +209,7 @@ emit_sanitized_failure_summary() {
   fi
   tests=$(xcrun xcresulttool get test-results tests \
     --path "$RESULT_BUNDLE" --compact 2>/dev/null) || tests=''
-  emit_sanitized_summary "$summary" "$tests"
+  emit_sanitized_summary "$summary" "$tests" "$fallback_category"
 }
 
 verify_result_policy_fixture() {

@@ -29,7 +29,7 @@ implementationFiles:
   - .agents/skills/kotlin-android-standards/SKILL.md
   - .agents/skills/swift-ios-standards/SKILL.md
   - .agents/skills/native-testing-strategy/SKILL.md
-implementationDigest: fc299dbccf31c0fa9146dd2e6999d425392355cac9d3bf83b0d1218f6b63b021
+implementationDigest: f0f05d72f95c27f71c84ad791c1c5551b5581584f66fbf8dcee6d79976390a92
 ---
 
 # Security Review：原生 Agent 与编码规范
@@ -151,3 +151,12 @@ Flutter 3.41 UIScene 迁移后，共享 Harness 将 iOS Host 装配收紧为单�
 `FlutterImplicitEngineDelegate` 回调和单一 `engineBridge.pluginRegistry` 注册，并拒绝旧
 AppDelegate registry 及重复注册。这不改变 Agent 工具、任务路由、网络、凭据或发布权限；
 独立 Security Reviewer 确认 P0/P1/P2 0/0/0。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

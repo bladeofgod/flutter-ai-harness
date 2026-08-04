@@ -11,7 +11,7 @@ implementationFiles:
   - docs/bridge/README.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 7ba96668bfc86b7a8629971de2a4138943b68a956077947f1f991fc1e053b8d5
+implementationDigest: 725c8dc50c24a3c6035fb56b1f9de2dc198440f763782312c900d6c9657925be
 ---
 
 # Security Review：Media Capture Bridge Contract
@@ -77,3 +77,12 @@ adoption 和版本兼容，确认原始路径、URI、媒体 bytes 与 SDK 对�
 
 最终集成补齐 current/history/failure source、MIME、signed-64、URI、lifecycle 与 redaction 的三端消费，
 未放宽 Bridge Contract。独立安全复审为 P0/P1/P2 0/0/0，本报告按原文件集合刷新摘要。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

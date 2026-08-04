@@ -10,7 +10,7 @@ implementationFiles:
   - docs/infrastructure/media-capture.md
   - app/tool/harness_check.dart
   - scripts/quality/test-harness.sh
-implementationDigest: 503ca52c6f127855ea8cbf230a2316123851c9098c134b2beafdc5beba0a0601
+implementationDigest: 1a1257c66ac5f8c866e7a7c92b06e925c9840790feb8d9dace0f3594b8607afb
 ---
 
 # Security Review: Media Capture Export Capability V4
@@ -54,3 +54,12 @@ Native sink 或 Core ownership。独立安全复审为 P0/P1/P2 0/0/0，本报�
 独立 Security Reviewer 复核共享 Gate、golden、Core、Rendering、UI 与文档增量后，确认本轮没有修改
 Capability/Wire 结构、export ownership、权限或 Agent 能力。最终结论为 P0/P1/P2 0/0/0，本报告按当前
 实现文件重新绑定摘要；方向适配明确不在本轮范围内。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

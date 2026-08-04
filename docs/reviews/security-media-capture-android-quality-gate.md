@@ -19,7 +19,7 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: 497aa9bbd47f170b11267f3393918ff45c2f2ea0dacc77288dafe0b42b5ac2b4
+implementationDigest: 78025b39156273473be99a569443f5b22dfb80ab366d07b6208d56bd56e508d6
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
@@ -85,3 +85,12 @@ strict dependency verification 配置阶段重新通过。独立 Security Review
 configuration 与官方 `--write-verification-metadata sha256` 解析该精确 classifier，生成后移除临时配置；
 最终工程依赖图不变。metadata 现同时固定唯一的 osx/linux 平台 artifact，未发现其他平台 classifier
 缺口，repository 和 strict verification 仍失败关闭。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

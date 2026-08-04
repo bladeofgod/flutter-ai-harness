@@ -11,7 +11,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: ac14c6deabfc2d2ea05171ba0f9612919d3c862fc5072be53623b535925bca0e
+implementationDigest: deb6896946261d338f960372f4f1f699b459f6f2e6a2c8f6d39bda081c784704
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁
@@ -74,3 +74,12 @@ Security Reviewer 确认 P0/P1/P2 0/0/0；本地 iOS 18.5 Simulator 的 Core 107
 观察到初始状态非 Booted 时才在退出或信号中 shutdown；已启动的用户 Simulator 不会被关闭。设备标识、
 boot 输出和原始构建日志仍不进入证据。中断验证确认 Gate 启动的设备已恢复关闭，Core 107、UI 52、
 Bridge 69 项运行层通过。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

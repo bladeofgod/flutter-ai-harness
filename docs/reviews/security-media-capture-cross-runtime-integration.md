@@ -39,7 +39,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 9387f4eb8613f217a3e7f99603d5f66b923f956ce3ffaa850abf5b385cf7d691
+implementationDigest: 1fe1240f9f9b72359afb761f39ebb518215b072ee06cf31d0e61d1350bb9f3e5
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -134,3 +134,12 @@ iOS Gate 使用 `simctl bootstatus -b` 显式完成 selected available Simulator
 时记录 Gate ownership，并在正常退出或信号中恢复 shutdown；用户原本 Booted 的设备不受 cleanup 影响。
 xcodebuild Core/UI 运行关闭并行测试，原有精确计数和一次基础设施重试边界不变。标识与原始 boot/build
 输出继续脱敏，本地中断验证确认没有残留 Booted Simulator 或构建进程。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

@@ -70,7 +70,9 @@ jobs:
       - run: make media-capture-android
       - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
   ios-build:
-    runs-on: macos-15
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
     steps:
       - run: make media-capture-ios
       - run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign

@@ -1143,15 +1143,28 @@ final class MediaCaptureBridgeControllerTests: XCTestCase {
             (await core.snapshot()).cancelled.contains("session_1")
         }
         XCTAssertTrue(cleaned)
-        let next = CompletionProbe()
-        controller.handle(
-            operation: "present_capture_flow",
-            arguments: requestEnvelope(
-                requestId: "blocked_owner_cancel_recovered",
-                payload: startPayload()
-            ),
-            completion: next
-        )
+        var next: CompletionProbe?
+        for attempt in 0 ..< 200 {
+            let candidate = CompletionProbe()
+            controller.handle(
+                operation: "present_capture_flow",
+                arguments: requestEnvelope(
+                    requestId: "blocked_owner_cancel_recovered_\(attempt)",
+                    payload: startPayload()
+                ),
+                completion: candidate
+            )
+            if candidate.completionCount == 0 {
+                next = candidate
+                break
+            }
+            let candidateOutcome = await candidate.value()
+            XCTAssertEqual(failure(candidateOutcome)?.code, "presentation_conflict")
+            try? await Task.sleep(nanoseconds: 1_000_000)
+        }
+        guard let next else {
+            return XCTFail("Expected owner cleanup to reopen presentation")
+        }
         let presented = await waitUntil { owner.presenter.sessions.count == 1 }
         guard presented else {
             return XCTFail("Expected presentation after owner cleanup settled")

@@ -7,7 +7,9 @@
 bash scripts/quality/media-capture-ios.sh
 ```
 
-脚本要求 macOS、当前 Xcode、仓库锁定的 Flutter 3.41.9、Ruby 和可用的 iOS Simulator SDK。脚本使用
+脚本要求 macOS、仓库锁定的 Xcode 26.5（17F42）、Flutter 3.41.9、Ruby 和可用的 iOS Simulator SDK。CI
+固定使用 `macos-26`、镜像内的 Xcode 26.5 和 iOS 26.5 Simulator runtime，从而与仓库本地验收工具链
+一致。脚本使用
 权限仅限当前用户的临时目录，并在退出时清理自己的 DerivedData、日志与中间文件。
 
 ## 验证层级
@@ -53,9 +55,10 @@ bash scripts/quality/media-capture-ios.sh
 源码矩阵固定为 Core/Rendering 107、UI 52、Bridge Core 69，多或少一项都失败。Simulator runtime 使用
 每次 `xcodebuild test` 生成的 `.xcresult` 结构化摘要，把源码矩阵与实际执行结果绑定：三个层级均要求
 passed 等于精确 total，failed、skipped 和 expected failure 都为 0；Bridge Core helper 与主 Gate 会对
-同一个 69 项 result bundle 分别执行结构化校验，不依赖日志正则。父 Gate 把已选定的 iPhone Simulator
-传给 Bridge helper。Gate 会显式启动选中的 Simulator、等待 boot 完成并关闭并行测试；若该设备原本关闭，
-退出时恢复关闭状态。Core 与 UI 运行层会为 destination 留出明确等待时间；Core、UI 与 Bridge 都只在
+同一个 69 项 result bundle 分别执行结构化校验，不依赖日志正则。Gate 从已安装且 available 的 iPhone
+runtime/device type 创建专属临时 Simulator，将其传给 Bridge helper，并在退出或中断时关闭和删除；不会
+复用、启动或关闭用户已有的 Simulator。Gate 等待专属设备 boot 完成并关闭并行测试。Core 与 UI 运行层
+会为 destination 留出明确等待时间；Core、UI 与 Bridge 都只在
 没有可解析测试失败的 Simulator/Runner 基础设施失败时重试一次，真实 XCTest 失败不重试。最终失败只
 输出脱敏的结果分类与计数，Bridge helper 还可输出合法测试标识，不输出 Simulator ID、构建日志或本机路径。
 

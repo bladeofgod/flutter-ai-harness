@@ -16,11 +16,12 @@ TEMP_ROOT_ALIAS="$(mktemp -d "${TMPDIR:-/tmp}/media-capture-ios-gate.XXXXXX")"
 TEMP_ROOT="$(cd "$TEMP_ROOT_ALIAS" && pwd -P)"
 FLUTTER_EXECUTABLE=''
 FLUTTER_ROOT_PATH=''
-SIMULATOR_STARTED_BY_GATE=''
+GATE_SIMULATOR_ID=''
 
 cleanup() {
-  if [[ -n "$SIMULATOR_STARTED_BY_GATE" ]] && command -v xcrun >/dev/null 2>&1; then
-    xcrun simctl shutdown "$SIMULATOR_STARTED_BY_GATE" >/dev/null 2>&1 || true
+  if [[ -n "$GATE_SIMULATOR_ID" ]] && command -v xcrun >/dev/null 2>&1; then
+    xcrun simctl shutdown "$GATE_SIMULATOR_ID" >/dev/null 2>&1 || true
+    xcrun simctl delete "$GATE_SIMULATOR_ID" >/dev/null 2>&1 || true
   fi
   if [[ -d "$TEMP_ROOT_ALIAS" ]]; then
     find -P "$TEMP_ROOT_ALIAS" -depth -delete
@@ -303,6 +304,7 @@ validate_toolchain() {
   local flutter_json
   local flutter_version
   local flutter_root
+  local xcode_version
   flutter_json="$(TOOL_WORKDIR="$ROOT/app" bash "$ROOT/scripts/flutter-tool.sh" --version --machine)"
   flutter_version="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterVersion", "")' <<<"$flutter_json")"
   flutter_root="$(ruby -rjson -e 'puts JSON.parse($stdin.read).fetch("flutterRoot", "")' <<<"$flutter_json")"
@@ -315,7 +317,10 @@ validate_toolchain() {
     fail "reviewed Flutter executable is unavailable or unsafe"
   FLUTTER_ROOT_PATH="$flutter_root"
 
-  printf '[media-capture-ios] Flutter %s; %s\n' "$flutter_version" "$(xcodebuild -version | tr '\n' ' ')"
+  xcode_version="$(xcodebuild -version | tr '\n' ' ')"
+  [[ "$xcode_version" == 'Xcode 26.5 Build version 17F42 ' ]] ||
+    fail "expected Xcode 26.5 build 17F42"
+  printf '[media-capture-ios] Flutter %s; %s\n' "$flutter_version" "$xcode_version"
 }
 
 validate_reviewed_inputs() {
@@ -326,7 +331,7 @@ validate_reviewed_inputs() {
     "$UI/Package.swift"
   assert_file_digest 228bb4d2af645fc0808e431cb089df25aebf8552960991c50035807034b095c7 \
     "$ADAPTER/Package.swift"
-  assert_file_digest 45083c7e8012d3b91ac8c05f17702c8961d62862715a9be2433d3c5df1b3d97f \
+  assert_file_digest f620bd76ba1daa8c5b84a9ce0e4097f3a0a45fff62de519b0c5678a1a89b8911 \
     "$ADAPTER_TOOL/verify-core-tests.sh"
   assert_file_digest a590b38d5c3300aa3442ba512184c1c054311430776d663c2439fd9f556f1fcb \
     "$ADAPTER_TOOL/verify-host-route.sh"
@@ -540,13 +545,35 @@ runtime_result_has_test_failure() {
   ' >/dev/null 2>&1
 }
 
+sanitized_xcodebuild_failure_category() {
+  local log="$1"
+  if [[ -f "$log" ]] && rg -q \
+    'failure category: test_target_build|Testing cancelled because the build failed|The following build commands failed|\*\* BUILD FAILED \*\*' \
+    "$log"; then
+    printf '%s\n' 'test_target_build'
+  elif [[ -f "$log" ]] && rg -i -q \
+    'failed to (boot|launch|prepare).*(simulator|test runner)|unable to (boot|launch).*(simulator|test runner)|lost connection.*simulator' \
+    "$log"; then
+    printf '%s\n' 'simulator_runtime'
+  elif [[ -f "$log" ]] && rg -i -q \
+    'unable to find a destination|destination.*(not found|unavailable)|ineligible destinations' \
+    "$log"; then
+    printf '%s\n' 'destination_unavailable'
+  else
+    printf '%s\n' 'xcodebuild_or_simulator'
+  fi
+}
+
 emit_sanitized_runtime_failure_summary() {
   local result_bundle="$1"
   local scheme="$2"
+  local log="$3"
+  local fallback_category
   local summary
+  fallback_category="$(sanitized_xcodebuild_failure_category "$log")"
   if [[ ! -d "$result_bundle" ]]; then
-    printf '[media-capture-ios] %s failure category: xcodebuild_or_simulator; no result bundle.\n' \
-      "$scheme" >&2
+    printf '[media-capture-ios] %s failure category: %s; no result bundle.\n' \
+      "$scheme" "$fallback_category" >&2
     return
   fi
   if ! summary="$(xcrun xcresulttool get test-results summary \
@@ -555,7 +582,7 @@ emit_sanitized_runtime_failure_summary() {
       "$scheme" >&2
     return
   fi
-  SCHEME="$scheme" SUMMARY_JSON="$summary" ruby -rjson -e '
+  SCHEME="$scheme" SUMMARY_JSON="$summary" FALLBACK_CATEGORY="$fallback_category" ruby -rjson -e '
     summary = JSON.parse(ENV.fetch("SUMMARY_JSON"))
     scheme = ENV.fetch("SCHEME")
     scheme = "NativePackage" unless scheme.match?(/\A[A-Za-z0-9_.-]{1,80}\z/)
@@ -565,33 +592,47 @@ emit_sanitized_runtime_failure_summary() {
       value = summary.fetch(key, -1)
       [key, value.is_a?(Integer) ? value : -1]
     end
-    warn "[media-capture-ios] #{scheme} failure category: test_result; result=#{result}; " \
+    category = if counts.fetch("totalTestCount").positive? || counts.fetch("failedTests").positive?
+                 "test_result"
+               else
+                 ENV.fetch("FALLBACK_CATEGORY")
+               end
+    warn "[media-capture-ios] #{scheme} failure category: #{category}; result=#{result}; " \
          "total=#{counts.fetch("totalTestCount")}; passed=#{counts.fetch("passedTests")}; " \
          "failed=#{counts.fetch("failedTests")}; skipped=#{counts.fetch("skippedTests")}; " \
          "expected_failures=#{counts.fetch("expectedFailures")}."
   '
 }
 
-prepare_simulator() {
-  local simulator_id="$1"
-  local state
-  state="$(xcrun simctl list devices available -j | \
-    REQUESTED_SIMULATOR_ID="$simulator_id" ruby -rjson -e '
-      devices = JSON.parse($stdin.read).fetch("devices").values.flatten
-      requested = ENV.fetch("REQUESTED_SIMULATOR_ID")
-      abort "Selected iPhone Simulator identifier is invalid." unless requested.match?(/\A[0-9A-Fa-f-]{36}\z/)
-      device = devices.find { |item| item.fetch("udid", "") == requested }
-      abort "Selected iPhone Simulator is unavailable." unless device
-      puts device.fetch("state", "")
-    ')"
-  [[ -n "$state" ]] || fail "selected iPhone Simulator state is unavailable"
+available_iphone_template() {
+  xcrun simctl list devices available -j | ruby -rjson -e '
+    runtimes = JSON.parse($stdin.read).fetch("devices")
+    runtime = "com.apple.CoreSimulator.SimRuntime.iOS-26-5"
+    devices = runtimes.fetch(runtime, [])
+    device = devices.find { |item| item.fetch("name", "").start_with?("iPhone") }
+    device_type = device&.fetch("deviceTypeIdentifier", "")
+    puts [runtime, device_type].join("\t") unless device_type.to_s.empty?
+  '
+}
 
-  if [[ "$state" != "Booted" ]]; then
-    SIMULATOR_STARTED_BY_GATE="$simulator_id"
-  fi
-  xcrun simctl bootstatus "$simulator_id" -b >/dev/null 2>&1 ||
-    fail "selected iPhone Simulator did not become ready"
-  printf '%s\n' '[media-capture-ios] Selected iPhone Simulator is booted and ready.'
+create_gate_simulator() {
+  local template="$1"
+  local runtime_id
+  local device_type_id
+  IFS=$'\t' read -r runtime_id device_type_id <<<"$template"
+  [[ "$runtime_id" =~ ^com\.apple\.CoreSimulator\.SimRuntime\.[A-Za-z0-9.-]+$ ]] ||
+    fail "selected iPhone Simulator runtime is invalid"
+  [[ "$device_type_id" =~ ^com\.apple\.CoreSimulator\.SimDeviceType\.[A-Za-z0-9.-]+$ ]] ||
+    fail "selected iPhone Simulator device type is invalid"
+
+  GATE_SIMULATOR_ID="$(xcrun simctl create \
+    'iPhone MediaCapture Gate' "$device_type_id" "$runtime_id" 2>/dev/null)" ||
+    fail "unable to create the Gate-owned iPhone Simulator"
+  [[ "$GATE_SIMULATOR_ID" =~ ^[0-9A-Fa-f-]{36}$ ]] ||
+    fail "created iPhone Simulator identifier is invalid"
+  xcrun simctl bootstatus "$GATE_SIMULATOR_ID" -b >/dev/null 2>&1 ||
+    fail "Gate-owned iPhone Simulator did not become ready"
+  printf '%s\n' '[media-capture-ios] Gate-owned iPhone Simulator is booted and ready.'
 }
 
 run_runtime_test() {
@@ -622,7 +663,7 @@ run_runtime_test() {
   fi
 
   if [[ "$status" -ne 0 ]]; then
-    emit_sanitized_runtime_failure_summary "$result_bundle" "$scheme"
+    emit_sanitized_runtime_failure_summary "$result_bundle" "$scheme" "$log"
     show_failure "$log"
     fail "$scheme Simulator runtime tests failed"
   fi
@@ -660,32 +701,29 @@ RUBY
 
 run_simulator_tests() {
   stage "Run Simulator lifecycle and UI tests when an iPhone Simulator is available"
-  local simulator_id
-  simulator_id="$(xcrun simctl list devices available -j | ruby -rjson -e '
-    devices = JSON.parse($stdin.read).fetch("devices").values.flatten
-    device = devices.find { |item| item.fetch("name", "").start_with?("iPhone") }
-    puts device.fetch("udid", "") if device
-  ')"
-  if [[ -z "$simulator_id" ]]; then
+  local template
+  template="$(available_iphone_template)"
+  if [[ -z "$template" ]]; then
     printf '%s\n' '[media-capture-ios] No available iPhone Simulator; runtime XCTest layers were skipped.'
     return
   fi
 
-  printf '%s\n' '[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.'
-  prepare_simulator "$simulator_id"
-  run_runtime_test "$CORE" MediaCapture-Package core-package "$simulator_id" 107
-  run_runtime_test "$UI" MediaCaptureUI ui "$simulator_id" 52
+  create_gate_simulator "$template"
+  run_runtime_test "$CORE" MediaCapture-Package core-package "$GATE_SIMULATOR_ID" 107
+  run_runtime_test "$UI" MediaCaptureUI ui "$GATE_SIMULATOR_ID" 52
 
   local adapter_log="$TEMP_ROOT/runtime-adapter.log"
   local adapter_result="$TEMP_ROOT/runtime-adapter.xcresult"
   local status
   set +e
   MEDIA_CAPTURE_CORE_TEST_RESULT_BUNDLE="$adapter_result" \
-    MEDIA_CAPTURE_SIMULATOR_ID="$simulator_id" \
+    MEDIA_CAPTURE_SIMULATOR_ID="$GATE_SIMULATOR_ID" \
     bash "$ADAPTER_TOOL/verify-core-tests.sh" >"$adapter_log" 2>&1
   status=$?
   set -e
   if [[ "$status" -ne 0 ]]; then
+    emit_sanitized_runtime_failure_summary \
+      "$adapter_result" MediaCaptureBridgeCore "$adapter_log"
     show_failure "$adapter_log"
     fail "MediaCaptureBridgeCore Simulator runtime tests failed"
   fi

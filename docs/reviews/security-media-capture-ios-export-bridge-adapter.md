@@ -19,7 +19,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - docs/bridge/media-capture-ios.md
-implementationDigest: 75bbf2bf1d23d17ed6ccb7beb17068ffff9065484e0bec8704ae6df9da78149f
+implementationDigest: 4b94ba12f837a1d2d13334b225572866d65136a97807b8f3494480ab107e9b24
 ---
 
 # Security Review: iOS Media Capture Transfer Bridge Adapter
@@ -69,3 +69,12 @@ MainActor 隔离；reservation、staging、TTL deadline、cleanup、tombstone �
 Bridge helper 现在只接受与 available iPhone Simulator 精确匹配的受限标识；结构化结果只输出固定分类、
 整数计数和白名单测试标识，原始日志、failure text、路径、UUID 与设备标识继续保留在私有临时目录。仅无
 结构化测试失败时重试一次，精确 69/69 才通过。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

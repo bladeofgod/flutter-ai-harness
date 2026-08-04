@@ -15,7 +15,7 @@ implementationFiles:
   - scripts/quality/media-capture-android.sh
   - docs/bridge/media-capture-android.md
   - docs/native/media-capture-android-verification.md
-implementationDigest: 80fdee88d998faf61137b993648336e7e915b949f23ef86fff996c36e710fd0d
+implementationDigest: bf3cd5244b9b3fd372a0f63af49e0ca31378b45d6bdcf53a7611ee4041c44d2a
 ---
 
 # Security Review：Android Transfer Store 文件身份修正
@@ -57,3 +57,12 @@ Gradle 官方生成的精确 SHA-256，并同步 Gate 的整文件摘要。没�
 Linux CI 后续请求的 AAPT2 JAR同样通过临时 Gradle configuration 与官方摘要生成流程固定；临时配置未
 进入最终工程。该 artifact 属于既有 AGP 8.9.1 工具链，不改变 transfer store、instrumented test 或
 生产代码依赖，metadata 仍只允许已审查 SHA-256。
+
+## 2026-08-04 CI 冷启动门禁增量复审
+
+本轮只收紧已有 CI 与测试边界：Android strict verification 为既有 Guava/Kotlin POM 增加精确摘要，
+未增加 repository、版本或宽松规则；iOS 固定 `macos-26`、Xcode 26.5 与 iOS 26.5 runtime，使用 Gate
+自建、自启、自删的临时 Simulator，并把 0-test 失败限制为脱敏固定分类。Bridge helper 保持一次有界
+基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
+iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
+P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。

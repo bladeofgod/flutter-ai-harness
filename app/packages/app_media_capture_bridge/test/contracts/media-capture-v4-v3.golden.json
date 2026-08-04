@@ -16,7 +16,7 @@
     },
     {
       "path": "app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh",
-      "implementationDigest": "857e57d6d67333234711b0da2ed0aef993e42e9506533f1f159ad806831ec70c"
+      "implementationDigest": "4eebced7f25c7daf303e59255d7901fb8f676481bd255063fc41746a448d0e97"
     }
   ],
   "current": {
