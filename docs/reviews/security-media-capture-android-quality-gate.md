@@ -19,7 +19,7 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: 3ea36a5476f8b925fd18d4fc9326de78cf095bd3b0b7c58278df391a99f52317
+implementationDigest: 964c50eabae9c9555e6d707b773d37f73482c0bfbfe32dd68754ede22356b615
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
@@ -73,3 +73,10 @@ Android Contract Vector Gate 现在逐节消费完整 V4/V3 golden，验证结�
 JAR/POM 的精确 SHA-256。repository 集合、strict verification 模式、依赖选择逻辑和执行权限
 均未变；Gate 的已审查整文件摘要同步更新。独立 Security Reviewer 确认
 P0/P1/P2 0/0/0，完整 Android Gate 和 Debug APK 构建均通过。
+
+## CI JUnit BOM module metadata 复审
+
+CI 冷缓存会为既有 JUnit BOM 5.10.2 和 5.9.2 请求 Gradle Module Metadata，而旧清单只有 POM 摘要。
+本轮使用 Gradle 8.12 官方 `--write-verification-metadata sha256` 只增加这两个 `.module` SHA-256；没有
+新增版本、artifact 类型、repository、依赖声明或宽松验证规则。Gate 对 metadata 的整文件摘要同步更新，
+strict dependency verification 配置阶段重新通过。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。

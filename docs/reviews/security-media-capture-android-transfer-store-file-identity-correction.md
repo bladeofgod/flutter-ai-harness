@@ -15,7 +15,7 @@ implementationFiles:
   - scripts/quality/media-capture-android.sh
   - docs/bridge/media-capture-android.md
   - docs/native/media-capture-android-verification.md
-implementationDigest: 09a2291c2dd3a642d017fb87a97815c4f7be216091db3c615ca913fc8cbdffd5
+implementationDigest: 200344a83c5a635a5f4cbb0c44662381d9326cb52ab3bad9aa1d175838ec1e6d
 ---
 
 # Security Review：Android Transfer Store 文件身份修正
@@ -47,3 +47,9 @@ implementationDigest: 09a2291c2dd3a642d017fb87a97815c4f7be216091db3c615ca913fc8c
 Android 公共 `Os` 不提供 `unlinkat`，身份检查和 pathname unlink 仍是两个系统调用；能利用该窗口的代码
 已经位于同 App UID 信任域。本任务没有宣称跨越该边界。生产 `Os` instrumented APK 已编译，但当前没有
 ready emulator；API 23 runtime 是明确保留的设备环境验证项，不影响本次静态安全结论。
+
+## CI Gradle metadata 增量复审
+
+JUnit BOM 5.10.2 与 5.9.2 的版本和来源均未变化；本轮只为 CI 冷缓存实际请求的两个 `.module` 文件增加
+Gradle 官方生成的精确 SHA-256，并同步 Gate 的整文件摘要。没有改变 transfer store、AndroidX test
+依赖或 repository 边界，strict verification 仍失败关闭。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。

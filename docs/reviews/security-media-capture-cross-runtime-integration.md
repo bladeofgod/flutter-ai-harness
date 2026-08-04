@@ -39,7 +39,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 169f40d09816157495c922c5cd1adb0d6cb88dda2673d8022a79cd3a69a7d21f
+implementationDigest: eae7f0401eabd44b0a611d2df15e29652c36a100fe9571b99991103f98551040
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -112,3 +112,14 @@ HTTPS/TLS、连接和总超时以及有限重试，不会在失败时回退到�
 iOS Gate 改由仓库 Flutter wrapper 解析 SDK，继续精确拒绝非 3.41.9 版本。独立 Security Reviewer
 复审确认此前未固定系统包的 P2 已关闭，当前 P0/P1/P2 为 0/0/0。剩余信任边界是 GitHub Release、
 Runner 自带 TLS/归档/摘要工具和托管 Runner；Release 不可用时 CI 会明确失败。
+
+## CI 原生平台门禁增量复审
+
+Android 只为 JUnit BOM 5.10.2 与 5.9.2 的既有 `.module` artifact 增加 Gradle 官方生成的 SHA-256，
+repository、版本与 strict verification 策略不变。iOS Core/UI Simulator test 增加固定 destination 等待，
+并只对没有结构化 failed test 的基础设施类失败重试一次；缺失或不可读 result bundle 也只获得这一次
+重试，第二次仍须精确通过全部测试。
+
+iOS 最终诊断仅输出固定类别与整数计数，不传播 result JSON、路径、Simulator 标识或构建日志。独立
+Security Reviewer 确认两端增量均为 P0/P1/P2 0/0/0。Android strict 配置阶段与 iOS 107/52/69
+Simulator 运行层通过；本机 Xcode 26.5 临时 Host 失败保持单独记录，最终 Xcode 16.4 结论以 CI 为准。

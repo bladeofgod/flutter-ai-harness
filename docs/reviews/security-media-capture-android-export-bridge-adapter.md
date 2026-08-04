@@ -14,7 +14,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
   - scripts/quality/media-capture-android.sh
-implementationDigest: ce453c179cb10f5a975a9074d7a513b3a194db9cee73585a3679e32a60a01c4b
+implementationDigest: e2165f7ec233a9c656825a287cb268d4c616f8b932dc97d764db80eda27be1ed
 ---
 
 # Security Review：Android Transfer Bridge Adapter
@@ -29,3 +29,10 @@ implementationDigest: ce453c179cb10f5a975a9074d7a513b3a194db9cee73585a3679e32a60
 记录与容量并自动有界重试，只有实际删除成功后才归还容量。
 
 P2：补 Engine detach 持续删除失败与后台重试耗尽后的直接测试，Owner 为 `android-engineer`。
+
+## CI Gradle metadata 增量复审
+
+Android Gate 仅通过 Gradle 官方 `--write-verification-metadata sha256` 补充 JUnit BOM 5.10.2 与 5.9.2
+两个既有 `.module` artifact 的摘要，并同步 Gate 对整份 metadata 的受审 SHA-256。没有修改 Bridge
+生产依赖、repository、Wire 或 transfer ownership。strict verification 仍失败关闭，独立 Security
+Reviewer 未发现新的 P0/P1/P2；本报告原有的一个测试覆盖 P2 保持不变。

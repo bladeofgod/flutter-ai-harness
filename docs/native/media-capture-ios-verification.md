@@ -54,8 +54,9 @@ bash scripts/quality/media-capture-ios.sh
 每次 `xcodebuild test` 生成的 `.xcresult` 结构化摘要，把源码矩阵与实际执行结果绑定：三个层级均要求
 passed 等于精确 total，failed、skipped 和 expected failure 都为 0；Bridge Core helper 与主 Gate 会对
 同一个 69 项 result bundle 分别执行结构化校验，不依赖日志正则。父 Gate 把已选定的 iPhone Simulator
-传给 Bridge helper；若没有可解析的测试失败，helper 只重试一次，并在最终失败时输出脱敏的结果计数和
-合法测试标识，不输出 Simulator ID、构建日志或本机路径。
+传给 Bridge helper。Core 与 UI 运行层会为 destination 留出明确等待时间；Core、UI 与 Bridge 都只在
+没有可解析测试失败的 Simulator/Runner 基础设施失败时重试一次，真实 XCTest 失败不重试。最终失败只
+输出脱敏的结果分类与计数，Bridge helper 还可输出合法测试标识，不输出 Simulator ID、构建日志或本机路径。
 
 ## 临时 Host 安全边界
 

@@ -503,6 +503,70 @@ run_generic_compiles() {
   run_generic_compile "$ADAPTER" MediaCaptureBridgeCore adapter
 }
 
+run_runtime_xcodebuild() {
+  local package="$1"
+  local scheme="$2"
+  local slug="$3"
+  local simulator_id="$4"
+  local log="$TEMP_ROOT/runtime-$slug.log"
+  local result_bundle="$TEMP_ROOT/runtime-$slug.xcresult"
+
+  (cd "$package" && xcodebuild \
+    test \
+    -scheme "$scheme" \
+    -destination "platform=iOS Simulator,id=$simulator_id" \
+    -destination-timeout 120 \
+    -derivedDataPath "$TEMP_ROOT/RuntimeDerivedData-$slug" \
+    -resultBundlePath "$result_bundle" \
+    -configuration Debug \
+    CODE_SIGNING_ALLOWED=NO \
+    SWIFT_STRICT_CONCURRENCY=complete) >"$log" 2>&1
+}
+
+runtime_result_has_test_failure() {
+  local result_bundle="$1"
+  local summary
+  [[ -d "$result_bundle" ]] || return 1
+  summary="$(xcrun xcresulttool get test-results summary \
+    --path "$result_bundle" --compact 2>/dev/null)" || return 1
+  SUMMARY_JSON="$summary" ruby -rjson -e '
+    summary = JSON.parse(ENV.fetch("SUMMARY_JSON"))
+    exit(summary.fetch("failedTests", 0).to_i.positive? ? 0 : 1)
+  ' >/dev/null 2>&1
+}
+
+emit_sanitized_runtime_failure_summary() {
+  local result_bundle="$1"
+  local scheme="$2"
+  local summary
+  if [[ ! -d "$result_bundle" ]]; then
+    printf '[media-capture-ios] %s failure category: xcodebuild_or_simulator; no result bundle.\n' \
+      "$scheme" >&2
+    return
+  fi
+  if ! summary="$(xcrun xcresulttool get test-results summary \
+    --path "$result_bundle" --compact 2>/dev/null)"; then
+    printf '[media-capture-ios] %s failure category: unreadable_result_bundle.\n' \
+      "$scheme" >&2
+    return
+  fi
+  SCHEME="$scheme" SUMMARY_JSON="$summary" ruby -rjson -e '
+    summary = JSON.parse(ENV.fetch("SUMMARY_JSON"))
+    scheme = ENV.fetch("SCHEME")
+    scheme = "NativePackage" unless scheme.match?(/\A[A-Za-z0-9_.-]{1,80}\z/)
+    result = summary.fetch("result", "Unknown").to_s
+    result = "Unknown" unless result.match?(/\A[A-Za-z]+\z/)
+    counts = %w[totalTestCount passedTests failedTests skippedTests expectedFailures].to_h do |key|
+      value = summary.fetch(key, -1)
+      [key, value.is_a?(Integer) ? value : -1]
+    end
+    warn "[media-capture-ios] #{scheme} failure category: test_result; result=#{result}; " \
+         "total=#{counts.fetch("totalTestCount")}; passed=#{counts.fetch("passedTests")}; " \
+         "failed=#{counts.fetch("failedTests")}; skipped=#{counts.fetch("skippedTests")}; " \
+         "expected_failures=#{counts.fetch("expectedFailures")}."
+  '
+}
+
 run_runtime_test() {
   local package="$1"
   local scheme="$2"
@@ -514,18 +578,24 @@ run_runtime_test() {
   local status
 
   set +e
-  (cd "$package" && xcodebuild \
-    test \
-    -scheme "$scheme" \
-    -destination "platform=iOS Simulator,id=$simulator_id" \
-    -derivedDataPath "$TEMP_ROOT/RuntimeDerivedData-$slug" \
-    -resultBundlePath "$result_bundle" \
-    -configuration Debug \
-    CODE_SIGNING_ALLOWED=NO \
-    SWIFT_STRICT_CONCURRENCY=complete) >"$log" 2>&1
+  run_runtime_xcodebuild "$package" "$scheme" "$slug" "$simulator_id"
   status=$?
   set -e
+
+  if [[ "$status" -ne 0 ]] && ! runtime_result_has_test_failure "$result_bundle"; then
+    printf '[media-capture-ios] %s infrastructure-class failure; retrying once.\n' \
+      "$scheme" >&2
+    if [[ -d "$result_bundle" ]]; then
+      find -P "$result_bundle" -depth -delete
+    fi
+    set +e
+    run_runtime_xcodebuild "$package" "$scheme" "$slug" "$simulator_id"
+    status=$?
+    set -e
+  fi
+
   if [[ "$status" -ne 0 ]]; then
+    emit_sanitized_runtime_failure_summary "$result_bundle" "$scheme"
     show_failure "$log"
     fail "$scheme Simulator runtime tests failed"
   fi

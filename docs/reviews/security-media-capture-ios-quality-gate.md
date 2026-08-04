@@ -11,7 +11,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: 9f049cf76a69575c8e223bdf0e49e9df62f97f9059cd54499b4d3965978441af
+implementationDigest: 76382601650c94db83293cfc797ae3425e3463fc7b1c2c5f8408b811054918a3
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁
@@ -57,3 +57,14 @@ iOS Gate 现在通过仓库 `scripts/flutter-tool.sh` 解析 Flutter，不再把
 
 独立 Security Reviewer 确认 P0/P1/P2 0/0/0。CI 所需 ripgrep 由跨 Runtime 集成门禁固定版本和摘要安装，
 不改变 iOS Gate 的测试、临时 Host 隔离或真机验收边界。
+
+## CI Simulator 基础设施失败复审
+
+Core 与 UI runtime test 现在为固定 Simulator destination 提供 120 秒发现等待。`xcodebuild` 非零退出后，
+若结构化 `.xcresult` 明确包含真实 failed test，则立即失败且不重试；若没有 result bundle、bundle 不可读
+或摘要没有 failed test，则只重试一次。第二次仍必须由 Xcode 成功退出，并满足精确测试总数以及
+failed/skipped/expected failure 全为 0，永久失败不能被重试掩盖。
+
+最终失败只输出固定类别和整数计数，不输出原始 result JSON、构建日志、路径或 Simulator 标识。独立
+Security Reviewer 确认 P0/P1/P2 0/0/0；本地 iOS 18.5 Simulator 的 Core 107、UI 52、Bridge 69 项运行层
+通过。Xcode 26.5 下后续临时 Host 构建失败单独保留，不被误记为本次 Simulator 修复已完整通过。
