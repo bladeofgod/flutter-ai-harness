@@ -304,7 +304,7 @@ validate_dependency_boundaries() {
     "$GATE/settings.gradle.kts"
   assert_file_digest 1d08c6e29614f2fab4b44b677c91ce283e81b45c3e4351eee54b040fe8267137 \
     "$GATE/gradle.properties"
-  assert_file_digest 60c8cdb48f5c222cf4d8e221d06a98db834f0b8ef13be2c03a10eac88d740e00 \
+  assert_file_digest abf5921c91c0e5e92c6883d107d199e6a8102be5c97c5ab63a2d2f2ea22644e0 \
     "$GATE/gradle/verification-metadata.xml"
   assert_file_digest a5c6a687855975640608e035c0709f134890590305e9802a21a820dd66e3455f \
     "$CORE/build.gradle.kts"

@@ -16,8 +16,12 @@ TEMP_ROOT_ALIAS="$(mktemp -d "${TMPDIR:-/tmp}/media-capture-ios-gate.XXXXXX")"
 TEMP_ROOT="$(cd "$TEMP_ROOT_ALIAS" && pwd -P)"
 FLUTTER_EXECUTABLE=''
 FLUTTER_ROOT_PATH=''
+SIMULATOR_STARTED_BY_GATE=''
 
 cleanup() {
+  if [[ -n "$SIMULATOR_STARTED_BY_GATE" ]] && command -v xcrun >/dev/null 2>&1; then
+    xcrun simctl shutdown "$SIMULATOR_STARTED_BY_GATE" >/dev/null 2>&1 || true
+  fi
   if [[ -d "$TEMP_ROOT_ALIAS" ]]; then
     find -P "$TEMP_ROOT_ALIAS" -depth -delete
   fi
@@ -516,6 +520,7 @@ run_runtime_xcodebuild() {
     -scheme "$scheme" \
     -destination "platform=iOS Simulator,id=$simulator_id" \
     -destination-timeout 120 \
+    -parallel-testing-enabled NO \
     -derivedDataPath "$TEMP_ROOT/RuntimeDerivedData-$slug" \
     -resultBundlePath "$result_bundle" \
     -configuration Debug \
@@ -565,6 +570,28 @@ emit_sanitized_runtime_failure_summary() {
          "failed=#{counts.fetch("failedTests")}; skipped=#{counts.fetch("skippedTests")}; " \
          "expected_failures=#{counts.fetch("expectedFailures")}."
   '
+}
+
+prepare_simulator() {
+  local simulator_id="$1"
+  local state
+  state="$(xcrun simctl list devices available -j | \
+    REQUESTED_SIMULATOR_ID="$simulator_id" ruby -rjson -e '
+      devices = JSON.parse($stdin.read).fetch("devices").values.flatten
+      requested = ENV.fetch("REQUESTED_SIMULATOR_ID")
+      abort "Selected iPhone Simulator identifier is invalid." unless requested.match?(/\A[0-9A-Fa-f-]{36}\z/)
+      device = devices.find { |item| item.fetch("udid", "") == requested }
+      abort "Selected iPhone Simulator is unavailable." unless device
+      puts device.fetch("state", "")
+    ')"
+  [[ -n "$state" ]] || fail "selected iPhone Simulator state is unavailable"
+
+  if [[ "$state" != "Booted" ]]; then
+    SIMULATOR_STARTED_BY_GATE="$simulator_id"
+  fi
+  xcrun simctl bootstatus "$simulator_id" -b >/dev/null 2>&1 ||
+    fail "selected iPhone Simulator did not become ready"
+  printf '%s\n' '[media-capture-ios] Selected iPhone Simulator is booted and ready.'
 }
 
 run_runtime_test() {
@@ -645,6 +672,7 @@ run_simulator_tests() {
   fi
 
   printf '%s\n' '[media-capture-ios] An available iPhone Simulator was selected; its identifier is intentionally redacted.'
+  prepare_simulator "$simulator_id"
   run_runtime_test "$CORE" MediaCapture-Package core-package "$simulator_id" 107
   run_runtime_test "$UI" MediaCaptureUI ui "$simulator_id" 52
 

@@ -19,7 +19,7 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: 964c50eabae9c9555e6d707b773d37f73482c0bfbfe32dd68754ede22356b615
+implementationDigest: 497aa9bbd47f170b11267f3393918ff45c2f2ea0dacc77288dafe0b42b5ac2b4
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
@@ -80,3 +80,8 @@ CI 冷缓存会为既有 JUnit BOM 5.10.2 和 5.9.2 请求 Gradle Module Metadat
 本轮使用 Gradle 8.12 官方 `--write-verification-metadata sha256` 只增加这两个 `.module` SHA-256；没有
 新增版本、artifact 类型、repository、依赖声明或宽松验证规则。Gate 对 metadata 的整文件摘要同步更新，
 strict dependency verification 配置阶段重新通过。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。
+
+后续 Linux CI 进入资源编译后还会请求固定 AGP 8.9.1 对应的 AAPT2 Linux JAR。本轮使用临时 Gradle
+configuration 与官方 `--write-verification-metadata sha256` 解析该精确 classifier，生成后移除临时配置；
+最终工程依赖图不变。metadata 现同时固定唯一的 osx/linux 平台 artifact，未发现其他平台 classifier
+缺口，repository 和 strict verification 仍失败关闭。

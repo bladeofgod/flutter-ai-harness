@@ -15,7 +15,7 @@ implementationFiles:
   - scripts/quality/media-capture-android.sh
   - docs/bridge/media-capture-android.md
   - docs/native/media-capture-android-verification.md
-implementationDigest: 200344a83c5a635a5f4cbb0c44662381d9326cb52ab3bad9aa1d175838ec1e6d
+implementationDigest: 80fdee88d998faf61137b993648336e7e915b949f23ef86fff996c36e710fd0d
 ---
 
 # Security Review：Android Transfer Store 文件身份修正
@@ -53,3 +53,7 @@ ready emulator；API 23 runtime 是明确保留的设备环境验证项，不影
 JUnit BOM 5.10.2 与 5.9.2 的版本和来源均未变化；本轮只为 CI 冷缓存实际请求的两个 `.module` 文件增加
 Gradle 官方生成的精确 SHA-256，并同步 Gate 的整文件摘要。没有改变 transfer store、AndroidX test
 依赖或 repository 边界，strict verification 仍失败关闭。独立 Security Reviewer 确认 P0/P1/P2 0/0/0。
+
+Linux CI 后续请求的 AAPT2 JAR同样通过临时 Gradle configuration 与官方摘要生成流程固定；临时配置未
+进入最终工程。该 artifact 属于既有 AGP 8.9.1 工具链，不改变 transfer store、instrumented test 或
+生产代码依赖，metadata 仍只允许已审查 SHA-256。

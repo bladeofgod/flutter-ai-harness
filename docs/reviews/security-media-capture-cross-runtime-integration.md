@@ -39,7 +39,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: eae7f0401eabd44b0a611d2df15e29652c36a100fe9571b99991103f98551040
+implementationDigest: 9387f4eb8613f217a3e7f99603d5f66b923f956ce3ffaa850abf5b385cf7d691
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -123,3 +123,14 @@ repository、版本与 strict verification 策略不变。iOS Core/UI Simulator 
 iOS 最终诊断仅输出固定类别与整数计数，不传播 result JSON、路径、Simulator 标识或构建日志。独立
 Security Reviewer 确认两端增量均为 P0/P1/P2 0/0/0。Android strict 配置阶段与 iOS 107/52/69
 Simulator 运行层通过；本机 Xcode 26.5 临时 Host 失败保持单独记录，最终 Xcode 16.4 结论以 CI 为准。
+
+## CI 平台专属工具与 Simulator 生命周期复审
+
+Android metadata 进一步固定既有 AGP 8.9.1 的 AAPT2 Linux JAR；摘要由 Gradle 官方流程生成，临时解析
+configuration 已移除，最终依赖图、repository 和 strict verification 策略不变。平台 classifier 扫描确认
+当前仅 AAPT2 需要 osx/linux 双摘要，两者均已覆盖。
+
+iOS Gate 使用 `simctl bootstatus -b` 显式完成 selected available Simulator 的冷启动，只在初始非 Booted
+时记录 Gate ownership，并在正常退出或信号中恢复 shutdown；用户原本 Booted 的设备不受 cleanup 影响。
+xcodebuild Core/UI 运行关闭并行测试，原有精确计数和一次基础设施重试边界不变。标识与原始 boot/build
+输出继续脱敏，本地中断验证确认没有残留 Booted Simulator 或构建进程。

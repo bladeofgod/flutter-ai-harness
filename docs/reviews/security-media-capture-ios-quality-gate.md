@@ -11,7 +11,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - docs/native/media-capture-ios-verification.md
-implementationDigest: 76382601650c94db83293cfc797ae3425e3463fc7b1c2c5f8408b811054918a3
+implementationDigest: ac14c6deabfc2d2ea05171ba0f9612919d3c862fc5072be53623b535925bca0e
 ---
 
 # Security Review：iOS Media Capture 单平台质量门禁
@@ -68,3 +68,9 @@ failed/skipped/expected failure 全为 0，永久失败不能被重试掩盖。
 最终失败只输出固定类别和整数计数，不输出原始 result JSON、构建日志、路径或 Simulator 标识。独立
 Security Reviewer 确认 P0/P1/P2 0/0/0；本地 iOS 18.5 Simulator 的 Core 107、UI 52、Bridge 69 项运行层
 通过。Xcode 26.5 下后续临时 Host 构建失败单独保留，不被误记为本次 Simulator 修复已完整通过。
+
+后续 CI 仍在 XCTest 启动前得到 0 tests。Gate 现在对 simctl 返回的标识做闭合格式与 available device
+精确匹配，通过官方 `simctl bootstatus -b` 显式启动并等待 ready，并关闭 xcodebuild 并行测试。只有 Gate
+观察到初始状态非 Booted 时才在退出或信号中 shutdown；已启动的用户 Simulator 不会被关闭。设备标识、
+boot 输出和原始构建日志仍不进入证据。中断验证确认 Gate 启动的设备已恢复关闭，Core 107、UI 52、
+Bridge 69 项运行层通过。

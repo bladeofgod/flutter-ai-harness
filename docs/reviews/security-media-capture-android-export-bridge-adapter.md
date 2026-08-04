@@ -14,7 +14,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
   - scripts/quality/media-capture-android.sh
-implementationDigest: e2165f7ec233a9c656825a287cb268d4c616f8b932dc97d764db80eda27be1ed
+implementationDigest: 3ac14d6735ff58a11139c73a8cc3421ee992ef3c4255c9b4236f26f170ea0828
 ---
 
 # Security Review：Android Transfer Bridge Adapter
@@ -36,3 +36,7 @@ Android Gate 仅通过 Gradle 官方 `--write-verification-metadata sha256` 补�
 两个既有 `.module` artifact 的摘要，并同步 Gate 对整份 metadata 的受审 SHA-256。没有修改 Bridge
 生产依赖、repository、Wire 或 transfer ownership。strict verification 仍失败关闭，独立 Security
 Reviewer 未发现新的 P0/P1/P2；本报告原有的一个测试覆盖 P2 保持不变。
+
+后续 CI 运行继续解析到 AGP 8.9.1 的 AAPT2 Linux classifier。本轮通过临时 Gradle configuration 让
+Gradle 官方解析固定的 `aapt2:8.9.1-12782657:linux` artifact 并生成 SHA-256，临时 configuration 随即
+移除。metadata 现同时固定 osx/linux AAPT2，Bridge 依赖和原有 P2 均未变化。
