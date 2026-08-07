@@ -17,7 +17,7 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: fc82b271d27c4409083e9c22bfe07602708aad0cdf9429d06abdb5dfc6d41e37
+implementationDigest: ee4dfc71535fb77083ec1c40d4a0529b9db72630f913d3ac19e250fb8842f123
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -110,3 +110,9 @@ Demo 对 `app_media_capture_bridge` 的冗余直连已删除，唯一生产路�
 根 Workspace 新增精确固定的 `dart_style 3.1.7` direct dev dependency，只由 Wire generator 使用，不是
 Bridge Package 或 Demo 的 Runtime 依赖。Plugin discovery、Workspace 本地来源、`publish_to: none`、
 Android/iOS 注册链和发布边界均未改变，P0/P1/P2 维持 0/0/0。
+
+## 详细指南采用路径调整影响
+
+中英文详细指南只调整 Harness 采用入口顺序并链接仓库内采用协议；页面没有增加脚本、表单或远程可执行
+资源。本次文档变更不修改 Workspace Package、Plugin discovery、SwiftPM 接线、Agent 配置或发布边界，
+摘要按既有 implementationFiles 重新绑定，P0/P1/P2 维持 0/0/0。

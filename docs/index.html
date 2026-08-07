@@ -558,31 +558,41 @@
             <div class="adoption-paths">
               <div class="adoption-path">
                 <div class="path-number">01</div>
-                <div><h3>Run the reference</h3></div>
+                <div><h3>Adapt an existing project</h3></div>
                 <p>
-                  Clone the repository, run the Demo, inspect its task history and
-                  gates, and use it as a working example of the complete model.
+                  Start an Agent in the target repository. It audits existing
+                  instructions, architecture, CI, and changes before proposing an
+                  adaptation plan and waiting for approval.
                 </p>
               </div>
               <div class="adoption-path">
                 <div class="path-number">02</div>
-                <div><h3>Adapt an existing project</h3></div>
+                <div><h3>Start a new project</h3></div>
                 <p>
-                  Ask an Agent to compare this Harness with the target repository,
-                  identify conflicts, and produce an adaptation plan before copying
-                  selected contracts, roles, commands, skills, and checks.
+                  In an empty directory, discuss the product, targets, constraints,
+                  stack, and validation approach first. Nothing is initialized until
+                  the user approves those decisions and the implementation plan.
                 </p>
               </div>
               <div class="adoption-path">
                 <div class="path-number">03</div>
-                <div><h3>Own the result</h3></div>
+                <div><h3>Run the reference Demo</h3></div>
                 <p>
-                  Once adapted, the target repository's contract becomes authoritative.
-                  Future upstream changes are inputs to evaluate, not dependency updates
-                  that must be applied mechanically.
+                  Optionally clone and run this repository to inspect a complete
+                  working example. Running or copying the Demo is not a prerequisite
+                  for adopting the Harness.
                 </p>
               </div>
             </div>
+
+            <p>
+              Begin with the tool-neutral
+              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.md">Agent adoption protocol</a>.
+              It keeps source material outside the target, makes phase one read-only,
+              and requires explicit approval before implementation. Once adapted, the
+              target repository's contract becomes authoritative; upstream changes are
+              inputs to evaluate, not automatic dependency upgrades.
+            </p>
 
             <h3>Adaptation checklist</h3>
             <ul class="checklist">

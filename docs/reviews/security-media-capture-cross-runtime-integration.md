@@ -42,7 +42,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 99f76f3de5525b46e7111bf052f4f394c22d3adebb1017f23dd65d4fee3e3af8
+implementationDigest: 8f1419f15c88a20bb0071b7e87b1d2cdb3be8c3148a5fd1a91ccc8894c59d98f
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -187,8 +187,10 @@ Entitlement、媒体 locator 与 cleanup 均未修改，P0/P1/P2 维持 0/0/0。
 跨 Runtime Wire、Dart Client、iOS、Host、权限、Entitlement 和媒体 locator 边界未扩大；本报告摘要按当前
 implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保持明确记录。
 
-## README Harness 定位说明影响
+## README Harness 定位与采用说明影响
 
-2026-08-07 中英文 README 只新增 Harness 主体、参考实现和当前技术栈适配关系的定位说明。该文档变更
-不修改命令、Agent 权限、依赖来源、Host、Wire、平台权限、媒体 locator 或资源生命周期；本报告摘要按
-既有 implementationFiles 重新绑定，原安全结论和人工设备验收边界不变。
+2026-08-07 中英文 README 增加 Harness 主体、参考实现和采用路径说明，并把 Demo 运行降为可选评估入口。
+采用提示词要求来源 checkout 位于目标目录之外，第一阶段不执行来源脚本、不读取凭据、不修改目标，并在
+实施前等待用户批准。该文档变更不修改本仓库命令、Agent 权限、依赖来源、Host、Wire、平台权限、媒体
+locator 或资源生命周期；本报告摘要按既有 implementationFiles 重新绑定，原安全结论和人工设备验收边界
+不变。

@@ -534,29 +534,36 @@
             <div class="adoption-paths">
               <div class="adoption-path">
                 <div class="path-number">01</div>
-                <div><h3>运行参考工程</h3></div>
+                <div><h3>改造已有工程</h3></div>
                 <p>
-                  Clone 仓库并运行 Demo，检查任务历史和质量门禁，把它作为完整工程模式的
-                  可执行示例。
+                  在目标仓库中启动 Agent。它先审计现有指令、架构、CI 和已有改动，
+                  提出采用方案并等待用户批准，然后才能实施。
                 </p>
               </div>
               <div class="adoption-path">
                 <div class="path-number">02</div>
-                <div><h3>改造现有项目</h3></div>
+                <div><h3>创建新工程</h3></div>
                 <p>
-                  先让 Agent 对比 Harness 和目标仓库，识别冲突并生成适配方案，再选择性迁移
-                  契约、角色、Command、Skill 与检查工具。
+                  空目录中先讨论产品、目标端、约束、技术栈和验证方式。用户批准这些决策
+                  和初始化方案前，不创建文件、不安装依赖。
                 </p>
               </div>
               <div class="adoption-path">
                 <div class="path-number">03</div>
-                <div><h3>拥有最终结果</h3></div>
+                <div><h3>运行参考 Demo</h3></div>
                 <p>
-                  完成适配后，目标仓库自己的项目契约成为权威。上游后续变化只是可评估输入，
-                  不是必须机械升级的版本依赖。
+                  可以选择 Clone 并运行本仓库，查看完整可执行示例。运行或复制 Demo
+                  不是采用 Harness 的前置条件。
                 </p>
               </div>
             </div>
+
+            <p>
+              从工具中立的
+              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.zh-CN.md">Agent 采用协议</a>
+              开始。它要求来源材料位于目标目录之外、第一阶段保持只读，并在实施前取得用户明确批准。
+              适配完成后，目标仓库自己的项目契约成为权威；上游变化只是待评估输入，不是自动升级依赖。
+            </p>
 
             <h3>适配检查清单</h3>
             <ul class="checklist">

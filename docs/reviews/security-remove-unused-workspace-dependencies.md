@@ -20,7 +20,7 @@ implementationFiles:
   - docs/figma/shoppe-main-app-design-context.md
   - docs/index.html
   - docs/zh-CN/index.html
-implementationDigest: 85cce97d456b1764fdedef5df5ed78273568659068c9a034dd2e38a5c3a30fe1
+implementationDigest: 2205f939f46f0041f4e9a01da91a48c112ad0e9ebe3c92e4a539b54d01640142
 ---
 
 # Security Review：移除无消费者 Workspace Package 与直接依赖
@@ -59,3 +59,9 @@ implementationDigest: 85cce97d456b1764fdedef5df5ed78273568659068c9a034dd2e38a5c3
 根 Workspace 新增 `dart_style 3.1.7` direct dev dependency，并由 Wire generator 直接 import，因此没有
 恢复无消费者依赖。版本、Hosted 来源和 SHA-256 均由 lockfile 固定，不进入 Runtime 或 Native 产物；
 依赖消费与 Plugin discovery 门禁未放宽，P0/P1/P2 维持 0/0/0。
+
+## 详细指南采用路径调整影响
+
+中英文详细指南只把真实工程采用和空目录技术选型前置，并将参考 Demo 标记为可选评估路径。新增链接指向
+仓库内采用协议，不改变 Workspace 依赖、Plugin discovery、构建命令、CI、Agent 配置或权限；摘要按既有
+implementationFiles 重新绑定，原依赖清理安全结论不变。
