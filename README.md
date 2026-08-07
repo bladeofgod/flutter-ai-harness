@@ -8,6 +8,26 @@ Flutter AI Harness helps coding agents work inside explicit, testable engineerin
 
 This README is a project preview and quick start. The [detailed guide](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/index.html) covers the system model, delivery workflow, security review, reference implementation, adoption paths, and future extensions.
 
+## What This Repository Is
+
+AI Harness is a repository-level engineering system for governing and executing AI-assisted software delivery. The Flutter Demo is its first governed reference implementation, not the Harness itself.
+
+```text
+AI Harness
+├── Project contract: architecture boundaries, coding rules, security policy
+├── Workflows: planning, execution, review, fixes, archival, release checks
+├── Task system: task cards, dependencies, executors, acceptance criteria
+├── Agent system: architect, executors, reviewer, security reviewer
+├── Quality gates: static checks, tests, builds, evidence, CI
+├── AI tool adapters: Claude Code and Codex
+└── Reference technology stacks and adapters
+    ├── Flutter / Dart
+    ├── Android / Kotlin
+    └── iOS / Swift
+```
+
+The reusable product is the project contract, delivery workflow, agent collaboration model, and executable quality loop. Flutter, Android, and iOS provide the current reference environment used to exercise and verify that system.
+
 ## Demo Preview
 
 > **Automated development record:** The Demo was completed in one overnight run, with no human intervention in implementation during execution. Human input covered design selection, scope decisions, and environment operations.

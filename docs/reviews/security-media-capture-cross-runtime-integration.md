@@ -42,7 +42,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 5adaa2fb2709e98374be46af6c06e21d4fcbec1486890c8a3e52f9ad913ae0a1
+implementationDigest: 99f76f3de5525b46e7111bf052f4f394c22d3adebb1017f23dd65d4fee3e3af8
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -186,3 +186,9 @@ Entitlement、媒体 locator 与 cleanup 均未修改，P0/P1/P2 维持 0/0/0。
 `security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。
 跨 Runtime Wire、Dart Client、iOS、Host、权限、Entitlement 和媒体 locator 边界未扩大；本报告摘要按当前
 implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保持明确记录。
+
+## README Harness 定位说明影响
+
+2026-08-07 中英文 README 只新增 Harness 主体、参考实现和当前技术栈适配关系的定位说明。该文档变更
+不修改命令、Agent 权限、依赖来源、Host、Wire、平台权限、媒体 locator 或资源生命周期；本报告摘要按
+既有 implementationFiles 重新绑定，原安全结论和人工设备验收边界不变。

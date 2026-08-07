@@ -8,6 +8,26 @@ Flutter AI Harness 帮助编码 Agent 在明确、可测试的工程边界内工
 
 这份 README 只提供项目预览和最短上手路径。[详细指南](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/zh-CN/index.html)将持续承载系统模型、交付流程、安全审查、参考实现、采用方式和后续扩展内容。
 
+## 这个仓库是什么
+
+AI Harness 是一套运行在代码仓库之上的 AI 工程制度和执行系统。Flutter Demo 是它的第一个被治理对象和参考实现，不是 Harness 本身。
+
+```text
+AI Harness
+├── 项目契约：架构边界、编码规则、安全策略
+├── 工作流：规划、执行、Review、修复、归档、发版检查
+├── 任务系统：任务卡、依赖、执行者、验收条件
+├── Agent 系统：架构师、执行者、Reviewer、安全 Reviewer
+├── 质量门禁：静态检查、测试、构建、证据、CI
+├── AI 工具适配：Claude Code / Codex
+└── 参考技术栈与适配
+    ├── Flutter / Dart
+    ├── Android / Kotlin
+    └── iOS / Swift
+```
+
+真正可复用的是项目契约、交付工作流、Agent 协作模型和可执行质量闭环。Flutter、Android 与 iOS 构成当前用于实践和验证这套系统的参考环境。
+
 ## Demo 预览
 
 > **自动化开发记录：** 当前 Demo 在一个通宵内完成，执行阶段没有人工介入代码实现。人工输入仅包括设计稿选择、范围确认和环境操作。
