@@ -1,5 +1,7 @@
+import 'package:app_data/app_data.dart';
 import 'package:app_features/app_features.dart';
 import 'package:app_ui/app_ui.dart';
+import 'package:demo_app/auth/auth_state.dart';
 import 'package:demo_app/demo_app.dart';
 import 'package:demo_app/main.dart' as demo_entrypoint;
 import 'package:flutter/services.dart';
@@ -106,7 +108,7 @@ void main() {
     expect(replacementMediaApi.disposeCount, 0);
 
     await tester.pumpWidget(const SizedBox.shrink());
-    await tester.pump();
+    await registry.dispose();
     expect(mediaApi.disposeCount, 1);
     expect(replacementMediaApi.disposeCount, 0);
     await replacementRegistry.dispose();
@@ -124,6 +126,123 @@ void main() {
 
     expect(mediaApi.disposeCount, 0);
     await registry.dispose();
+  });
+
+  testWidgets(
+    'detaches reset without disposing external coordinator or registry',
+    (tester) async {
+      final mediaApi = _TrackingOrderReviewMediaApi();
+      final registry = FeaturesRegistry.local(orderReviewMediaApi: mediaApi);
+      final coordinator = AuthStateCoordinator();
+      addTearDown(() async {
+        coordinator.dispose();
+        await registry.dispose();
+      });
+      coordinator.authenticate(_authResult());
+
+      await tester.pumpWidget(
+        DemoApp(featuresRegistry: registry, authStateCoordinator: coordinator),
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      coordinator.logout();
+      await tester.pump();
+
+      expect(mediaApi.clearCount, 0);
+      expect(mediaApi.disposeCount, 0);
+      expect(coordinator.isLoggedIn, isFalse);
+      coordinator.authenticate(_authResult());
+      expect(coordinator.isLoggedIn, isTrue);
+    },
+  );
+
+  testWidgets(
+    'detaches before disposing an internal registry owned by the app',
+    (tester) async {
+      final mediaApi = _TrackingOrderReviewMediaApi();
+      final registry = FeaturesRegistry.local(orderReviewMediaApi: mediaApi);
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      coordinator.authenticate(_authResult());
+
+      await tester.pumpWidget(
+        DemoApp(
+          featuresRegistryFactory: () => registry,
+          authStateCoordinator: coordinator,
+        ),
+      );
+      await tester.pumpWidget(const SizedBox.shrink());
+      await registry.dispose();
+
+      coordinator.logout();
+      await tester.pump();
+
+      expect(mediaApi.disposeCount, 1);
+      expect(mediaApi.clearCount, 0);
+      expect(coordinator.isLoggedIn, isFalse);
+    },
+  );
+
+  testWidgets('re-mount registers only the new registry once', (tester) async {
+    final oldMediaApi = _TrackingOrderReviewMediaApi();
+    final oldRegistry = FeaturesRegistry.local(
+      orderReviewMediaApi: oldMediaApi,
+    );
+    final newMediaApi = _TrackingOrderReviewMediaApi();
+    final newRegistry = FeaturesRegistry.local(
+      orderReviewMediaApi: newMediaApi,
+    );
+    final coordinator = AuthStateCoordinator();
+    addTearDown(() async {
+      coordinator.dispose();
+      await oldRegistry.dispose();
+      await newRegistry.dispose();
+    });
+    coordinator.authenticate(_authResult());
+
+    await tester.pumpWidget(
+      DemoApp(featuresRegistry: oldRegistry, authStateCoordinator: coordinator),
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(
+      DemoApp(featuresRegistry: newRegistry, authStateCoordinator: coordinator),
+    );
+
+    coordinator.logout();
+    await tester.pump();
+
+    expect(oldMediaApi.clearCount, 0);
+    expect(newMediaApi.clearCount, 1);
+    expect(oldMediaApi.disposeCount, 0);
+    expect(newMediaApi.disposeCount, 0);
+  });
+
+  testWidgets('re-mount clears a retained registry after detached logout', (
+    tester,
+  ) async {
+    final mediaApi = _TrackingOrderReviewMediaApi();
+    final registry = FeaturesRegistry.local(orderReviewMediaApi: mediaApi);
+    final coordinator = AuthStateCoordinator();
+    addTearDown(() async {
+      coordinator.dispose();
+      await registry.dispose();
+    });
+    coordinator.authenticate(_authResult());
+
+    await tester.pumpWidget(
+      DemoApp(featuresRegistry: registry, authStateCoordinator: coordinator),
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+    coordinator.logout();
+    await tester.pump();
+    expect(mediaApi.clearCount, 0);
+
+    await tester.pumpWidget(
+      DemoApp(featuresRegistry: registry, authStateCoordinator: coordinator),
+    );
+    await tester.pump();
+
+    expect(mediaApi.clearCount, 1);
   });
 }
 
@@ -151,6 +270,7 @@ void _setPhoneViewport(WidgetTester tester) {
 }
 
 final class _TrackingOrderReviewMediaApi implements OrderReviewMediaApi {
+  var clearCount = 0;
   var disposeCount = 0;
 
   @override
@@ -163,10 +283,27 @@ final class _TrackingOrderReviewMediaApi implements OrderReviewMediaApi {
   ) async => const OrderReviewMediaReleased();
 
   @override
-  Future<void> clearDrafts() async {}
+  Future<void> clearDrafts() async {
+    clearCount += 1;
+  }
 
   @override
   Future<void> dispose() async {
     disposeCount += 1;
   }
+}
+
+AuthResult _authResult() {
+  const userId = 'user-romina';
+  return AuthResult(
+    user: UserEntity(
+      id: userId,
+      displayName: 'Romina',
+      email: EmailAddress('romina@example.com'),
+      callingCode: CountryCallingCode('+44'),
+      phoneNumber: PhoneNumber('7700900123'),
+      avatar: UserAvatar.asset('images/auth/romina.png'),
+    ),
+    session: AuthSession(id: 'session-user-romina', userId: userId),
+  );
 }

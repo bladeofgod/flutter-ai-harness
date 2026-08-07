@@ -14,7 +14,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
   - scripts/quality/media-capture-android.sh
-implementationDigest: 295403ffaf3907098034a8e95fce5c98e4e1d4765c5191d75b72de19fbb038c9
+implementationDigest: dd2f4763f50289fa3fa4fb09696c781de5e1ff0539a426f2290608f9bc7f461c
 ---
 
 # Security Review：Android Transfer Bridge Adapter
@@ -49,3 +49,10 @@ Gradle 官方解析固定的 `aapt2:8.9.1-12782657:linux` artifact 并生成 SHA
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## 2026-08-07 Android Transfer 发布兼容性增量复审
+
+共享 Android Transfer Store 从 hard-link/no-replace 发布改为最终路径 exclusive create；独立报告
+`security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。
+Host、权限、Channel 路径暴露和依赖来源边界未扩大；本报告摘要按当前 implementationFiles 重新绑定。
+无 ready emulator 的设备矩阵缺口保持明确记录。

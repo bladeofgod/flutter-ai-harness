@@ -15,7 +15,7 @@ implementationFiles:
   - scripts/quality/media-capture-android.sh
   - docs/bridge/media-capture-android.md
   - docs/native/media-capture-android-verification.md
-implementationDigest: bf3cd5244b9b3fd372a0f63af49e0ca31378b45d6bdcf53a7611ee4041c44d2a
+implementationDigest: 2b4a4f43eef54b410ba1f837df83553272cf381096b9e689e526f3382268a5fd
 ---
 
 # Security Review：Android Transfer Store 文件身份修正
@@ -66,3 +66,10 @@ Linux CI 后续请求的 AAPT2 JAR同样通过临时 Gradle configuration 与官
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## 2026-08-07 Android Transfer 发布兼容性增量复审
+
+共享 Android Transfer Store 从 hard-link/no-replace 发布改为最终路径 exclusive create；独立报告
+`security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。原有
+descriptor/path identity、regular type、size、link count、cleanup 和路径不暴露边界保持，close 失败不再能
+提交；本报告摘要按当前 implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保持明确记录。

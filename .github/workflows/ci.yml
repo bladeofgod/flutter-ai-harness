@@ -15,6 +15,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      EVIDENCE_SUMMARY: ${{ runner.temp }}/flutter-ai-harness-check-summary.log
+      EVIDENCE_ARTIFACT: ${{ runner.temp }}/flutter-ai-harness-check-full.log
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -36,11 +39,26 @@ jobs:
         run: make bootstrap
 
       - name: Run repository checks
-        run: make check
+        run: >-
+          bash scripts/quality/capture-evidence.sh
+          --artifact "$EVIDENCE_ARTIFACT" "$EVIDENCE_SUMMARY" -- make check
+
+      - name: Upload redacted check log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ci-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EVIDENCE_ARTIFACT }}
+          retention-days: 14
+          if-no-files-found: error
+          include-hidden-files: false
 
   android-build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      EVIDENCE_SUMMARY: ${{ runner.temp }}/flutter-ai-harness-android-summary.log
+      EVIDENCE_ARTIFACT: ${{ runner.temp }}/flutter-ai-harness-android-full.log
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -59,16 +77,34 @@ jobs:
         run: make bootstrap
 
       - name: Run Android Media Capture gate
-        run: make media-capture-android
+        run: >-
+          bash scripts/quality/capture-evidence.sh
+          --artifact "$EVIDENCE_ARTIFACT" "$EVIDENCE_SUMMARY" --
+          make media-capture-android
 
       - name: Build Android Debug app
-        run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+        run: >-
+          bash scripts/quality/capture-evidence.sh --append
+          --artifact "$EVIDENCE_ARTIFACT" "$EVIDENCE_SUMMARY" --
+          env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+
+      - name: Upload redacted Android log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ci-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EVIDENCE_ARTIFACT }}
+          retention-days: 14
+          if-no-files-found: error
+          include-hidden-files: false
 
   ios-build:
     runs-on: macos-26
     timeout-minutes: 40
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      EVIDENCE_SUMMARY: ${{ runner.temp }}/flutter-ai-harness-ios-summary.log
+      EVIDENCE_ARTIFACT: ${{ runner.temp }}/flutter-ai-harness-ios-full.log
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -87,7 +123,24 @@ jobs:
         run: make bootstrap
 
       - name: Run iOS Media Capture gate
-        run: make media-capture-ios
+        run: >-
+          bash scripts/quality/capture-evidence.sh
+          --artifact "$EVIDENCE_ARTIFACT" "$EVIDENCE_SUMMARY" --
+          make media-capture-ios
 
       - name: Build iOS Debug app without signing
-        run: TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign
+        run: >-
+          bash scripts/quality/capture-evidence.sh --append
+          --artifact "$EVIDENCE_ARTIFACT" "$EVIDENCE_SUMMARY" --
+          env TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh
+          build ios --debug --no-codesign
+
+      - name: Upload redacted iOS log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ci-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EVIDENCE_ARTIFACT }}
+          retention-days: 14
+          if-no-files-found: error
+          include-hidden-files: false

@@ -19,9 +19,9 @@ import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
 
-internal const val MEDIA_CAPTURE_WIRE_VERSION = 3
-internal const val MEDIA_CAPTURE_COMMANDS_CHANNEL = "com.example.media_capture.commands"
-internal const val MEDIA_CAPTURE_EVENTS_CHANNEL = "com.example.media_capture.events"
+internal const val MEDIA_CAPTURE_WIRE_VERSION = generatedMediaCaptureWireVersion
+internal const val MEDIA_CAPTURE_COMMANDS_CHANNEL = generatedCommandsChannel
+internal const val MEDIA_CAPTURE_EVENTS_CHANNEL = generatedEventsChannel
 
 internal sealed interface MediaCaptureWirePayload {
     data class StartSession(val options: SessionOptions) : MediaCaptureWirePayload
@@ -67,48 +67,34 @@ internal data class MediaCaptureWireRequest(
 internal class MediaCaptureWireFailure(
     val code: String,
     val details: Map<String, Any?>,
-) : Exception(code)
+) : Exception(code) {
+    init {
+        val descriptor = generatedErrorDescriptors.single { it.code == code }
+        require(descriptor.messagePolicy == "static_redacted")
+        require(details.keys.all { it in descriptor.detailsAllowedKeys })
+    }
+}
 
 internal object MediaCaptureWireCodec {
-    private val requestIdPattern = Regex("^[A-Za-z0-9_-]{1,128}$")
-    private val exportHandlePattern = Regex("^[A-Za-z0-9_-]{22,64}$")
-    private val orientationValues = setOf(0, 90, 180, 270)
+    private val requestIdPattern = Regex(generatedRequestIdPattern)
+    private val opaqueHandlePattern = Regex("^[A-Za-z0-9_-]+$")
+    private val generatedFieldsById = generatedMediaCaptureWireFields.associateBy { it.id }
+    private val generatedFieldsByKey = generatedMediaCaptureWireFields.associateBy { it.key }
+    private val generatedPayloadsById = generatedPayloadDescriptors.associateBy { it.id }
 
     val methods: Set<String> =
-        setOf(
-            "start_session",
-            "take_photo",
-            "start_recording",
-            "stop_recording",
-            "switch_camera",
-            "set_flash_mode",
-            "set_focus_point",
-            "set_zoom",
-            "retake",
-            "confirm",
-            "cancel",
-            "release_media",
-            "read_media_thumbnail",
-            "materialize_media_resource",
-            "release_materialized_media",
-            "present_capture_flow",
-            "dismiss_capture_flow",
-        )
+        GeneratedMediaCaptureWireMethod.entries.mapTo(linkedSetOf()) { it.wireValue }
 
     fun decodeRequest(operation: String, arguments: Any?): MediaCaptureWireRequest {
         if (operation !in methods) {
             throw invalidPayload("unknown_operation", "payload", "invalid_enum")
         }
         val envelope = readMap(arguments, operation, "payload")
-        requireKeys(
-            envelope,
-            setOf("wireVersion", "requestId", "payload"),
-            operation,
-        )
+        requireGeneratedEnvelope(envelope, "/lifecycle/requestEnvelope", operation)
         val version = readInt(envelope, "wireVersion", operation)
         if (version != MEDIA_CAPTURE_WIRE_VERSION.toLong()) {
             throw MediaCaptureWireFailure(
-                code = "incompatible_wire_version",
+                code = GeneratedMediaCaptureWireError.incompatibleWireVersion.wireValue,
                 details =
                     mapOf(
                         "actualWireVersion" to version,
@@ -130,11 +116,11 @@ internal object MediaCaptureWireCodec {
 
     fun decodeListenArguments(arguments: Any?) {
         val envelope = readMap(arguments, "unknown_operation", "payload")
-        requireKeys(envelope, setOf("wireVersion"), "unknown_operation")
+        requireGeneratedEnvelope(envelope, "/lifecycle/eventListenEnvelope", "unknown_operation")
         val version = readInt(envelope, "wireVersion", "unknown_operation")
         if (version != MEDIA_CAPTURE_WIRE_VERSION.toLong()) {
             throw MediaCaptureWireFailure(
-                "incompatible_wire_version",
+                GeneratedMediaCaptureWireError.incompatibleWireVersion.wireValue,
                 mapOf(
                     "actualWireVersion" to version,
                     "expectedWireVersion" to MEDIA_CAPTURE_WIRE_VERSION,
@@ -149,19 +135,30 @@ internal object MediaCaptureWireCodec {
         payload: Map<String, Any?>,
     ): Map<String, Any?> {
         requireRequestIdForOutput(requestId)
-        return mapOf(
+        requireGeneratedOutputPayload(resultPayloadId(resultType), payload)
+        val envelope = mapOf(
             "wireVersion" to MEDIA_CAPTURE_WIRE_VERSION,
             "requestId" to requestId,
             "resultType" to resultType,
             "payload" to payload,
         )
+        requireGeneratedOutputEnvelope(envelope, "/lifecycle/resultEnvelope")
+        return envelope
     }
 
     fun sessionCreated(requestId: String, handle: SessionHandle): Map<String, Any?> =
-        result(requestId, "session_created", mapOf("sessionHandle" to outputHandle(handle.value)))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.sessionCreated.wireValue,
+            mapOf("sessionHandle" to outputHandle(handle.value)),
+        )
 
     fun controlApplied(requestId: String, handle: SessionHandle): Map<String, Any?> =
-        result(requestId, "control_applied", mapOf("sessionHandle" to outputHandle(handle.value)))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.controlApplied.wireValue,
+            mapOf("sessionHandle" to outputHandle(handle.value)),
+        )
 
     fun recordingStarted(
         requestId: String,
@@ -170,31 +167,46 @@ internal object MediaCaptureWireCodec {
     ): Map<String, Any?> =
         result(
             requestId,
-            "recording_started",
+            GeneratedMediaCaptureWireResult.recordingStarted.wireValue,
             mapOf("sessionHandle" to outputHandle(handle.value), "audioIncluded" to audioIncluded),
         )
 
     fun mediaPreview(requestId: String, preview: MediaPreview): Map<String, Any?> =
-        result(requestId, "media_preview", mediaPayload(preview.mediaHandle, preview.metadata))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.mediaPreview.wireValue,
+            mediaPayload(preview.mediaHandle, preview.metadata),
+        )
 
     fun retakeReady(requestId: String, handle: SessionHandle): Map<String, Any?> =
-        result(requestId, "retake_ready", mapOf("sessionHandle" to outputHandle(handle.value)))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.retakeReady.wireValue,
+            mapOf("sessionHandle" to outputHandle(handle.value)),
+        )
 
     fun confirmedMedia(requestId: String, media: ConfirmedMedia): Map<String, Any?> {
-        require(media.leaseExpiresAtEpochMillis >= 0L)
         return result(
             requestId,
-            "confirmed_media",
+            GeneratedMediaCaptureWireResult.confirmedMedia.wireValue,
             mediaPayload(media.mediaHandle, media.metadata) +
                 ("leaseExpiresAt" to media.leaseExpiresAtEpochMillis),
         )
     }
 
     fun sessionCancelled(requestId: String, handle: SessionHandle): Map<String, Any?> =
-        result(requestId, "session_cancelled", mapOf("sessionHandle" to outputHandle(handle.value)))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.sessionCancelled.wireValue,
+            mapOf("sessionHandle" to outputHandle(handle.value)),
+        )
 
     fun mediaReleased(requestId: String, handle: MediaHandle): Map<String, Any?> =
-        result(requestId, "media_released", mapOf("mediaHandle" to outputHandle(handle.value)))
+        result(
+            requestId,
+            GeneratedMediaCaptureWireResult.mediaReleased.wireValue,
+            mapOf("mediaHandle" to outputHandle(handle.value)),
+        )
 
     fun thumbnail(
         requestId: String,
@@ -204,7 +216,7 @@ internal object MediaCaptureWireCodec {
         validateThumbnail(thumbnail, maxPixelEdge)
         return result(
             requestId,
-            "media_thumbnail",
+            GeneratedMediaCaptureWireResult.mediaThumbnail.wireValue,
             mapOf(
                 "mediaHandle" to outputHandle(thumbnail.mediaHandle.value),
                 "thumbnailCopy" to thumbnail.copy.copyOf(),
@@ -229,7 +241,6 @@ internal object MediaCaptureWireCodec {
         requireExportHandle(exportHandle)
         requireCanonicalFileUri(fileUri)
         require(metadata.byteLength in 1L..MAX_MATERIALIZED_BYTES)
-        require(metadata.orientationDegrees in orientationValues)
         require(
             metadata.contentType ==
                 if (metadata.mediaType == MediaType.PHOTO) "image/jpeg" else "video/mp4",
@@ -238,13 +249,12 @@ internal object MediaCaptureWireCodec {
             if (metadata.mediaType == MediaType.PHOTO) {
                 metadata.durationMillis == null
             } else {
-                metadata.durationMillis != null && metadata.durationMillis in 1L..60_000L
+                metadata.durationMillis != null
             },
         )
-        require(expiresAtEpochMillis >= 0L)
         return result(
             requestId,
-            "materialized_media_resource",
+            GeneratedMediaCaptureWireResult.materializedMediaResource.wireValue,
             mapOf(
                 "exportHandle" to exportHandle,
                 "fileUri" to fileUri,
@@ -258,32 +268,34 @@ internal object MediaCaptureWireCodec {
     }
 
     fun materializedMediaReleased(requestId: String): Map<String, Any?> =
-        result(requestId, "materialized_media_released", emptyMap())
+        result(requestId, GeneratedMediaCaptureWireResult.materializedMediaReleased.wireValue, emptyMap())
 
     fun captureFlowDismissed(requestId: String): Map<String, Any?> =
-        result(requestId, "capture_flow_dismissed", emptyMap())
+        result(requestId, GeneratedMediaCaptureWireResult.captureFlowDismissed.wireValue, emptyMap())
 
     fun flowConfirmed(requestId: String, media: ConfirmedMedia): Map<String, Any?> {
-        require(media.leaseExpiresAtEpochMillis >= 0L)
         return result(
             requestId,
-            "capture_flow_confirmed",
+            GeneratedMediaCaptureWireResult.captureFlowConfirmed.wireValue,
             mediaPayload(media.mediaHandle, media.metadata) +
                 ("leaseExpiresAt" to media.leaseExpiresAtEpochMillis),
         )
     }
 
     fun flowCancelled(requestId: String): Map<String, Any?> =
-        result(requestId, "capture_flow_cancelled", emptyMap())
+        result(requestId, GeneratedMediaCaptureWireResult.captureFlowCancelled.wireValue, emptyMap())
 
     fun event(event: MediaCaptureEvent): Map<String, Any?>? =
         when (event) {
             is MediaCaptureEvent.Ready ->
-                eventEnvelope("session_ready", readyPayload(event.value))
+                eventEnvelope(
+                    GeneratedMediaCaptureWireEvent.sessionReady.wireValue,
+                    readyPayload(event.value),
+                )
             is MediaCaptureEvent.SessionFailed -> {
                 if (event.failure.code == FailureCode.SESSION_TIMEOUT) {
                     failureEnvelope(
-                        "session_timeout",
+                        GeneratedMediaCaptureWireFailure.sessionTimeout.wireValue,
                         mapOf("sessionHandle" to outputHandle(event.sessionHandle.value)),
                     )
                 } else {
@@ -300,7 +312,7 @@ internal object MediaCaptureWireCodec {
                             ),
                     )
                     eventEnvelope(
-                        "session_failed",
+                        GeneratedMediaCaptureWireEvent.sessionFailed.wireValue,
                         mapOf(
                             "sessionHandle" to outputHandle(event.sessionHandle.value),
                             "terminalFailureId" to event.failure.code.wireValue,
@@ -310,18 +322,18 @@ internal object MediaCaptureWireCodec {
             }
             is MediaCaptureEvent.PreviewReady ->
                 eventEnvelope(
-                    "media_preview_ready",
+                    GeneratedMediaCaptureWireEvent.mediaPreviewReady.wireValue,
                     mapOf("sessionHandle" to outputHandle(event.sessionHandle.value)) +
                         mediaPayload(event.preview.mediaHandle, event.preview.metadata),
                 )
             is MediaCaptureEvent.LeaseExpired ->
                 eventEnvelope(
-                    "media_lease_expired",
+                    GeneratedMediaCaptureWireEvent.mediaLeaseExpired.wireValue,
                     mapOf("mediaHandle" to outputHandle(event.mediaHandle.value)),
                 )
             is MediaCaptureEvent.ReadRevoked ->
                 eventEnvelope(
-                    "media_read_revoked",
+                    GeneratedMediaCaptureWireEvent.mediaReadRevoked.wireValue,
                     mapOf("mediaHandle" to outputHandle(event.mediaHandle.value)),
                 )
             is MediaCaptureEvent.AttachmentRevoked -> null
@@ -329,53 +341,59 @@ internal object MediaCaptureWireCodec {
 
     fun invalidPayload(operation: String, field: String, reason: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "invalid_wire_payload",
+            GeneratedMediaCaptureWireError.invalidWirePayload.wireValue,
             mapOf("operation" to safeOperation(operation), "field" to field, "reason" to reason),
         )
 
     fun bridgeUnavailable(operation: String, reason: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "bridge_unavailable",
+            GeneratedMediaCaptureWireError.bridgeUnavailable.wireValue,
             mapOf("operation" to safeOperation(operation), "lifecycleReason" to reason),
         )
 
     fun bridgeOverloaded(operation: String, capacity: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "bridge_overloaded",
+            GeneratedMediaCaptureWireError.bridgeOverloaded.wireValue,
             mapOf("operation" to safeOperation(operation), "capacity" to capacity),
         )
 
     fun duplicateRequest(operation: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "duplicate_request",
+            GeneratedMediaCaptureWireError.duplicateRequest.wireValue,
             mapOf("operation" to safeOperation(operation)),
         )
 
     fun listenerAlreadyActive(): MediaCaptureWireFailure =
-        MediaCaptureWireFailure("listener_already_active", emptyMap())
+        MediaCaptureWireFailure(
+            GeneratedMediaCaptureWireError.listenerAlreadyActive.wireValue,
+            emptyMap(),
+        )
 
     fun presentationConflict(): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "presentation_conflict",
-            mapOf("operation" to "present_capture_flow", "capacity" to "active_presentation"),
+            GeneratedMediaCaptureWireError.presentationConflict.wireValue,
+            mapOf(
+                "operation" to GeneratedMediaCaptureWireMethod.presentCaptureFlow.wireValue,
+                "capacity" to "active_presentation",
+            ),
         )
 
     fun transferStoreOverloaded(operation: String, capacity: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "transfer_store_overloaded",
+            GeneratedMediaCaptureWireError.transferStoreOverloaded.wireValue,
             mapOf("operation" to safeOperation(operation), "capacity" to capacity),
         )
 
     fun transferStoreUnavailable(operation: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "transfer_store_unavailable",
+            GeneratedMediaCaptureWireError.transferStoreUnavailable.wireValue,
             mapOf("operation" to safeOperation(operation), "lifecycleReason" to "adapter_disposed"),
         )
 
     fun materializedMediaInvalid(): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "materialized_media_invalid",
-            mapOf("operation" to "release_materialized_media"),
+            GeneratedMediaCaptureWireError.materializedMediaInvalid.wireValue,
+            mapOf("operation" to GeneratedMediaCaptureWireMethod.releaseMaterializedMedia.wireValue),
         )
 
     fun capabilityFailure(operation: String, code: FailureCode): MediaCaptureWireFailure =
@@ -389,7 +407,7 @@ internal object MediaCaptureWireCodec {
 
     fun wireEncodingFailure(operation: String): MediaCaptureWireFailure =
         MediaCaptureWireFailure(
-            "wire_encoding_failed",
+            GeneratedMediaCaptureWireError.wireEncodingFailed.wireValue,
             mapOf(
                 "operation" to safeOperation(operation),
                 "field" to "unknown_field",
@@ -400,27 +418,17 @@ internal object MediaCaptureWireCodec {
     private fun decodePayload(
         operation: String,
         payload: Map<String, Any?>,
-    ): MediaCaptureWirePayload =
-        when (operation) {
-            "start_session", "present_capture_flow" -> {
-                requireKeys(
-                    payload,
-                    setOf(
-                        "enabledMediaTypes",
-                        "preferredCamera",
-                        "audioEnabled",
-                        "maxVideoDurationMillis",
-                    ),
-                    operation,
-                )
+    ): MediaCaptureWirePayload {
+        requireGeneratedPayload(payload, requestPayloadId(operation), operation)
+        return when (operation) {
+            GeneratedMediaCaptureWireMethod.startSession.wireValue,
+            GeneratedMediaCaptureWireMethod.presentCaptureFlow.wireValue,
+            -> {
                 val mediaTypes =
-                    readEnumList(payload, "enabledMediaTypes", operation, setOf("photo", "video"))
+                    readEnumList(payload, "enabledMediaTypes", operation)
                         .mapTo(linkedSetOf(), ::mediaType)
-                val preferred = camera(readEnum(payload, "preferredCamera", operation, setOf("rear", "front")))
+                val preferred = camera(readEnum(payload, "preferredCamera", operation))
                 val duration = readInt(payload, "maxVideoDurationMillis", operation)
-                if (duration !in 1L..60_000L) {
-                    throw invalidPayload(operation, "maxVideoDurationMillis", "out_of_range")
-                }
                 MediaCaptureWirePayload.StartSession(
                     SessionOptions(
                         enabledMediaTypes = mediaTypes,
@@ -430,66 +438,56 @@ internal object MediaCaptureWireCodec {
                     ),
                 )
             }
-            "take_photo", "start_recording", "stop_recording", "switch_camera", "cancel" -> {
-                requireKeys(payload, setOf("sessionHandle"), operation)
+            GeneratedMediaCaptureWireMethod.takePhoto.wireValue,
+            GeneratedMediaCaptureWireMethod.startRecording.wireValue,
+            GeneratedMediaCaptureWireMethod.stopRecording.wireValue,
+            GeneratedMediaCaptureWireMethod.switchCamera.wireValue,
+            GeneratedMediaCaptureWireMethod.cancel.wireValue,
+            -> {
                 MediaCaptureWirePayload.SessionAction(sessionHandle(payload, operation))
             }
-            "set_flash_mode" -> {
-                requireKeys(payload, setOf("sessionHandle", "flashMode"), operation)
+            GeneratedMediaCaptureWireMethod.setFlashMode.wireValue -> {
                 MediaCaptureWirePayload.Flash(
                     sessionHandle(payload, operation),
-                    flashMode(
-                        readEnum(
-                            payload,
-                            "flashMode",
-                            operation,
-                            setOf("off", "on", "auto", "torch"),
-                        ),
-                    ),
+                    flashMode(readEnum(payload, "flashMode", operation)),
                 )
             }
-            "set_focus_point" -> {
-                requireKeys(payload, setOf("sessionHandle", "normalizedX", "normalizedY"), operation)
+            GeneratedMediaCaptureWireMethod.setFocusPoint.wireValue -> {
                 MediaCaptureWirePayload.Focus(
                     sessionHandle(payload, operation),
-                    readFiniteDouble(payload, "normalizedX", operation, 0.0, 1.0),
-                    readFiniteDouble(payload, "normalizedY", operation, 0.0, 1.0),
+                    readFiniteDouble(payload, "normalizedX", operation),
+                    readFiniteDouble(payload, "normalizedY", operation),
                 )
             }
-            "set_zoom" -> {
-                requireKeys(payload, setOf("sessionHandle", "zoomFactor"), operation)
-                val zoom = readFiniteDouble(payload, "zoomFactor", operation, 0.01, null)
+            GeneratedMediaCaptureWireMethod.setZoom.wireValue -> {
+                val zoom = readFiniteDouble(payload, "zoomFactor", operation)
                 MediaCaptureWirePayload.Zoom(sessionHandle(payload, operation), zoom)
             }
-            "retake", "confirm", "release_media" -> {
-                requireKeys(payload, setOf("mediaHandle"), operation)
+            GeneratedMediaCaptureWireMethod.retake.wireValue,
+            GeneratedMediaCaptureWireMethod.confirm.wireValue,
+            GeneratedMediaCaptureWireMethod.releaseMedia.wireValue,
+            -> {
                 MediaCaptureWirePayload.MediaAction(mediaHandle(payload, operation))
             }
-            "read_media_thumbnail" -> {
-                requireKeys(payload, setOf("mediaHandle", "maxPixelEdge"), operation)
+            GeneratedMediaCaptureWireMethod.readMediaThumbnail.wireValue -> {
                 val maxPixelEdge = readInt(payload, "maxPixelEdge", operation)
-                if (maxPixelEdge !in 64L..512L) {
-                    throw invalidPayload(operation, "maxPixelEdge", "out_of_range")
-                }
                 MediaCaptureWirePayload.Thumbnail(
                     mediaHandle(payload, operation),
                     maxPixelEdge.toInt(),
                 )
             }
-            "materialize_media_resource" -> {
-                requireKeys(payload, setOf("mediaHandle"), operation)
+            GeneratedMediaCaptureWireMethod.materializeMediaResource.wireValue -> {
                 MediaCaptureWirePayload.Materialize(mediaHandle(payload, operation))
             }
-            "release_materialized_media" -> {
-                requireKeys(payload, setOf("exportHandle"), operation)
+            GeneratedMediaCaptureWireMethod.releaseMaterializedMedia.wireValue -> {
                 val handle = readString(payload, "exportHandle", operation)
-                if (!exportHandlePattern.matches(handle)) {
+                val length = checkNotNull(generatedOpaqueHandleLengths["export_handle"])
+                if (!opaqueHandlePattern.matches(handle) || handle.length !in length) {
                     throw invalidPayload(operation, "exportHandle", "invalid_format")
                 }
                 MediaCaptureWirePayload.ReleaseMaterialized(handle)
             }
-            "dismiss_capture_flow" -> {
-                requireKeys(payload, setOf("presentationRequestId"), operation)
+            GeneratedMediaCaptureWireMethod.dismissCaptureFlow.wireValue -> {
                 val presentationRequestId = readString(payload, "presentationRequestId", operation)
                 if (!requestIdPattern.matches(presentationRequestId)) {
                     throw invalidPayload(operation, "presentationRequestId", "invalid_format")
@@ -498,13 +496,158 @@ internal object MediaCaptureWireCodec {
             }
             else -> throw invalidPayload("unknown_operation", "payload", "invalid_enum")
         }
+    }
+
+    private fun requestPayloadId(operation: String): String =
+        when (operation) {
+            GeneratedMediaCaptureWireMethod.startSession.wireValue,
+            GeneratedMediaCaptureWireMethod.presentCaptureFlow.wireValue,
+            -> "start_session_request_payload"
+            GeneratedMediaCaptureWireMethod.takePhoto.wireValue,
+            GeneratedMediaCaptureWireMethod.startRecording.wireValue,
+            GeneratedMediaCaptureWireMethod.stopRecording.wireValue,
+            GeneratedMediaCaptureWireMethod.switchCamera.wireValue,
+            GeneratedMediaCaptureWireMethod.cancel.wireValue,
+            -> "session_action_request_payload"
+            GeneratedMediaCaptureWireMethod.setFlashMode.wireValue -> "flash_mode_request_payload"
+            GeneratedMediaCaptureWireMethod.setFocusPoint.wireValue -> "focus_point_request_payload"
+            GeneratedMediaCaptureWireMethod.setZoom.wireValue -> "zoom_request_payload"
+            GeneratedMediaCaptureWireMethod.retake.wireValue,
+            GeneratedMediaCaptureWireMethod.confirm.wireValue,
+            GeneratedMediaCaptureWireMethod.releaseMedia.wireValue,
+            -> "media_handle_request_payload"
+            GeneratedMediaCaptureWireMethod.readMediaThumbnail.wireValue -> "media_thumbnail_request_payload"
+            GeneratedMediaCaptureWireMethod.materializeMediaResource.wireValue ->
+                "materialize_media_resource_request_payload"
+            GeneratedMediaCaptureWireMethod.releaseMaterializedMedia.wireValue ->
+                "release_materialized_media_request_payload"
+            GeneratedMediaCaptureWireMethod.dismissCaptureFlow.wireValue ->
+                "dismiss_capture_flow_request_payload"
+            else -> error("Validated operation expected")
+        }
+
+    private fun resultPayloadId(resultType: String): String =
+        when (resultType) {
+            GeneratedMediaCaptureWireResult.sessionCreated.wireValue -> "session_created_result_payload"
+            GeneratedMediaCaptureWireResult.controlApplied.wireValue -> "control_applied_result_payload"
+            GeneratedMediaCaptureWireResult.recordingStarted.wireValue -> "recording_started_result_payload"
+            GeneratedMediaCaptureWireResult.mediaPreview.wireValue -> "media_preview_result_payload"
+            GeneratedMediaCaptureWireResult.retakeReady.wireValue -> "retake_ready_result_payload"
+            GeneratedMediaCaptureWireResult.confirmedMedia.wireValue,
+            GeneratedMediaCaptureWireResult.captureFlowConfirmed.wireValue,
+            -> "confirmed_media_result_payload"
+            GeneratedMediaCaptureWireResult.sessionCancelled.wireValue -> "session_cancelled_result_payload"
+            GeneratedMediaCaptureWireResult.mediaReleased.wireValue -> "media_released_result_payload"
+            GeneratedMediaCaptureWireResult.mediaThumbnail.wireValue -> "media_thumbnail_result_payload"
+            GeneratedMediaCaptureWireResult.materializedMediaResource.wireValue -> "materialized_media_result_payload"
+            GeneratedMediaCaptureWireResult.materializedMediaReleased.wireValue ->
+                "materialized_media_released_result_payload"
+            GeneratedMediaCaptureWireResult.captureFlowDismissed.wireValue,
+            GeneratedMediaCaptureWireResult.captureFlowCancelled.wireValue,
+            -> "capture_flow_dismissed_result_payload"
+            else -> error("Generated result type expected")
+        }
+
+    private fun eventPayloadId(eventType: String): String =
+        when (eventType) {
+            GeneratedMediaCaptureWireEvent.sessionReady.wireValue -> "session_ready_event_payload"
+            GeneratedMediaCaptureWireEvent.sessionFailed.wireValue -> "session_failed_event_payload"
+            GeneratedMediaCaptureWireEvent.mediaPreviewReady.wireValue -> "media_preview_ready_event_payload"
+            GeneratedMediaCaptureWireEvent.mediaLeaseExpired.wireValue -> "media_lease_expired_event_payload"
+            GeneratedMediaCaptureWireEvent.mediaReadRevoked.wireValue -> "media_read_revoked_event_payload"
+            else -> error("Generated event type expected")
+        }
+
+    private fun requireGeneratedEnvelope(
+        value: Map<String, Any?>,
+        id: String,
+        operation: String,
+    ) {
+        check(generatedEnvelopeUnknownFieldPolicies[id] == "reject")
+        requireKeys(value, checkNotNull(generatedEnvelopeRequiredKeys[id]), operation)
+    }
+
+    private fun requireGeneratedPayload(
+        value: Map<String, Any?>,
+        id: String,
+        operation: String,
+    ) {
+        val payload = checkNotNull(generatedPayloadsById[id])
+        check(payload.unknownFieldPolicy == "reject")
+        val fields = payload.fieldIds.map { checkNotNull(generatedFieldsById[it]) }
+        val allowedKeys = fields.mapTo(linkedSetOf()) { it.key }
+        val missing = fields.firstOrNull { it.required && !value.containsKey(it.key) }
+        if (missing != null) {
+            throw invalidPayload(operation, missing.key, "missing_required_field")
+        }
+        val unknown = value.keys.firstOrNull { it !in allowedKeys }
+        if (unknown != null) {
+            throw invalidPayload(operation, "unknown_field", "unknown_field")
+        }
+        fields.filter { value.containsKey(it.key) }.forEach { field ->
+            val fieldValue = value[field.key]
+            if (!generatedMatchesWireFieldPrimitive(fieldValue, field)) {
+                throw invalidPayload(operation, field.key, primitiveFailureReason(fieldValue, field))
+            }
+        }
+    }
+
+    private fun primitiveFailureReason(
+        value: Any?,
+        field: GeneratedWireFieldDescriptor,
+    ): String {
+        if (value == null) return "null_not_allowed"
+        val typeMatches =
+            when (field.type) {
+                "bool" -> value is Boolean
+                "bytes" -> value is ByteArray
+                "double" -> value is Double
+                "int" -> value is Int || value is Long
+                "string" -> value is String
+                "list_bool" -> value is List<*> && value.all { it is Boolean }
+                "list_double" -> value is List<*> && value.all { it is Double }
+                "list_int" -> value is List<*> && value.all { it is Int || it is Long }
+                "list_string" -> value is List<*> && value.all { it is String }
+                else -> false
+            }
+        if (!typeMatches) return "type_mismatch"
+        if (value is Double && field.finite && !value.isFinite()) return "non_finite"
+        if (value is List<*> && field.type == "list_double" && field.finite &&
+            value.any { it is Double && !it.isFinite() }
+        ) {
+            return "non_finite"
+        }
+        if (value is String && field.enumValues.isNotEmpty() && value !in field.enumValues) {
+            return "invalid_enum"
+        }
+        if (value is List<*> && field.type == "list_string" && field.enumValues.isNotEmpty()) {
+            if (!value.all { it is String && it in field.enumValues }) return "invalid_enum"
+            if (value.toSet().size != value.size) return "invalid_format"
+        }
+        return "out_of_range"
+    }
+
+    private fun requireGeneratedOutputEnvelope(value: Map<String, Any?>, id: String) {
+        check(generatedEnvelopeUnknownFieldPolicies[id] == "reject")
+        require(generatedHasExactWireKeys(value, checkNotNull(generatedEnvelopeRequiredKeys[id])))
+    }
+
+    private fun requireGeneratedOutputPayload(id: String, value: Map<String, Any?>) {
+        val payload = checkNotNull(generatedPayloadsById[id])
+        check(payload.unknownFieldPolicy == "reject")
+        val fields = payload.fieldIds.map { checkNotNull(generatedFieldsById[it]) }
+        val allowedKeys = fields.mapTo(linkedSetOf()) { it.key }
+        require(value.keys.all { it in allowedKeys })
+        require(fields.all { !it.required || value.containsKey(it.key) })
+        require(
+            fields.filter { value.containsKey(it.key) }
+                .all { generatedMatchesWireFieldPrimitive(value[it.key], it) },
+        )
+    }
 
     private fun readyPayload(ready: SessionReady): Map<String, Any?> {
-        require(ready.availableCameras.isNotEmpty() && ready.availableCameras.size <= 2)
         require(ready.activeCamera in ready.availableCameras)
-        require(ready.supportedFlashModes.isNotEmpty() && ready.supportedFlashModes.size <= 4)
-        require(ready.minZoomFactor.isFinite() && ready.minZoomFactor >= 0.01)
-        require(ready.maxZoomFactor.isFinite() && ready.maxZoomFactor >= ready.minZoomFactor)
+        require(ready.maxZoomFactor >= ready.minZoomFactor)
         return mapOf(
             "sessionHandle" to outputHandle(ready.sessionHandle.value),
             "activeCamera" to ready.activeCamera.wireValue,
@@ -521,13 +664,9 @@ internal object MediaCaptureWireCodec {
         handle: MediaHandle,
         metadata: MediaMetadata,
     ): Map<String, Any?> {
-        require(metadata.pixelWidth > 0 && metadata.pixelHeight > 0)
-        require(metadata.orientationDegrees in orientationValues)
-        require(metadata.byteLength > 0L)
         when (metadata.mediaType) {
             MediaType.PHOTO -> require(metadata.durationMillis == null)
-            MediaType.VIDEO ->
-                require(metadata.durationMillis != null && metadata.durationMillis in 1L..60_000L)
+            MediaType.VIDEO -> require(metadata.durationMillis != null)
         }
         return mapOf(
             "mediaHandle" to outputHandle(handle.value),
@@ -541,17 +680,11 @@ internal object MediaCaptureWireCodec {
     }
 
     private fun validateThumbnail(thumbnail: MediaThumbnail, maxPixelEdge: Int) {
-        require(thumbnail.copy.isNotEmpty() && thumbnail.copy.size <= 524_288)
         require(thumbnail.byteLength == thumbnail.copy.size)
-        require(thumbnail.pixelWidth in 1..maxPixelEdge && thumbnail.pixelHeight in 1..maxPixelEdge)
-        require(maxPixelEdge in 64..512)
+        require(thumbnail.pixelWidth <= maxPixelEdge && thumbnail.pixelHeight <= maxPixelEdge)
         when (thumbnail.mediaType) {
             MediaType.PHOTO -> require(thumbnail.posterFrameMillis == null)
-            MediaType.VIDEO ->
-                require(
-                    thumbnail.posterFrameMillis != null &&
-                        thumbnail.posterFrameMillis in 0L..60_000L,
-                )
+            MediaType.VIDEO -> require(thumbnail.posterFrameMillis != null)
         }
         validateSanitizedJpeg(thumbnail.copy, thumbnail.pixelWidth, thumbnail.pixelHeight)
     }
@@ -636,11 +769,30 @@ internal object MediaCaptureWireCodec {
         require(bytes.u8(start + 12) == 0 && bytes.u8(start + 13) == 0)
     }
 
-    private fun eventEnvelope(type: String, payload: Map<String, Any?>): Map<String, Any?> =
-        mapOf("wireVersion" to MEDIA_CAPTURE_WIRE_VERSION, "eventType" to type, "payload" to payload)
+    private fun eventEnvelope(type: String, payload: Map<String, Any?>): Map<String, Any?> {
+        requireGeneratedOutputPayload(eventPayloadId(type), payload)
+        val envelope =
+            mapOf(
+                "wireVersion" to MEDIA_CAPTURE_WIRE_VERSION,
+                "eventType" to type,
+                "payload" to payload,
+            )
+        requireGeneratedOutputEnvelope(envelope, "/lifecycle/eventEnvelope")
+        return envelope
+    }
 
-    private fun failureEnvelope(type: String, payload: Map<String, Any?>): Map<String, Any?> =
-        mapOf("wireVersion" to MEDIA_CAPTURE_WIRE_VERSION, "failureType" to type, "payload" to payload)
+    private fun failureEnvelope(type: String, payload: Map<String, Any?>): Map<String, Any?> {
+        require(type == GeneratedMediaCaptureWireFailure.sessionTimeout.wireValue)
+        requireGeneratedOutputPayload("session_timeout_failure_payload", payload)
+        val envelope =
+            mapOf(
+                "wireVersion" to MEDIA_CAPTURE_WIRE_VERSION,
+                "failureType" to type,
+                "payload" to payload,
+            )
+        requireGeneratedOutputEnvelope(envelope, "/lifecycle/failureEnvelope")
+        return envelope
+    }
 
     private fun sessionHandle(map: Map<String, Any?>, operation: String): SessionHandle =
         SessionHandle(readHandle(map, "sessionHandle", operation))
@@ -650,17 +802,23 @@ internal object MediaCaptureWireCodec {
 
     private fun readHandle(map: Map<String, Any?>, key: String, operation: String): String {
         val value = readString(map, key, operation)
-        if (!isValidHandle(value)) throw invalidPayload(operation, key, "out_of_range")
+        val descriptor = checkNotNull(generatedFieldsByKey[key])
+        val lengths = checkNotNull(generatedOpaqueHandleLengths[descriptor.id])
+        if (value.length !in lengths) throw invalidPayload(operation, key, "out_of_range")
         return value
     }
 
     private fun outputHandle(value: String): String {
-        require(isValidHandle(value))
+        val sessionLengths = checkNotNull(generatedOpaqueHandleLengths["session_handle"])
+        val mediaLengths = checkNotNull(generatedOpaqueHandleLengths["media_handle"])
+        check(sessionLengths == mediaLengths)
+        require(value.length in sessionLengths)
         return value
     }
 
     private fun requireExportHandle(value: String) {
-        require(exportHandlePattern.matches(value))
+        require(opaqueHandlePattern.matches(value))
+        require(value.length in checkNotNull(generatedOpaqueHandleLengths["export_handle"]))
     }
 
     internal fun requireCanonicalFileUri(value: String) {
@@ -718,8 +876,6 @@ internal object MediaCaptureWireCodec {
         return decoded.toString()
     }
 
-    private fun isValidHandle(value: String): Boolean = value.isNotEmpty() && value.length <= 128
-
     private fun requireRequestIdForOutput(value: String) {
         require(requestIdPattern.matches(value))
     }
@@ -773,16 +929,10 @@ internal object MediaCaptureWireCodec {
         map: Map<String, Any?>,
         key: String,
         operation: String,
-        minimum: Double,
-        maximum: Double?,
     ): Double {
         val value = map[key]
         if (value == null) throw invalidPayload(operation, key, "null_not_allowed")
         if (value !is Double) throw invalidPayload(operation, key, "type_mismatch")
-        if (!value.isFinite()) throw invalidPayload(operation, key, "non_finite")
-        if (value < minimum || (maximum != null && value > maximum)) {
-            throw invalidPayload(operation, key, "out_of_range")
-        }
         return value
     }
 
@@ -790,9 +940,9 @@ internal object MediaCaptureWireCodec {
         map: Map<String, Any?>,
         key: String,
         operation: String,
-        values: Set<String>,
     ): String {
         val value = readString(map, key, operation)
+        val values = checkNotNull(generatedFieldsByKey[key]).enumValues
         if (value !in values) throw invalidPayload(operation, key, "invalid_enum")
         return value
     }
@@ -801,14 +951,12 @@ internal object MediaCaptureWireCodec {
         map: Map<String, Any?>,
         key: String,
         operation: String,
-        values: Set<String>,
     ): List<String> {
+        val field = checkNotNull(generatedFieldsByKey[key])
+        val values = field.enumValues
         val raw = map[key]
         if (raw == null) throw invalidPayload(operation, key, "null_not_allowed")
         if (raw !is List<*>) throw invalidPayload(operation, key, "type_mismatch")
-        if (raw.isEmpty() || raw.size > values.size) {
-            throw invalidPayload(operation, key, "out_of_range")
-        }
         val decoded =
             raw.map { item ->
                 if (item !is String) throw invalidPayload(operation, key, "type_mismatch")
@@ -837,13 +985,42 @@ private fun Char.isUpperHex(): Boolean = this in '0'..'9' || this in 'A'..'F'
 private fun ByteArray.u8(index: Int): Int = this[index].toInt() and 0xff
 
 private val MediaType.wireValue: String
-    get() = name.lowercase()
+    get() =
+        generatedFieldEnumValue(
+            "media_type",
+            when (this) {
+                MediaType.PHOTO -> "photo"
+                MediaType.VIDEO -> "video"
+            },
+        )
 
 private val CameraPosition.wireValue: String
-    get() = name.lowercase()
+    get() =
+        generatedFieldEnumValue(
+            "active_camera",
+            when (this) {
+                CameraPosition.REAR -> "rear"
+                CameraPosition.FRONT -> "front"
+            },
+        )
 
 private val FlashMode.wireValue: String
-    get() = name.lowercase()
+    get() =
+        generatedFieldEnumValue(
+            "flash_mode",
+            when (this) {
+                FlashMode.OFF -> "off"
+                FlashMode.ON -> "on"
+                FlashMode.AUTO -> "auto"
+                FlashMode.TORCH -> "torch"
+            },
+        )
+
+private fun generatedFieldEnumValue(fieldId: String, value: String): String {
+    val field = generatedMediaCaptureWireFields.single { it.id == fieldId }
+    check(value in field.enumValues)
+    return value
+}
 
 private fun mediaType(value: String): MediaType =
     when (value) {

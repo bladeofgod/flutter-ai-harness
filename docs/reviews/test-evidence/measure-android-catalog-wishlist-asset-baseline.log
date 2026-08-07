@@ -1,0 +1,58 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\nAAB=/tmp/flutter-ai-harness-size-baseline.gMNV0P/app-release.aab\nANALYSIS=/tmp/flutter-ai-harness-size-baseline.gMNV0P/aab-code-size-analysis.json\ntest "$(stat -f %z "$AAB")" = 28530515\ntest "$(shasum -a 256 "$AAB" | cut -d " " -f 1)" = 36c5ce820626abec5cabe54e3e2419ab12f4b98a183b9aafb4eb87142ce64350\ntest "$(shasum -a 256 "$ANALYSIS" | cut -d " " -f 1)" = bf76c61ab13520d4943f954ab74b8dbd3a823290f5ddaacb6173ef89a85ef631\njq -e ".children[2].n == \\"base\\" and .children[2].children[1].n == \\"assets\\" and .children[2].children[1].value == 8898633" "$ANALYSIS" >/dev/null\nunzip -l "$AAB" | rg "shop_product_0[234]|recent_(hat|pink_dress|red_dress)"\nshasum -a 256 app/packages/app_features/assets/images/catalog/products/shop_product_02.png app/packages/app_features/assets/images/wishlist/recent_hat.png app/packages/app_features/assets/images/catalog/products/shop_product_03.png app/packages/app_features/assets/images/wishlist/recent_pink_dress.png app/packages/app_features/assets/images/catalog/products/shop_product_04.png app/packages/app_features/assets/images/wishlist/recent_red_dress.png\nsips -g pixelWidth -g pixelHeight app/packages/app_features/assets/images/catalog/products/shop_product_02.png app/packages/app_features/assets/images/catalog/products/shop_product_03.png app/packages/app_features/assets/images/catalog/products/shop_product_04.png\nprintf "baseline verification passed\\n"'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "17.0.12" 2024-07-16
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: 7d70efe4ec87873c71943f8bfb7864002216a65c433d466f6fd750b090731e33
+Original output bytes: 1978
+Original output lines: 22
+Summary output bytes: 1977
+Summary output lines: 22
+Truncated: no
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+    94364  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/catalog/products/shop_product_02.png
+   151297  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/catalog/products/shop_product_03.png
+   128262  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/catalog/products/shop_product_04.png
+    94364  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/wishlist/recent_hat.png
+   151297  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/wishlist/recent_pink_dress.png
+   128262  01-01-1981 01:01   base/assets/flutter_assets/packages/app_features/assets/images/wishlist/recent_red_dress.png
+b2743d8386cdb54b10005968f512f4f19d570b2abf93462a129f430823398251  app/packages/app_features/assets/images/catalog/products/shop_product_02.png
+b2743d8386cdb54b10005968f512f4f19d570b2abf93462a129f430823398251  app/packages/app_features/assets/images/wishlist/recent_hat.png
+13f312380775702d4a73cde53201ab6d50cf55043e706f14db44c42c3d28725d  app/packages/app_features/assets/images/catalog/products/shop_product_03.png
+13f312380775702d4a73cde53201ab6d50cf55043e706f14db44c42c3d28725d  app/packages/app_features/assets/images/wishlist/recent_pink_dress.png
+6439bd8738a4b952a29248415ce4e39778d122daeb012d2acb3f3064951bef45  app/packages/app_features/assets/images/catalog/products/shop_product_04.png
+6439bd8738a4b952a29248415ce4e39778d122daeb012d2acb3f3064951bef45  app/packages/app_features/assets/images/wishlist/recent_red_dress.png
+<repo>/app/packages/app_features/assets/images/catalog/products/shop_product_02.png
+  pixelWidth: 400
+  pixelHeight: 266
+<repo>/app/packages/app_features/assets/images/catalog/products/shop_product_03.png
+  pixelWidth: 266
+  pixelHeight: 400
+<repo>/app/packages/app_features/assets/images/catalog/products/shop_product_04.png
+  pixelWidth: 266
+  pixelHeight: 400
+baseline verification passed
+```

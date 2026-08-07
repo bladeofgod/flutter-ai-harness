@@ -23,7 +23,7 @@ implementationFiles:
   - app/apps/demo/lib/router/demo_router.dart
   - app/packages/app_features/pubspec.yaml
   - app/pubspec.lock
-implementationDigest: 73e49e1dd456c393e8873b8e1813b6481d7825f338ebd0d910f2e994e7a85539
+implementationDigest: 9442b9f36b8619421eaac00fdc220cbc75bff05edd8fc331aab658fee6aca038
 ---
 
 # Security Review：Support Media Resource Preview
@@ -42,3 +42,26 @@ release export/native lease 之前；会话接纳、reset、dispose 串行且失
 本轮没有修改 Support 消息模型、`MediaResourceId`、Store adoption 或预览 cleanup。变化限于 iOS Core、
 Rendering、UI、共享 Gate/golden 与说明文档；独立 Security Reviewer 复核跨 Runtime 边界后确认
 P0/P1/P2 0/0/0，本报告按当前实现文件重新绑定摘要。
+
+## Session Reset 生命周期影响
+
+`DemoApp` 现在持有并在卸载时解除自己的 Session Reset 注册，外部 Registry 在已登出 Coordinator 下
+重新挂载时会先清理会话状态。reset 回调失败会脱敏上报且不阻断后续清理或登出，因此 Support 消息、
+媒体草稿和资源租约不会因其它注册失败而跳过 reset。本轮未改变 Support 的资源标识或 cleanup ownership。
+
+## Workspace 消费检查器影响
+
+共享 lockfile 只把既有 `analyzer 10.0.1` 从传递依赖提升为根工具直接 dev dependency，版本、来源与
+SHA-256 未变。Support 生产代码和依赖未修改；新工具只读解析 Workspace 源码，不接触媒体内容或资源定位。
+
+## Workspace 冗余依赖清理影响
+
+`app_features` 仅移除未被任何源码消费的 `app_im` 占位依赖，共享 lockfile 没有新增来源或版本。Support
+消息、媒体资源 ID、lease 与 cleanup ownership 均未修改；依赖消费门禁、Android Debug 与 iOS 无签名
+Debug 构建确认 Bridge 仍通过 `app_features` 传递发现并注册。P0/P1/P2 维持 0/0/0。
+
+## Wire Formatter 工具依赖影响
+
+共享 lockfile 新增精确固定的 `dart_style 3.1.7` direct dev dependency，仅由 Wire generator 在内存中
+格式化生成源码；Support 生产依赖、消息、资源 ID、lease 与 cleanup ownership 均未修改。该依赖不进入
+Runtime package，P0/P1/P2 维持 0/0/0。

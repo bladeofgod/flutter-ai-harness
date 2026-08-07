@@ -52,3 +52,5 @@ com.example.<module>.<feature>
   派生的 Version 3 MethodChannel/EventChannel 协议；包含直接 operation、全屏 Native UI
   presentation、受限缩略图，以及一次性 `materialize`/`release` transfer locator 的 Payload、错误和
   生命周期边界。Version 1/2 历史保留在变更日志中。
+- [Bridge Wire 代码生成](./code-generation.md)：记录结构化 manifest、三端命令、确定性写入与必须手写的
+  Capability、生命周期、线程和资源边界。

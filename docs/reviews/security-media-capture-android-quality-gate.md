@@ -19,7 +19,7 @@ implementationFiles:
   - app/native/android/media_capture_gate/src/coreTest/kotlin/com/example/mediacapture/MediaCaptureRenderBackgroundGateTest.kt
   - app/native/android/media_capture_gate/src/main/AndroidManifest.xml
   - docs/native/media-capture-android-verification.md
-implementationDigest: 78025b39156273473be99a569443f5b22dfb80ab366d07b6208d56bd56e508d6
+implementationDigest: ad779aa0d976e74340dad4b9e883007e43f761ef7810a42212be0e826329fee9
 ---
 
 # Security Review: Android Media Capture 单平台质量门禁
@@ -94,3 +94,11 @@ configuration 与官方 `--write-verification-metadata sha256` 解析该精确 c
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## 2026-08-07 Android Transfer 发布兼容性增量复审
+
+共享 Android Transfer Store 从 hard-link/no-replace 发布改为最终路径 exclusive create；独立报告
+`security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。
+Android Gate 现在静态拒绝生产 Transfer Store 使用 `Os.link(` 或 `.renameTo(` 发布；Host、权限、依赖来源
+和 Agent 权限边界未扩大。本报告摘要按当前 implementationFiles 重新绑定，无 ready emulator 的设备矩阵
+缺口保持明确记录。

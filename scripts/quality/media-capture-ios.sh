@@ -331,7 +331,7 @@ validate_reviewed_inputs() {
     "$UI/Package.swift"
   assert_file_digest 228bb4d2af645fc0808e431cb089df25aebf8552960991c50035807034b095c7 \
     "$ADAPTER/Package.swift"
-  assert_file_digest f620bd76ba1daa8c5b84a9ce0e4097f3a0a45fff62de519b0c5678a1a89b8911 \
+  assert_file_digest b85180c4aa998b7bd90c21b28ac7016b359478399c7eb7cb4d88b140e7d77e18 \
     "$ADAPTER_TOOL/verify-core-tests.sh"
   assert_file_digest a590b38d5c3300aa3442ba512184c1c054311430776d663c2439fd9f556f1fcb \
     "$ADAPTER_TOOL/verify-host-route.sh"
@@ -470,7 +470,7 @@ validate_test_matrix() {
   adapter_count="$(rg -n '^[[:space:]]{4}func test[A-Za-z0-9_]+\(' "$adapter_tests" --glob '*.swift' | wc -l | tr -d ' ')"
   [[ "$core_count" -eq 107 ]] || fail "expected exactly 107 Core/Rendering XCTest methods"
   [[ "$ui_count" -eq 52 ]] || fail "expected exactly 52 UI XCTest methods"
-  [[ "$adapter_count" -eq 69 ]] || fail "expected exactly 69 Bridge Core XCTest methods"
+  [[ "$adapter_count" -eq 70 ]] || fail "expected exactly 70 Bridge Core XCTest methods"
 
   printf '[media-capture-ios] XCTest source matrix: Core/Rendering %s, UI %s, Bridge Core %s.\n' \
     "$core_count" "$ui_count" "$adapter_count"
@@ -728,10 +728,10 @@ run_simulator_tests() {
     fail "MediaCaptureBridgeCore Simulator runtime tests failed"
   fi
   assert_no_concurrency_warnings "$adapter_log"
-  assert_xcresult_counts "$adapter_result" 69 MediaCaptureBridgeCore
-  rg -q 'Bridge Core Simulator runtime tests passed with an exact 69-test result\.' "$adapter_log" ||
+  assert_xcresult_counts "$adapter_result" 70 MediaCaptureBridgeCore
+  rg -q 'Bridge Core Simulator runtime tests passed with an exact 70-test result\.' "$adapter_log" ||
     fail "MediaCaptureBridgeCore helper did not confirm its reviewed result"
-  printf '%s\n' '[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (69 tests).'
+  printf '%s\n' '[media-capture-ios] MediaCaptureBridgeCore Simulator runtime tests passed (70 tests).'
 }
 
 verify_temporary_host_route() {

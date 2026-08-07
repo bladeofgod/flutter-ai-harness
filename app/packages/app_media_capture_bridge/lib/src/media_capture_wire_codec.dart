@@ -1,13 +1,52 @@
 import 'package:flutter/services.dart';
 
-import 'media_capture_constants.dart';
 import 'media_capture_models.dart';
+
+part 'media_capture_wire.g.dart';
 
 typedef WireMap = Map<String, Object?>;
 
-final RegExp _requestIdPattern = RegExp(r'^[A-Za-z0-9_-]{1,128}$');
-const int _minSigned64 = -9223372036854775808;
-const int _maxSigned64 = 9223372036854775807;
+const int mediaCaptureWireVersion = _generatedMediaCaptureWireVersion;
+const String mediaCaptureCommandsChannel = _generatedCommandsChannel;
+const String mediaCaptureEventsChannel = _generatedEventsChannel;
+
+const String methodStartSession = _generatedMediaCaptureWireMethodStartSession;
+const String methodTakePhoto = _generatedMediaCaptureWireMethodTakePhoto;
+const String methodStartRecording =
+    _generatedMediaCaptureWireMethodStartRecording;
+const String methodStopRecording =
+    _generatedMediaCaptureWireMethodStopRecording;
+const String methodSwitchCamera = _generatedMediaCaptureWireMethodSwitchCamera;
+const String methodSetFlashMode = _generatedMediaCaptureWireMethodSetFlashMode;
+const String methodSetFocusPoint =
+    _generatedMediaCaptureWireMethodSetFocusPoint;
+const String methodSetZoom = _generatedMediaCaptureWireMethodSetZoom;
+const String methodRetake = _generatedMediaCaptureWireMethodRetake;
+const String methodConfirm = _generatedMediaCaptureWireMethodConfirm;
+const String methodCancel = _generatedMediaCaptureWireMethodCancel;
+const String methodReleaseMedia = _generatedMediaCaptureWireMethodReleaseMedia;
+const String methodReadMediaThumbnail =
+    _generatedMediaCaptureWireMethodReadMediaThumbnail;
+const String methodPresentCaptureFlow =
+    _generatedMediaCaptureWireMethodPresentCaptureFlow;
+const String methodDismissCaptureFlow =
+    _generatedMediaCaptureWireMethodDismissCaptureFlow;
+const String methodMaterializeMediaResource =
+    _generatedMediaCaptureWireMethodMaterializeMediaResource;
+const String methodReleaseMaterializedMedia =
+    _generatedMediaCaptureWireMethodReleaseMaterializedMedia;
+
+final RegExp _requestIdPattern = RegExp(_generatedRequestIdPattern);
+const int _minSigned64 = _generatedSignedIntegerMinimum;
+const int _maxSigned64 = _generatedSignedIntegerMaximum;
+final Map<String, _GeneratedWireFieldDescriptor> _generatedFieldById =
+    <String, _GeneratedWireFieldDescriptor>{
+      for (final field in _generatedMediaCaptureWireFields) field.id: field,
+    };
+final Map<String, _GeneratedWirePayloadDescriptor> _generatedPayloadById =
+    <String, _GeneratedWirePayloadDescriptor>{
+      for (final payload in _generatedPayloadDescriptors) payload.id: payload,
+    };
 
 const Map<MediaCaptureOperation, Set<MediaCaptureFailureCode>>
 _methodErrorCodes = <MediaCaptureOperation, Set<MediaCaptureFailureCode>>{
@@ -260,9 +299,10 @@ const Set<MediaCaptureFailureCode> _eventChannelErrorCodes =
 final class MediaCaptureWireCodec {
   const MediaCaptureWireCodec();
 
-  WireMap listenEnvelope() => const <String, Object?>{
-    'wireVersion': mediaCaptureWireVersion,
-  };
+  WireMap listenEnvelope() => _encodeGeneratedEnvelope(
+    '/lifecycle/eventListenEnvelope',
+    <String, Object?>{'wireVersion': mediaCaptureWireVersion},
+  );
 
   WireMap requestEnvelope({
     required String requestId,
@@ -274,36 +314,48 @@ final class MediaCaptureWireCodec {
         reason: MediaCaptureFailureReason.invalidFormat,
       );
     }
-    return <String, Object?>{
-      'wireVersion': mediaCaptureWireVersion,
-      'requestId': requestId,
-      'payload': payload,
-    };
+    return _encodeGeneratedEnvelope(
+      '/lifecycle/requestEnvelope',
+      <String, Object?>{
+        'wireVersion': mediaCaptureWireVersion,
+        'requestId': requestId,
+        'payload': payload,
+      },
+    );
   }
 
   WireMap startSessionPayload(MediaCaptureConfig config) {
-    return <String, Object?>{
-      'enabledMediaTypes': config.enabledMediaTypes
-          .map((type) => type.wireName)
-          .toList(growable: false),
-      'preferredCamera': config.preferredCamera.wireName,
-      'audioEnabled': config.audioEnabled,
-      'maxVideoDurationMillis': config.maxVideoDurationMillis,
-    };
+    return _encodeGeneratedPayload(
+      'start_session_request_payload',
+      <String, Object?>{
+        'enabledMediaTypes': config.enabledMediaTypes
+            .map((type) => type.wireName)
+            .toList(growable: false),
+        'preferredCamera': config.preferredCamera.wireName,
+        'audioEnabled': config.audioEnabled,
+        'maxVideoDurationMillis': config.maxVideoDurationMillis,
+      },
+    );
   }
 
   WireMap sessionActionPayload(MediaCaptureSession session) {
-    return <String, Object?>{'sessionHandle': session.handle};
+    return _encodeGeneratedPayload(
+      'session_action_request_payload',
+      <String, Object?>{'sessionHandle': session.handle},
+    );
   }
 
   WireMap flashModePayload({
     required MediaCaptureSession session,
     required MediaCaptureFlashMode flashMode,
   }) {
-    return <String, Object?>{
-      'sessionHandle': session.handle,
-      'flashMode': flashMode.wireName,
-    };
+    return _encodeGeneratedPayload(
+      'flash_mode_request_payload',
+      <String, Object?>{
+        'sessionHandle': session.handle,
+        'flashMode': flashMode.wireName,
+      },
+    );
   }
 
   WireMap focusPointPayload({
@@ -311,47 +363,45 @@ final class MediaCaptureWireCodec {
     required double normalizedX,
     required double normalizedY,
   }) {
-    _checkDoubleRange(
-      normalizedX,
-      field: MediaCaptureFailureField.normalizedX,
-      min: 0,
-      max: 1,
+    return _encodeGeneratedPayload(
+      'focus_point_request_payload',
+      <String, Object?>{
+        'sessionHandle': session.handle,
+        'normalizedX': normalizedX,
+        'normalizedY': normalizedY,
+      },
     );
-    _checkDoubleRange(
-      normalizedY,
-      field: MediaCaptureFailureField.normalizedY,
-      min: 0,
-      max: 1,
-    );
-    return <String, Object?>{
-      'sessionHandle': session.handle,
-      'normalizedX': normalizedX,
-      'normalizedY': normalizedY,
-    };
   }
 
   WireMap zoomPayload({
     required MediaCaptureSession session,
     required double zoomFactor,
   }) {
-    _checkDoubleRange(
-      zoomFactor,
-      field: MediaCaptureFailureField.zoomFactor,
-      min: 0.01,
-      max: null,
-    );
-    return <String, Object?>{
+    return _encodeGeneratedPayload('zoom_request_payload', <String, Object?>{
       'sessionHandle': session.handle,
       'zoomFactor': zoomFactor,
-    };
+    });
   }
 
   WireMap mediaHandlePayload(MediaCaptureMediaHandle mediaHandle) {
-    return <String, Object?>{'mediaHandle': mediaHandle.value};
+    return _encodeGeneratedPayload(
+      'media_handle_request_payload',
+      <String, Object?>{'mediaHandle': mediaHandle.value},
+    );
+  }
+
+  WireMap materializeMediaPayload(MediaCaptureMediaHandle mediaHandle) {
+    return _encodeGeneratedPayload(
+      'materialize_media_resource_request_payload',
+      <String, Object?>{'mediaHandle': mediaHandle.value},
+    );
   }
 
   WireMap exportHandlePayload(MediaCaptureExportHandle exportHandle) {
-    return <String, Object?>{'exportHandle': exportHandle.value};
+    return _encodeGeneratedPayload(
+      'release_materialized_media_request_payload',
+      <String, Object?>{'exportHandle': exportHandle.value},
+    );
   }
 
   WireMap presentationRequestPayload(String presentationRequestId) {
@@ -361,14 +411,20 @@ final class MediaCaptureWireCodec {
         reason: MediaCaptureFailureReason.invalidFormat,
       );
     }
-    return <String, Object?>{'presentationRequestId': presentationRequestId};
+    return _encodeGeneratedPayload(
+      'dismiss_capture_flow_request_payload',
+      <String, Object?>{'presentationRequestId': presentationRequestId},
+    );
   }
 
   WireMap thumbnailPayload(MediaCaptureThumbnailRequest request) {
-    return <String, Object?>{
-      'mediaHandle': request.mediaHandle.value,
-      'maxPixelEdge': request.maxPixelEdge,
-    };
+    return _encodeGeneratedPayload(
+      'media_thumbnail_request_payload',
+      <String, Object?>{
+        'mediaHandle': request.mediaHandle.value,
+        'maxPixelEdge': request.maxPixelEdge,
+      },
+    );
   }
 
   MediaCaptureCallResult<MediaCaptureSession> decodeSessionCreated(
@@ -380,7 +436,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'session_created',
+      expectedResultType: _generatedMediaCaptureWireResultSessionCreated,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: _decodeSessionCreatedPayload,
@@ -397,7 +453,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'control_applied',
+      expectedResultType: _generatedMediaCaptureWireResultControlApplied,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -422,7 +478,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'recording_started',
+      expectedResultType: _generatedMediaCaptureWireResultRecordingStarted,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -446,7 +502,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'media_preview',
+      expectedResultType: _generatedMediaCaptureWireResultMediaPreview,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: _decodeMediaPreviewPayload,
@@ -462,7 +518,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'retake_ready',
+      expectedResultType: _generatedMediaCaptureWireResultRetakeReady,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: _decodeRetakeReadyPayload,
@@ -479,7 +535,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'confirmed_media',
+      expectedResultType: _generatedMediaCaptureWireResultConfirmedMedia,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -504,7 +560,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'session_cancelled',
+      expectedResultType: _generatedMediaCaptureWireResultSessionCancelled,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -529,7 +585,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'media_released',
+      expectedResultType: _generatedMediaCaptureWireResultMediaReleased,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -555,7 +611,7 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'media_thumbnail',
+      expectedResultType: _generatedMediaCaptureWireResultMediaThumbnail,
       operation: operation,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -585,7 +641,8 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'materialized_media_resource',
+      expectedResultType:
+          _generatedMediaCaptureWireResultMaterializedMediaResource,
       operation: methodMaterializeMediaResource,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
@@ -629,7 +686,10 @@ final class MediaCaptureWireCodec {
         'resultType',
         MediaCaptureFailureField.resultType,
       );
-      if (resultType != 'materialized_media_resource') return null;
+      if (resultType !=
+          _generatedMediaCaptureWireResultMaterializedMediaResource) {
+        return null;
+      }
       final payload = _readMap(
         envelope['payload'],
         MediaCaptureFailureField.payload,
@@ -655,11 +715,15 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'materialized_media_released',
+      expectedResultType:
+          _generatedMediaCaptureWireResultMaterializedMediaReleased,
       operation: methodReleaseMaterializedMedia,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
-        _requireExactKeys(payload, const <String>{});
+        _requireGeneratedPayload(
+          payload,
+          'materialized_media_released_result_payload',
+        );
         return const MediaCaptureMaterializedMediaReleased();
       },
     );
@@ -673,11 +737,14 @@ final class MediaCaptureWireCodec {
     return _decodeResult(
       value,
       requestId: requestId,
-      expectedResultType: 'capture_flow_dismissed',
+      expectedResultType: _generatedMediaCaptureWireResultCaptureFlowDismissed,
       operation: methodDismissCaptureFlow,
       stackTrace: stackTrace,
       payloadDecoder: (payload) {
-        _requireExactKeys(payload, const <String>{});
+        _requireGeneratedPayload(
+          payload,
+          'capture_flow_dismissed_result_payload',
+        );
         return true;
       },
     );
@@ -690,12 +757,7 @@ final class MediaCaptureWireCodec {
   }) {
     try {
       final envelope = _readMap(value, MediaCaptureFailureField.payload);
-      _requireExactKeys(envelope, const <String>{
-        'wireVersion',
-        'requestId',
-        'resultType',
-        'payload',
-      });
+      _requireGeneratedEnvelope(envelope, '/lifecycle/resultEnvelope');
       _checkWireVersion(envelope['wireVersion']);
       _checkRequestId(envelope['requestId'], expected: requestId);
       final resultType = _readString(
@@ -703,15 +765,18 @@ final class MediaCaptureWireCodec {
         'resultType',
         MediaCaptureFailureField.resultType,
       );
-      if (resultType == 'capture_flow_cancelled') {
+      if (resultType == _generatedMediaCaptureWireResultCaptureFlowCancelled) {
         final payload = _readMap(
           envelope['payload'],
           MediaCaptureFailureField.payload,
         );
-        _requireExactKeys(payload, const <String>{});
+        _requireGeneratedPayload(
+          payload,
+          'capture_flow_dismissed_result_payload',
+        );
         return const MediaCaptureFlowCancelled();
       }
-      if (resultType == 'capture_flow_confirmed') {
+      if (resultType == _generatedMediaCaptureWireResultCaptureFlowConfirmed) {
         final payload = _readMap(
           envelope['payload'],
           MediaCaptureFailureField.payload,
@@ -731,11 +796,7 @@ final class MediaCaptureWireCodec {
     try {
       final envelope = _readMap(value, MediaCaptureFailureField.payload);
       if (envelope.containsKey('eventType')) {
-        _requireExactKeys(envelope, const <String>{
-          'wireVersion',
-          'eventType',
-          'payload',
-        });
+        _requireGeneratedEnvelope(envelope, '/lifecycle/eventEnvelope');
         _checkWireVersion(envelope['wireVersion']);
         final eventType = _readString(
           envelope,
@@ -747,11 +808,16 @@ final class MediaCaptureWireCodec {
           MediaCaptureFailureField.payload,
         );
         return switch (eventType) {
-          'session_ready' => _decodeSessionReadyPayload(payload),
-          'session_failed' => _decodeSessionFailedPayload(payload),
-          'media_preview_ready' => _decodePreviewReadyPayload(payload),
-          'media_lease_expired' => _decodeLeaseExpiredPayload(payload),
-          'media_read_revoked' => _decodeReadRevokedPayload(payload),
+          _generatedMediaCaptureWireEventSessionReady =>
+            _decodeSessionReadyPayload(payload),
+          _generatedMediaCaptureWireEventSessionFailed =>
+            _decodeSessionFailedPayload(payload),
+          _generatedMediaCaptureWireEventMediaPreviewReady =>
+            _decodePreviewReadyPayload(payload),
+          _generatedMediaCaptureWireEventMediaLeaseExpired =>
+            _decodeLeaseExpiredPayload(payload),
+          _generatedMediaCaptureWireEventMediaReadRevoked =>
+            _decodeReadRevokedPayload(payload),
           _ => throw const MediaCaptureWireDecodeException(
             field: MediaCaptureFailureField.eventType,
             reason: MediaCaptureFailureReason.invalidEnum,
@@ -759,18 +825,14 @@ final class MediaCaptureWireCodec {
         };
       }
       if (envelope.containsKey('failureType')) {
-        _requireExactKeys(envelope, const <String>{
-          'wireVersion',
-          'failureType',
-          'payload',
-        });
+        _requireGeneratedEnvelope(envelope, '/lifecycle/failureEnvelope');
         _checkWireVersion(envelope['wireVersion']);
         final failureType = _readString(
           envelope,
           'failureType',
           MediaCaptureFailureField.failureType,
         );
-        if (failureType != 'session_timeout') {
+        if (failureType != _generatedMediaCaptureWireFailureSessionTimeout) {
           throw const MediaCaptureWireDecodeException(
             field: MediaCaptureFailureField.failureType,
             reason: MediaCaptureFailureReason.invalidEnum,
@@ -780,7 +842,7 @@ final class MediaCaptureWireCodec {
           envelope['payload'],
           MediaCaptureFailureField.payload,
         );
-        _requireExactKeys(payload, const <String>{'sessionHandle'});
+        _requireGeneratedPayload(payload, 'session_timeout_failure_payload');
         final session = MediaCaptureSession(
           _readHandle(
             payload,
@@ -922,12 +984,7 @@ MediaCaptureCallResult<T> _decodeResult<T>(
 }) {
   try {
     final envelope = _readMap(value, MediaCaptureFailureField.payload);
-    _requireExactKeys(envelope, const <String>{
-      'wireVersion',
-      'requestId',
-      'resultType',
-      'payload',
-    });
+    _requireGeneratedEnvelope(envelope, '/lifecycle/resultEnvelope');
     _checkWireVersion(envelope['wireVersion']);
     _checkRequestId(envelope['requestId'], expected: requestId);
     final resultType = _readString(
@@ -954,7 +1011,7 @@ MediaCaptureCallResult<T> _decodeResult<T>(
 }
 
 MediaCaptureSession _decodeSessionCreatedPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{'sessionHandle'});
+  _requireGeneratedPayload(payload, 'session_created_result_payload');
   return MediaCaptureSession(
     _readHandle(
       payload,
@@ -965,11 +1022,20 @@ MediaCaptureSession _decodeSessionCreatedPayload(WireMap payload) {
 }
 
 MediaCaptureControlApplied _decodeControlAppliedPayload(WireMap payload) {
-  return MediaCaptureControlApplied(_decodeSessionCreatedPayload(payload));
+  _requireGeneratedPayload(payload, 'control_applied_result_payload');
+  return MediaCaptureControlApplied(
+    MediaCaptureSession(
+      _readHandle(
+        payload,
+        'sessionHandle',
+        MediaCaptureFailureField.sessionHandle,
+      ),
+    ),
+  );
 }
 
 MediaCaptureRecordingStarted _decodeRecordingStartedPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{'sessionHandle', 'audioIncluded'});
+  _requireGeneratedPayload(payload, 'recording_started_result_payload');
   return MediaCaptureRecordingStarted(
     session: MediaCaptureSession(
       _readHandle(
@@ -987,33 +1053,25 @@ MediaCaptureRecordingStarted _decodeRecordingStartedPayload(WireMap payload) {
 }
 
 MediaCapturePreview _decodeMediaPreviewPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{
-    'mediaHandle',
-    'mediaType',
-    'pixelWidth',
-    'pixelHeight',
-    'durationMillis',
-    'orientationDegrees',
-    'byteLength',
-  });
+  _requireGeneratedPayload(payload, 'media_preview_result_payload');
   return _decodePreviewFields(payload);
 }
 
 MediaCaptureRetakeReady _decodeRetakeReadyPayload(WireMap payload) {
-  return MediaCaptureRetakeReady(_decodeSessionCreatedPayload(payload));
+  _requireGeneratedPayload(payload, 'retake_ready_result_payload');
+  return MediaCaptureRetakeReady(
+    MediaCaptureSession(
+      _readHandle(
+        payload,
+        'sessionHandle',
+        MediaCaptureFailureField.sessionHandle,
+      ),
+    ),
+  );
 }
 
 MediaCaptureConfirmedMedia _decodeConfirmedMediaPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{
-    'mediaHandle',
-    'mediaType',
-    'pixelWidth',
-    'pixelHeight',
-    'durationMillis',
-    'orientationDegrees',
-    'byteLength',
-    'leaseExpiresAt',
-  });
+  _requireGeneratedPayload(payload, 'confirmed_media_result_payload');
   final preview = _decodePreviewFields(payload);
   return MediaCaptureConfirmedMedia(
     mediaHandle: preview.mediaHandle,
@@ -1027,18 +1085,25 @@ MediaCaptureConfirmedMedia _decodeConfirmedMediaPayload(WireMap payload) {
       payload,
       'leaseExpiresAt',
       MediaCaptureFailureField.leaseExpiresAt,
-      min: 0,
-      max: null,
     ),
   );
 }
 
 MediaCaptureSessionCancelled _decodeSessionCancelledPayload(WireMap payload) {
-  return MediaCaptureSessionCancelled(_decodeSessionCreatedPayload(payload));
+  _requireGeneratedPayload(payload, 'session_cancelled_result_payload');
+  return MediaCaptureSessionCancelled(
+    MediaCaptureSession(
+      _readHandle(
+        payload,
+        'sessionHandle',
+        MediaCaptureFailureField.sessionHandle,
+      ),
+    ),
+  );
 }
 
 MediaCaptureMediaReleased _decodeMediaReleasedPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{'mediaHandle'});
+  _requireGeneratedPayload(payload, 'media_released_result_payload');
   return MediaCaptureMediaReleased(
     MediaCaptureMediaHandle(
       _readHandle(payload, 'mediaHandle', MediaCaptureFailureField.mediaHandle),
@@ -1050,19 +1115,7 @@ MediaCaptureMaterializedMedia _decodeMaterializedMediaPayload(
   WireMap payload, {
   required int nowEpochMillis,
 }) {
-  _requireKeys(
-    payload,
-    required: const <String>{
-      'exportHandle',
-      'fileUri',
-      'mediaType',
-      'contentType',
-      'byteLength',
-      'durationMillis',
-      'expiresAt',
-    },
-    optional: const <String>{'integritySha256'},
-  );
+  _requireGeneratedPayload(payload, 'materialized_media_result_payload');
   final exportHandleValue = _readString(
     payload,
     'exportHandle',
@@ -1108,8 +1161,6 @@ MediaCaptureMaterializedMedia _decodeMaterializedMediaPayload(
     payload,
     'durationMillis',
     MediaCaptureFailureField.durationMillis,
-    min: mediaCaptureMinVideoDurationMillis,
-    max: mediaCaptureMaxVideoDurationMillis,
   );
   _checkMediaDurationCondition(
     mediaType: mediaType,
@@ -1121,8 +1172,6 @@ MediaCaptureMaterializedMedia _decodeMaterializedMediaPayload(
     payload,
     'expiresAt',
     MediaCaptureFailureField.expiresAt,
-    min: 0,
-    max: null,
   );
   if (expiresAtMillis <= nowEpochMillis ||
       expiresAtMillis - nowEpochMillis > mediaCaptureMaterializedTtlMillis) {
@@ -1145,18 +1194,23 @@ MediaCaptureMaterializedMedia _decodeMaterializedMediaPayload(
       );
     }
   }
+  final byteLength = _readIntRange(
+    payload,
+    'byteLength',
+    MediaCaptureFailureField.byteLength,
+  );
+  if (byteLength > mediaCaptureMaxMaterializedBytes) {
+    throw const MediaCaptureWireDecodeException(
+      field: MediaCaptureFailureField.byteLength,
+      reason: MediaCaptureFailureReason.outOfRange,
+    );
+  }
   return MediaCaptureMaterializedMedia(
     exportHandle: exportHandle,
     fileUri: fileUri,
     mediaType: mediaType,
     contentType: contentType,
-    byteLength: _readIntRange(
-      payload,
-      'byteLength',
-      MediaCaptureFailureField.byteLength,
-      min: 1,
-      max: mediaCaptureMaxMaterializedBytes,
-    ),
+    byteLength: byteLength,
     durationMillis: durationMillis,
     expiresAtMillis: expiresAtMillis,
     integritySha256: integritySha256,
@@ -1167,24 +1221,12 @@ MediaCaptureThumbnail _decodeThumbnailPayload(
   WireMap payload, {
   required int maxPixelEdge,
 }) {
-  _requireExactKeys(payload, const <String>{
-    'mediaHandle',
-    'thumbnailCopy',
-    'thumbnailByteLength',
-    'thumbnailPixelWidth',
-    'thumbnailPixelHeight',
-    'thumbnailContentType',
-    'thumbnailOrientationDegrees',
-    'mediaType',
-    'posterFrameMillis',
-  });
+  _requireGeneratedPayload(payload, 'media_thumbnail_result_payload');
   final bytes = _readBytes(payload, 'thumbnailCopy');
   final byteLength = _readIntRange(
     payload,
     'thumbnailByteLength',
     MediaCaptureFailureField.thumbnailByteLength,
-    min: 1,
-    max: mediaCaptureMaxThumbnailBytes,
   );
   if (byteLength != bytes.length) {
     throw const MediaCaptureWireDecodeException(
@@ -1196,15 +1238,11 @@ MediaCaptureThumbnail _decodeThumbnailPayload(
     payload,
     'thumbnailPixelWidth',
     MediaCaptureFailureField.thumbnailPixelWidth,
-    min: 1,
-    max: mediaCaptureMaxThumbnailEdge,
   );
   final height = _readIntRange(
     payload,
     'thumbnailPixelHeight',
     MediaCaptureFailureField.thumbnailPixelHeight,
-    min: 1,
-    max: mediaCaptureMaxThumbnailEdge,
   );
   if (width > maxPixelEdge || height > maxPixelEdge) {
     throw const MediaCaptureWireDecodeException(
@@ -1228,7 +1266,6 @@ MediaCaptureThumbnail _decodeThumbnailPayload(
     payload,
     'thumbnailOrientationDegrees',
     MediaCaptureFailureField.thumbnailOrientationDegrees,
-    const <int>{0},
   );
   final mediaType = _readEnum(
     payload,
@@ -1241,8 +1278,6 @@ MediaCaptureThumbnail _decodeThumbnailPayload(
     payload,
     'posterFrameMillis',
     MediaCaptureFailureField.posterFrameMillis,
-    min: 0,
-    max: mediaCaptureMaxVideoDurationMillis,
   );
   _checkMediaDurationCondition(
     mediaType: mediaType,
@@ -1271,29 +1306,16 @@ MediaCaptureThumbnail _decodeThumbnailPayload(
 }
 
 MediaCaptureSessionReady _decodeSessionReadyPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{
-    'sessionHandle',
-    'activeCamera',
-    'availableCameras',
-    'switchCameraSupported',
-    'supportedFlashModes',
-    'focusPointSupported',
-    'minZoomFactor',
-    'maxZoomFactor',
-  });
+  _requireGeneratedPayload(payload, 'session_ready_event_payload');
   final minZoomFactor = _readDoubleRange(
     payload,
     'minZoomFactor',
     MediaCaptureFailureField.minZoomFactor,
-    min: 0.01,
-    max: null,
   );
   final maxZoomFactor = _readDoubleRange(
     payload,
     'maxZoomFactor',
     MediaCaptureFailureField.maxZoomFactor,
-    min: 0.01,
-    max: null,
   );
   if (maxZoomFactor < minZoomFactor) {
     throw const MediaCaptureWireDecodeException(
@@ -1322,8 +1344,6 @@ MediaCaptureSessionReady _decodeSessionReadyPayload(WireMap payload) {
       MediaCaptureFailureField.availableCameras,
       MediaCaptureCamera.values,
       (value) => value.wireName,
-      minItems: 1,
-      maxItems: 2,
     ),
     switchCameraSupported: _readBool(
       payload,
@@ -1336,8 +1356,6 @@ MediaCaptureSessionReady _decodeSessionReadyPayload(WireMap payload) {
       MediaCaptureFailureField.supportedFlashModes,
       MediaCaptureFlashMode.values,
       (value) => value.wireName,
-      minItems: 1,
-      maxItems: 4,
     ),
     focusPointSupported: _readBool(
       payload,
@@ -1350,10 +1368,7 @@ MediaCaptureSessionReady _decodeSessionReadyPayload(WireMap payload) {
 }
 
 MediaCaptureSessionFailed _decodeSessionFailedPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{
-    'sessionHandle',
-    'terminalFailureId',
-  });
+  _requireGeneratedPayload(payload, 'session_failed_event_payload');
   return MediaCaptureSessionFailed(
     session: MediaCaptureSession(
       _readHandle(
@@ -1373,16 +1388,7 @@ MediaCaptureSessionFailed _decodeSessionFailedPayload(WireMap payload) {
 }
 
 MediaCapturePreviewReady _decodePreviewReadyPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{
-    'sessionHandle',
-    'mediaHandle',
-    'mediaType',
-    'pixelWidth',
-    'pixelHeight',
-    'durationMillis',
-    'orientationDegrees',
-    'byteLength',
-  });
+  _requireGeneratedPayload(payload, 'media_preview_ready_event_payload');
   return MediaCapturePreviewReady(
     session: MediaCaptureSession(
       _readHandle(
@@ -1396,7 +1402,7 @@ MediaCapturePreviewReady _decodePreviewReadyPayload(WireMap payload) {
 }
 
 MediaCaptureLeaseExpired _decodeLeaseExpiredPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{'mediaHandle'});
+  _requireGeneratedPayload(payload, 'media_lease_expired_event_payload');
   return MediaCaptureLeaseExpired(
     MediaCaptureMediaHandle(
       _readHandle(payload, 'mediaHandle', MediaCaptureFailureField.mediaHandle),
@@ -1405,7 +1411,7 @@ MediaCaptureLeaseExpired _decodeLeaseExpiredPayload(WireMap payload) {
 }
 
 MediaCaptureReadRevoked _decodeReadRevokedPayload(WireMap payload) {
-  _requireExactKeys(payload, const <String>{'mediaHandle'});
+  _requireGeneratedPayload(payload, 'media_read_revoked_event_payload');
   return MediaCaptureReadRevoked(
     MediaCaptureMediaHandle(
       _readHandle(payload, 'mediaHandle', MediaCaptureFailureField.mediaHandle),
@@ -1425,8 +1431,6 @@ MediaCapturePreview _decodePreviewFields(WireMap payload) {
     payload,
     'durationMillis',
     MediaCaptureFailureField.durationMillis,
-    min: mediaCaptureMinVideoDurationMillis,
-    max: mediaCaptureMaxVideoDurationMillis,
   );
   _checkMediaDurationCondition(
     mediaType: mediaType,
@@ -1443,29 +1447,22 @@ MediaCapturePreview _decodePreviewFields(WireMap payload) {
       payload,
       'pixelWidth',
       MediaCaptureFailureField.pixelWidth,
-      min: 1,
-      max: null,
     ),
     pixelHeight: _readIntRange(
       payload,
       'pixelHeight',
       MediaCaptureFailureField.pixelHeight,
-      min: 1,
-      max: null,
     ),
     durationMillis: durationMillis,
     orientationDegrees: _readAllowedInt(
       payload,
       'orientationDegrees',
       MediaCaptureFailureField.orientationDegrees,
-      const <int>{0, 90, 180, 270},
     ),
     byteLength: _readIntRange(
       payload,
       'byteLength',
       MediaCaptureFailureField.byteLength,
-      min: 1,
-      max: null,
     ),
   );
 }
@@ -1491,6 +1488,150 @@ WireMap _readMap(Object? value, MediaCaptureFailureField field) {
   return result;
 }
 
+WireMap _encodeGeneratedEnvelope(String id, WireMap value) {
+  final requiredKeys = _generatedEnvelopeRequiredKeys[id];
+  if (requiredKeys == null ||
+      _generatedEnvelopeUnknownFieldPolicies[id] != 'reject') {
+    throw StateError('Unknown generated envelope descriptor: $id');
+  }
+  if (!_generatedHasExactWireKeys(value, requiredKeys)) {
+    throw const MediaCaptureWireEncodeException(
+      field: MediaCaptureFailureField.payload,
+      reason: MediaCaptureFailureReason.nativeValueUnencodable,
+    );
+  }
+  return value;
+}
+
+WireMap _encodeGeneratedPayload(String id, WireMap value) {
+  final descriptor = _generatedPayloadById[id];
+  if (descriptor == null || descriptor.unknownFieldPolicy != 'reject') {
+    throw StateError('Unknown generated payload descriptor: $id');
+  }
+  final fields = descriptor.fieldIds
+      .map((fieldId) => _generatedFieldById[fieldId]!)
+      .toList(growable: false);
+  final allowedKeys = fields.map((field) => field.key).toSet();
+  for (final key in value.keys) {
+    if (!allowedKeys.contains(key)) {
+      throw MediaCaptureWireEncodeException(
+        field: _fieldByWireName(key) ?? MediaCaptureFailureField.unknownField,
+        reason: MediaCaptureFailureReason.unknownField,
+      );
+    }
+  }
+  for (final field in fields) {
+    if (field.required && !value.containsKey(field.key)) {
+      throw MediaCaptureWireEncodeException(
+        field:
+            _fieldByWireName(field.key) ??
+            MediaCaptureFailureField.unknownField,
+        reason: MediaCaptureFailureReason.missingRequiredField,
+      );
+    }
+    if (value.containsKey(field.key) &&
+        !_generatedMatchesWireFieldPrimitive(value[field.key], field)) {
+      throw MediaCaptureWireEncodeException(
+        field:
+            _fieldByWireName(field.key) ??
+            MediaCaptureFailureField.unknownField,
+        reason: _generatedPrimitiveFailureReason(value[field.key], field),
+      );
+    }
+  }
+  return value;
+}
+
+void _requireGeneratedEnvelope(WireMap value, String id) {
+  final requiredKeys = _generatedEnvelopeRequiredKeys[id];
+  if (requiredKeys == null ||
+      _generatedEnvelopeUnknownFieldPolicies[id] != 'reject') {
+    throw StateError('Unknown generated envelope descriptor: $id');
+  }
+  _requireExactKeys(value, requiredKeys.toSet());
+}
+
+void _requireGeneratedPayload(WireMap value, String id) {
+  final descriptor = _generatedPayloadById[id];
+  if (descriptor == null || descriptor.unknownFieldPolicy != 'reject') {
+    throw StateError('Unknown generated payload descriptor: $id');
+  }
+  final fields = descriptor.fieldIds
+      .map((fieldId) => _generatedFieldById[fieldId]!)
+      .toList(growable: false);
+  final allowedKeys = fields.map((field) => field.key).toSet();
+  for (final key in value.keys) {
+    if (!allowedKeys.contains(key)) {
+      throw MediaCaptureWireDecodeException(
+        field: _fieldByWireName(key) ?? MediaCaptureFailureField.unknownField,
+        reason: MediaCaptureFailureReason.unknownField,
+      );
+    }
+  }
+  for (final field in fields) {
+    final publicField =
+        _fieldByWireName(field.key) ?? MediaCaptureFailureField.unknownField;
+    if (field.required && !value.containsKey(field.key)) {
+      throw MediaCaptureWireDecodeException(
+        field: publicField,
+        reason: MediaCaptureFailureReason.missingRequiredField,
+      );
+    }
+    if (value.containsKey(field.key) &&
+        !_generatedMatchesWireFieldPrimitive(value[field.key], field)) {
+      throw MediaCaptureWireDecodeException(
+        field: publicField,
+        reason: _generatedPrimitiveFailureReason(value[field.key], field),
+      );
+    }
+  }
+}
+
+MediaCaptureFailureReason _generatedPrimitiveFailureReason(
+  Object? value,
+  _GeneratedWireFieldDescriptor field,
+) {
+  if (value == null) return MediaCaptureFailureReason.nullNotAllowed;
+  final typeMatches = switch (field.type) {
+    'bool' => value is bool,
+    'bytes' => value is Uint8List,
+    'double' => value is double,
+    'int' => value is int,
+    'string' => value is String,
+    'list_bool' => value is List && value.every((item) => item is bool),
+    'list_double' => value is List && value.every((item) => item is double),
+    'list_int' => value is List && value.every((item) => item is int),
+    'list_string' => value is List && value.every((item) => item is String),
+    _ => false,
+  };
+  if (!typeMatches) return MediaCaptureFailureReason.typeMismatch;
+  if (value is int && (value < _minSigned64 || value > _maxSigned64)) {
+    return MediaCaptureFailureReason.integerOverflow;
+  }
+  if (value is List &&
+      field.type == 'list_int' &&
+      value.any((item) => item < _minSigned64 || item > _maxSigned64)) {
+    return MediaCaptureFailureReason.integerOverflow;
+  }
+  if ((value is double && field.finite && !value.isFinite) ||
+      (value is List &&
+          field.type == 'list_double' &&
+          field.finite &&
+          value.any((item) => !(item as double).isFinite))) {
+    return MediaCaptureFailureReason.nonFinite;
+  }
+  if ((value is String &&
+          field.enumValues.isNotEmpty &&
+          !field.enumValues.contains(value)) ||
+      (value is List &&
+          field.type == 'list_string' &&
+          field.enumValues.isNotEmpty &&
+          !value.every(field.enumValues.contains))) {
+    return MediaCaptureFailureReason.invalidEnum;
+  }
+  return MediaCaptureFailureReason.outOfRange;
+}
+
 void _requireExactKeys(WireMap map, Set<String> expected) {
   for (final key in map.keys) {
     if (!expected.contains(key)) {
@@ -1501,30 +1642,6 @@ void _requireExactKeys(WireMap map, Set<String> expected) {
     }
   }
   for (final key in expected) {
-    if (!map.containsKey(key)) {
-      throw MediaCaptureWireDecodeException(
-        field: _fieldByWireName(key) ?? MediaCaptureFailureField.unknownField,
-        reason: MediaCaptureFailureReason.missingRequiredField,
-      );
-    }
-  }
-}
-
-void _requireKeys(
-  WireMap map, {
-  required Set<String> required,
-  required Set<String> optional,
-}) {
-  final allowed = <String>{...required, ...optional};
-  for (final key in map.keys) {
-    if (!allowed.contains(key)) {
-      throw MediaCaptureWireDecodeException(
-        field: _fieldByWireName(key) ?? MediaCaptureFailureField.unknownField,
-        reason: MediaCaptureFailureReason.unknownField,
-      );
-    }
-  }
-  for (final key in required) {
     if (!map.containsKey(key)) {
       throw MediaCaptureWireDecodeException(
         field: _fieldByWireName(key) ?? MediaCaptureFailureField.unknownField,
@@ -1676,25 +1793,14 @@ bool _readBool(WireMap map, String key, MediaCaptureFailureField field) {
   return value;
 }
 
-int _readIntRange(
-  WireMap map,
-  String key,
-  MediaCaptureFailureField field, {
-  required int min,
-  required int? max,
-}) {
-  final value = _readIntValue(map[key], field);
-  _checkIntRange(value, field: field, min: min, max: max);
-  return value;
-}
+int _readIntRange(WireMap map, String key, MediaCaptureFailureField field) =>
+    _readIntValue(map[key], field);
 
 int? _readNullableIntRange(
   WireMap map,
   String key,
-  MediaCaptureFailureField field, {
-  required int min,
-  required int max,
-}) {
+  MediaCaptureFailureField field,
+) {
   if (!map.containsKey(key)) {
     throw MediaCaptureWireDecodeException(
       field: field,
@@ -1705,26 +1811,11 @@ int? _readNullableIntRange(
   if (value == null) {
     return null;
   }
-  final intValue = _readIntValue(value, field);
-  _checkIntRange(intValue, field: field, min: min, max: max);
-  return intValue;
+  return _readIntValue(value, field);
 }
 
-int _readAllowedInt(
-  WireMap map,
-  String key,
-  MediaCaptureFailureField field,
-  Set<int> allowed,
-) {
-  final value = _readIntValue(map[key], field);
-  if (!allowed.contains(value)) {
-    throw MediaCaptureWireDecodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.outOfRange,
-    );
-  }
-  return value;
-}
+int _readAllowedInt(WireMap map, String key, MediaCaptureFailureField field) =>
+    _readIntValue(map[key], field);
 
 int _readIntValue(Object? value, MediaCaptureFailureField field) {
   if (value == null) {
@@ -1751,10 +1842,8 @@ int _readIntValue(Object? value, MediaCaptureFailureField field) {
 double _readDoubleRange(
   WireMap map,
   String key,
-  MediaCaptureFailureField field, {
-  required double min,
-  required double? max,
-}) {
+  MediaCaptureFailureField field,
+) {
   final value = map[key];
   if (value == null) {
     throw MediaCaptureWireDecodeException(
@@ -1768,67 +1857,18 @@ double _readDoubleRange(
       reason: MediaCaptureFailureReason.typeMismatch,
     );
   }
-  _checkDoubleRangeForDecode(value, field: field, min: min, max: max);
   return value;
-}
-
-void _checkDoubleRange(
-  double value, {
-  required MediaCaptureFailureField field,
-  required double min,
-  required double? max,
-}) {
-  if (!value.isFinite) {
-    throw MediaCaptureWireEncodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.nonFinite,
-    );
-  }
-  if (value < min || (max != null && value > max)) {
-    throw MediaCaptureWireEncodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.outOfRange,
-    );
-  }
-}
-
-void _checkDoubleRangeForDecode(
-  double value, {
-  required MediaCaptureFailureField field,
-  required double min,
-  required double? max,
-}) {
-  if (!value.isFinite) {
-    throw MediaCaptureWireDecodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.nonFinite,
-    );
-  }
-  if (value < min || (max != null && value > max)) {
-    throw MediaCaptureWireDecodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.outOfRange,
-    );
-  }
-}
-
-void _checkIntRange(
-  int value, {
-  required MediaCaptureFailureField field,
-  required int min,
-  required int? max,
-}) {
-  if (value < min || (max != null && value > max)) {
-    throw MediaCaptureWireDecodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.outOfRange,
-    );
-  }
 }
 
 String _readHandle(WireMap map, String key, MediaCaptureFailureField field) {
   final value = _readString(map, key, field);
-  if (value.isEmpty || value.length > mediaCaptureMaxHandleLength) {
+  final descriptor = _generatedMediaCaptureWireFields.singleWhere(
+    (candidate) => candidate.key == key,
+  );
+  final lengths = _generatedOpaqueHandleLengths[descriptor.id];
+  if (lengths == null ||
+      value.length < lengths.first ||
+      value.length > lengths.last) {
     throw MediaCaptureWireDecodeException(
       field: field,
       reason: MediaCaptureFailureReason.outOfRange,
@@ -1849,12 +1889,6 @@ Uint8List _readBytes(WireMap map, String key) {
     throw const MediaCaptureWireDecodeException(
       field: MediaCaptureFailureField.thumbnailCopy,
       reason: MediaCaptureFailureReason.typeMismatch,
-    );
-  }
-  if (value.isEmpty || value.length > mediaCaptureMaxThumbnailBytes) {
-    throw const MediaCaptureWireDecodeException(
-      field: MediaCaptureFailureField.thumbnailCopy,
-      reason: MediaCaptureFailureReason.outOfRange,
     );
   }
   return Uint8List.fromList(value);
@@ -2063,10 +2097,8 @@ Set<T> _readEnumSet<T>(
   String key,
   MediaCaptureFailureField field,
   List<T> values,
-  String Function(T value) wireName, {
-  required int minItems,
-  required int maxItems,
-}) {
+  String Function(T value) wireName,
+) {
   final value = map[key];
   if (value == null) {
     throw MediaCaptureWireDecodeException(
@@ -2078,12 +2110,6 @@ Set<T> _readEnumSet<T>(
     throw MediaCaptureWireDecodeException(
       field: field,
       reason: MediaCaptureFailureReason.typeMismatch,
-    );
-  }
-  if (value.length < minItems || value.length > maxItems) {
-    throw MediaCaptureWireDecodeException(
-      field: field,
-      reason: MediaCaptureFailureReason.outOfRange,
     );
   }
   final result = <T>{};
@@ -2278,67 +2304,62 @@ int? _optionalInt(WireMap map, String key) {
 }
 
 Set<String> _allowedDetailKeys(MediaCaptureFailureCode code) {
-  return switch (code) {
-    MediaCaptureFailureCode.incompatibleWireVersion => const <String>{
-      'actualWireVersion',
-      'expectedWireVersion',
-    },
-    MediaCaptureFailureCode.invalidWirePayload ||
-    MediaCaptureFailureCode.wireEncodingFailed => const <String>{
-      'operation',
-      'field',
-      'reason',
-    },
-    MediaCaptureFailureCode.duplicateRequest => const <String>{'operation'},
-    MediaCaptureFailureCode.bridgeUnavailable => const <String>{
-      'operation',
-      'lifecycleReason',
-    },
-    MediaCaptureFailureCode.bridgeOverloaded ||
-    MediaCaptureFailureCode.presentationConflict ||
-    MediaCaptureFailureCode.transferStoreOverloaded => const <String>{
-      'operation',
-      'capacity',
-    },
-    MediaCaptureFailureCode.transferStoreUnavailable => const <String>{
-      'operation',
-      'lifecycleReason',
-    },
-    MediaCaptureFailureCode.materializedMediaInvalid => const <String>{
-      'operation',
-    },
-    MediaCaptureFailureCode.listenerAlreadyActive => const <String>{},
-    _ => const <String>{'operation', 'capabilityFailureId'},
-  };
+  return _generatedErrorDescriptorFor(code).detailsAllowedKeys.toSet();
 }
 
 MediaCaptureFailureCode? _failureCodeByWireName(String wireName) {
-  for (final value in MediaCaptureFailureCode.values) {
-    if (value.wireName == wireName) {
-      return value;
+  _GeneratedMediaCaptureWireError? generated;
+  for (final value in _GeneratedMediaCaptureWireError.values) {
+    if (value.wireValue == wireName) {
+      generated = value;
+      break;
     }
   }
-  return null;
+  if (generated == null) return null;
+  final generatedWireValue = generated.wireValue;
+  return MediaCaptureFailureCode.values.singleWhere(
+    (value) => value.wireName == generatedWireValue,
+  );
+}
+
+_GeneratedWireErrorDescriptor _generatedErrorDescriptorFor(
+  MediaCaptureFailureCode code,
+) {
+  final descriptor = _generatedErrorDescriptors.singleWhere(
+    (value) => value.code == code.wireName,
+  );
+  if (descriptor.recoverable != code.recoverable ||
+      descriptor.terminal != code.terminal) {
+    throw StateError('Public error metadata drifted for ${code.wireName}.');
+  }
+  return descriptor;
 }
 
 MediaCaptureCapabilityFailure? _capabilityFailureForCode(
   MediaCaptureFailureCode code,
 ) {
-  for (final value in MediaCaptureCapabilityFailure.values) {
-    if (value.wireName == code.wireName) {
-      return value;
-    }
-  }
-  return null;
+  final capabilityFailureId = _generatedErrorDescriptorFor(
+    code,
+  ).capabilityFailureId;
+  if (capabilityFailureId == null) return null;
+  return MediaCaptureCapabilityFailure.values.singleWhere(
+    (value) => value.wireName == capabilityFailureId,
+  );
 }
 
 MediaCaptureOperation? _operationByWireName(String wireName) {
-  for (final value in MediaCaptureOperation.values) {
-    if (value.wireName == wireName) {
-      return value;
+  _GeneratedMediaCaptureWireMethod? generated;
+  for (final value in _GeneratedMediaCaptureWireMethod.values) {
+    if (value.wireValue == wireName) {
+      generated = value;
+      break;
     }
   }
-  return null;
+  if (generated == null) return null;
+  final generatedWireValue = generated.wireValue;
+  return MediaCaptureOperation.values.singleWhere(
+    (value) => value.wireName == generatedWireValue,
+  );
 }
 
 MediaCaptureFailureField? _fieldByWireName(String wireName) {

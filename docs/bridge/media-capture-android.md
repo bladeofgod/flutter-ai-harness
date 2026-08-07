@@ -29,6 +29,12 @@ Lifecycle.
 
 ## Wire Boundary
 
+Wire V3 的稳定标识、闭合 enum、payload/envelope descriptor、字段类型与基础范围由
+`docs/bridge/contracts/media-capture.wire.json` 生成到
+`MediaCaptureWire.g.kt`。`MediaCaptureWireCodec` 先执行生成的 fail-closed primitive，再把已验证输入映射为
+Native typed model；Capability failure 映射、跨字段条件、URI/JPEG、transfer store、线程、presentation 和
+lifecycle 仍为手写边界。生产生成文件只通过仓库 generator 更新，禁止手工编辑。
+
 The command transport rejects encoded messages above 65536 bytes before `StandardMethodCodec` creates a
 MethodCall or Map. Event control messages have a 4096-byte bound. `MediaCaptureWireCodec` then validates the
 complete Wire V3 request before constructing Native models:
@@ -53,21 +59,22 @@ owner generations, SDK objects and raw exceptions are never copied into error de
 `materialize_media_resource` accepts only an active confirmed `mediaHandle`. Under the lifecycle coordinator
 lock, the Adapter first reserves one of four active export slots and the media's declared byte length against
 the 104857600-byte attachment budget. Capacity rejection occurs before Core is called. The Adapter then
-creates a 128-bit CSPRNG, unpadded base64url export handle and an empty staging file beneath
+creates a 128-bit CSPRNG, unpadded base64url export handle and an empty reserved transfer file beneath
 `Context.cacheDir/app_media_capture_bridge/exports`.
 
 The typed `MediaCopySink` writes at most 52428800 bytes through the descriptor returned by an exclusive
 `O_NOFOLLOW | O_CLOEXEC` create. Begin, every write and commit compare descriptor/path device-inode identity,
-regular-file type, exact byte length and expected link count. Commit fsyncs that descriptor, publishes with a
-same-directory hard link that cannot replace an existing final entry, validates the two-link identity, removes
-the staging name and requires the final name to be the sole remaining link. Only after that sequence does the
-Adapter return a canonical
+regular-file type, exact byte length and the single-link invariant. The reserved file uses its final media
+extension from creation but is not exposed through an Adapter URI until commit. Commit fsyncs
+the descriptor, revalidates the same single-link identity, closes the descriptor and only then makes the
+reservation deliverable. This avoids depending on filesystem hard-link support while preserving exclusive
+no-replace creation. Only after that sequence does the Adapter return a canonical
 `Uri.fromFile` locator on the Android main thread. The URI is validated against the shared Wire golden
 vectors and is never logged, persisted, emitted as an event or placed in error details. Export handles use
 `android.util.Base64` so the declared Android API 23 minimum remains supported without desugaring.
 
 The store TTL is five minutes. `release_materialized_media`, TTL expiry, Flutter completion failure, Engine
-detach and a late Core result all delete staging/final files before releasing active count/bytes. Release is
+detach and a late Core result all delete reserved transfer files before releasing active count/bytes. Release is
 idempotent through a 4096-entry, five-minute tombstone registry; concurrent releases join one cleanup claim.
 Deletion only removes a regular file whose identity belongs to that reservation. A missing path or a path now
 occupied by another identity is treated as the reservation's resource already being absent, so the foreign
@@ -113,7 +120,7 @@ attached immediately, but new capture work remains blocked until the old owner's
 operations, Sessions, Previews and failed cleanup have drained. Already delivered leases remain Engine-owned
 and continue to route to the original Core for thumbnail/release. That old Core stays alive through
 release/expiry grace until `media_read_revoked`, then closes. Engine detach closes the transfer generation,
-releases leases, waits for late operations, aborts sinks, and deletes staging/committed transfer files before
+releases leases, waits for late operations, aborts sinks, and deletes reserved/committed transfer files before
 completing pending Flutter callbacks. It then closes every retained Core, cancels each event collector and
 finally cancels the Engine scope.
 
@@ -138,15 +145,16 @@ to Flutter.
 
 ## Testing Boundary
 
-Debug and Release Gate each run 71 tests covering all 17 methods, five events, timeout failure, three presentation
+Debug and Release Gate each run 77 tests covering all 17 methods, five events, timeout failure, three presentation
 outcomes, malformed input, output encoding, request capacities, duplicate/tombstone TTL, listener
 generation, bounded pre-decode transports, permission callback identity, main-thread presentation,
 adoption-before-success, Activity replacement, Engine detach, failed cleanup retry, late
 Session/lease/thumbnail cleanup, transfer commit/release, capacity, TTL, restart sweep, symlink rejection,
-API 23 base64url handles, shared canonical file-URI vectors, descriptor/path identity drift, no-replace publish,
-concurrent write/delete lock ordering, descriptor inspection failure cleanup and multi-Store startup leases. Lint runs with warnings as errors and checks
-Core/UI dependencies. A separate three-test instrumented suite compiles against minSdk 23 and directly exercises
-the production `android.system.Os` descriptor, symlink, hard-link, external-length and final-conflict paths; it
+API 23 base64url handles, shared canonical file-URI vectors, descriptor/path identity drift, exclusive reservation,
+close-failure retry, concurrent write/delete lock ordering, descriptor inspection failure cleanup and multi-Store startup
+leases. The static Gate rejects production hard-link or rename publishing. Lint runs with warnings as errors and checks
+Core/UI dependencies. A separate four-test instrumented suite compiles against minSdk 23 and directly exercises
+the production `android.system.Os` descriptor, symlink, hard-link, external-length and target-replacement paths; it
 runs automatically when the Gate finds exactly one ready emulator and no physical device. The Gate reads that
 emulator's SDK level and only treats an SDK 23 run as minimum-version Store evidence; newer emulator runs retain
 the API 23 runtime gap.

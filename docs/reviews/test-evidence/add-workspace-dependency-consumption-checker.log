@@ -1,0 +1,180 @@
+## Command
+
+```text
+bash scripts/dart-tool.sh run tool/check_package_dependencies.dart --check-consumption --workspace-root . --plugin-discovery apps/demo/.flutter-plugins-dependencies
+```
+
+Exit code: 1
+
+## Output
+
+```text
+错误：Workspace Package 无消费者：app_im
+错误：app_features 的 production dependency 未被生产源码消费：app_im
+错误：app_im 的 production dependency 未被生产源码消费：app_core
+错误：demo_app 的 Plugin 直连依赖可通过其它生产依赖到达：app_media_capture_bridge
+错误：demo_app 的 production dependency 未被生产源码消费：app_core
+错误：demo_app 的 production dependency 未被生产源码消费：app_im
+错误：demo_app 的 production dependency 未被生产源码消费：app_media
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Changed test/package_dependency_checker_test.dart
+Changed tool/check_package_dependencies.dart
+Formatted 382 files (2 changed) in 1.98 seconds.
+make: *** [format] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Changed test/package_dependency_checker_test.dart
+Changed tool/check_package_dependencies.dart
+Formatted 382 files (2 changed) in 1.51 seconds.
+make: *** [format] Error 1
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 382 files (0 changed) in 1.45 seconds.
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖矩阵检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make lint-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:03 +3: distinguishes a test-only production dependency
+00:03 +4: reports an unused workspace dev dependency
+00:03 +5: accepts a direct dependency required for plugin discovery
+00:03 +6: rejects a redundant direct plugin discovery edge
+00:03 +7: requires every declared Android and iOS plugin entry
+00:03 +8: reports a package without real consumers or a structured role
+00:03 +9: reports source imports for unknown packages
+00:03 +10: reports unknown workspace packages in matrix mode
+00:03 +11: fails malformed graph metadata without leaking input paths
+00:07 +12: reports the current cleanup baseline exactly
+00:13 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

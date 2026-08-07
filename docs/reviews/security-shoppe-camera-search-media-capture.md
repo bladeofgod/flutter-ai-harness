@@ -17,7 +17,7 @@ implementationFiles:
   - app/packages/app_features/lib/app_features.dart
   - app/packages/app_features/pubspec.yaml
   - app/apps/demo/lib/router/demo_router.dart
-implementationDigest: 4372ec48e8d8882de98d763747fe3482f267d5f2e6b511f0686cb5640c69bfff
+implementationDigest: ba2dcc735ad2064c9d1e9c7aedeca8dd348ae358e26ef5a3fddabe7aa9b3ddb7
 ---
 
 # Security Review: Search 图片来源选择
@@ -62,3 +62,8 @@ P1 或 P2，摘要可同步到当前文件集合。真机权限弹窗、Camera U
 
 独立安全复审确认本任务 implementationFiles 未被 V4 Harness 修复改写，Search 仍只消费受限 JPEG
 thumbnail copy。当前实现 `P0=0`、`P1=0`、`P2=0`；摘要按当前文件集合重算。
+
+## Workspace 冗余依赖清理影响
+
+`app_features` 只移除空的 `app_im` 依赖，Search 仍直接消费其原有 Data、Media、Bridge 与 UI 边；生产
+源码、受限 JPEG、session generation 和 cleanup 实现未改。P0/P1/P2 维持 0/0/0。

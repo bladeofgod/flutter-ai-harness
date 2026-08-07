@@ -147,73 +147,61 @@ final class WishlistFixtureHandler implements FixtureRequestHandler {
       _recentItem(
         id: 'recent-1',
         productId: 'recent-product-1',
-        imageAssetKey: 'assets/images/catalog/products/shop_product_03.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-2',
         productId: 'recent-product-2',
-        imageAssetKey: 'assets/images/catalog/products/shop_product_05.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-3',
         productId: 'recent-product-3',
-        imageAssetKey: 'assets/images/profile/product_04.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-4',
         productId: 'recent-product-4',
-        imageAssetKey: 'assets/images/profile/product_11.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-5',
         productId: 'recent-product-5',
-        imageAssetKey: 'assets/images/wishlist/recent_pink_dress.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-6',
         productId: 'recent-product-6',
-        imageAssetKey: 'assets/images/profile/product_03.png',
         viewedOn: _datePayload(2026, 4, 19),
       ),
       _recentItem(
         id: 'recent-7',
         productId: 'recent-product-2',
-        imageAssetKey: 'assets/images/catalog/products/shop_product_05.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
       _recentItem(
         id: 'recent-8',
         productId: 'recent-product-3',
-        imageAssetKey: 'assets/images/profile/product_04.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
       _recentItem(
         id: 'recent-9',
         productId: 'recent-product-7',
-        imageAssetKey: 'assets/images/wishlist/recent_hat.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
       _recentItem(
         id: 'recent-10',
         productId: 'recent-product-5',
-        imageAssetKey: 'assets/images/wishlist/recent_pink_dress.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
       _recentItem(
         id: 'recent-11',
         productId: 'recent-product-8',
-        imageAssetKey: 'assets/images/wishlist/recent_red_dress.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
       _recentItem(
         id: 'recent-12',
         productId: 'recent-product-6',
-        imageAssetKey: 'assets/images/profile/product_03.png',
         viewedOn: _datePayload(2026, 4, 18),
       ),
     ],
@@ -243,19 +231,10 @@ final class WishlistFixtureHandler implements FixtureRequestHandler {
 Map<String, Object?> _recentItem({
   required String id,
   required String productId,
-  required String imageAssetKey,
   required Map<String, Object?> viewedOn,
 }) => <String, Object?>{
   'id': id,
-  'product': () {
-    final product = canonicalCatalogProductPayload(productId);
-    return _productPayload(
-      id: product['id']! as String,
-      title: product['title']! as String,
-      imageAssetKey: product['imageAssetKey']! as String,
-      priceMinorUnits: product['priceMinorUnits']! as int,
-    );
-  }(),
+  'product': canonicalCatalogProductPayload(productId),
   'viewedOn': viewedOn,
 };
 

@@ -9,7 +9,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/lib/src/media_capture_models.dart
   - app/packages/app_media_capture_bridge/lib/src/media_capture_wire_codec.dart
   - app/packages/app_media_capture_bridge/lib/src/media_capture_client.dart
-implementationDigest: e2355175f831f544d1945418fe4b05d31126ff49162f5eeea4264474bbe41c88
+implementationDigest: a84aab4731468f83f603c089797e6fcc05ac7839786f0251d538c667c6835ccb
 ---
 
 # Security Review：Presentation Dismiss Dart Client

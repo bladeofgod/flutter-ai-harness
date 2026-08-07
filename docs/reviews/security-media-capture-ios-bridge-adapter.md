@@ -17,7 +17,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/tool/test-safe-workspace-copy.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh
   - app/packages/app_media_capture_bridge/ios/tool/verify-host-route.sh
-implementationDigest: 1d022229bd81140b850c93251e9016c2b0343c3572d6738b8f947ecad47cdc57
+implementationDigest: 8450b04661de8915899e3d1f226c37e43ce5c9df8445299214d3416b688136dc
 ---
 
 # Security Review: iOS Media Capture Bridge Adapter

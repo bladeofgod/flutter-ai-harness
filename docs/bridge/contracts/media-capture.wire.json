@@ -4631,6 +4631,299 @@
       }
     ]
   },
+  "codeGeneration": {
+    "generatorVersion": 1,
+    "sourceDigestAlgorithm": "sha256",
+    "outputs": [
+      {
+        "runtime": "dart",
+        "language": "dart",
+        "path": "app/packages/app_media_capture_bridge/lib/src/media_capture_wire.g.dart",
+        "identifierStyle": "lower_camel_case",
+        "typeStyle": "upper_camel_case"
+      },
+      {
+        "runtime": "android",
+        "language": "kotlin",
+        "path": "app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWire.g.kt",
+        "identifierStyle": "lower_camel_case",
+        "typeStyle": "upper_camel_case"
+      },
+      {
+        "runtime": "ios",
+        "language": "swift",
+        "path": "app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Sources/MediaCaptureBridgeCore/MediaCaptureWire.generated.swift",
+        "identifierStyle": "lower_camel_case",
+        "typeStyle": "upper_camel_case"
+      }
+    ],
+    "generated": {
+      "wireVersionPointer": "/wireVersion",
+      "channelIds": [
+        "commands",
+        "events"
+      ],
+      "methodIds": [
+        "start_session",
+        "take_photo",
+        "start_recording",
+        "stop_recording",
+        "switch_camera",
+        "set_flash_mode",
+        "set_focus_point",
+        "set_zoom",
+        "retake",
+        "confirm",
+        "cancel",
+        "release_media",
+        "read_media_thumbnail",
+        "materialize_media_resource",
+        "release_materialized_media",
+        "present_capture_flow",
+        "dismiss_capture_flow"
+      ],
+      "eventIds": [
+        "session_ready",
+        "session_failed",
+        "media_preview_ready",
+        "media_lease_expired",
+        "media_read_revoked"
+      ],
+      "resultTypeIds": [
+        "capture_flow_cancelled",
+        "capture_flow_confirmed",
+        "capture_flow_dismissed",
+        "confirmed_media",
+        "control_applied",
+        "materialized_media_released",
+        "materialized_media_resource",
+        "media_preview",
+        "media_released",
+        "media_thumbnail",
+        "recording_started",
+        "retake_ready",
+        "session_cancelled",
+        "session_created"
+      ],
+      "failureTypeIds": [
+        "session_timeout"
+      ],
+      "errorCodes": [
+        "bridge_overloaded",
+        "bridge_unavailable",
+        "duplicate_request",
+        "encoding_failed",
+        "incompatible_wire_version",
+        "invalid_argument",
+        "invalid_state",
+        "invalid_wire_payload",
+        "listener_already_active",
+        "materialized_media_invalid",
+        "media_export_cancelled",
+        "media_export_conflict",
+        "media_export_overloaded",
+        "media_export_read_failed",
+        "media_export_sink_rejected",
+        "media_export_timed_out",
+        "media_export_too_large",
+        "media_export_write_failed",
+        "media_invalid",
+        "permission_denied",
+        "permission_permanently_denied",
+        "permission_restricted",
+        "presentation_conflict",
+        "resource_in_use",
+        "session_conflict",
+        "session_invalid",
+        "session_timeout",
+        "storage_full",
+        "system_interrupted",
+        "thumbnail_generation_cancelled",
+        "thumbnail_generation_failed",
+        "thumbnail_overloaded",
+        "transfer_store_overloaded",
+        "transfer_store_unavailable",
+        "unsupported_capability",
+        "wire_encoding_failed"
+      ],
+      "errorPropertyNames": [
+        "source",
+        "capabilityFailureId",
+        "recoverable",
+        "terminal",
+        "messagePolicy",
+        "detailsAllowedKeys"
+      ],
+      "errorDetailKeys": [
+        "operation",
+        "capabilityFailureId",
+        "actualWireVersion",
+        "expectedWireVersion",
+        "field",
+        "reason",
+        "lifecycleReason",
+        "capacity"
+      ],
+      "payloadIds": [
+        "capture_flow_dismissed_result_payload",
+        "confirmed_media_result_payload",
+        "control_applied_result_payload",
+        "dismiss_capture_flow_request_payload",
+        "flash_mode_request_payload",
+        "focus_point_request_payload",
+        "materialize_media_resource_request_payload",
+        "materialized_media_released_result_payload",
+        "materialized_media_result_payload",
+        "media_handle_request_payload",
+        "media_lease_expired_event_payload",
+        "media_preview_ready_event_payload",
+        "media_preview_result_payload",
+        "media_read_revoked_event_payload",
+        "media_released_result_payload",
+        "media_thumbnail_request_payload",
+        "media_thumbnail_result_payload",
+        "recording_started_result_payload",
+        "release_materialized_media_request_payload",
+        "retake_ready_result_payload",
+        "session_action_request_payload",
+        "session_cancelled_result_payload",
+        "session_created_result_payload",
+        "session_failed_event_payload",
+        "session_ready_event_payload",
+        "session_timeout_failure_payload",
+        "start_session_request_payload",
+        "zoom_request_payload"
+      ],
+      "fieldIds": [
+        "active_camera",
+        "audio_enabled",
+        "audio_included",
+        "available_cameras",
+        "byte_length",
+        "content_type",
+        "duration_millis",
+        "enabled_media_types",
+        "expires_at",
+        "export_handle",
+        "file_uri",
+        "presentation_request_id",
+        "integrity_sha256",
+        "flash_mode",
+        "focus_point_supported",
+        "lease_expires_at",
+        "max_pixel_edge",
+        "max_video_duration_millis",
+        "max_zoom_factor",
+        "media_handle",
+        "media_type",
+        "min_zoom_factor",
+        "normalized_x",
+        "normalized_y",
+        "orientation_degrees",
+        "pixel_height",
+        "pixel_width",
+        "poster_frame_millis",
+        "preferred_camera",
+        "session_handle",
+        "supported_flash_modes",
+        "switch_camera_supported",
+        "terminal_failure_id",
+        "thumbnail_byte_length",
+        "thumbnail_content_type",
+        "thumbnail_copy",
+        "thumbnail_orientation_degrees",
+        "thumbnail_pixel_height",
+        "thumbnail_pixel_width",
+        "zoom_factor"
+      ],
+      "envelopePointers": [
+        "/lifecycle/requestEnvelope",
+        "/lifecycle/resultEnvelope",
+        "/lifecycle/eventListenEnvelope",
+        "/lifecycle/eventEnvelope",
+        "/lifecycle/failureEnvelope",
+        "/lifecycle/requestIdPolicy"
+      ],
+      "transportConstraintPointers": [
+        "/transportConstraints/signedInteger",
+        "/transportConstraints/opaqueHandles"
+      ]
+    },
+    "manualOnly": [
+      {
+        "id": "capability_model_mapping",
+        "contractPointers": [
+          "/capability",
+          "/coverage"
+        ],
+        "reason": "Capability models and Adapter mappings remain handwritten and transport-neutral."
+      },
+      {
+        "id": "method_dispatch",
+        "contractPointers": [
+          "/methods",
+          "/failureDelivery"
+        ],
+        "reason": "Dispatch and Capability invocation remain handwritten Adapter behavior."
+      },
+      {
+        "id": "async_completion_and_lifecycle",
+        "contractPointers": [
+          "/lifecycle/linearizationPolicy",
+          "/lifecycle/resultCompletionPolicies",
+          "/lifecycle/lateResultPolicies"
+        ],
+        "reason": "Exactly-once completion, late cleanup, and lifecycle coordination are not executable generator output."
+      },
+      {
+        "id": "listener_and_owner_generation",
+        "contractPointers": [
+          "/lifecycle/listenerPolicy",
+          "/lifecycle/boundaries"
+        ],
+        "reason": "Listener ownership and owner generations remain handwritten runtime lifecycle state."
+      },
+      {
+        "id": "platform_thread_dispatch",
+        "contractPointers": [
+          "/lifecycle/callbackThread",
+          "/platform"
+        ],
+        "reason": "Main-thread and MainActor dispatch remain runtime Adapter responsibilities."
+      },
+      {
+        "id": "resource_and_transfer_ownership",
+        "contractPointers": [
+          "/lifecycle/resourceAdoptionPolicies",
+          "/transferStore"
+        ],
+        "reason": "Lease, transfer, and cleanup ownership remain handwritten runtime state machines."
+      },
+      {
+        "id": "file_uri_and_native_sdk_behavior",
+        "contractPointers": [
+          "/transferStore/fileUriPolicy",
+          "/coverage/nativeArtifacts"
+        ],
+        "reason": "File and URI system calls, presentation, and Native SDK behavior are never generated."
+      },
+      {
+        "id": "cross_field_validation",
+        "contractPointers": [
+          "/fieldMappings"
+        ],
+        "reason": "Conditional cross-field rules remain handwritten; generated fields expose scalar boundaries only."
+      },
+      {
+        "id": "logging_and_redaction",
+        "contractPointers": [
+          "/security",
+          "/transferStore/redaction"
+        ],
+        "reason": "Logging, diagnostics, and redaction enforcement remain handwritten trust-boundary behavior."
+      }
+    ]
+  },
   "changeLog": [
     {
       "wireVersion": 1,

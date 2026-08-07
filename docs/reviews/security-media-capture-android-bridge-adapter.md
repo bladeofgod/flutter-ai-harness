@@ -14,7 +14,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCapturePermissionDelegate.kt
   - app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt
   - docs/bridge/media-capture-android.md
-implementationDigest: 94f3d7ecbf089d5bf3fcb9cb8ebdab31d248fa82ab1dc24563a589f008229880
+implementationDigest: 4b4c93543bce29e264eecf3579d1119360eca113df8628f53658605f4735b15c
 ---
 
 # Security Review: Android Media Capture Bridge Adapter
@@ -93,3 +93,10 @@ Debug/Release 各 35 个 JVM/Robolectric 测试和 lint 已强制重跑并通过
 
 Android 平台 Gate 后续确认并移除了没有生产消费者的 `activity-ktx` 直接依赖；该变更只缩小依赖面，最终
 实现摘要和 35/35 强制重跑 evidence 已按移除后的 build graph 刷新。
+
+## 2026-08-07 Android Transfer 发布兼容性增量复审
+
+共享 Android Transfer Store 从 hard-link/no-replace 发布改为最终路径 exclusive create；独立报告
+`security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。
+Bridge Adapter 的 MethodChannel 契约、权限、Activity/Engine 生命周期和路径不暴露边界未扩大；本报告摘要
+按当前 implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保持明确记录。

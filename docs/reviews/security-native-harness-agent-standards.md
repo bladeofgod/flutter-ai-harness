@@ -21,6 +21,10 @@ implementationFiles:
   - CLAUDE.md
   - docs/native-architecture.md
   - app/tool/harness_check.dart
+  - app/lib/harness_validator.dart
+  - app/lib/src/harness_validator.dart
+  - app/lib/src/implementation_digest.dart
+  - app/lib/src/codex_adapters.dart
   - scripts/quality/test-harness.sh
   - .codex/agents/android-engineer.toml
   - .codex/agents/ios-engineer.toml
@@ -29,7 +33,7 @@ implementationFiles:
   - .agents/skills/kotlin-android-standards/SKILL.md
   - .agents/skills/swift-ios-standards/SKILL.md
   - .agents/skills/native-testing-strategy/SKILL.md
-implementationDigest: f0f05d72f95c27f71c84ad791c1c5551b5581584f66fbf8dcee6d79976390a92
+implementationDigest: 39096defb4d61600c669675f68c8c83e3008958c099cde72e4406067e936afb7
 ---
 
 # Security Review：原生 Agent 与编码规范
@@ -160,3 +164,16 @@ AppDelegate registry 及重复注册。这不改变 Agent 工具、任务路由�
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## Validator Library 路径迁移复审
+
+2026-08-06 独立安全复审确认 Validator 仅拆分为不可变 Library 结果和薄 CLI，没有增加 Agent、MCP、网络、凭据或发布能力。绑定已覆盖公开入口、真实 Validator、摘要计算器、Adapter 核心、CLI 和 Shell Fixture。
+
+## Workspace 冗余依赖清理影响
+
+`CLAUDE.md` 只同步当前 Package 树和依赖图，删除已不存在的 `app_im` 条目并收窄 Demo 直连；Agent、
+Command、Skill、工具权限、任务路由和符号链接边界均未修改。P0/P1/P2 维持 0/0/0。
+
+## Wire 生成 Profile 影响复审
+
+2026-08-06 复审确认新增生成器未增加 Agent、MCP、网络、凭据、发布或 Native 平台权限；Harness 只扩展结构化 Contract 与失败 Fixture 校验。三端 Runtime 生产迁移仍由后续对应 Agent 任务拥有，P0/P1/P2 维持 0/0/0。

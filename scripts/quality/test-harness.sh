@@ -2,12 +2,29 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+EXPORT_VALID_FIXTURE=false
+if [[ "$#" -ne 0 ]]; then
+  if [[ "$#" -ne 1 || "$1" != "--export-valid-fixture" ]]; then
+    echo "Usage: bash scripts/quality/test-harness.sh [--export-valid-fixture]" >&2
+    exit 64
+  fi
+  EXPORT_VALID_FIXTURE=true
+fi
 FIXTURE_PARENT="$(mktemp -d "${TMPDIR:-/tmp}/flutter-ai-harness-check.XXXXXX")"
 FIXTURE_ROOT="$FIXTURE_PARENT/repo with spaces"
+RUN_CHECK_COUNT_FILE="$FIXTURE_PARENT/run-check-count"
+VALIDATOR_REQUEST_FIFO="$FIXTURE_PARENT/validator-request.fifo"
+VALIDATOR_RESPONSE_FIFO="$FIXTURE_PARENT/validator-response.fifo"
+VALIDATOR_INVENTORY="$FIXTURE_PARENT/harness-fixture-inventory.jsonl"
+VALIDATOR_SERVER_PID=""
 cleanup() {
+  stop_validator_server
   rm -r -- "$FIXTURE_PARENT"
 }
 trap cleanup EXIT
+
+: > "$RUN_CHECK_COUNT_FILE"
+: > "$VALIDATOR_INVENTORY"
 
 mkdir -p "$FIXTURE_ROOT"
 mkdir -p \
@@ -236,20 +253,42 @@ write_capability_contract_documents() {
 write_capability_contract_documents
 
 write_wire_contract_documents() {
+  mkdir -p \
+    "$FIXTURE_ROOT/app/tool/src" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/lib/src" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/android/src/test/kotlin/com/example/media_capture" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Sources/MediaCaptureBridgeCore"
   cp "$ROOT/docs/bridge/contracts/wire.schema.json" \
     "$FIXTURE_ROOT/docs/bridge/contracts/wire.schema.json"
+  cp "$ROOT/app/tool/generate_media_capture_wire.dart" \
+    "$FIXTURE_ROOT/app/tool/generate_media_capture_wire.dart"
+  cp "$ROOT/app/tool/src/media_capture_wire_generation.dart" \
+    "$FIXTURE_ROOT/app/tool/src/media_capture_wire_generation.dart"
   cp "$ROOT/docs/bridge/contracts/media-capture.wire.json" \
     "$FIXTURE_ROOT/docs/bridge/contracts/media-capture.wire.json"
   cp "$ROOT/docs/bridge/media-capture.md" \
     "$FIXTURE_ROOT/docs/bridge/media-capture.md"
+  cp "$ROOT/docs/bridge/code-generation.md" \
+    "$FIXTURE_ROOT/docs/bridge/code-generation.md"
   cp "$ROOT/app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json" \
     "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/contracts/media-capture-v4-v3.golden.json"
   cp "$ROOT/app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart" \
     "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart"
+  cp "$ROOT/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart"
+  cp "$ROOT/app/packages/app_media_capture_bridge/lib/src/media_capture_wire.g.dart" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/lib/src/media_capture_wire.g.dart"
+  cp "$ROOT/app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWire.g.kt" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/android/src/main/kotlin/com/example/media_capture/MediaCaptureWire.g.kt"
+  cp "$ROOT/app/packages/app_media_capture_bridge/android/src/test/kotlin/com/example/media_capture/MediaCaptureGeneratedWireTest.kt" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/android/src/test/kotlin/com/example/media_capture/MediaCaptureGeneratedWireTest.kt"
   cp "$ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt" \
     "$FIXTURE_ROOT/app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt"
   cp "$ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift" \
     "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift"
+  cp "$ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Sources/MediaCaptureBridgeCore/MediaCaptureWire.generated.swift" \
+    "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Sources/MediaCaptureBridgeCore/MediaCaptureWire.generated.swift"
   cp "$ROOT/app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh" \
     "$FIXTURE_ROOT/app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh"
 }
@@ -360,9 +399,49 @@ run_dart_script() {
     --packages=.dart_tool/package_config.json "$@"
 }
 
+start_validator_server() {
+  mkfifo "$VALIDATOR_REQUEST_FIFO" "$VALIDATOR_RESPONSE_FIFO"
+  run_dart_script tool/harness_validation_server.dart \
+    --root "$FIXTURE_ROOT" \
+    < "$VALIDATOR_REQUEST_FIFO" \
+    > "$VALIDATOR_RESPONSE_FIFO" &
+  VALIDATOR_SERVER_PID="$!"
+  exec 8> "$VALIDATOR_REQUEST_FIFO"
+  exec 9< "$VALIDATOR_RESPONSE_FIFO"
+}
+
+stop_validator_server() {
+  if [[ -z "$VALIDATOR_SERVER_PID" ]]; then
+    return
+  fi
+  printf '%s\n' '{"command":"shutdown"}' >&8
+  exec 8>&-
+  exec 9<&-
+  wait "$VALIDATOR_SERVER_PID" 2>/dev/null || true
+  VALIDATOR_SERVER_PID=""
+}
+
 run_check() {
-  run_dart_script tool/harness_check.dart \
-    --root "$FIXTURE_ROOT"
+  printf '1\n' >> "$RUN_CHECK_COUNT_FILE"
+  if [[ -z "$VALIDATOR_SERVER_PID" ]]; then
+    run_dart_script tool/harness_check.dart \
+      --root "$FIXTURE_ROOT"
+    return
+  fi
+
+  local caller_line="${BASH_LINENO[0]}"
+  printf '{"command":"validate","callSite":%s}\n' "$caller_line" >&8
+  local response
+  if ! IFS= read -r response <&9; then
+    echo "错误：Harness Validator 常驻进程意外退出。" >&2
+    return 1
+  fi
+  printf '%s\n' "$response" >> "$VALIDATOR_INVENTORY"
+  if jq -e '.diagnostics | length == 0' >/dev/null <<< "$response"; then
+    return 0
+  fi
+  jq -r '.diagnostics[] | "错误：" + .' <<< "$response" >&2
+  return 1
 }
 
 sync_adapters() {
@@ -457,7 +536,14 @@ MARKDOWN
 write_valid_task
 write_valid_done_task
 sync_adapters >/dev/null
+start_validator_server
 run_check >/dev/null
+if [[ "$EXPORT_VALID_FIXTURE" == true ]]; then
+  stop_validator_server
+  trap - EXIT
+  printf '%s\n' "$FIXTURE_ROOT"
+  exit 0
+fi
 
 for platform_agent_fixture in \
   "android-engineer:kotlin-android-standards:swift-ios-standards:Android" \
@@ -2423,25 +2509,41 @@ if ! run_check >/dev/null 2>&1; then
 fi
 
 projection_mutant_dir="$FIXTURE_PARENT/projection-mutant"
-projection_mutant="$projection_mutant_dir/harness_check.dart"
+projection_mutant="$projection_mutant_dir/harness_validator.dart"
+projection_mutant_cli="$projection_mutant_dir/harness_check.dart"
 mkdir -p "$projection_mutant_dir"
-cp "$ROOT/app/tool/codex_adapters.dart" "$projection_mutant_dir/"
-cp "$ROOT/app/tool/implementation_digest.dart" "$projection_mutant_dir/"
+cp "$ROOT/app/lib/src/codex_adapters.dart" "$projection_mutant_dir/"
+cp "$ROOT/app/lib/src/implementation_digest.dart" "$projection_mutant_dir/"
+cat > "$projection_mutant_cli" <<'DART'
+import 'dart:io';
+
+import 'harness_validator.dart';
+
+void main(List<String> arguments) {
+  final result = validateHarness(Directory(arguments[1]).absolute);
+  if (!result.isValid) {
+    for (final diagnostic in result.diagnostics) {
+      stderr.writeln('错误：$diagnostic');
+    }
+    exitCode = 1;
+  }
+}
+DART
 
 prepare_projection_mutant() {
-  cp "$ROOT/app/tool/harness_check.dart" "$projection_mutant"
+  cp "$ROOT/app/lib/src/harness_validator.dart" "$projection_mutant"
 }
 
 assert_projection_mutant_rejected() {
   local fixture_name="$1"
   local output
   local status
-  if cmp -s "$ROOT/app/tool/harness_check.dart" "$projection_mutant"; then
+  if cmp -s "$ROOT/app/lib/src/harness_validator.dart" "$projection_mutant"; then
     echo "错误：V4 projection Fixture 未实际命中：${fixture_name}。" >&2
     exit 1
   fi
   set +e
-  output="$(run_dart_script "$projection_mutant" --root "$FIXTURE_ROOT" 2>&1)"
+  output="$(run_dart_script "$projection_mutant_cli" --root "$FIXTURE_ROOT" 2>&1)"
   status=$?
   set -e
   if [[ "$status" -eq 0 ]]; then
@@ -2756,6 +2858,34 @@ assert_wire_contract_rejected_with_diagnostic \
   "security policies 不完整"
 cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
 
+mutate_wire_with_jq \
+  '.codeGeneration.generated.methodIds += ["unknown_generated_method"]'
+assert_wire_contract_rejected_with_diagnostic \
+  "code generation unknown method reference" \
+  "codeGeneration.generated.methodIds 必须精确引用当前 Contract ID 集"
+cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
+
+mutate_wire_with_jq \
+  '.codeGeneration.outputs[] |= if .runtime == "dart" then .path = "app/packages/app_media_capture_bridge/lib/src/unregistered.g.dart" else . end'
+assert_wire_contract_rejected_with_diagnostic \
+  "code generation unregistered Dart output" \
+  "codeGeneration dart 输出路径或名称映射漂移"
+cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
+
+mutate_wire_with_jq \
+  'del(.codeGeneration.manualOnly[] | select(.id == "async_completion_and_lifecycle"))'
+assert_wire_contract_rejected_with_diagnostic \
+  "code generation missing manual lifecycle coverage" \
+  "codeGeneration.manualOnly 必须覆盖全部不可生成行为"
+cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
+
+mutate_wire_with_jq \
+  '(.codeGeneration.manualOnly[] | select(.id == "cross_field_validation") | .contractPointers) = ["/wireVersion"]'
+assert_wire_contract_rejected_with_diagnostic \
+  "code generation unrelated manual-only pointer" \
+  "codeGeneration.manualOnly.cross_field_validation 必须精确引用批准的 coverage pointer"
+cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
+
 sed -i.bak \
   '/"nativeArtifactCoverageEntry": {/,/"platformContract": {/ s/"wireId": {"type": "null"}/"wireId": {"$ref": "#\/$defs\/nullableStableId"}/' \
   "$wire_schema"
@@ -2862,7 +2992,8 @@ for wire_field in \
   coverage \
   platform \
   lifecycle \
-  security; do
+  security \
+  codeGeneration; do
   cp "$FIXTURE_ROOT/media-capture.wire.valid" "$wire_contract"
   sed -i.bak \
     "s/^  \"$wire_field\":/  \"missing_$wire_field\":/" \
@@ -5161,4 +5292,26 @@ if run_check >/dev/null 2>&1; then
   exit 1
 fi
 
+run_check_count="$(wc -l < "$RUN_CHECK_COUNT_FILE" | tr -d '[:space:]')"
+EXPECTED_INVENTORY="$ROOT/app/test/fixtures/harness_fixture_inventory.jsonl"
+if ! cmp -s "$EXPECTED_INVENTORY" "$VALIDATOR_INVENTORY"; then
+  echo "错误：Harness Fixture inventory 与参数化测试基线不一致。" >&2
+  diff -u "$EXPECTED_INVENTORY" "$VALIDATOR_INVENTORY" | sed -n '1,200p' >&2 || true
+  exit 1
+fi
+stop_validator_server
+
+bash "$ROOT/scripts/quality/capture-evidence.sh" \
+  "$FIXTURE_ROOT/docs/reviews/test-evidence/complete-task.log" -- \
+  bash -c 'echo "Harness bounded evidence fixture passed"'
+run_dart_script tool/harness_check.dart --root "$FIXTURE_ROOT" >/dev/null
+sed -i.bak 's/^Summary output bytes: [0-9][0-9]*/Summary output bytes: 1/' \
+  "$FIXTURE_ROOT/docs/reviews/test-evidence/complete-task.log"
+rm -f -- "$FIXTURE_ROOT/docs/reviews/test-evidence/complete-task.log.bak"
+if run_dart_script tool/harness_check.dart --root "$FIXTURE_ROOT" >/dev/null 2>&1; then
+  echo "错误：Harness Check 未拒绝 bounded evidence metadata 漂移。" >&2
+  exit 1
+fi
+
+echo "[harness-test] Validator run_check 实际调用：${run_check_count} 次。"
 echo "[harness-test] Harness 配置与失败 Fixture 通过。"

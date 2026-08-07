@@ -9,9 +9,8 @@ import java.nio.file.StandardOpenOption
 
 internal class TestTransferFileSystem(
     private val beforeWrite: (() -> Unit)? = null,
+    private val beforeClose: (() -> Unit)? = null,
 ) : TransferFileSystem {
-    private val handles = mutableSetOf<TestTransferFileHandle>()
-
     @Synchronized
     override fun openExclusive(file: File): TransferFileHandle? =
         runCatching {
@@ -28,7 +27,7 @@ internal class TestTransferFileSystem(
                     Files.deleteIfExists(file.toPath())
                     error("Unable to inspect the exclusive test file")
                 }
-            TestTransferFileHandle(channel, identity, beforeWrite).also(handles::add)
+            TestTransferFileHandle(channel, identity, beforeWrite, beforeClose)
         }.getOrNull()
 
     override fun snapshot(file: File): TransferFileSnapshot? =
@@ -53,27 +52,11 @@ internal class TestTransferFileSystem(
             )
         }.getOrNull()
 
-    @Synchronized
-    override fun link(source: File, target: File) {
-        val identity = checkNotNull(snapshot(source)).identity
-        Files.createLink(target.toPath(), source.toPath())
-        handles.filter { it.identity == identity }.forEach(TestTransferFileHandle::incrementLinks)
-    }
-
-    @Synchronized
-    override fun remove(file: File): Boolean {
-        val identity = snapshot(file)?.identity
-        val deleted = Files.deleteIfExists(file.toPath())
-        if (deleted && identity != null) {
-            handles.filter { it.identity == identity }.forEach(TestTransferFileHandle::decrementLinks)
-        }
-        return deleted || !file.exists()
-    }
-
     private class TestTransferFileHandle(
         private val channel: FileChannel,
         override val identity: TransferFileIdentity,
         private val beforeWrite: (() -> Unit)?,
+        private val beforeClose: (() -> Unit)?,
     ) : TransferFileHandle {
         private var open = true
         private var links = 1L
@@ -111,19 +94,11 @@ internal class TestTransferFileSystem(
         @Synchronized
         override fun close() {
             if (!open) return
+            beforeClose?.invoke()
             open = false
             channel.close()
         }
 
-        @Synchronized
-        fun incrementLinks() {
-            links += 1L
-        }
-
-        @Synchronized
-        fun decrementLinks() {
-            links -= 1L
-        }
     }
 }
 

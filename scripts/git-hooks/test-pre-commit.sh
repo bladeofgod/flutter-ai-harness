@@ -2,10 +2,23 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+bash "$ROOT/scripts/git-hooks/test-safe-fixture-cleanup.sh"
+
 FIXTURE_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/flutter-ai-harness-hook.XXXXXX")"
+FIXTURE_ROOT_REAL="$(cd "$FIXTURE_ROOT" && pwd -P)"
+FIXTURE_PARENT_REAL="$(cd "$(dirname "$FIXTURE_ROOT")" && pwd -P)"
+source "$ROOT/scripts/git-hooks/safe-fixture-cleanup.sh"
 
 cleanup() {
-  rm -r -- "$FIXTURE_ROOT"
+  local status=$?
+  if ! safe_delete_hook_fixture_root \
+    "$FIXTURE_ROOT" "$FIXTURE_ROOT_REAL" "$FIXTURE_PARENT_REAL"; then
+    if [[ "$status" -eq 0 ]]; then
+      status=1
+    fi
+  fi
+  trap - EXIT
+  exit "$status"
 }
 trap cleanup EXIT
 
@@ -20,11 +33,13 @@ cp "$ROOT/scripts/git-hooks/install.sh" scripts/git-hooks/install.sh
 cp "$ROOT/scripts/git-hooks/uninstall.sh" scripts/git-hooks/uninstall.sh
 printf '%s\n' '#!/usr/bin/env bash' 'exec dart "$@"' > scripts/dart-tool.sh
 cat > Makefile <<'MAKEFILE'
-.PHONY: proto-check codex-adapters-check analyze lint
+.PHONY: proto-check codex-adapters-check media-capture-wire-check analyze lint
 proto-check:
 	@true
 codex-adapters-check:
 	@touch .codex-adapters-check-ran
+media-capture-wire-check:
+	@touch .media-capture-wire-check-ran
 analyze:
 	@touch .analyze-ran
 lint:
@@ -68,8 +83,9 @@ printf '%s\n' 'void main(){print(3);}' > lib/example.dart
 bash scripts/git-hooks/pre-commit >/dev/null
 
 bash scripts/git-hooks/pre-push >/dev/null
-if [[ ! -f .codex-adapters-check-ran || ! -f .analyze-ran || ! -f .lint-ran ]]; then
-  echo "错误：pre-push 未执行 Codex 适配、Analyze 和 Lint 门禁。" >&2
+if [[ ! -f .codex-adapters-check-ran || ! -f .media-capture-wire-check-ran || \
+  ! -f .analyze-ran || ! -f .lint-ran ]]; then
+  echo "错误：pre-push 未执行 Codex/Wire 适配、Analyze 和 Lint 门禁。" >&2
   exit 1
 fi
 

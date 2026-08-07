@@ -7,6 +7,9 @@ cd "$ROOT"
 echo "[pre-push] Codex 适配同步检查"
 make codex-adapters-check
 
+echo "[pre-push] Media Capture Wire 生成同步检查"
+make media-capture-wire-check
+
 echo "[pre-push] 静态分析"
 make analyze
 

@@ -82,7 +82,7 @@ Figma Desktop MCP 已读取 `0:1` 的 101 张顶层画板元数据，并完整�
 - 图片搜索使用系统图库选择，随后按 Figma 展示确定性的 Recognizing、Recognized 和 Results 状态；不接摄像头、上传或 ML 识别引擎。Search 作为第二个图库消费者时，允许把 Auth 已验证的图库读取、限制和脱敏代码迁入共享非 UI Media Adapter；Auth 页面、Controller、Route 和产品行为不得重做。
 - Checkout、Payment、Voucher、物流和评价使用确定性的本地状态机；不接支付 SDK、真实银行卡、地址服务或推送。运行时默认掩码主卡支付成功，第二张掩码 Fixture 卡支付失败；进度页只反映可控异步调用。失败后保留 Cart/Checkout 并允许切换主卡重试，成功后生成 Receipt 并原子清空 Cart。
 - 节点 `56 Your Card Been Charged` 在 Demo 中保留视觉结构，但主文案改为 `Demo payment completed`，辅助文案明确没有真实扣款。这是主动产品文案偏离，不能宣称发生真实银行卡交易。
-- Support Chat 使用本地脚本式会话，不连接客服、网络或 AI；本任务不为了占位强行实现 `app_im` Engine。未来需要真实 IM 时再以明确消费者扩展 `app_im`。
+- Support Chat 使用本地脚本式会话，不连接客服、网络或 AI；本任务不为了占位强行实现 IM Engine。未来需要真实 IM 时再由明确消费者创建聚焦 Package。
 - 删除账号只清理当前内存 Auth 状态并返回 Welcome，不调用远程删除；其他 Settings 偏好只在当前进程内生效。
 - UI Spec、Audit 和 App Operator 不属于普通任务实现或归档门禁，仍由人工独立安排。
 

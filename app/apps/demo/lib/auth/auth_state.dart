@@ -31,24 +31,30 @@ final class AuthStateCoordinator extends ChangeNotifier
     implements CurrentUserProvider {
   AuthStateCoordinator({void Function()? onSessionReset})
     : _authService = AuthService(),
-      _userService = UserService(),
-      _onSessionReset = onSessionReset;
+      _userService = UserService() {
+    if (onSessionReset != null) {
+      attachSessionReset(onSessionReset);
+    }
+  }
 
   final ChangeNotifier _authRefreshNotifier = ChangeNotifier();
 
   final AuthService _authService;
   final UserService _userService;
-  void Function()? _onSessionReset;
+  final List<_SessionResetRegistration> _sessionResetRegistrations = [];
+  bool _isDisposed = false;
+  bool _isLoggingOut = false;
 
-  void attachSessionReset(void Function() reset) {
-    final existing = _onSessionReset;
-    if (existing == null) {
-      _onSessionReset = reset;
-      return;
-    }
-    _onSessionReset = () {
-      existing();
-      reset();
+  VoidCallback attachSessionReset(VoidCallback reset) {
+    final registration = _SessionResetRegistration(reset);
+    _sessionResetRegistrations.add(registration);
+    var isAttached = true;
+    return () {
+      if (!isAttached) {
+        return;
+      }
+      isAttached = false;
+      _sessionResetRegistrations.remove(registration);
     };
   }
 
@@ -92,16 +98,42 @@ final class AuthStateCoordinator extends ChangeNotifier
   }
 
   void logout() {
-    if (_authService.session == null && _userService.currentUser == null) {
+    if (_isLoggingOut ||
+        (_authService.session == null && _userService.currentUser == null)) {
       return;
     }
 
-    _onSessionReset?.call();
-    _authService._replaceSession(null);
-    _userService._replaceCurrentUser(null);
-    _assertConsistentState();
-    _authRefreshNotifier.notifyListeners();
-    notifyListeners();
+    _isLoggingOut = true;
+    final failures = <FlutterErrorDetails>[];
+    final registrations = List<_SessionResetRegistration>.of(
+      _sessionResetRegistrations,
+    );
+    try {
+      for (final registration in registrations) {
+        try {
+          registration.reset();
+        } on Object catch (_, stackTrace) {
+          failures.add(
+            FlutterErrorDetails(
+              exception: const _SessionResetFailure(),
+              stack: stackTrace,
+              library: 'demo_app',
+              context: ErrorDescription('while resetting a user session'),
+            ),
+          );
+        }
+      }
+      _authService._replaceSession(null);
+      _userService._replaceCurrentUser(null);
+      _assertConsistentState();
+      _authRefreshNotifier.notifyListeners();
+      notifyListeners();
+    } finally {
+      _isLoggingOut = false;
+    }
+    for (final failure in failures) {
+      FlutterError.reportError(failure);
+    }
   }
 
   void _assertConsistentState() {
@@ -119,7 +151,25 @@ final class AuthStateCoordinator extends ChangeNotifier
 
   @override
   void dispose() {
+    if (_isDisposed) {
+      return;
+    }
+    _isDisposed = true;
+    _sessionResetRegistrations.clear();
     _authRefreshNotifier.dispose();
     super.dispose();
   }
+}
+
+final class _SessionResetRegistration {
+  const _SessionResetRegistration(this.reset);
+
+  final VoidCallback reset;
+}
+
+final class _SessionResetFailure implements Exception {
+  const _SessionResetFailure();
+
+  @override
+  String toString() => 'SessionResetFailure(<redacted>)';
 }

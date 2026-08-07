@@ -40,10 +40,6 @@ internal interface TransferFileSystem {
     fun openExclusive(file: File): TransferFileHandle?
 
     fun snapshot(file: File): TransferFileSnapshot?
-
-    fun link(source: File, target: File)
-
-    fun remove(file: File): Boolean
 }
 
 internal class AndroidTransferFileSystem(
@@ -85,16 +81,6 @@ internal class AndroidTransferFileSystem(
     override fun snapshot(file: File): TransferFileSnapshot? =
         runCatching { Os.lstat(file.absolutePath).toSnapshot() }.getOrNull()
 
-    override fun link(source: File, target: File) {
-        Os.link(source.absolutePath, target.absolutePath)
-    }
-
-    override fun remove(file: File): Boolean =
-        runCatching {
-            Os.remove(file.absolutePath)
-            true
-        }.getOrDefault(!file.exists())
-
     private fun isInitialRegularFile(snapshot: TransferFileSnapshot): Boolean =
         snapshot.regular && snapshot.links == 1L && snapshot.size == 0L
 
@@ -122,7 +108,7 @@ private class AndroidTransferFileHandle(
     override fun sync() = Os.fsync(descriptor)
 
     override fun close() {
-        if (descriptor.valid()) runCatching { Os.close(descriptor) }
+        if (descriptor.valid()) Os.close(descriptor)
     }
 }
 
@@ -165,22 +151,20 @@ internal class MediaCaptureTransferStore(
         repeat(HANDLE_GENERATION_ATTEMPTS) {
             val handle = generateHandle()
             val extension = if (metadata.mediaType == MediaType.PHOTO) "jpg" else "mp4"
-            val staging = File(root, "$handle.partial")
-            val final = File(root, "$handle.$extension")
-            if (staging.exists() || final.exists()) return@repeat
-            if (!isDirectChildPath(staging) || !isDirectChildPath(final)) return@repeat
-            val descriptor = runCatching { fileSystem.openExclusive(staging) }.getOrNull() ?: return@repeat
+            val transfer = File(root, "$handle.$extension")
+            if (transfer.exists()) return@repeat
+            if (!isDirectChildPath(transfer)) return@repeat
+            val descriptor = runCatching { fileSystem.openExclusive(transfer) }.getOrNull() ?: return@repeat
             val identity = descriptorIdentity(descriptor, expectedSize = 0L)
             if (identity == null) {
                 descriptor.close()
-                unlinkMatchingIdentity(staging, descriptor.identity)
+                deleteReservationFile(transfer, descriptor.identity)
                 return@repeat
             }
             return Reservation(
                 exportHandle = handle,
                 metadata = metadata,
-                stagingFile = staging,
-                finalFile = final,
+                transferFile = transfer,
                 descriptor = descriptor,
                 identity = identity,
                 store = this,
@@ -199,13 +183,12 @@ internal class MediaCaptureTransferStore(
         if (!owns(reservation)) return false
         reservation.closeDescriptor()
         return synchronized(this) {
-            val stagingDeleted = deleteReservationFile(reservation.stagingFile, reservation.identity)
-            val finalDeleted = deleteReservationFile(reservation.finalFile, reservation.identity)
+            val transferDeleted = deleteReservationFile(reservation.transferFile, reservation.identity)
             if (!reservationFileStillOwned(reservation)) {
                 reservations.remove(reservation)
                 unregisterRootIfIdle()
             }
-            stagingDeleted && finalDeleted
+            transferDeleted
         }
     }
 
@@ -213,8 +196,8 @@ internal class MediaCaptureTransferStore(
         check(reservation.committed)
         return synchronized(this) {
             check(generationOpen && verifyRoot() && owns(reservation))
-            check(pathMatchesIdentity(reservation.finalFile, reservation.identity, expectedLinks = 1L))
-            Uri.fromFile(reservation.finalFile.canonicalFile).toString().also {
+            check(pathMatchesIdentity(reservation.transferFile, reservation.identity))
+            Uri.fromFile(reservation.transferFile.canonicalFile).toString().also {
                 MediaCaptureWireCodec.requireCanonicalFileUri(it)
             }
         }
@@ -223,32 +206,11 @@ internal class MediaCaptureTransferStore(
     @Synchronized
     internal fun requireWritable(
         reservation: Reservation,
-        file: File,
         expectedSize: Long,
     ) {
         check(generationOpen && verifyRoot() && owns(reservation))
-        check(file === reservation.stagingFile || file === reservation.finalFile)
         check(descriptorIdentity(reservation.descriptor, expectedSize) == reservation.identity)
-        check(pathMatchesIdentity(file, reservation.identity, expectedLinks = 1L))
-    }
-
-    @Synchronized
-    internal fun publish(reservation: Reservation, expectedSize: Long) {
-        requireWritable(reservation, reservation.stagingFile, expectedSize)
-        check(!reservation.finalFile.exists())
-        fileSystem.link(reservation.stagingFile, reservation.finalFile)
-        var published = false
-        try {
-            check(verifyRoot())
-            check(pathMatchesIdentity(reservation.finalFile, reservation.identity, expectedLinks = 2L))
-            check(descriptorIdentity(reservation.descriptor, expectedSize, expectedLinks = 2L) == reservation.identity)
-            check(pathMatchesIdentity(reservation.stagingFile, reservation.identity, expectedLinks = 2L))
-            check(fileSystem.remove(reservation.stagingFile))
-            check(pathMatchesIdentity(reservation.finalFile, reservation.identity, expectedLinks = 1L))
-            published = true
-        } finally {
-            if (!published) unlinkMatchingIdentity(reservation.finalFile, reservation.identity)
-        }
+        check(pathMatchesIdentity(reservation.transferFile, reservation.identity))
     }
 
     private fun initializeCoordinated(): Boolean {
@@ -299,10 +261,9 @@ internal class MediaCaptureTransferStore(
     private fun descriptorIdentity(
         descriptor: TransferFileHandle,
         expectedSize: Long,
-        expectedLinks: Long = 1L,
     ): TransferFileIdentity? =
         descriptor.snapshot()?.takeIf {
-            it.regular && it.links == expectedLinks && it.size == expectedSize
+            it.regular && it.links == 1L && it.size == expectedSize
         }?.identity
 
     private fun directoryIdentity(directory: File): TransferFileIdentity? =
@@ -311,11 +272,10 @@ internal class MediaCaptureTransferStore(
     private fun pathMatchesIdentity(
         file: File,
         identity: TransferFileIdentity,
-        expectedLinks: Long,
     ): Boolean {
         if (!isDirectChildPath(file)) return false
         val snapshot = fileSystem.snapshot(file) ?: return false
-        return snapshot.regular && snapshot.links == expectedLinks && snapshot.identity == identity
+        return snapshot.regular && snapshot.links == 1L && snapshot.identity == identity
     }
 
     private fun deleteReservationFile(file: File, identity: TransferFileIdentity): Boolean {
@@ -325,17 +285,8 @@ internal class MediaCaptureTransferStore(
         return deleteFile(file) || !file.exists()
     }
 
-    private fun unlinkMatchingIdentity(file: File, identity: TransferFileIdentity) {
-        if (
-            pathMatchesIdentity(file, identity, expectedLinks = 2L) ||
-            pathMatchesIdentity(file, identity, expectedLinks = 1L)
-        ) {
-            runCatching { fileSystem.remove(file) }
-        }
-    }
-
     private fun reservationFileStillOwned(reservation: Reservation): Boolean =
-        listOf(reservation.stagingFile, reservation.finalFile).any { file ->
+        reservation.transferFile.let { file ->
             isDirectChildPath(file) && fileSystem.snapshot(file)?.let { snapshot ->
                 snapshot.regular && snapshot.identity == reservation.identity
             } == true
@@ -390,8 +341,7 @@ internal class MediaCaptureTransferStore(
     internal class Reservation private constructor(
         val exportHandle: String,
         val metadata: MediaMetadata,
-        internal val stagingFile: File,
-        internal val finalFile: File,
+        internal val transferFile: File,
         internal val descriptor: TransferFileHandle,
         internal val identity: TransferFileIdentity,
         internal val store: MediaCaptureTransferStore,
@@ -410,8 +360,7 @@ internal class MediaCaptureTransferStore(
             operator fun invoke(
                 exportHandle: String,
                 metadata: MediaMetadata,
-                stagingFile: File,
-                finalFile: File,
+                transferFile: File,
                 descriptor: TransferFileHandle,
                 identity: TransferFileIdentity,
                 store: MediaCaptureTransferStore,
@@ -419,8 +368,7 @@ internal class MediaCaptureTransferStore(
                 Reservation(
                     exportHandle,
                     metadata,
-                    stagingFile,
-                    finalFile,
+                    transferFile,
                     descriptor,
                     identity,
                     store,
@@ -449,7 +397,7 @@ internal class MediaCaptureTransferStore(
                     byteLength == reservation.metadata.byteLength &&
                     byteLength in 1L..MAX_TRANSFER_FILE_BYTES,
             )
-            store.requireWritable(reservation, reservation.stagingFile, expectedSize = 0L)
+            store.requireWritable(reservation, expectedSize = 0L)
             begun = true
         }
 
@@ -461,14 +409,14 @@ internal class MediaCaptureTransferStore(
                 written <= reservation.metadata.byteLength - byteCount &&
                     written <= MAX_TRANSFER_FILE_BYTES - byteCount,
             )
-            store.requireWritable(reservation, reservation.stagingFile, expectedSize = written)
+            store.requireWritable(reservation, expectedSize = written)
             var offset = 0
             while (offset < byteCount) {
                 val count = reservation.descriptor.write(buffer, offset, byteCount - offset)
                 check(count > 0)
                 offset += count
                 written += count
-                store.requireWritable(reservation, reservation.stagingFile, expectedSize = written)
+                store.requireWritable(reservation, expectedSize = written)
             }
         }
 
@@ -476,25 +424,26 @@ internal class MediaCaptureTransferStore(
             check(begun && !committed && !aborted)
             check(byteLength == reservation.metadata.byteLength && written == byteLength)
             check(descriptorOpen)
-            store.requireWritable(reservation, reservation.stagingFile, expectedSize = byteLength)
+            store.requireWritable(reservation, expectedSize = byteLength)
             reservation.descriptor.sync()
-            store.publish(reservation, expectedSize = byteLength)
+            store.requireWritable(reservation, expectedSize = byteLength)
             closeDescriptor()
             committed = true
         }
 
         override suspend fun abort() = synchronized(this) {
             if (aborted) return@synchronized
-            aborted = true
             closeDescriptor()
+            aborted = true
             store.delete(reservation)
         }
 
         @Synchronized
         fun closeDescriptor() {
             if (!descriptorOpen) return
+            if (reservation.descriptor.valid) reservation.descriptor.close()
+            check(!reservation.descriptor.valid)
             descriptorOpen = false
-            if (reservation.descriptor.valid) runCatching { reservation.descriptor.close() }
         }
     }
 

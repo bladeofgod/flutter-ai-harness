@@ -43,7 +43,6 @@ app/
     ├── app_core/
     ├── app_data/
     ├── app_ui/
-    ├── app_im/
     ├── app_features/
     ├── app_media/
     └── app_media_capture_bridge/
@@ -59,11 +58,11 @@ app/
 4. 依赖方向保持单向。下图中 `A -> B` 表示 Package A 可以 import Package B：
 
    ```text
-   apps/demo -> app_features, app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
-   app_features -> app_data, app_im, app_core, app_ui, app_media, app_media_capture_bridge
+   apps/demo -> app_features, app_data, app_ui
+   app_features -> app_data, app_core, app_ui, app_media, app_media_capture_bridge
    app_media -> app_core, app_ui
    app_media_capture_bridge -> 不依赖其他 Workspace Package
-   app_data / app_im -> app_core
+   app_data -> app_core
    app_core / app_ui -> 不依赖其他 Workspace Package
    ```
 
@@ -183,7 +182,13 @@ Figma 规划和实现必须通过本地 MCP 读取当前节点，不依赖截图
   `android-engineer`、`ios-engineer`；结构化 Wire Contract 与多 Runtime 最终集成使用
   `bridge-engineer`。多端需求在规划阶段拆卡，执行阶段只依据 frontmatter 选 Agent，Reviewer
   负责核对声明范围与正文、diff 是否一致。
-- `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。用于任务归档的 Security Review 必须用实现文件清单与摘要绑定当前实现；直接审查代码片段等无文件输入时可以不绑定文件，但该结论不能替代任务门禁报告。
+- `docs/reviews/` 保存执行过程产生的 Review 报告和测试证据。新任务的入库证据只保存
+  `bounded-v1` 摘要：shell-safe 命令、工具版本、退出码、稳定结果或首个失败根因、原始脱敏输出的
+  行数/字节数与 SHA-256；单命令最多 64 KiB/600 行，整份日志最多 512 KiB/4800 行，截断必须带
+  显式 marker。完整输出先在临时目录脱敏，只由 CI 以固定 14 天的受限 Artifact 保留；本地没有 CI run
+  时只提交摘要，不伪造 Artifact URL、run ID 或上传结果。既有历史证据保持兼容，不删除或改写。
+  用于任务归档的 Security Review 必须用实现文件清单与摘要绑定当前实现；直接审查代码片段等无文件
+  输入时可以不绑定文件，但该结论不能替代任务门禁报告。
 - `docs/app-operator/specs/` 保存人工独立安排的 UI 行为 Spec 及同名静态 Audit；它们不随任务卡移动或归档。
 - `docs/app-operator/runs/` 保存人工执行 Spec 后按平台生成的结构化运行报告；失败截图和日志保存在同级 `evidence/` 并纳入脱敏门禁。
 - `app/docs/` 保存随 Demo 形成的应用架构和决策文档。

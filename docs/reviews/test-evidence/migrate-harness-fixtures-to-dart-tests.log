@@ -1,0 +1,93 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\nprintf "harness_timing_run=1\\n"\n/usr/bin/time -p make harness-test\nprintf "harness_timing_run=2\\n"\n/usr/bin/time -p make harness-test\nprintf "harness_timing_run=3\\n"\n/usr/bin/time -p make harness-test'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "21.0.10" 2026-01-20
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: 39aca1bc06b8a6ca085aedef8a44790f9590e890a754d5a0313eb021ebc0991d
+Original output bytes: 430085
+Original output lines: 3540
+Summary output bytes: 5940
+Summary output lines: 57
+Truncated: yes
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+harness_timing_run=1
+bash scripts/quality/run-harness-tests.sh
+00:00 +0: loading test/harness_fixture_inventory_test.dart
+00:00 +0: test/harness_fixture_inventory_test.dart: Harness Fixture inventory is complete, ordered, and uniquely classified
+00:00 +1: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0001
+00:00 +2: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0002
+00:00 +3: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0003
+00:00 +4: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0004
+00:00 +5: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0005
+00:00 +6: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0006
+00:00 +7: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0007
+00:00 +8: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0008
+00:00 +9: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0009
+00:00 +10: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0010
+00:00 +11: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0011
+00:00 +12: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0012
+00:00 +13: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0013
+00:00 +14: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0014
+00:00 +15: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0015
+00:00 +16: test/harness_fixture_inventory_test.dart: Harness Fixture inventory harness-0016
+01:03 +1171: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0578 scripts/quality/test-harness.sh:5290#1
+01:04 +1172: All tests passed!
+real 66.88
+01:03 +1171: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0578 scripts/quality/test-harness.sh:5290#1
+01:03 +1172: All tests passed!
+real 66.87
+01:01 +1146: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0553 scripts/quality/test-harness.sh:4993#1
+01:01 +1147: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0554 scripts/quality/test-harness.sh:5015#1
+...[summary byte limit reached; use the redacted CI artifact for full output]...
+01:01 +1148: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0555 scripts/quality/test-harness.sh:5039#1
+01:01 +1149: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0556 scripts/quality/test-harness.sh:5049#1
+01:01 +1150: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0557 scripts/quality/test-harness.sh:5063#1
+01:01 +1151: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0558 scripts/quality/test-harness.sh:5074#1
+01:01 +1152: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0559 scripts/quality/test-harness.sh:5088#1
+01:01 +1153: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0560 scripts/quality/test-harness.sh:5099#1
+01:01 +1154: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0561 scripts/quality/test-harness.sh:5107#1
+01:02 +1155: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0562 scripts/quality/test-harness.sh:5119#1
+01:02 +1156: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0563 scripts/quality/test-harness.sh:5131#1
+01:02 +1157: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0564 scripts/quality/test-harness.sh:5142#1
+01:02 +1158: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0565 scripts/quality/test-harness.sh:5151#1
+01:02 +1159: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0566 scripts/quality/test-harness.sh:5160#1
+01:02 +1160: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0567 scripts/quality/test-harness.sh:5169#1
+01:02 +1161: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0568 scripts/quality/test-harness.sh:5180#1
+01:02 +1162: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0569 scripts/quality/test-harness.sh:5190#1
+01:02 +1163: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0570 scripts/quality/test-harness.sh:5199#1
+01:02 +1164: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0571 scripts/quality/test-harness.sh:5209#1
+01:03 +1165: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0572 scripts/quality/test-harness.sh:5217#1
+01:03 +1166: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0573 scripts/quality/test-harness.sh:5227#1
+01:03 +1167: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0574 scripts/quality/test-harness.sh:5237#1
+01:03 +1168: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0575 scripts/quality/test-harness.sh:5250#1
+01:03 +1169: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0576 scripts/quality/test-harness.sh:5264#1
+01:03 +1170: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0577 scripts/quality/test-harness.sh:5277#1
+01:03 +1171: test/harness_fixture_catalog_test.dart: Harness parameterized Fixture catalog harness-0578 scripts/quality/test-harness.sh:5290#1
+01:03 +1172: All tests passed!
+real 66.86
+user 51.39
+sys 34.46
+```

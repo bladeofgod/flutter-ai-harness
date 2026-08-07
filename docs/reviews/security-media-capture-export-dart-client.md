@@ -10,7 +10,7 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/lib/src/media_capture_constants.dart
   - app/packages/app_media_capture_bridge/lib/src/media_capture_models.dart
   - app/packages/app_media_capture_bridge/lib/src/media_capture_wire_codec.dart
-implementationDigest: 16377606c9829c4ef879556224b2d77417f01d82e83b355965a229a611121115
+implementationDigest: 872b1e22fece3fd8a8ea604a8361b729797a632251880a7b1fd2bb26981055f3
 ---
 
 # Security Review: Media Capture Transfer Dart Client

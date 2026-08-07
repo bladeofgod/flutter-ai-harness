@@ -27,7 +27,6 @@ Package、两端 Adapter、Host 构建接线、生命周期及测试边界统一
 | `app_core` | `ApiClient`、`ApiTransport`、存储抽象、日志、环境和平台无关基础设施 | Feature 业务、业务 Entity 或 UI |
 | `app_data` | Domain Entity、LocalDataSource、确定性 Fixture 及其 Transport、协议/持久化适配和 Mapper | 页面、Controller、Feature 导航或业务 API 实现 |
 | `app_ui` | 设计 Token 和无业务通用 UI | 产品业务规则 |
-| `app_im` | IM Engine 契约和消息基础设施 | Feature 页面或壳工程装配 |
 | `app_media` | App 私有媒体资源导入、opaque 引用、进程级生命周期以及无业务图片/视频缩略图和预览 | 业务消息、上传/持久化、Native Capture 状态机、业务 Route 或原始路径传播 |
 | `app_media_capture_bridge` | Media Capture 类型化 Dart Client、Wire Codec 和平台 Plugin 入口 | Feature 业务、原生能力状态机或 Host 装配 |
 | `app_features` | Feature、Controller、Page、Route、业务 API 抽象及其 Feature 实现 | 全局启动、基础数据适配或原生工程配置 |
@@ -42,13 +41,25 @@ Package、两端 Adapter、Host 构建接线、生命周期及测试边界统一
 | `app_core` | 无 |
 | `app_ui` | 无 |
 | `app_data` | `app_core` |
-| `app_im` | `app_core` |
 | `app_media` | `app_core`、`app_ui` |
 | `app_media_capture_bridge` | 无 |
-| `app_features` | `app_core`、`app_data`、`app_im`、`app_media`、`app_media_capture_bridge`、`app_ui` |
-| `apps/demo` | `app_core`、`app_data`、`app_im`、`app_media`、`app_media_capture_bridge`、`app_ui`、`app_features` |
+| `app_features` | `app_core`、`app_data`、`app_media`、`app_media_capture_bridge`、`app_ui` |
+| `apps/demo` | `app_data`、`app_features`、`app_ui` |
 
 `apps/demo` 位于最上层，负责装配所有公开模块入口；`app_core` 和 `app_ui` 位于基础层，不得反向依赖业务、数据或壳工程。`app_media` 位于二者之上、`app_features` 之下，允许复用传输中立 ID 与 UI Token，但不得反向依赖 Feature、数据层、Capture Bridge 或壳工程。新增 Workspace Package 时必须先在本矩阵中确定层级，再同步更新结构化依赖门禁。
+
+可在仓库根目录执行以下只读消费检查：
+
+```bash
+bash scripts/dart-tool.sh run tool/check_package_dependencies.dart \
+  --check-consumption \
+  --workspace-root . \
+  --plugin-discovery apps/demo/.flutter-plugins-dependencies
+```
+
+消费模式使用 Dart 语法树区分生产与测试/工具 import，并结合 pub 依赖图和 Android/iOS Plugin
+discovery 判断 Plugin 直连是否必要。当前命令应以退出码 0 完成，且已经接入默认 `make lint`；新增未消费
+边、冗余 Plugin 直连或无消费者 Package 都会使门禁失败。
 
 ## 类型边界
 

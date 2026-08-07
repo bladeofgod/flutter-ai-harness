@@ -2,9 +2,9 @@ import Foundation
 import MediaCapture
 import UIKit
 
-package let mediaCaptureWireVersion = 3
-package let mediaCaptureCommandsChannel = "com.example.media_capture.commands"
-package let mediaCaptureEventsChannel = "com.example.media_capture.events"
+package let mediaCaptureWireVersion = generatedMediaCaptureWireVersion
+package let mediaCaptureCommandsChannel = generatedCommandsChannel
+package let mediaCaptureEventsChannel = generatedEventsChannel
 
 package enum MediaCaptureWirePayload: Sendable {
     case startSession(SessionOptions)
@@ -30,6 +30,11 @@ package struct MediaCaptureWireFailure: Error, Equatable, Sendable {
     package let details: [String: String]
 
     package init(code: String, details: [String: String]) {
+        guard let descriptor = generatedErrorDescriptors.first(where: { $0.code == code }) else {
+            preconditionFailure("Media Capture Wire error code is not declared by the generated contract")
+        }
+        precondition(descriptor.messagePolicy == "static_redacted")
+        precondition(details.keys.allSatisfy(descriptor.detailsAllowedKeys.contains))
         self.code = code
         self.details = details
     }

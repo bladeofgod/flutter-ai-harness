@@ -23,6 +23,9 @@ implementationFiles:
   - app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift
   - docs/bridge/contracts/media-capture.wire.json
   - app/tool/harness_check.dart
+  - app/lib/harness_validator.dart
+  - app/lib/src/harness_validator.dart
+  - app/lib/src/implementation_digest.dart
   - scripts/quality/test-harness.sh
   - scripts/quality/media-capture-android.sh
   - scripts/quality/media-capture-ios.sh
@@ -39,7 +42,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: c743277ccfbe7dbb7f13d829da966091b0ed4714658af70bef0b790685446163
+implementationDigest: 5adaa2fb2709e98374be46af6c06e21d4fcbec1486890c8a3e52f9ad913ae0a1
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -63,6 +66,12 @@ implementationDigest: c743277ccfbe7dbb7f13d829da966091b0ed4714658af70bef0b790685
   测试文件名或局部断言造成伪通过。
 - Info.plist 使用结构化 XML 校验唯一、非空字符串权限说明；CI 与证据脚本不记录真实媒体、URI、handle、
   设备 ID、主机路径、公司设计信息或凭据，也没有增加签名、发布、commit 或 push 能力。
+
+## Workspace 消费检查器影响
+
+本轮只增加根工具的静态 AST 消费盘点和架构命令说明。`analyzer 10.0.1` 已存在于 lockfile，版本、来源和
+SHA-256 未变；未修改 Wire、Host、平台权限、CI 或发布能力。消费模式当前不接入默认 lint，不影响跨
+Runtime 构建路径。
 
 ## 剩余边界
 
@@ -150,3 +159,30 @@ P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implemen
 执行时间。检查命令、通过标准、权限、依赖来源、网络访问和并发取消策略均未改变；超时后仍由 GitHub
 Actions 失败关闭。该调整不扩大既有信任边界，P0/P1/P2 仍为 0/0/0，摘要按当前
 implementationFiles 重新绑定。
+
+## Validator Library 路径迁移复审
+
+2026-08-06 独立安全复审确认 Validator 仅拆分为不可变 Library 结果和薄 CLI，未放宽本报告的既有安全约束。绑定已覆盖公开入口、真实 Validator、摘要计算器、CLI 和 Shell Fixture。
+
+## Workspace 冗余依赖清理影响
+
+Demo 移除了对 Bridge 的冗余直连，但 `app_features -> app_media_capture_bridge` 保持不变；pub graph、两端
+Plugin discovery 与生成注册器都证明传递可达，Android Debug APK 和 iOS 无签名 Debug App 均构建通过。
+Host、Wire、权限、Entitlement、媒体 locator 与 cleanup 未修改，P0/P1/P2 维持 0/0/0。
+
+## Wire 生成 Profile 影响复审
+
+2026-08-06 复审确认生成工具只产生闭合 descriptor 与无副作用 primitive，未迁移或修改三端生产 Codec、Host、权限、Entitlement、媒体 locator、线程或 cleanup。Wire V3/Capability V4 projection 不变，P0/P1/P2 维持 0/0/0。
+
+## Wire Formatter 工具依赖影响
+
+根 Workspace 精确固定 `dart_style 3.1.7`，只供 Wire generator 内存格式化使用，不进入 Dart Runtime
+Package、Android/iOS Host 或 Native 产物。formatter 不再启动子进程或创建系统临时文件；Host、权限、
+Entitlement、媒体 locator 与 cleanup 均未修改，P0/P1/P2 维持 0/0/0。
+
+## 2026-08-07 Android Transfer 发布兼容性增量复审
+
+共享 Android Transfer Store 从 hard-link/no-replace 发布改为最终路径 exclusive create；独立报告
+`security-media-capture-android-transfer-publish-compatibility-correction.md` 结论为 P0/P1/P2 0/0/0。
+跨 Runtime Wire、Dart Client、iOS、Host、权限、Entitlement 和媒体 locator 边界未扩大；本报告摘要按当前
+implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保持明确记录。

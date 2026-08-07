@@ -10,17 +10,21 @@ workspace:
   - packages/app_core
   - packages/app_data
   - packages/app_ui
-  - packages/app_im
   - packages/app_features
   - packages/app_media
   - packages/app_media_capture_bridge
 
-dev_dependencies:
+dependencies:
   crypto: ^3.0.6
-  flutter_lints: ^5.0.0
-  melos: ^7.4.1
   xml: ^6.6.1
   yaml: ^3.1.3
+
+dev_dependencies:
+  analyzer: ^10.0.1
+  dart_style: 3.1.7
+  flutter_lints: ^5.0.0
+  melos: ^7.4.1
+  test: ^1.26.2
 
 flutter:
   config:
@@ -77,8 +81,8 @@ melos:
       run: dart run tool/sync_codex_adapters.dart --check && dart run tool/harness_check.dart
       description: 校验 AI Harness 配置、引用、链接与平台宿主
     harness-test:
-      run: bash ../scripts/quality/test-harness.sh
-      description: 运行 Harness Check 失败 Fixture
+      run: bash ../scripts/quality/run-harness-tests.sh
+      description: 运行参数化 Harness Fixture 与 CLI 烟测
     proto-check:
       run: bash ../scripts/proto/check.sh
       description: 校验 Proto 与生成产物同步

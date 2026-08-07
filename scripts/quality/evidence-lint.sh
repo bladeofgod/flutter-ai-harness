@@ -20,12 +20,27 @@ if [[ "$#" -eq 0 && -d "$ROOT/docs/app-operator" ]]; then
   done < <(find "$ROOT/docs/app-operator" -type f -print0)
 fi
 
+if [[ "$#" -eq 0 && -f "$ROOT/.github/workflows/ci.yml" ]]; then
+  if ! ruby "$TOOL_ROOT/scripts/quality/validate-evidence-workflow.rb" \
+    "$ROOT/.github/workflows/ci.yml" >/dev/null; then
+    echo "错误：CI 测试证据 Artifact 策略无效。" >&2
+    fail=1
+  fi
+fi
+
 if [[ "${#targets[@]}" -eq 0 ]]; then
   echo "[evidence-lint] 当前没有测试证据日志，跳过。"
   exit 0
 fi
 
 for file in "${targets[@]}"; do
+  if rg -q '^Evidence format: bounded-v1$' "$file"; then
+    if ! ruby "$TOOL_ROOT/scripts/quality/validate-bounded-evidence.rb" "$file" >/dev/null; then
+      echo "错误：有界测试证据结构或上限无效：$file" >&2
+      fail=1
+    fi
+  fi
+
   users_pattern='/Use''rs/[^/[:space:]]+'
   home_pattern='/ho''me/[^/[:space:]]+'
   windows_pattern='[A-Za-z]:\\Use''rs\\[^\\[:space:]]+'

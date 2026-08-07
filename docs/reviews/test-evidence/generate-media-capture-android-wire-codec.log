@@ -1,0 +1,105 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\ncd app\ndart run tool/generate_media_capture_wire.dart --runtime android --check\ncd ..\nbash scripts/quality/media-capture-android.sh'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "17.0.12" 2024-07-16
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: 54eea9f09ea21d40f78aadba9f79918b740aef9d1a9b9c3f827bd1183eec79d4
+Original output bytes: 116139
+Original output lines: 1982
+Summary output bytes: 2658
+Summary output lines: 69
+Truncated: yes
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+[media-capture-wire] checked android output (76e65a567971ca209e0b4f50412e79002a83eda04869149f21d136a7c6569d27)
+
+[media-capture-android] Validate locked toolchain
+
+[media-capture-android] Validate dependency direction and reproducibility
+
+[media-capture-android] Validate Wire V3 transfer Adapter, private cache and plugin registration
+
+[media-capture-android] Core: clean, Debug/Release tests, lint, AAR assembly and resolved dependency graph
+> Task :media_capture_core:clean
+> Task :media_capture_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :media_capture_core:preBuild UP-TO-DATE
+> Task :media_capture_core:preDebugBuild UP-TO-DATE
+> Task :media_capture_core:generateDebugResValues
+> Task :media_capture_core:generateDebugResources
+> Task :media_capture_core:packageDebugResources
+> Task :media_capture_core:preDebugUnitTestBuild UP-TO-DATE
+> Task :media_capture_core:javaPreCompileDebug
+> Task :media_capture_core:writeDebugAarMetadata
+> Task :media_capture_core:parseDebugLocalResources
+
+BUILD SUCCESSFUL in 20s
+99 actionable tasks: 99 executed
+
+BUILD SUCCESSFUL in 23s
+152 actionable tasks: 152 executed
+
+BUILD SUCCESSFUL in 22s
+205 actionable tasks: 205 executed
+
+BUILD SUCCESSFUL in 8s
+30 actionable tasks: 30 executed
+
+BUILD SUCCESSFUL in 7s
+...[summary byte limit reached; use the redacted CI artifact for full output]...
+46 actionable tasks: 46 executed
+
+BUILD SUCCESSFUL in 9s
+62 actionable tasks: 62 executed
+> Task :processDebugAndroidTestJavaRes
+> Task :media_capture_bridge:mergeProjectDexDebugAndroidTest
+> Task :media_capture_bridge:lintAnalyzeDebugAndroidTest
+> Task :dexBuilderDebugAndroidTest
+> Task :mergeProjectDexDebugAndroidTest
+> Task :mergeDebugAndroidTestJavaResource
+> Task :mergeLibDexDebugAndroidTest
+> Task :media_capture_bridge:mergeLibDexDebugAndroidTest
+> Task :media_capture_bridge:packageDebugAndroidTest
+> Task :media_capture_bridge:createDebugAndroidTestApkListingFileRedirect
+> Task :media_capture_bridge:assembleDebugAndroidTest
+> Task :packageDebugAndroidTest
+> Task :createDebugAndroidTestApkListingFileRedirect
+> Task :assembleDebugAndroidTest
+> Task :media_capture_ui:lintAnalyzeDebug
+> Task :media_capture_bridge:lintAnalyzeDebugUnitTest
+> Task :media_capture_bridge:lintAnalyzeDebug
+> Task :lintAnalyzeDebug
+> Task :lintReportDebug
+> Task :lintDebug
+> Task :lint
+
+BUILD SUCCESSFUL in 24s
+256 actionable tasks: 256 executed
+
+[media-capture-android] Check optional emulator test layer
+[media-capture-android] no ready emulator; connectedDebugAndroidTest not run
+
+[media-capture-android] PASS
+[media-capture-android] static Android gate passed; Host and physical-device validation remain separate
+```

@@ -21,6 +21,63 @@ void main() {
       ),
       hasLength(6),
     );
+    expect(
+      recent.items.map((item) => item.id),
+      orderedEquals(List.generate(12, (index) => 'recent-${index + 1}')),
+    );
+    expect(
+      recent.items.map((item) => item.product.id),
+      orderedEquals(const <String>[
+        'product-1',
+        'product-2',
+        'product-3',
+        'product-4',
+        'product-5',
+        'product-6',
+        'product-2',
+        'product-3',
+        'product-7',
+        'product-5',
+        'product-8',
+        'product-6',
+      ]),
+    );
+    expect(
+      recent.items.map((item) => item.viewedOn.day),
+      orderedEquals(const <int>[
+        19,
+        19,
+        19,
+        19,
+        19,
+        19,
+        18,
+        18,
+        18,
+        18,
+        18,
+        18,
+      ]),
+    );
+    final assetKeys = <String, String>{
+      for (final item in recent.items) item.id: item.product.imageAssetKey,
+    };
+    expect(
+      assetKeys,
+      containsPair('recent-5', 'assets/images/profile/product_05.png'),
+    );
+    expect(
+      assetKeys,
+      containsPair('recent-9', 'assets/images/profile/product_07.png'),
+    );
+    expect(
+      assetKeys,
+      containsPair('recent-10', 'assets/images/profile/product_05.png'),
+    );
+    expect(
+      assetKeys,
+      containsPair('recent-11', 'assets/images/profile/product_08.png'),
+    );
   });
 
   test('removes idempotently until empty', () async {

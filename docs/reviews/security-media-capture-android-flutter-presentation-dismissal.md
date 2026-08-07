@@ -8,8 +8,11 @@ implementationFiles:
   - docs/bridge/contracts/media-capture.wire.json
   - docs/bridge/media-capture.md
   - app/tool/harness_check.dart
+  - app/lib/harness_validator.dart
+  - app/lib/src/harness_validator.dart
+  - app/lib/src/implementation_digest.dart
   - scripts/quality/test-harness.sh
-implementationDigest: ac33dee5a57dd8bc1ac07b3fd8862967f20ae28a25fed39584c450d0495edfcb
+implementationDigest: 92e3595dcecfa6df2043282989f18b33e7a6201af80061ab0eb1849c62af30ff
 ---
 
 # Security Review：Presentation Dismiss Wire
@@ -35,3 +38,11 @@ correlation、幂等 dismiss、exactly-once 或 redaction。独立 Security Revi
 基础设施重试和精确 69/69，通过测试修正消除 owner cleanup 观察竞态。跨 Runtime golden 只刷新既有
 iOS loader 的 consumer digest，Capability/Wire current/history 均未变化。独立 Security Reviewer 结论为
 P0/P1/P2 0/0/0；本报告原有剩余项保持不变，摘要按当前 implementationFiles 重新绑定。
+
+## Validator Library 路径迁移复审
+
+2026-08-06 独立安全复审确认 Validator 仅拆分为不可变 Library 结果和薄 CLI，未放宽本报告的既有安全约束。绑定已覆盖公开入口、真实 Validator、摘要计算器、CLI 和 Shell Fixture。
+
+## Wire 生成 Profile 影响复审
+
+2026-08-06 复审确认新增内容仅为闭合 descriptor、无副作用 field/envelope primitive 和生成工具，Wire V3、Capability V4、Native 生命周期、线程与资源 ownership 均未改变。固定 Schema/输出白名单和注入负例未放宽本报告边界，P0/P1/P2 维持 0/0/0。

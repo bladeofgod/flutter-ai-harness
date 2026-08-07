@@ -5,6 +5,31 @@ import XCTest
 @testable import MediaCaptureBridgeCore
 
 final class MediaCaptureWireCodecTests: XCTestCase {
+    func testGeneratedWireDescriptorsDriveTheRuntimeSurface() throws {
+        XCTAssertEqual(generatedMediaCaptureWireVersion, mediaCaptureWireVersion)
+        XCTAssertEqual(generatedCommandsChannel, mediaCaptureCommandsChannel)
+        XCTAssertEqual(generatedEventsChannel, mediaCaptureEventsChannel)
+        XCTAssertEqual(GeneratedMediaCaptureWireMethod.allCases.count, 17)
+        XCTAssertEqual(GeneratedMediaCaptureWireEvent.allCases.count, 5)
+        XCTAssertEqual(
+            Set(GeneratedMediaCaptureWireMethod.allCases.map(\.rawValue)),
+            MediaCaptureWireCodec.methods
+        )
+        XCTAssertEqual(
+            MediaCaptureWireCodec.generatedPayloadDescriptorCoverage,
+            Set(generatedPayloadDescriptors.map(\.id))
+        )
+        XCTAssertEqual(
+            Set(GeneratedMediaCaptureWireError.allCases.map(\.rawValue)),
+            Set(generatedErrorDescriptors.map(\.code))
+        )
+        let boolField = try XCTUnwrap(
+            generatedMediaCaptureWireFields.first { $0.id == "audio_enabled" }
+        )
+        XCTAssertTrue(generatedMatchesWireFieldPrimitive(NSNumber(value: true), field: boolField))
+        XCTAssertFalse(generatedMatchesWireFieldPrimitive(NSNumber(value: 1), field: boolField))
+    }
+
     func testOpaqueOutputHandleUsesWireLengthWithoutRequestIdAsciiPattern() {
         XCTAssertTrue(MediaCaptureWireCodec.isOpaqueHandle("媒体句柄_1"))
         XCTAssertTrue(MediaCaptureWireCodec.isOpaqueHandle(String(repeating: "a", count: 128)))
@@ -195,9 +220,26 @@ final class MediaCaptureWireCodecTests: XCTestCase {
         ]
         let golden = try crossRuntimeGolden()
         XCTAssertEqual(Set(golden.keys), [
-            "schemaVersion", "contractId", "consumerBindings", "current", "history",
+            "schemaVersion", "contractId", "consumerBindings", "generation", "current", "history",
             "transfer", "lifecycle", "redaction",
         ])
+        let generation = try XCTUnwrap(golden["generation"] as? [String: Any])
+        XCTAssertEqual(Set(generation.keys), [
+            "generatorVersion", "normalizedDescriptorDigest", "wireVersion", "methodCount", "eventCount",
+            "resultTypeCount", "failureTypeCount", "errorCount", "payloadDescriptorCount",
+            "fieldDescriptorCount", "contractImplementationDigest", "outputImplementationDigests",
+        ])
+        XCTAssertEqual(generation["generatorVersion"] as? Int, 1)
+        XCTAssertEqual(generation["normalizedDescriptorDigest"] as? String,
+                       "76e65a567971ca209e0b4f50412e79002a83eda04869149f21d136a7c6569d27")
+        XCTAssertEqual(generation["wireVersion"] as? Int, generatedMediaCaptureWireVersion)
+        XCTAssertEqual(generation["methodCount"] as? Int, GeneratedMediaCaptureWireMethod.allCases.count)
+        XCTAssertEqual(generation["eventCount"] as? Int, GeneratedMediaCaptureWireEvent.allCases.count)
+        XCTAssertEqual(generation["resultTypeCount"] as? Int, GeneratedMediaCaptureWireResult.allCases.count)
+        XCTAssertEqual(generation["failureTypeCount"] as? Int, GeneratedMediaCaptureWireFailure.allCases.count)
+        XCTAssertEqual(generation["errorCount"] as? Int, GeneratedMediaCaptureWireError.allCases.count)
+        XCTAssertEqual(generation["payloadDescriptorCount"] as? Int, generatedPayloadDescriptors.count)
+        XCTAssertEqual(generation["fieldDescriptorCount"] as? Int, generatedMediaCaptureWireFields.count)
         let current = try XCTUnwrap(golden["current"] as? [String: Any])
         XCTAssertEqual(current["capabilityVersion"] as? Int, 4)
         XCTAssertEqual(current["wireVersion"] as? Int, 3)

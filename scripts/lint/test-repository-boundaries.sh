@@ -37,11 +37,10 @@ cat > "$valid_dependencies" <<'JSON'
   {"name":"app_core","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
   {"name":"app_ui","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
   {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
   {"name":"app_media","kind":"root","source":"root","directDependencies":["app_core","app_ui"],"devDependencies":[]},
   {"name":"app_media_capture_bridge","kind":"root","source":"root","directDependencies":[],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]}
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_data","app_features","app_ui"],"devDependencies":[]}
 ]}
 JSON
 
@@ -104,11 +103,10 @@ cat > "$invalid_dependencies" <<'JSON'
   {"name":"app_core","kind":"root","source":"root","directDependencies":["app_features","app_media_capture_bridge"],"devDependencies":[]},
   {"name":"app_ui","kind":"root","source":"root","directDependencies":["app_media_capture_bridge"],"devDependencies":[]},
   {"name":"app_data","kind":"root","source":"root","directDependencies":["app_core","app_media","app_media_capture_bridge"],"devDependencies":[]},
-  {"name":"app_im","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
   {"name":"app_media","kind":"root","source":"root","directDependencies":["app_core","app_features","app_media_capture_bridge","app_ui"],"devDependencies":[]},
   {"name":"app_media_capture_bridge","kind":"root","source":"root","directDependencies":["app_core"],"devDependencies":[]},
-  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
-  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_core","app_data","app_features","app_im","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]}
+  {"name":"app_features","kind":"root","source":"root","directDependencies":["app_core","app_data","app_media","app_media_capture_bridge","app_ui"],"devDependencies":[]},
+  {"name":"demo_app","kind":"root","source":"root","directDependencies":["app_data","app_features","app_ui"],"devDependencies":[]}
 ]}
 JSON
 
@@ -198,3 +196,5 @@ if bash "$ROOT/scripts/dart-tool.sh" run tool/check_flutter_plugin_discovery.dar
 fi
 
 echo "[lint-test] 仓库边界 Fixture 通过。"
+
+bash "$ROOT/scripts/dart-tool.sh" test test/package_dependency_checker_test.dart

@@ -3,39 +3,37 @@ import Foundation
 import MediaCapture
 
 package enum MediaCaptureWireCodec {
-    package static let methods: Set<String> = [
-        "start_session",
-        "take_photo",
-        "start_recording",
-        "stop_recording",
-        "switch_camera",
-        "set_flash_mode",
-        "set_focus_point",
-        "set_zoom",
-        "retake",
-        "confirm",
-        "cancel",
-        "release_media",
-        "read_media_thumbnail",
-        "present_capture_flow",
-        "dismiss_capture_flow",
-        "materialize_media_resource",
-        "release_materialized_media",
-    ]
+    private static let generatedFieldsById = Dictionary(
+        uniqueKeysWithValues: generatedMediaCaptureWireFields.map { ($0.id, $0) }
+    )
+    private static let generatedPayloadsById = Dictionary(
+        uniqueKeysWithValues: generatedPayloadDescriptors.map { ($0.id, $0) }
+    )
+    package static let methods = Set(GeneratedMediaCaptureWireMethod.allCases.map(\.rawValue))
+    static let generatedPayloadDescriptorCoverage: Set<String> = Set(
+        GeneratedMediaCaptureWireMethod.allCases.map(requestPayloadId)
+            + GeneratedMediaCaptureWireResult.allCases.map(resultPayloadId)
+            + GeneratedMediaCaptureWireEvent.allCases.map(eventPayloadId)
+            + ["session_timeout_failure_payload"]
+    )
 
     package static func decodeRequest(
         operation: String,
         arguments: Any?
     ) throws -> MediaCaptureWireRequest {
-        guard methods.contains(operation) else {
+        guard GeneratedMediaCaptureWireMethod(rawValue: operation) != nil else {
             throw invalidPayload(operation: "unknown_operation", field: "payload", reason: "invalid_enum")
         }
         let envelope = try WireObject(arguments, operation: operation, field: "payload")
-        try envelope.requireKeys(["wireVersion", "requestId", "payload"], operation: operation)
+        try requireGeneratedEnvelope(
+            envelope,
+            id: "/lifecycle/requestEnvelope",
+            operation: operation
+        )
         let version = try envelope.integer("wireVersion", operation: operation)
         guard version == Int64(mediaCaptureWireVersion) else {
             throw MediaCaptureWireFailure(
-                code: "incompatible_wire_version",
+                code: GeneratedMediaCaptureWireError.incompatibleWireVersion.rawValue,
                 details: [
                     "actualWireVersion": String(version),
                     "expectedWireVersion": String(mediaCaptureWireVersion),
@@ -60,11 +58,15 @@ package enum MediaCaptureWireCodec {
 
     package static func decodeListenArguments(_ arguments: Any?) throws {
         let envelope = try WireObject(arguments, operation: "unknown_operation", field: "payload")
-        try envelope.requireKeys(["wireVersion"], operation: "unknown_operation")
+        try requireGeneratedEnvelope(
+            envelope,
+            id: "/lifecycle/eventListenEnvelope",
+            operation: "unknown_operation"
+        )
         let version = try envelope.integer("wireVersion", operation: "unknown_operation")
         guard version == Int64(mediaCaptureWireVersion) else {
             throw MediaCaptureWireFailure(
-                code: "incompatible_wire_version",
+                code: GeneratedMediaCaptureWireError.incompatibleWireVersion.rawValue,
                 details: [
                     "actualWireVersion": String(version),
                     "expectedWireVersion": String(mediaCaptureWireVersion),
@@ -79,7 +81,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "session_created",
+            resultType: .sessionCreated,
             payload: ["sessionHandle": outputHandle(handle.rawValue)]
         )
     }
@@ -90,7 +92,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "control_applied",
+            resultType: .controlApplied,
             payload: ["sessionHandle": outputHandle(handle.rawValue)]
         )
     }
@@ -101,7 +103,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "recording_started",
+            resultType: .recordingStarted,
             payload: [
                 "sessionHandle": outputHandle(value.sessionHandle.rawValue),
                 "audioIncluded": value.audioIncluded,
@@ -115,7 +117,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "media_preview",
+            resultType: .mediaPreview,
             payload: try mediaPayload(metadata)
         )
     }
@@ -126,15 +128,29 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "retake_ready",
+            resultType: .retakeReady,
             payload: ["sessionHandle": outputHandle(handle.rawValue)]
         )
     }
 
     package static func confirmedMedia(
         requestId: String,
+        value: MediaCaptureConfirmedValue
+    ) throws -> [String: Any] {
+        try confirmedMedia(requestId: requestId, value: value, resultType: .confirmedMedia)
+    }
+
+    package static func captureFlowConfirmed(
+        requestId: String,
+        value: MediaCaptureConfirmedValue
+    ) throws -> [String: Any] {
+        try confirmedMedia(requestId: requestId, value: value, resultType: .captureFlowConfirmed)
+    }
+
+    private static func confirmedMedia(
+        requestId: String,
         value: MediaCaptureConfirmedValue,
-        resultType: String = "confirmed_media"
+        resultType: GeneratedMediaCaptureWireResult
     ) throws -> [String: Any] {
         var payload = try mediaPayload(value.metadata)
         payload["leaseExpiresAt"] = try epochMilliseconds(value.leaseExpiresAt)
@@ -147,7 +163,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "session_cancelled",
+            resultType: .sessionCancelled,
             payload: ["sessionHandle": outputHandle(handle.rawValue)]
         )
     }
@@ -158,7 +174,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         try result(
             requestId: requestId,
-            resultType: "media_released",
+            resultType: .mediaReleased,
             payload: ["mediaHandle": outputHandle(handle.rawValue)]
         )
     }
@@ -183,11 +199,11 @@ package enum MediaCaptureWireCodec {
         try requireCanonicalFileURI(fileURI)
         return try result(
             requestId: requestId,
-            resultType: "materialized_media_resource",
+            resultType: .materializedMediaResource,
             payload: [
                 "exportHandle": exportHandle,
                 "fileUri": fileURI,
-                "mediaType": metadata.mediaType.rawValue,
+                "mediaType": wireMediaType(metadata.mediaType),
                 "contentType": metadata.mediaType == .photo ? "image/jpeg" : "video/mp4",
                 "byteLength": Int64(metadata.byteLength),
                 "durationMillis": metadata.durationMilliseconds.map { Int64($0) as Any } ?? NSNull(),
@@ -197,7 +213,7 @@ package enum MediaCaptureWireCodec {
     }
 
     package static func materializedMediaReleased(requestId: String) throws -> [String: Any] {
-        try result(requestId: requestId, resultType: "materialized_media_released", payload: [:])
+        try result(requestId: requestId, resultType: .materializedMediaReleased, payload: [:])
     }
 
     package static func thumbnail(
@@ -256,7 +272,7 @@ package enum MediaCaptureWireCodec {
     ) throws -> [String: Any] {
         return try result(
             requestId: requestId,
-            resultType: "media_thumbnail",
+            resultType: .mediaThumbnail,
             payload: [
                 "mediaHandle": try outputHandle(encoded.mediaHandle.rawValue),
                 "thumbnailCopy": encoded.bytes,
@@ -265,28 +281,28 @@ package enum MediaCaptureWireCodec {
                 "thumbnailPixelHeight": Int64(encoded.pixelHeight),
                 "thumbnailContentType": encoded.contentType,
                 "thumbnailOrientationDegrees": Int64(encoded.orientationDegrees),
-                "mediaType": encoded.mediaType.rawValue,
+                "mediaType": wireMediaType(encoded.mediaType),
                 "posterFrameMillis": encoded.posterFrameMilliseconds.map { Int64($0) as Any } ?? NSNull(),
             ]
         )
     }
 
     package static func captureFlowCancelled(requestId: String) throws -> [String: Any] {
-        try result(requestId: requestId, resultType: "capture_flow_cancelled", payload: [:])
+        try result(requestId: requestId, resultType: .captureFlowCancelled, payload: [:])
     }
 
     package static func captureFlowDismissed(requestId: String) throws -> [String: Any] {
-        try result(requestId: requestId, resultType: "capture_flow_dismissed", payload: [:])
+        try result(requestId: requestId, resultType: .captureFlowDismissed, payload: [:])
     }
 
     package static func event(_ event: MediaCaptureEvent) throws -> [String: Any]? {
         switch event {
         case let .sessionReady(snapshot):
-            return eventEnvelope(type: "session_ready", payload: try readyPayload(snapshot))
+            return try eventEnvelope(type: .sessionReady, payload: readyPayload(snapshot))
         case let .sessionFailed(sessionHandle, failure):
             if failure.id == .sessionTimeout {
-                return failureEnvelope(
-                    type: "session_timeout",
+                return try failureEnvelope(
+                    type: .sessionTimeout,
                     payload: ["sessionHandle": try outputHandle(sessionHandle.rawValue)]
                 )
             }
@@ -302,25 +318,25 @@ package enum MediaCaptureWireCodec {
             guard terminalIds.contains(failure.id) else {
                 throw wireEncodingFailure(operation: "unknown_operation")
             }
-            return eventEnvelope(
-                type: "session_failed",
+            return try eventEnvelope(
+                type: .sessionFailed,
                 payload: [
                     "sessionHandle": try outputHandle(sessionHandle.rawValue),
-                    "terminalFailureId": failure.id.rawValue,
+                    "terminalFailureId": try wireCapabilityFailureId(failure.id),
                 ]
             )
         case let .mediaPreviewReady(sessionHandle, metadata):
             var payload = try mediaPayload(metadata)
             payload["sessionHandle"] = try outputHandle(sessionHandle.rawValue)
-            return eventEnvelope(type: "media_preview_ready", payload: payload)
+            return try eventEnvelope(type: .mediaPreviewReady, payload: payload)
         case let .mediaLeaseExpired(handle):
-            return eventEnvelope(
-                type: "media_lease_expired",
+            return try eventEnvelope(
+                type: .mediaLeaseExpired,
                 payload: ["mediaHandle": try outputHandle(handle.rawValue)]
             )
         case let .mediaReadRevoked(handle):
-            return eventEnvelope(
-                type: "media_read_revoked",
+            return try eventEnvelope(
+                type: .mediaReadRevoked,
                 payload: ["mediaHandle": try outputHandle(handle.rawValue)]
             )
         case .renderAttachmentRevoked:
@@ -335,11 +351,17 @@ package enum MediaCaptureWireCodec {
         guard allowedFailures[operation]?.contains(failure.id) == true else {
             return wireEncodingFailure(operation: operation)
         }
+        let failureId: String
+        do {
+            failureId = try wireCapabilityFailureId(failure.id)
+        } catch {
+            return wireEncodingFailure(operation: operation)
+        }
         return MediaCaptureWireFailure(
-            code: failure.id.rawValue,
+            code: failureId,
             details: [
                 "operation": safeOperation(operation),
-                "capabilityFailureId": failure.id.rawValue,
+                "capabilityFailureId": failureId,
             ]
         )
     }
@@ -350,7 +372,7 @@ package enum MediaCaptureWireCodec {
         reason: String
     ) -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "invalid_wire_payload",
+            code: GeneratedMediaCaptureWireError.invalidWirePayload.rawValue,
             details: [
                 "operation": safeOperation(operation),
                 "field": allowedFields.contains(field) ? field : "unknown_field",
@@ -365,7 +387,7 @@ package enum MediaCaptureWireCodec {
     ) -> MediaCaptureWireFailure {
         let safeReason = lifecycleReasons.contains(reason) ? reason : "adapter_disposed"
         return MediaCaptureWireFailure(
-            code: "bridge_unavailable",
+            code: GeneratedMediaCaptureWireError.bridgeUnavailable.rawValue,
             details: ["operation": safeOperation(operation), "lifecycleReason": safeReason]
         )
     }
@@ -376,32 +398,38 @@ package enum MediaCaptureWireCodec {
     ) -> MediaCaptureWireFailure {
         let safeCapacity = capacities.contains(capacity) ? capacity : "pending_requests"
         return MediaCaptureWireFailure(
-            code: "bridge_overloaded",
+            code: GeneratedMediaCaptureWireError.bridgeOverloaded.rawValue,
             details: ["operation": safeOperation(operation), "capacity": safeCapacity]
         )
     }
 
     package static func duplicateRequest(operation: String) -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "duplicate_request",
+            code: GeneratedMediaCaptureWireError.duplicateRequest.rawValue,
             details: ["operation": safeOperation(operation)]
         )
     }
 
     package static func listenerAlreadyActive() -> MediaCaptureWireFailure {
-        MediaCaptureWireFailure(code: "listener_already_active", details: [:])
+        MediaCaptureWireFailure(
+            code: GeneratedMediaCaptureWireError.listenerAlreadyActive.rawValue,
+            details: [:]
+        )
     }
 
     package static func presentationConflict() -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "presentation_conflict",
-            details: ["operation": "present_capture_flow", "capacity": "active_presentation"]
+            code: GeneratedMediaCaptureWireError.presentationConflict.rawValue,
+            details: [
+                "operation": GeneratedMediaCaptureWireMethod.presentCaptureFlow.rawValue,
+                "capacity": "active_presentation",
+            ]
         )
     }
 
     package static func wireEncodingFailure(operation: String) -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "wire_encoding_failed",
+            code: GeneratedMediaCaptureWireError.wireEncodingFailed.rawValue,
             details: [
                 "operation": safeOperation(operation),
                 "field": "unknown_field",
@@ -415,14 +443,14 @@ package enum MediaCaptureWireCodec {
         capacity: String
     ) -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "transfer_store_overloaded",
+            code: GeneratedMediaCaptureWireError.transferStoreOverloaded.rawValue,
             details: ["operation": safeOperation(operation), "capacity": capacity]
         )
     }
 
     package static func transferStoreUnavailable(operation: String) -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "transfer_store_unavailable",
+            code: GeneratedMediaCaptureWireError.transferStoreUnavailable.rawValue,
             details: [
                 "operation": safeOperation(operation),
                 "lifecycleReason": "adapter_disposed",
@@ -432,8 +460,8 @@ package enum MediaCaptureWireCodec {
 
     package static func materializedMediaInvalid() -> MediaCaptureWireFailure {
         MediaCaptureWireFailure(
-            code: "materialized_media_invalid",
-            details: ["operation": "release_materialized_media"]
+            code: GeneratedMediaCaptureWireError.materializedMediaInvalid.rawValue,
+            details: ["operation": GeneratedMediaCaptureWireMethod.releaseMaterializedMedia.rawValue]
         )
     }
 
@@ -441,30 +469,27 @@ package enum MediaCaptureWireCodec {
         operation: String,
         payload: WireObject
     ) throws -> MediaCaptureWirePayload {
-        switch operation {
-        case "start_session", "present_capture_flow":
-            try payload.requireKeys(
-                ["enabledMediaTypes", "preferredCamera", "audioEnabled", "maxVideoDurationMillis"],
-                operation: operation
-            )
+        guard let method = GeneratedMediaCaptureWireMethod(rawValue: operation) else {
+            throw invalidPayload(operation: "unknown_operation", field: "payload", reason: "invalid_enum")
+        }
+        try requireGeneratedPayload(
+            payload,
+            id: requestPayloadId(method),
+            operation: operation
+        )
+        switch method {
+        case .startSession, .presentCaptureFlow:
             let mediaTypeValues = try payload.enumList(
                 "enabledMediaTypes",
                 operation: operation,
-                allowed: ["photo", "video"]
+                allowed: generatedField("enabled_media_types").enumValues
             )
             let preferredCamera = try payload.enumValue(
                 "preferredCamera",
                 operation: operation,
-                allowed: ["rear", "front"]
+                allowed: generatedField("preferred_camera").enumValues
             )
             let duration = try payload.integer("maxVideoDurationMillis", operation: operation)
-            guard (1 ... 60_000).contains(duration) else {
-                throw invalidPayload(
-                    operation: operation,
-                    field: "maxVideoDurationMillis",
-                    reason: "out_of_range"
-                )
-            }
             let types = Set(mediaTypeValues.compactMap(MediaType.init(rawValue:)))
             guard types.count == mediaTypeValues.count,
                   let camera = CameraPosition(rawValue: preferredCamera)
@@ -483,54 +508,32 @@ package enum MediaCaptureWireCodec {
             } catch {
                 throw invalidPayload(operation: operation, field: "payload", reason: "out_of_range")
             }
-        case "take_photo", "start_recording", "stop_recording", "switch_camera", "cancel":
-            try payload.requireKeys(["sessionHandle"], operation: operation)
+        case .takePhoto, .startRecording, .stopRecording, .switchCamera, .cancel:
             return .sessionAction(try payload.sessionHandle(operation: operation))
-        case "set_flash_mode":
-            try payload.requireKeys(["sessionHandle", "flashMode"], operation: operation)
+        case .setFlashMode:
             let value = try payload.enumValue(
                 "flashMode",
                 operation: operation,
-                allowed: ["off", "on", "auto", "torch"]
+                allowed: generatedField("flash_mode").enumValues
             )
             guard let mode = FlashMode(rawValue: value) else {
                 throw invalidPayload(operation: operation, field: "flashMode", reason: "invalid_enum")
             }
             return .flash(sessionHandle: try payload.sessionHandle(operation: operation), mode: mode)
-        case "set_focus_point":
-            try payload.requireKeys(
-                ["sessionHandle", "normalizedX", "normalizedY"],
-                operation: operation
-            )
+        case .setFocusPoint:
             return .focus(
                 sessionHandle: try payload.sessionHandle(operation: operation),
-                normalizedX: try payload.finiteDouble(
-                    "normalizedX",
-                    operation: operation,
-                    range: 0 ... 1
-                ),
-                normalizedY: try payload.finiteDouble(
-                    "normalizedY",
-                    operation: operation,
-                    range: 0 ... 1
-                )
+                normalizedX: try payload.finiteDouble("normalizedX", operation: operation),
+                normalizedY: try payload.finiteDouble("normalizedY", operation: operation)
             )
-        case "set_zoom":
-            try payload.requireKeys(["sessionHandle", "zoomFactor"], operation: operation)
-            let factor = try payload.finiteDouble(
-                "zoomFactor",
-                operation: operation,
-                minimum: 0.01
-            )
+        case .setZoom:
+            let factor = try payload.finiteDouble("zoomFactor", operation: operation)
             return .zoom(sessionHandle: try payload.sessionHandle(operation: operation), factor: factor)
-        case "retake", "confirm", "release_media":
-            try payload.requireKeys(["mediaHandle"], operation: operation)
+        case .retake, .confirm, .releaseMedia:
             return .mediaAction(try payload.mediaHandle(operation: operation))
-        case "materialize_media_resource":
-            try payload.requireKeys(["mediaHandle"], operation: operation)
+        case .materializeMediaResource:
             return .materialize(try payload.mediaHandle(operation: operation))
-        case "release_materialized_media":
-            try payload.requireKeys(["exportHandle"], operation: operation)
+        case .releaseMaterializedMedia:
             let exportHandle = try payload.string("exportHandle", operation: operation)
             guard isExportHandle(exportHandle) else {
                 throw invalidPayload(
@@ -540,18 +543,13 @@ package enum MediaCaptureWireCodec {
                 )
             }
             return .releaseMaterialized(exportHandle: exportHandle)
-        case "read_media_thumbnail":
-            try payload.requireKeys(["mediaHandle", "maxPixelEdge"], operation: operation)
+        case .readMediaThumbnail:
             let edge = try payload.integer("maxPixelEdge", operation: operation)
-            guard (64 ... 512).contains(edge) else {
-                throw invalidPayload(operation: operation, field: "maxPixelEdge", reason: "out_of_range")
-            }
             return .thumbnail(
                 mediaHandle: try payload.mediaHandle(operation: operation),
                 maxPixelEdge: Int(edge)
             )
-        case "dismiss_capture_flow":
-            try payload.requireKeys(["presentationRequestId"], operation: operation)
+        case .dismissCaptureFlow:
             let requestId = try payload.string("presentationRequestId", operation: operation)
             guard isRequestId(requestId) else {
                 throw invalidPayload(
@@ -561,25 +559,231 @@ package enum MediaCaptureWireCodec {
                 )
             }
             return .dismissPresentation(presentationRequestId: requestId)
-        default:
-            throw invalidPayload(operation: "unknown_operation", field: "payload", reason: "invalid_enum")
         }
     }
 
     private static func result(
         requestId: String,
-        resultType: String,
+        resultType: GeneratedMediaCaptureWireResult,
         payload: [String: Any]
     ) throws -> [String: Any] {
         guard isRequestId(requestId) else {
             throw wireEncodingFailure(operation: "unknown_operation")
         }
-        return [
+        try requireGeneratedOutputPayload(id: resultPayloadId(resultType), value: payload)
+        let envelope: [String: Any] = [
             "wireVersion": Int64(mediaCaptureWireVersion),
             "requestId": requestId,
-            "resultType": resultType,
+            "resultType": resultType.rawValue,
             "payload": payload,
         ]
+        requireGeneratedOutputEnvelope(envelope, id: "/lifecycle/resultEnvelope")
+        return envelope
+    }
+
+    private static func requestPayloadId(_ method: GeneratedMediaCaptureWireMethod) -> String {
+        switch method {
+        case .startSession, .presentCaptureFlow:
+            return "start_session_request_payload"
+        case .takePhoto, .startRecording, .stopRecording, .switchCamera, .cancel:
+            return "session_action_request_payload"
+        case .setFlashMode:
+            return "flash_mode_request_payload"
+        case .setFocusPoint:
+            return "focus_point_request_payload"
+        case .setZoom:
+            return "zoom_request_payload"
+        case .retake, .confirm, .releaseMedia:
+            return "media_handle_request_payload"
+        case .readMediaThumbnail:
+            return "media_thumbnail_request_payload"
+        case .materializeMediaResource:
+            return "materialize_media_resource_request_payload"
+        case .releaseMaterializedMedia:
+            return "release_materialized_media_request_payload"
+        case .dismissCaptureFlow:
+            return "dismiss_capture_flow_request_payload"
+        }
+    }
+
+    private static func resultPayloadId(_ result: GeneratedMediaCaptureWireResult) -> String {
+        switch result {
+        case .sessionCreated:
+            return "session_created_result_payload"
+        case .controlApplied:
+            return "control_applied_result_payload"
+        case .recordingStarted:
+            return "recording_started_result_payload"
+        case .mediaPreview:
+            return "media_preview_result_payload"
+        case .retakeReady:
+            return "retake_ready_result_payload"
+        case .confirmedMedia, .captureFlowConfirmed:
+            return "confirmed_media_result_payload"
+        case .sessionCancelled:
+            return "session_cancelled_result_payload"
+        case .mediaReleased:
+            return "media_released_result_payload"
+        case .mediaThumbnail:
+            return "media_thumbnail_result_payload"
+        case .materializedMediaResource:
+            return "materialized_media_result_payload"
+        case .materializedMediaReleased:
+            return "materialized_media_released_result_payload"
+        case .captureFlowDismissed, .captureFlowCancelled:
+            return "capture_flow_dismissed_result_payload"
+        }
+    }
+
+    private static func eventPayloadId(_ event: GeneratedMediaCaptureWireEvent) -> String {
+        switch event {
+        case .sessionReady:
+            return "session_ready_event_payload"
+        case .sessionFailed:
+            return "session_failed_event_payload"
+        case .mediaPreviewReady:
+            return "media_preview_ready_event_payload"
+        case .mediaLeaseExpired:
+            return "media_lease_expired_event_payload"
+        case .mediaReadRevoked:
+            return "media_read_revoked_event_payload"
+        }
+    }
+
+    private static func generatedField(_ id: String) -> GeneratedWireFieldDescriptor {
+        guard let field = generatedFieldsById[id] else {
+            preconditionFailure("Generated Media Capture Wire field is missing")
+        }
+        return field
+    }
+
+    private static func requireGeneratedEnvelope(
+        _ value: WireObject,
+        id: String,
+        operation: String
+    ) throws {
+        precondition(generatedEnvelopeUnknownFieldPolicies[id] == "reject")
+        guard let keys = generatedEnvelopeRequiredKeys[id] else {
+            preconditionFailure("Generated Media Capture Wire envelope is missing")
+        }
+        try value.requireKeys(keys, operation: operation)
+    }
+
+    private static func requireGeneratedPayload(
+        _ value: WireObject,
+        id: String,
+        operation: String
+    ) throws {
+        guard let payload = generatedPayloadsById[id] else {
+            preconditionFailure("Generated Media Capture Wire payload is missing")
+        }
+        precondition(payload.unknownFieldPolicy == "reject")
+        let fields = payload.fieldIds.map(generatedField)
+        let allowedKeys = Set(fields.map(\.key))
+        if let missing = fields.first(where: { $0.required && !value.contains($0.key) }) {
+            throw invalidPayload(
+                operation: operation,
+                field: missing.key,
+                reason: "missing_required_field"
+            )
+        }
+        if value.keys.contains(where: { !allowedKeys.contains($0) }) {
+            throw invalidPayload(operation: operation, field: "unknown_field", reason: "unknown_field")
+        }
+        for field in fields where value.contains(field.key) {
+            let fieldValue = value.rawValue(field.key)
+            guard generatedMatchesWireFieldPrimitive(fieldValue, field: field) else {
+                throw invalidPayload(
+                    operation: operation,
+                    field: field.key,
+                    reason: primitiveFailureReason(fieldValue, field: field)
+                )
+            }
+        }
+    }
+
+    private static func primitiveFailureReason(
+        _ value: Any?,
+        field: GeneratedWireFieldDescriptor
+    ) -> String {
+        guard let value, !(value is NSNull) else { return "null_not_allowed" }
+        let typeMatches: Bool
+        switch field.type {
+        case "bool":
+            typeMatches = generatedIsWireBoolean(value)
+        case "bytes":
+            typeMatches = value is Data
+        case "double":
+            typeMatches = generatedWireDouble(value) != nil
+        case "int":
+            typeMatches = generatedWireInteger(value) != nil
+        case "string":
+            typeMatches = value is String
+        case "list_string":
+            typeMatches = (value as? [Any])?.allSatisfy { $0 is String } == true
+        default:
+            typeMatches = false
+        }
+        guard typeMatches else { return "type_mismatch" }
+        if let number = generatedWireDouble(value), field.finite, !number.isFinite {
+            return "non_finite"
+        }
+        if let string = value as? String,
+           !field.enumValues.isEmpty,
+           !field.enumValues.contains(string) {
+            return "invalid_enum"
+        }
+        if let values = value as? [String], !field.enumValues.isEmpty {
+            if !values.allSatisfy(field.enumValues.contains) { return "invalid_enum" }
+            if Set(values).count != values.count { return "invalid_format" }
+        }
+        return "out_of_range"
+    }
+
+    private static func requireGeneratedOutputEnvelope(_ value: [String: Any], id: String) {
+        precondition(generatedEnvelopeUnknownFieldPolicies[id] == "reject")
+        guard let keys = generatedEnvelopeRequiredKeys[id] else {
+            preconditionFailure("Generated Media Capture Wire envelope is missing")
+        }
+        precondition(generatedHasExactWireKeys(value, requiredKeys: keys))
+    }
+
+    private static func requireGeneratedOutputPayload(
+        id: String,
+        value: [String: Any]
+    ) throws {
+        guard let payload = generatedPayloadsById[id] else {
+            preconditionFailure("Generated Media Capture Wire payload is missing")
+        }
+        precondition(payload.unknownFieldPolicy == "reject")
+        let fields = payload.fieldIds.map(generatedField)
+        let allowedKeys = Set(fields.map(\.key))
+        guard value.keys.allSatisfy(allowedKeys.contains),
+              fields.allSatisfy({ !$0.required || value[$0.key] != nil }),
+              try fields.filter({ value[$0.key] != nil }).allSatisfy({ field in
+                  try matchesGeneratedOutputPrimitive(value[field.key], field: field)
+              })
+        else {
+            throw wireEncodingFailure(operation: "unknown_operation")
+        }
+    }
+
+    private static func matchesGeneratedOutputPrimitive(
+        _ value: Any?,
+        field: GeneratedWireFieldDescriptor
+    ) throws -> Bool {
+        if value is NSNull {
+            return generatedMatchesWireFieldPrimitive(nil, field: field)
+        }
+        if let bytes = value as? MediaCaptureWireBytes {
+            var copy = bytes.copyData()
+            defer {
+                copy.resetBytes(in: 0 ..< copy.count)
+                copy.removeAll(keepingCapacity: false)
+            }
+            return generatedMatchesWireFieldPrimitive(copy, field: field)
+        }
+        return generatedMatchesWireFieldPrimitive(value, field: field)
     }
 
     private static func readyPayload(_ value: SessionReadySnapshot) throws -> [String: Any] {
@@ -597,10 +801,10 @@ package enum MediaCaptureWireCodec {
         }
         return [
             "sessionHandle": try outputHandle(value.sessionHandle.rawValue),
-            "activeCamera": value.activeCamera.rawValue,
-            "availableCameras": value.availableCameras.map(\.rawValue),
+            "activeCamera": wireCamera(value.activeCamera),
+            "availableCameras": value.availableCameras.map(wireCamera),
             "switchCameraSupported": value.switchCameraSupported,
-            "supportedFlashModes": value.supportedFlashModes.map(\.rawValue),
+            "supportedFlashModes": value.supportedFlashModes.map(wireFlashMode),
             "focusPointSupported": value.focusPointSupported,
             "minZoomFactor": value.minimumZoomFactor,
             "maxZoomFactor": value.maximumZoomFactor,
@@ -619,7 +823,7 @@ package enum MediaCaptureWireCodec {
         }
         return [
             "mediaHandle": try outputHandle(value.mediaHandle.rawValue),
-            "mediaType": value.mediaType.rawValue,
+            "mediaType": wireMediaType(value.mediaType),
             "pixelWidth": Int64(value.pixelWidth),
             "pixelHeight": Int64(value.pixelHeight),
             "durationMillis": value.durationMilliseconds.map { Int64($0) as Any } ?? NSNull(),
@@ -628,12 +832,32 @@ package enum MediaCaptureWireCodec {
         ]
     }
 
-    private static func eventEnvelope(type: String, payload: [String: Any]) -> [String: Any] {
-        ["wireVersion": Int64(mediaCaptureWireVersion), "eventType": type, "payload": payload]
+    private static func eventEnvelope(
+        type: GeneratedMediaCaptureWireEvent,
+        payload: [String: Any]
+    ) throws -> [String: Any] {
+        try requireGeneratedOutputPayload(id: eventPayloadId(type), value: payload)
+        let envelope: [String: Any] = [
+            "wireVersion": Int64(mediaCaptureWireVersion),
+            "eventType": type.rawValue,
+            "payload": payload,
+        ]
+        requireGeneratedOutputEnvelope(envelope, id: "/lifecycle/eventEnvelope")
+        return envelope
     }
 
-    private static func failureEnvelope(type: String, payload: [String: Any]) -> [String: Any] {
-        ["wireVersion": Int64(mediaCaptureWireVersion), "failureType": type, "payload": payload]
+    private static func failureEnvelope(
+        type: GeneratedMediaCaptureWireFailure,
+        payload: [String: Any]
+    ) throws -> [String: Any] {
+        try requireGeneratedOutputPayload(id: "session_timeout_failure_payload", value: payload)
+        let envelope: [String: Any] = [
+            "wireVersion": Int64(mediaCaptureWireVersion),
+            "failureType": type.rawValue,
+            "payload": payload,
+        ]
+        requireGeneratedOutputEnvelope(envelope, id: "/lifecycle/failureEnvelope")
+        return envelope
     }
 
     private static func epochMilliseconds(_ date: Date) throws -> Int64 {
@@ -703,7 +927,10 @@ package enum MediaCaptureWireCodec {
     }
 
     private static func isExportHandle(_ value: String) -> Bool {
-        (22 ... 64).contains(value.utf8.count) && value.utf8.allSatisfy {
+        guard let lengths = generatedOpaqueHandleLengths["export_handle"] else {
+            preconditionFailure("Generated export handle boundary is missing")
+        }
+        return lengths.contains(value.utf8.count) && value.utf8.allSatisfy {
             ($0 >= 0x41 && $0 <= 0x5a) ||
                 ($0 >= 0x61 && $0 <= 0x7a) ||
                 ($0 >= 0x30 && $0 <= 0x39) ||
@@ -720,11 +947,24 @@ package enum MediaCaptureWireCodec {
     }
 
     private static func isRequestId(_ value: String) -> Bool {
-        isAsciiIdentifier(value, minimumLength: 1, maximumLength: 128)
+        precondition(generatedRequestIdWireType == "string")
+        precondition(generatedRequestIdFormat == "ascii_token")
+        precondition(generatedRequestIdPattern == "^[A-Za-z0-9_-]{1,128}$")
+        return isAsciiIdentifier(
+            value,
+            minimumLength: generatedRequestIdMinLength,
+            maximumLength: generatedRequestIdMaxLength
+        )
     }
 
     package static func isOpaqueHandle(_ value: String) -> Bool {
-        (1 ... 128).contains(value.utf8.count)
+        guard let sessionLengths = generatedOpaqueHandleLengths["session_handle"],
+              let mediaLengths = generatedOpaqueHandleLengths["media_handle"]
+        else {
+            preconditionFailure("Generated opaque handle boundary is missing")
+        }
+        precondition(sessionLengths == mediaLengths)
+        return sessionLengths.contains(value.utf8.count)
     }
 
     private static func isAsciiIdentifier(
@@ -740,27 +980,67 @@ package enum MediaCaptureWireCodec {
         }
     }
 
-    private static let allowedFields: Set<String> = [
-        "wireVersion", "requestId", "payload", "enabledMediaTypes", "preferredCamera",
-        "audioEnabled", "maxVideoDurationMillis", "sessionHandle", "flashMode",
-        "normalizedX", "normalizedY", "zoomFactor", "mediaHandle", "maxPixelEdge",
-        "presentationRequestId", "exportHandle", "unknown_field",
-    ]
+    private static func generatedErrorDetailValues(_ key: String) -> Set<String> {
+        guard let descriptor = generatedErrorDetailDescriptors.first(where: { $0.key == key }) else {
+            preconditionFailure("Generated Media Capture Wire error detail is missing")
+        }
+        return descriptor.enumValues
+    }
 
-    private static let allowedReasons: Set<String> = [
-        "missing_required_field", "unknown_field", "type_mismatch", "null_not_allowed",
-        "non_finite", "out_of_range", "invalid_enum", "invalid_format", "integer_overflow",
-        "result_type_mismatch", "native_value_unencodable",
-    ]
+    private static func wireMediaType(_ value: MediaType) -> String {
+        let wireValue: String
+        switch value {
+        case .photo:
+            wireValue = "photo"
+        case .video:
+            wireValue = "video"
+        }
+        precondition(generatedField("media_type").enumValues.contains(wireValue))
+        return wireValue
+    }
 
-    private static let lifecycleReasons: Set<String> = [
-        "engine_detached", "activity_destroyed", "view_controller_destroyed", "adapter_disposed",
-    ]
+    private static func wireCamera(_ value: CameraPosition) -> String {
+        let wireValue: String
+        switch value {
+        case .rear:
+            wireValue = "rear"
+        case .front:
+            wireValue = "front"
+        }
+        precondition(generatedField("active_camera").enumValues.contains(wireValue))
+        return wireValue
+    }
 
-    private static let capacities: Set<String> = [
-        "active_presentation", "active_exports", "active_export_bytes",
-        "release_tombstones", "completed_request_tombstones", "pending_requests",
-    ]
+    private static func wireFlashMode(_ value: FlashMode) -> String {
+        let wireValue: String
+        switch value {
+        case .off:
+            wireValue = "off"
+        case .on:
+            wireValue = "on"
+        case .auto:
+            wireValue = "auto"
+        case .torch:
+            wireValue = "torch"
+        }
+        precondition(generatedField("flash_mode").enumValues.contains(wireValue))
+        return wireValue
+    }
+
+    private static func wireCapabilityFailureId(_ value: MediaCaptureFailure.ID) throws -> String {
+        guard let descriptor = generatedErrorDescriptors.first(where: {
+            $0.source == "capability_failure" && $0.capabilityFailureId == value.rawValue
+        }) else {
+            throw wireEncodingFailure(operation: "unknown_operation")
+        }
+        precondition(descriptor.code == value.rawValue)
+        return descriptor.code
+    }
+
+    private static let allowedFields = generatedErrorDetailValues("field")
+    private static let allowedReasons = generatedErrorDetailValues("reason")
+    private static let lifecycleReasons = generatedErrorDetailValues("lifecycleReason")
+    private static let capacities = generatedErrorDetailValues("capacity")
 
     private static let allowedFailures: [String: Set<MediaCaptureFailure.ID>] = [
         "start_session": [.invalidArgument, .unsupportedCapability, .sessionConflict],
@@ -816,6 +1096,12 @@ package enum MediaCaptureWireCodec {
 
 private struct WireObject {
     private let storage: [String: Any]
+
+    var keys: Dictionary<String, Any>.Keys { storage.keys }
+
+    func contains(_ key: String) -> Bool { storage[key] != nil }
+
+    func rawValue(_ key: String) -> Any? { storage[key] }
 
     init(_ value: Any?, operation: String, field: String) throws {
         guard let dictionary = value as? [AnyHashable: Any] else {

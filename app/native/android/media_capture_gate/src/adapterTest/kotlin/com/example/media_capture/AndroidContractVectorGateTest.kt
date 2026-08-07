@@ -112,6 +112,7 @@ class AndroidContractVectorGateTest {
                 "schemaVersion",
                 "contractId",
                 "consumerBindings",
+                "generation",
                 "current",
                 "history",
                 "transfer",
@@ -120,6 +121,34 @@ class AndroidContractVectorGateTest {
             ),
             golden.keys().asSequence().toSet(),
         )
+        val generation = golden.getJSONObject("generation")
+        assertEquals(
+            setOf(
+                "generatorVersion",
+                "normalizedDescriptorDigest",
+                "wireVersion",
+                "methodCount",
+                "eventCount",
+                "resultTypeCount",
+                "failureTypeCount",
+                "errorCount",
+                "payloadDescriptorCount",
+                "fieldDescriptorCount",
+                "contractImplementationDigest",
+                "outputImplementationDigests",
+            ),
+            generation.keys().asSequence().toSet(),
+        )
+        val generated = wire.getJSONObject("codeGeneration").getJSONObject("generated")
+        assertEquals(1, generation.getInt("generatorVersion"))
+        assertEquals(wire.getInt("wireVersion"), generation.getInt("wireVersion"))
+        assertEquals(generated.getJSONArray("methodIds").length(), generation.getInt("methodCount"))
+        assertEquals(generated.getJSONArray("eventIds").length(), generation.getInt("eventCount"))
+        assertEquals(generated.getJSONArray("resultTypeIds").length(), generation.getInt("resultTypeCount"))
+        assertEquals(generated.getJSONArray("failureTypeIds").length(), generation.getInt("failureTypeCount"))
+        assertEquals(generated.getJSONArray("errorCodes").length(), generation.getInt("errorCount"))
+        assertEquals(generated.getJSONArray("payloadIds").length(), generation.getInt("payloadDescriptorCount"))
+        assertEquals(generated.getJSONArray("fieldIds").length(), generation.getInt("fieldDescriptorCount"))
         val current = golden.getJSONObject("current")
         assertEquals(4, current.getInt("capabilityVersion"))
         assertEquals(MEDIA_CAPTURE_WIRE_VERSION, current.getInt("wireVersion"))

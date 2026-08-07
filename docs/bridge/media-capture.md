@@ -11,6 +11,11 @@
 Channel 边界把 Wire Model 映射为各自 Native Module Model，Native Module 不读取 Wire Contract，
 Host 只装配和注册。
 
+稳定 Wire 标识、payload/field descriptor 和基础 envelope/field primitive 的生成范围与命令见
+[Bridge Wire 代码生成规则](./code-generation.md)。`codeGeneration` manifest 只引用本 Contract 已有 ID
+和 JSON Pointer；它不提升 Wire 版本，也不生成 Capability mapping、dispatch、线程、生命周期、资源、
+transfer store、presentation 或文件系统行为。
+
 ## 版本与 Channel
 
 - Wire Contract：`media_capture_wire`，`wireVersion: 3`。

@@ -1,0 +1,51 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\nmake evidence-test\nmake evidence-lint\nruby scripts/quality/validate-evidence-workflow.rb .github/workflows/ci.yml'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "21.0.10" 2026-01-20
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: f3e8662036cae22c095dcf63fd46ec04ff72a4da21973a6d0a5dc1a373fc3847
+Original output bytes: 882
+Original output lines: 15
+Summary output bytes: 881
+Summary output lines: 15
+Truncated: no
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+bash scripts/quality/test-evidence.sh
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+[evidence-lint] 测试证据脱敏检查通过。
+Ignoring ffi-1.16.3 because its extensions are not built. Try: gem pristine ffi --version 1.16.3
+[evidence-test] 证据采集、脱敏和门禁 Fixture 通过。
+bash scripts/quality/evidence-lint.sh
+Ignoring ffi-1.16.3 because its extensions are not built. Try: gem pristine ffi --version 1.16.3
+[evidence-lint] 测试证据脱敏检查通过。
+Ignoring ffi-1.16.3 because its extensions are not built. Try: gem pristine ffi --version 1.16.3
+```

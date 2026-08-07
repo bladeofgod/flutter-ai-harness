@@ -37,6 +37,7 @@ class _DemoAppState extends State<DemoApp> {
   late final AuthStateCoordinator _authStateCoordinator;
   late final bool _ownsAuthStateCoordinator;
   late final GoRouter _router;
+  late final VoidCallback _detachSessionReset;
 
   @override
   void initState() {
@@ -49,7 +50,10 @@ class _DemoAppState extends State<DemoApp> {
     _ownsAuthStateCoordinator = widget.authStateCoordinator == null;
     _authStateCoordinator =
         widget.authStateCoordinator ?? AuthStateCoordinator();
-    _authStateCoordinator.attachSessionReset(
+    if (!_ownsFeaturesRegistry && !_authStateCoordinator.isLoggedIn) {
+      _featuresRegistry.resetUserSession();
+    }
+    _detachSessionReset = _authStateCoordinator.attachSessionReset(
       _featuresRegistry.resetUserSession,
     );
     _router = createDemoRouter(
@@ -72,6 +76,7 @@ class _DemoAppState extends State<DemoApp> {
   @override
   void dispose() {
     _router.dispose();
+    _detachSessionReset();
     if (_ownsFeaturesRegistry) {
       unawaited(_disposeOwnedFeaturesRegistry());
     }

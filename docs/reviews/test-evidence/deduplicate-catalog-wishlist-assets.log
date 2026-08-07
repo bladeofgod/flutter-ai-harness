@@ -1,0 +1,93 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\nTOOL_WORKDIR=app/packages/app_data bash scripts/flutter-tool.sh test test/wishlist\nTOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_catalog\nTOOL_WORKDIR=app/packages/app_features bash scripts/flutter-tool.sh test test/feature_wishlist\nif rg -n --hidden --glob "!**/build/**" --glob "!**/.dart_tool/**" --glob "!**/test/**" "recent_hat|recent_pink_dress|recent_red_dress|assets/images/wishlist/" app/apps app/packages app/native; then exit 1; fi\ntest ! -e app/packages/app_features/assets/images/wishlist\nshasum -a 256 app/packages/app_features/assets/images/catalog/products/shop_product_02.png app/packages/app_features/assets/images/catalog/products/shop_product_03.png app/packages/app_features/assets/images/catalog/products/shop_product_04.png\nprintf "asset deduplication verification passed\\n"'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "21.0.10" 2026-01-20
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: b5fb9c3d1451e21276fbd9cc84ea748ae82999211560c48f2457cbf6ce5d7f89
+Original output bytes: 12854
+Original output lines: 172
+Summary output bytes: 4464
+Summary output lines: 57
+Truncated: yes
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  dart_style 3.1.7 (3.1.12 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+00:00 +8: <repo>/app/packages/app_data/test/wishlist/wishlist_local_data_source_test.dart: rejects invalid mutation payload without changing state
+00:00 +9: All tests passed!
+Resolving dependencies in `<repo>/app`...
+00:02 +24: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: buildShopRoutes renders real local Catalog data at /shop
+00:02 +25: All tests passed!
+Resolving dependencies in `<repo>/app`...
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+...[summary byte limit reached; use the redacted CI artifact for full output]...
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart
+00:00 +0: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist loads data and removes optimistically once
+00:00 +1: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist exposes failure and retry recovery
+00:00 +2: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Wishlist ignores stale full snapshots from concurrent removals
+00:00 +3: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed filters deterministic dates
+00:00 +4: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: calendar cancel and Back preserve the committed date
+00:00 +5: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_controllers_test.dart: Recently Viewed exposes failure and retry recovery
+00:00 +6: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_api_test.dart: LocalWishlistApi preserves one handler process state
+00:00 +7: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_assets_test.dart: Wishlist reuses bundled Catalog assets without duplicate keys
+00:00 +8: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+00:01 +9: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: removing the last item switches to empty recommendations
+00:01 +10: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty state exposes semantics and remains scrollable
+00:01 +11: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: empty recommendations expose explicit public actions
+00:01 +12: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: route opens date picker, commits and cancels selection
+00:01 +13: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+00:02 +14: All tests passed!
+b2743d8386cdb54b10005968f512f4f19d570b2abf93462a129f430823398251  app/packages/app_features/assets/images/catalog/products/shop_product_02.png
+13f312380775702d4a73cde53201ab6d50cf55043e706f14db44c42c3d28725d  app/packages/app_features/assets/images/catalog/products/shop_product_03.png
+6439bd8738a4b952a29248415ce4e39778d122daeb012d2acb3f3064951bef45  app/packages/app_features/assets/images/catalog/products/shop_product_04.png
+asset deduplication verification passed
+```

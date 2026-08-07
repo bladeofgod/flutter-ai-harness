@@ -1,0 +1,1523 @@
+## Command
+
+```text
+make bootstrap
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh pub get
+Resolving dependencies...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+32 packages have newer versions incompatible with dependency constraints.
+Try `dart pub outdated` for more information.
+bash scripts/dart-tool.sh run melos bootstrap
+melos bootstrap
+  └> <repo>/app
+
+Running "flutter pub get" in workspace...
+  > SUCCESS
+
+Generating IntelliJ IDE files...
+  > SUCCESS
+
+ -> 7 packages bootstrapped
+bash scripts/git-hooks/install.sh
+Git hooks 已就绪：
+  pre-commit：Dart 格式 + Proto 生成同步
+  pre-push：Codex 适配同步检查 + 静态分析 + 仓库边界 lint
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 381 files (0 changed) in 1.74 seconds.
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app bash scripts/dart-tool.sh test test/package_dependency_checker_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:09 +3: distinguishes a test-only production dependency
+00:09 +4: reports an unused workspace dev dependency
+00:09 +5: rejects Demo direct access to lower-level runtime packages
+00:09 +6: rejects a redundant direct plugin discovery edge
+00:09 +7: requires every declared Android and iOS plugin entry
+00:09 +8: reports a package without real consumers or a structured role
+00:09 +9: reports source imports for unknown packages
+00:09 +10: reports unknown workspace packages in matrix mode
+00:09 +11: fails malformed graph metadata without leaking input paths
+00:17 +12: reports the current cleanup baseline exactly
+00:28 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+make test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/quality/run-tests.sh
+[test] demo
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/apps/demo/test/auth/auth_state_test.dart
+00:00 +0: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator starts with a consistent logged-out state
+00:00 +1: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator owns state independently from other coordinators
+00:00 +2: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator publishes one consistent snapshot after authentication
+00:00 +3: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator does not notify when the same authentication is committed twice
+00:00 +4: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator updates only a user matching the current session
+00:00 +5: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator rejects a mismatched current user without changing state
+00:00 +6: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator clears session and user before one logout notification
+00:00 +7: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator dispatches constructor and attached resets in registration order
+00:00 +8: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator detach removes only its registration and is idempotent
+00:00 +9: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator same callback can be registered and detached independently
+00:00 +10: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator self-detach does not skip callbacks in the dispatch snapshot
+00:00 +11: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator registration during dispatch starts with the next logout
+00:00 +12: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator logout, detach, and dispose remain idempotent
+00:00 +13: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator reset failure cannot block logout or later registrations
+00:00 +14: <repo>/app/apps/demo/test/auth/auth_state_test.dart: AuthStateCoordinator reentrant logout does not recursively dispatch resets
+00:00 +15: <repo>/app/apps/demo/test/demo_app_test.dart: (setUpAll)
+00:00 +15: <repo>/app/apps/demo/test/demo_app_test.dart: renders the Shoppe welcome screen
+00:00 +16: <repo>/app/apps/demo/test/router/settings_router_test.dart: guards every logged-out Settings deep link
+00:00 +17: <repo>/app/apps/demo/test/router/demo_router_test.dart: redirects a logged-out profile deep link to Welcome
+00:01 +18: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +19: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +20: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +21: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +22: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +23: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +24: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +25: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +26: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +27: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +28: <repo>/app/apps/demo/test/router/account_services_router_test.dart: guards account service deep links while logged out
+00:01 +29: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +30: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:03 +31: <repo>/app/apps/demo/test/router/settings_router_test.dart: opens Settings from Profile and publishes Profile edits
+00:04 +32: <repo>/app/apps/demo/test/router/demo_router_test.dart: navigates all five authenticated branches through the Shell
+00:05 +33: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:05 +34: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:05 +35: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Profile opens Rewards and local Support through public routes
+00:06 +36: <repo>/app/apps/demo/test/router/demo_router_test.dart: preserves branch child stacks and repeats return to branch root
+00:06 +37: <repo>/app/apps/demo/test/router/demo_router_test.dart: preserves branch child stacks and repeats return to branch root
+00:06 +38: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:07 +39: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:07 +40: <repo>/app/apps/demo/test/router/checkout_router_test.dart: guards an unauthenticated Checkout deep link
+00:07 +41: <repo>/app/apps/demo/test/router/account_services_router_test.dart: Settings opens shared payment methods and addresses
+00:08 +42: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:08 +43: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:08 +44: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:08 +45: <repo>/app/apps/demo/test/router/demo_router_test.dart: Back leaves a child branch without returning to Auth and keeps scroll
+00:09 +46: <repo>/app/apps/demo/test/router/discovery_router_test.dart: guards Search, Promotions and Orders deep links when logged out
+00:09 +47: <repo>/app/apps/demo/test/router/discovery_router_test.dart: guards Search, Promotions and Orders deep links when logged out
+00:10 +48: <repo>/app/apps/demo/test/router/discovery_router_test.dart: guards Search, Promotions and Orders deep links when logged out
+00:10 +49: <repo>/app/apps/demo/test/router/discovery_router_test.dart: guards Search, Promotions and Orders deep links when logged out
+00:10 +50: <repo>/app/apps/demo/test/router/product_router_test.dart: opens Product detail from an authenticated deep link
+00:10 +51: <repo>/app/apps/demo/test/router/product_router_test.dart: opens Product detail from an authenticated deep link
+00:10 +52: <repo>/app/apps/demo/test/router/product_router_test.dart: opens Product detail from an authenticated deep link
+00:11 +53: <repo>/app/apps/demo/test/router/product_router_test.dart: opens Product detail from an authenticated deep link
+00:12 +54: <repo>/app/apps/demo/test/router/discovery_router_test.dart: Shop opens Search and Promotions through public routes
+00:12 +55: <repo>/app/apps/demo/test/router/discovery_router_test.dart: Shop opens Search and Promotions through public routes
+00:13 +56: <repo>/app/apps/demo/test/router/product_router_test.dart: Wishlist product action opens the shared Product route
+00:13 +57: <repo>/app/apps/demo/test/router/demo_router_test.dart: Profile uses the avatar returned by registration
+00:13 +58: <repo>/app/apps/demo/test/router/discovery_router_test.dart: opens authenticated Orders Activity outside the Shell
+00:13 +59: <repo>/app/apps/demo/test/router/product_router_test.dart: Wishlist Add to Cart mutates the shared Cart
+00:13 +60: <repo>/app/apps/demo/test/router/product_router_test.dart: Wishlist Add to Cart mutates the shared Cart
+00:13 +61: <repo>/app/apps/demo/test/router/demo_router_test.dart: an unregistered email authenticates once and opens Profile
+00:13 +62: <repo>/app/apps/demo/test/router/product_router_test.dart: Shop and Cart product cards use the same Product route
+00:14 +63: <repo>/app/apps/demo/test/router/product_router_test.dart: Shop and Cart product cards use the same Product route
+00:14 +64: <repo>/app/apps/demo/test/router/product_router_test.dart: Shop and Cart product cards use the same Product route
+00:15 +65: <repo>/app/apps/demo/test/router/product_router_test.dart: Shop and Cart product cards use the same Product route
+00:15 +66: <repo>/app/apps/demo/test/router/product_router_test.dart: Shop and Cart product cards use the same Product route
+00:15 +67: All tests passed!
+[test] app_core
+00:00 +0: loading test/network/api_client_test.dart
+00:00 +0: test/network/api_client_test.dart: ApiClient delegates the request and returns a typed success
+00:00 +1: test/value/media_resource_id_test.dart: MediaResourceId accepts only the closed lowercase representation
+00:00 +2: test/value/media_resource_id_test.dart: MediaResourceId accepts only the closed lowercase representation
+00:00 +3: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception
+00:00 +4: test/network/api_client_test.dart: ApiClient normalizes an unknown request exception
+00:00 +5: test/network/api_client_test.dart: ApiClient normalizes an explicitly wrapped transport exception
+00:00 +6: test/network/api_client_test.dart: ApiClient does not hide unexpected programming exceptions
+00:00 +7: test/network/api_client_test.dart: ApiClient rejects a response payload with the wrong generic type
+00:00 +8: test/network/api_client_test.dart: sensitive diagnostics Secret requires explicit reveal and redacts toString
+00:00 +9: test/network/api_client_test.dart: sensitive diagnostics ApiRequest never expands its payload
+00:00 +10: test/network/api_client_test.dart: sensitive diagnostics ApiFailure never expands its message
+00:00 +11: test/network/api_client_test.dart: sensitive diagnostics ApiResponse never expands a success payload
+00:00 +12: test/network/api_client_test.dart: sensitive diagnostics transport exceptions never expand request keys or causes
+00:00 +13: test/network/api_client_test.dart: sensitive diagnostics normalized failures do not retain exception messages
+00:00 +14: All tests passed!
+[test] app_data
+00:00 +0: loading test/settings/settings_local_data_source_test.dart
+00:00 +0: test/settings/settings_local_data_source_test.dart: loads defaults, updates in memory, and reconstruction resets
+00:00 +1: test/settings/settings_local_data_source_test.dart: loads defaults, updates in memory, and reconstruction resets
+00:00 +2: test/fixture/fixture_api_transport_test.dart: dispatches requests to the owning handler
+00:00 +3: test/settings/settings_models_test.dart: ProfileEditInput normalizes name without exposing contact data
+00:00 +4: test/settings/settings_local_data_source_test.dart: updates Profile while preserving the authenticated user id
+00:00 +5: test/settings/settings_local_data_source_test.dart: updates Profile while preserving the authenticated user id
+00:00 +6: test/fixture/fixture_api_transport_test.dart: unknown requests keep the transport boundary explicit
+00:00 +7: test/settings/settings_local_data_source_test.dart: uses stable request keys
+00:00 +8: test/settings/settings_local_data_source_test.dart: maps malformed payload and rejected mutation to stable failures
+00:00 +9: test/auth/auth_models_test.dart: EmailAddress trims and normalizes valid input
+00:00 +10: test/auth/auth_models_test.dart: EmailAddress rejects malformed input without echoing it
+00:00 +11: test/auth/auth_models_test.dart: Password accepts exactly eight characters
+00:00 +12: test/auth/auth_models_test.dart: Password rejects other lengths without exposing input
+00:00 +13: test/auth/auth_models_test.dart: Password redacts password and Secret diagnostics
+00:00 +14: test/auth/auth_models_test.dart: phone value objects normalizes a formatted local phone number
+00:00 +15: test/auth/auth_models_test.dart: phone value objects rejects invalid country and local numbers
+00:00 +16: test/auth/auth_models_test.dart: UserAvatar defensively owns and returns memory bytes
+00:00 +17: test/auth/auth_models_test.dart: UserAvatar accepts relative asset keys and rejects paths or URIs
+00:00 +18: test/auth/auth_models_test.dart: AuthResult requires matching user and session identifiers
+00:00 +19: test/auth/auth_models_test.dart: User and Session reject empty stable identifiers at runtime
+00:00 +20: test/auth/auth_models_test.dart: auth input diagnostics never contain password values
+00:00 +21: test/auth/auth_local_data_source_test.dart: stateless login fixture finds the deterministic Romina account
+00:00 +22: test/catalog/catalog_models_test.dart: Money keeps minor-unit precision and deterministic formatting
+00:00 +23: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +24: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +25: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +26: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +27: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +28: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +29: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +30: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +31: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +32: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +33: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +34: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +35: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +36: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +37: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +38: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +39: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +40: test/catalog/product_detail_data_test.dart: maps normal and Sale Product detail fixtures
+00:00 +41: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +42: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +43: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +44: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +45: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +46: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +47: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +48: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +49: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +50: test/catalog/catalog_local_data_source_test.dart: loads the stable ordered Shop fixture
+00:00 +51: test/catalog/catalog_local_data_source_test.dart: keeps purchasable Shop summaries aligned with Product Detail
+00:00 +52: test/catalog/catalog_local_data_source_test.dart: uses only local asset keys
+00:00 +53: test/catalog/catalog_local_data_source_test.dart: maps empty groups without inventing content
+00:00 +54: test/catalog/catalog_local_data_source_test.dart: normalizes malformed prices to invalidResponse
+00:00 +55: test/catalog/catalog_local_data_source_test.dart: uses the stable Catalog request key
+00:00 +56: test/catalog/catalog_local_data_source_test.dart: browses deterministic category results and applies filters
+00:00 +57: test/catalog/catalog_local_data_source_test.dart: maps malformed browse response to invalidResponse
+00:00 +58: test/catalog/catalog_local_data_source_test.dart: sends a transport-neutral browse query payload
+00:00 +59: test/rewards/rewards_models_test.dart: computes validated Reward progress and immutable voucher summaries
+00:00 +60: test/rewards/rewards_models_test.dart: rejects invalid balances, progress, and duplicate voucher ids
+00:00 +61: test/rewards/rewards_local_data_source_test.dart: RewardsLocalDataSource loads fixed balance, progress, dates, and Voucher Domain
+00:00 +62: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once
+00:00 +63: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once
+00:00 +64: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource shares one profile store with checkout and publishes once
+00:00 +65: test/checkout/payment_profile_store_test.dart: fixture snapshots are immutable and a new store restores defaults
+00:00 +66: test/checkout/payment_profile_store_test.dart: fixture snapshots are immutable and a new store restores defaults
+00:00 +67: test/checkout/payment_profile_store_test.dart: fixture snapshots are immutable and a new store restores defaults
+00:00 +68: test/checkout/payment_profile_store_test.dart: fixture snapshots are immutable and a new store restores defaults
+00:00 +69: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource a Settings-created Demo card completes Checkout
+00:00 +70: test/checkout/payment_profile_store_test.dart: each successful mutation emits one consistent snapshot
+00:00 +71: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource records only supplied checkout receipts and is idempotent
+00:00 +72: test/checkout/payment_profile_store_test.dart: payment diagnostics never expand card data
+00:00 +73: test/checkout/payment_profile_store_test.dart: payment diagnostics never expand card data
+00:00 +74: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps rejected mutations to a settings failure
+00:00 +75: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps rejected mutations to a settings failure
+00:00 +76: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource rejects malformed receipt payload before storing it
+00:00 +77: test/settings_payment/settings_payment_local_data_source_test.dart: SettingsPaymentLocalDataSource maps malformed success payloads to invalidResponse
+00:00 +78: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource loads totals and applies or clears the deterministic voucher
+00:00 +79: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource reads external Store changes without a second copy
+00:00 +80: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource routes address and masked payment mutations through the Store
+00:00 +81: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps primary success, secondary failure, and idempotent attempt
+00:00 +82: test/checkout/checkout_local_data_source_test.dart: CheckoutLocalDataSource maps malformed payloads and invalid attempt reuse
+00:00 +83: test/search/search_models_test.dart: normalizes text and combines it with the typed Catalog filter
+00:00 +84: test/search/search_models_test.dart: rejects an empty text query
+00:00 +85: test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:00 +86: test/search/search_local_data_source_test.dart: matches normalized fixture fields deterministically
+00:00 +87: test/promotions/promotions_data_test.dart: loads stable promotions, live and story content
+00:00 +88: test/promotions/promotions_data_test.dart: loads stable promotions, live and story content
+00:00 +89: test/promotions/promotions_data_test.dart: loads stable promotions, live and story content
+00:00 +90: test/promotions/promotions_data_test.dart: loads stable promotions, live and story content
+00:00 +91: test/promotions/promotions_data_test.dart: loads stable promotions, live and story content
+00:00 +92: test/promotions/promotions_data_test.dart: loads a Story by stable id and rejects an unknown id
+00:00 +93: test/promotions/promotions_data_test.dart: uses only local immutable assets and collections
+00:00 +94: test/promotions/promotions_data_test.dart: maps malformed payload to invalidResponse
+00:00 +95: test/promotions/promotions_data_test.dart: sends stable request keys and transport-neutral story payload
+00:00 +96: test/promotions/promotions_data_test.dart: model rejects remote assets and empty Story sequences
+00:00 +97: test/profile/profile_dashboard_models_test.dart: aggregate and nested product lists are immutable snapshots
+00:00 +98: test/profile/profile_dashboard_models_test.dart: Flash Sale exposes a static, padded display countdown
+00:00 +99: test/profile/profile_dashboard_models_test.dart: image summaries reject URLs and absolute paths
+00:00 +100: test/profile/profile_dashboard_models_test.dart: counts cannot be negative
+00:00 +101: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture maps the complete Dashboard in design section order
+00:00 +102: test/profile/profile_dashboard_local_data_source_test.dart: deterministic Profile Fixture is stable across repeated reads
+00:00 +103: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +104: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +105: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +106: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +107: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +108: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +109: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +110: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +111: test/support/support_data_test.dart: runs the fixed local conversation and reuses Voucher domain
+00:00 +112: test/cart/cart_models_test.dart: uses product and confirmed variation as a stable line identity
+00:00 +113: test/cart/cart_models_test.dart: uses product and confirmed variation as a stable line identity
+00:00 +114: test/cart/cart_models_test.dart: uses product and confirmed variation as a stable line identity
+00:00 +115: test/support/support_data_test.dart: uses stable request keys and rejects invalid script operations
+00:00 +116: test/support/support_data_test.dart: uses stable request keys and rejects invalid script operations
+00:00 +117: test/support/support_data_test.dart: uses stable request keys and rejects invalid script operations
+00:00 +118: test/support/support_data_test.dart: starting a new route session resets messages and rating
+00:00 +119: test/support/support_data_test.dart: maps malformed fixture payload to invalidResponse
+00:00 +120: test/support/support_data_test.dart: domain collections are immutable and validate finite states
+00:00 +121: test/support/support_data_test.dart: Support poster accepts only bounded sanitized PNG bytes
+00:00 +122: test/cart/cart_local_data_source_test.dart: CartLocalDataSource loads fixed Demo cart and a fresh handler restores it
+00:00 +123: test/cart/cart_local_data_source_test.dart: CartLocalDataSource upserts same variation and separates another variation
+00:00 +124: test/cart/cart_local_data_source_test.dart: CartLocalDataSource updates quantity, removes, and keeps totals exact
+00:00 +125: test/cart/cart_local_data_source_test.dart: CartLocalDataSource checkout clear is atomic and idempotent by attempt ID
+00:00 +126: test/cart/cart_local_data_source_test.dart: CartLocalDataSource maps rejected and malformed responses to stable failures
+00:00 +127: test/orders/orders_local_data_source_test.dart: OrdersLocalDataSource loads deterministic activity and history states
+00:00 +128: test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:00 +129: test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:00 +130: test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:00 +131: test/wishlist/wishlist_local_data_source_test.dart: loads fixed Wishlist and Recently Viewed fixtures
+00:00 +132: test/wishlist/wishlist_models_test.dart: WishlistDate validates calendar dates and crosses month boundaries
+00:00 +133: test/orders/orders_local_data_source_test.dart: OrdersLocalDataSource maps not-found and malformed payloads to stable failures
+00:00 +134: test/wishlist/wishlist_local_data_source_test.dart: removes idempotently until empty
+00:00 +135: test/wishlist/wishlist_local_data_source_test.dart: removes idempotently until empty
+00:00 +136: test/wishlist/wishlist_local_data_source_test.dart: adds a Domain product idempotently through the public mutation
+00:00 +137: test/wishlist/wishlist_local_data_source_test.dart: handler instances isolate state and reconstruction restores fixture
+00:00 +138: test/wishlist/wishlist_local_data_source_test.dart: uses stable request keys
+00:00 +139: test/wishlist/wishlist_local_data_source_test.dart: maps malformed payload to invalidResponse
+00:00 +140: test/wishlist/wishlist_local_data_source_test.dart: rejects invalid mutation payload without changing state
+00:00 +141: All tests passed!
+[test] app_features
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart
+00:00 +0: <repo>/app/packages/app_features/test/feature_categories/categories_assets_test.dart: bundles and decodes every localized Categories product
+00:00 +1: <repo>/app/packages/app_features/test/feature_categories/categories_api_test.dart: Local Catalog Browse API exposes typed Category results
+00:00 +2: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +3: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +4: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +5: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +6: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +7: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:01 +8: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +9: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +10: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +11: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +12: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:02 +13: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: renders node 25 first viewport with one vertical owner
+00:03 +14: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:03 +15: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +16: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +17: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +18: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +19: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +20: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +21: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +22: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:04 +23: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:05 +24: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:05 +25: <repo>/app/packages/app_features/test/feature_settings/settings_payment_routes_test.dart: adds a masked card and shows the result overlay
+00:06 +26: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: filter child Route cancels without pollution and applies draft
+00:07 +27: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: filter child Route cancels without pollution and applies draft
+00:07 +28: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: filter child Route cancels without pollution and applies draft
+00:07 +29: <repo>/app/packages/app_features/test/feature_categories/categories_page_test.dart: filter child Route cancels without pollution and applies draft
+00:07 +30: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:07 +31: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:07 +32: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:07 +33: <repo>/app/packages/app_features/test/feature_welcome/welcome_page_test.dart: matches the reference layout at 375 x 812
+00:08 +34: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +35: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +36: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +37: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +38: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +39: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:08 +40: <repo>/app/packages/app_features/test/feature_settings/settings_pages_test.dart: opens all independent sub routes and supports Back
+00:09 +41: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +42: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +43: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +44: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +45: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +46: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +47: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +48: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +49: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +50: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +51: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +52: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +53: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +54: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +55: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:10 +56: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: applies a shared voucher ID from the Checkout location
+00:11 +57: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:11 +58: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:11 +59: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:11 +60: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:12 +61: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: renders Payment and applies node 49/50 voucher states
+00:12 +62: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:13 +63: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:13 +64: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:13 +65: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: renders node 45 data state and forwards checkout snapshot
+00:14 +66: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: merges progress, failure, retry, and success into one result route
+00:14 +67: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:14 +68: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +69: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +70: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +71: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +72: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +73: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:15 +74: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: merges Reward overview, progress, and expiring reminder
+00:16 +75: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:16 +76: <repo>/app/packages/app_features/test/feature_checkout/checkout_route_test.dart: keeps fixed actions and long content reachable across viewports
+00:16 +77: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:16 +78: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:16 +79: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:16 +80: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:16 +81: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:17 +82: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: dismisses reminder once and restores consumed state
+00:17 +83: <repo>/app/packages/app_features/test/feature_cart/cart_page_test.dart: has one vertical owner and no overflow across viewports
+00:17 +84: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: opens vouchers, selects one, uses its stable id, and backs
+00:18 +85: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: keeps vouchers reachable on compact scaled viewports
+00:18 +86: <repo>/app/packages/app_features/test/feature_rewards/rewards_routes_test.dart: renders empty and retryable error page states
+00:18 +87: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +88: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +89: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +90: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +91: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +92: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:18 +93: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:20 +94: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Flash Sale renders one scroll owner and fixed countdown
+00:20 +95: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Live exposes a truthful local preview state and product action
+00:20 +96: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Story navigation is manual and Variant driven
+00:20 +97: <repo>/app/packages/app_features/test/feature_promotions/promotions_pages_test.dart: Story navigation is manual and Variant driven
+00:20 +98: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:21 +99: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:22 +100: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:22 +101: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:22 +102: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:23 +103: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:23 +104: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:23 +105: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:23 +106: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: routes merge Flash, Live and Story state families
+00:23 +107: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: renders gallery, Sale-independent detail and Reviews entry
+00:23 +108: <repo>/app/packages/app_features/test/feature_promotions/promotions_routes_test.dart: product and Story exit callbacks navigate through public targets
+00:23 +109: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:24 +110: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:24 +111: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:24 +112: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:24 +113: <repo>/app/packages/app_features/test/feature_catalog/product_detail_page_test.dart: variation sheet supports confirm and cancel without partial state
+00:24 +114: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:25 +115: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: matches the Shop first viewport structure without an App Shell
+00:27 +116: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:27 +117: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:28 +118: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:28 +119: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:29 +120: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:29 +121: <repo>/app/packages/app_features/test/feature_catalog/product_routes_test.dart: Product detail and Reviews share one detail route family
+00:29 +122: <repo>/app/packages/app_features/test/shared/main_navigation_shell_test.dart: does not overflow compact, landscape, or scaled layouts
+00:29 +123: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: opens Product Detail from every Shop feed product rail
+00:30 +124: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:30 +125: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:30 +126: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +127: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +128: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +129: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +130: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +131: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +132: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +133: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:31 +134: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: matches the Profile first-viewport structure
+00:32 +135: <repo>/app/packages/app_features/test/feature_catalog/shop_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:32 +136: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +137: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +138: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +139: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +140: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +141: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +142: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +143: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +144: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +145: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +146: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +147: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +148: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +149: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: loads the public Rewards summary and opens Rewards
+00:33 +150: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: opens Profile cards through their public navigation callbacks
+00:34 +151: <repo>/app/packages/app_features/test/feature_support/support_chat_controller_test.dart: advances starting, connecting, typing and active deterministically
+00:35 +152: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +153: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +154: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +155: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +156: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +157: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +158: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +159: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +160: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +161: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +162: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +163: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +164: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +165: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: keeps sections accessible in one vertical scroll owner
+00:35 +166: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:36 +167: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:37 +168: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +169: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +170: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +171: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +172: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +173: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:38 +174: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:39 +175: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:39 +176: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:40 +177: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:40 +178: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: merges question, conversation, Voucher and rating states
+00:42 +179: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:42 +180: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:43 +181: <repo>/app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart: has no overflow on compact, landscape, or scaled viewports
+00:43 +182: <repo>/app/packages/app_features/test/feature_auth/registration_avatar_widget_test.dart: exposes Add profile photo and forwards taps
+00:43 +183: <repo>/app/packages/app_features/test/feature_auth/login_pages_test.dart: shows eight red dots after a rejected credential
+00:43 +184: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:43 +185: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:43 +186: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:43 +187: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:44 +188: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:45 +189: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: sends media again after returning from attachment preview
+00:45 +190: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows an image bubble when a camera preview is unavailable
+00:46 +191: <repo>/app/packages/app_features/test/feature_support/support_routes_test.dart: shows an image bubble when a camera preview is unavailable
+00:46 +192: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:46 +193: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:46 +194: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:46 +195: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:47 +196: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +197: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +198: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +199: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +200: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +201: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +202: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +203: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:48 +204: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:49 +205: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:49 +206: <repo>/app/packages/app_features/test/feature_auth/login_routes_test.dart: keeps one scope across all login flow routes
+00:49 +207: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:49 +208: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:49 +209: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +210: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +211: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +212: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +213: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +214: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +215: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +216: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +217: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +218: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +219: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:50 +220: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +221: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +222: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +223: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +224: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +225: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +226: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +227: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +228: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +229: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +230: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +231: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:51 +232: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:52 +233: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: matches the registration reference structure at 375 x 812
+00:52 +234: <repo>/app/packages/app_features/test/feature_auth/registration_assets_test.dart: bundles and decodes registration raster assets at expected sizes
+00:52 +235: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +236: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +237: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +238: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +239: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +240: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +241: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +242: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +243: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +244: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +245: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:52 +246: <repo>/app/packages/app_features/test/feature_auth/registration_page_test.dart: toggles password visibility and switches country
+00:53 +247: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:53 +248: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:53 +249: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:53 +250: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +251: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +252: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +253: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +254: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +255: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +256: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +257: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +258: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +259: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +260: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:54 +261: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:55 +262: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:56 +263: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:56 +264: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:56 +265: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:56 +266: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:56 +267: <repo>/app/packages/app_features/test/feature_search/search_routes_test.dart: keeps Search in one route and delegates Product navigation
+00:57 +268: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +269: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +270: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +271: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +272: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +273: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +274: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:57 +275: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:58 +276: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: renders search, submits text and opens a product by stable ID
+00:58 +277: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:59 +278: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:59 +279: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:59 +280: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+00:59 +281: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +282: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +283: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +284: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +285: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +286: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +287: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +288: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +289: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +290: <repo>/app/packages/app_features/test/feature_search/search_page_test.dart: filter cancel is isolated and Apply reruns the current query
+01:00 +291: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +292: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +293: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +294: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +295: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +296: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +297: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +298: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +299: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +300: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +301: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +302: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +303: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:00 +304: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:01 +305: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:01 +306: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:01 +307: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:02 +308: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: renders data state and emits stable Product/Cart ids
+01:02 +309: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:02 +310: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:03 +311: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:03 +312: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:03 +313: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:03 +314: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:04 +315: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: switches Activity/History and opens one status-driven detail
+01:05 +316: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+01:05 +317: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+01:05 +318: <repo>/app/packages/app_features/test/feature_wishlist/wishlist_pages_test.dart: has no overflow across compact, landscape and scaled layouts
+01:06 +319: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: merges review form and done state into one review route
+01:06 +320: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: shows a real thumbnail and exposes retake/remove semantics
+01:07 +321: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: evicts captured thumbnail pixels after removal
+01:07 +322: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: popping a ready review clears its draft after UI unmounts
+01:07 +323: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: disables every media action while review submission is pending
+01:07 +324: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: releases a thumbnail that cannot be rendered
+01:08 +325: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: bad retained thumbnail waits for explicit cleanup retry
+01:08 +326: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps the review media section stable on compact and landscape layouts
+01:08 +327: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: keeps launching and removing stable with keyboard and safe areas
+01:09 +328: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: refreshes order detail after review Done
+01:09 +329: <repo>/app/packages/app_features/test/feature_orders/orders_routes_test.dart: renders failed-attempt state and compact scaled layout
+01:09 +330: All tests passed!
+[test] app_media
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart
+00:00 +0: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +1: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +2: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +3: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +4: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +5: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:00 +6: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +7: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +8: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +9: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +10: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +11: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +12: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +13: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +14: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +15: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +16: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +17: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +18: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +19: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +20: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +21: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +22: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +23: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +24: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +25: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +26: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +27: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +28: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +29: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +30: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail shows canonical image with stable dimensions and lease
+00:01 +31: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: video import streams an ISO BMFF source and preserves bounded metadata
+00:01 +32: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +33: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +34: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +35: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail uses bounded poster for video without creating a player
+00:01 +36: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: video import detects source growth during import
+00:01 +37: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late resolve after unmount only releases the retained lease
+00:01 +38: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late resolve after unmount only releases the retained lease
+00:01 +39: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late resolve after unmount only releases the retained lease
+00:01 +40: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late resolve after unmount only releases the retained lease
+00:01 +41: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: input boundary rejects a final source swapped to a symlink during inspection
+00:01 +42: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail missing media has an explicit accessible error
+00:01 +43: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail missing media has an explicit accessible error
+00:01 +44: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail missing media has an explicit accessible error
+00:01 +45: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: lease lifecycle retains independently and deletes after the final idempotent release
+00:01 +46: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail rejects oversized decoded dimensions before image decode
+00:01 +47: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: lease lifecycle retains cleanup ownership until a failed delete can be retried
+00:01 +48: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +49: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +50: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail updates bounded decode target for size and DPR changes
+00:01 +51: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: lease lifecycle invalidates a replaced canonical file with a stable tombstone
+00:01 +52: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late image inspection after unmount only releases its lease
+00:01 +53: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late image inspection after unmount only releases its lease
+00:01 +54: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail late image inspection after unmount only releases its lease
+00:01 +55: <repo>/app/packages/app_media/test/resource/media_resource_store_test.dart: store lifecycle dispose cancels a late import and leaves no committed file
+00:02 +56: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail image decode failure releases the retained resource
+00:02 +57: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail image decode failure releases the retained resource
+00:02 +58: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail poster decode failure releases the retained resource
+00:02 +59: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail a replacement poster recovers the same video resource
+00:02 +60: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaResourceThumbnail store replacement releases each lease through its owner
+00:02 +61: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image real inspector reads canonical dimensions without decoding
+00:02 +62: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image uses InteractiveViewer with bounded zoom and releases once
+00:02 +63: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image updates viewer decode target after rotation and DPR changes
+00:02 +64: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image decode failure unloads the image lease
+00:02 +65: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage image viewer rejects oversized source dimensions before decode
+00:02 +66: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video starts paused and supports play pause seek and replay
+00:03 +67: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses on lifecycle loss and does not auto resume
+00:03 +68: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video pauses when another route covers the default viewer
+00:03 +69: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video runtime playback failure unloads player and lease
+00:03 +70: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video late initialization after dispose cleans driver and lease once
+00:03 +71: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video new viewer waits for previous player disposal
+00:03 +72: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video a new viewer disposes the previous global player
+00:03 +73: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video stacked viewer revokes a late initializing previous owner
+00:04 +74: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video restores the previous viewer after a stacked viewer pops
+00:04 +75: <repo>/app/packages/app_media/test/preview/media_preview_widgets_test.dart: MediaPreviewPage video fits compact portrait landscape safe areas and large text
+00:04 +76: All tests passed!
+[test] app_media_capture_bridge
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart
+00:00 +0: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client sends a strict request envelope with a secure requestId
+00:00 +1: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client exposes direct operation PlatformException as typed failure
+00:00 +2: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client rejects malicious PlatformException details
+00:00 +3: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client presentCaptureFlow returns the three closed terminal outcomes
+00:00 +4: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client validates bounded thumbnail bytes and returns a defensive copy
+00:00 +5: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client settles pending preview before completing dispose
+00:00 +6: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client rejects duplicate pending and completed requestIds locally
+00:00 +7: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client allows requestId reuse only after the 300 second tombstone
+00:00 +8: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client reserves at most 32 pending requests before native invocation
+00:00 +9: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +10: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +11: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +12: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +13: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +14: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +15: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +16: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +17: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +18: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +19: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +20: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +21: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +22: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +23: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +24: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +25: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +26: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +27: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +28: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +29: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +30: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +31: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +32: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +33: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +34: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +35: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +36: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +37: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +38: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +39: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +40: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +41: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +42: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +43: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +44: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +45: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +46: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +47: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +48: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +49: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +50: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +51: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +52: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +53: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +54: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +55: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +56: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +57: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +58: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +59: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +60: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +61: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +62: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +63: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +64: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +65: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +66: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +67: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +68: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +69: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +70: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +71: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +72: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +73: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +74: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +75: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +76: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +77: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +78: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +79: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +80: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +81: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +82: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +83: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +84: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +85: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +86: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +87: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +88: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +89: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +90: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +91: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +92: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +93: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +94: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +95: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +96: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +97: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +98: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +99: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +100: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_test.dart: MethodChannel client does not evict completed tombstones before capacity is full
+00:00 +101: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +102: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +103: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +104: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +105: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +106: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +107: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +108: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +109: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +110: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +111: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +112: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +113: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +114: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +115: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +116: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +117: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +118: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +119: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +120: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +121: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:00 +122: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining retries malformed and failed cleanup acknowledgements
+00:01 +123: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: dispose draining failed disposal retains cleanup ownership for a later retry
+00:01 +124: <repo>/app/packages/app_media_capture_bridge/test/media_capture_client_methods_test.dart: public client surface remains fully typed
+00:01 +125: All tests passed!
+[test] app_ui
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading <repo>/app/packages/app_ui/test/theme/app_theme_test.dart
+00:00 +0: light theme exposes the Shoppe design tokens
+00:00 +1: bundles the local Shoppe fonts
+00:00 +2: All tests passed!
+
+```
+
+## Command
+
+```text
+make lint
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/repository-boundaries.sh
+[lint] 检查跨 Feature 内部引用
+[lint] 检查 Widget/Page 直接持有或调用 API
+[lint] 检查 Controller 是否通过服务定位器获取 API
+[lint] 检查壳工程是否引用 Feature 内部实现
+[lint] 检查 GetX 路由与 Overlay 越界
+[lint] 检查生成类型是否泄漏到公共 API
+[lint] 检查 Workspace Package 依赖方向
+[lint] Workspace Package 依赖消费检查通过。
+[lint] 检查 Media Capture Android plugin discovery
+[lint] Media Capture Android plugin discovery 检查通过。
+[lint] 仓库边界检查通过。
+
+```
+
+## Command
+
+```text
+make lint-test
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:13 +3: distinguishes a test-only production dependency
+00:13 +4: reports an unused workspace dev dependency
+00:13 +5: rejects Demo direct access to lower-level runtime packages
+00:13 +6: rejects a redundant direct plugin discovery edge
+00:13 +7: requires every declared Android and iOS plugin entry
+00:13 +8: reports a package without real consumers or a structured role
+00:13 +9: reports source imports for unknown packages
+00:13 +10: reports unknown workspace packages in matrix mode
+00:13 +11: fails malformed graph metadata without leaking input paths
+00:44 +11 -1: fails malformed graph metadata without leaking input paths [E]
+  TimeoutException after 0:00:30.000000: Test timed out after 30 seconds. See https://pub.dev/packages/test#timeouts
+  dart:isolate  _RawReceivePort._handleMessage
+
+00:44 +11 -1: reports the current cleanup baseline exactly
+01:00 +12 -1: Some tests failed.
+
+Consider enabling the flag chain-stack-traces to receive more detailed exceptions.
+For example, 'dart test --chain-stack-traces'.
+make: *** [lint-test] Error 1
+
+```
+
+## Command
+
+```text
+make lint-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:09 +3: distinguishes a test-only production dependency
+00:09 +4: reports an unused workspace dev dependency
+00:09 +5: rejects Demo direct access to lower-level runtime packages
+00:10 +6: rejects a redundant direct plugin discovery edge
+00:10 +7: requires every declared Android and iOS plugin entry
+00:10 +8: reports a package without real consumers or a structured role
+00:10 +9: reports source imports for unknown packages
+00:10 +10: reports unknown workspace packages in matrix mode
+00:10 +11: fails malformed graph metadata without leaking input paths
+00:20 +12: reports the current cleanup baseline exactly
+00:37 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 381 files (0 changed) in 1.70 seconds.
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 2
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+
+warning - test/package_dependency_checker_test.dart:18:2 - The annotation 'Timeout.new' can only be used on libraries. - invalid_annotation_target
+
+1 issue found.
+make: *** [analyze] Error 2
+
+```
+
+## Command
+
+```text
+env TOOL_WORKDIR=app bash scripts/dart-tool.sh test test/package_dependency_checker_test.dart
+```
+
+Exit code: 0
+
+## Output
+
+```text
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:04 +3: distinguishes a test-only production dependency
+00:04 +4: reports an unused workspace dev dependency
+00:04 +5: rejects Demo direct access to lower-level runtime packages
+00:04 +6: rejects a redundant direct plugin discovery edge
+00:04 +7: requires every declared Android and iOS plugin entry
+00:04 +8: reports a package without real consumers or a structured role
+00:04 +9: reports source imports for unknown packages
+00:04 +10: reports unknown workspace packages in matrix mode
+00:04 +11: fails malformed graph metadata without leaking input paths
+00:10 +12: reports the current cleanup baseline exactly
+00:29 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+make format
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh format --output=none --set-exit-if-changed .
+Formatted 381 files (0 changed) in 3.29 seconds.
+
+```
+
+## Command
+
+```text
+make analyze
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh analyze --fatal-infos .
+Analyzing ....
+No issues found!
+
+```
+
+## Command
+
+```text
+make lint-test
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/lint/test-repository-boundaries.sh
+[lint-test] 仓库边界 Fixture 通过。
+00:00 +0: loading test/package_dependency_checker_test.dart
+00:00 +0: keeps the existing allowed dependency matrix compatible
+00:00 +1: accepts production, dev, conditional import, and export consumers
+00:00 +2: does not count comments or generated sources as consumers
+00:03 +3: distinguishes a test-only production dependency
+00:03 +4: reports an unused workspace dev dependency
+00:03 +5: rejects Demo direct access to lower-level runtime packages
+00:03 +6: rejects a redundant direct plugin discovery edge
+00:03 +7: requires every declared Android and iOS plugin entry
+00:03 +8: reports a package without real consumers or a structured role
+00:03 +9: reports source imports for unknown packages
+00:03 +10: reports unknown workspace packages in matrix mode
+00:03 +11: fails malformed graph metadata without leaking input paths
+00:11 +12: reports the current cleanup baseline exactly
+00:27 +13: All tests passed!
+
+```
+
+## Command
+
+```text
+env FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build apk --debug
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleDebug'...                              8.1s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+
+```
+
+## Command
+
+```text
+env FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn TOOL_WORKDIR=app/apps/demo bash scripts/flutter-tool.sh build ios --debug --no-codesign
+```
+
+Exit code: 0
+
+## Output
+
+```text
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+  package_config 2.2.0 (3.0.0 available)
+  path_provider 2.1.5 (2.1.6 available)
+  path_provider_foundation 2.5.1 (2.6.0 available)
+  path_provider_linux 2.2.1 (2.2.2 available)
+  path_provider_platform_interface 2.1.2 (2.1.3 available)
+  test 1.30.0 (1.31.2 available)
+  test_api 0.7.10 (0.7.13 available)
+  test_core 0.6.16 (0.6.19 available)
+  vector_graphics 1.2.2 (1.2.3 available)
+  vector_graphics_compiler 1.2.3 (1.3.0 available)
+  vector_math 2.2.0 (2.4.2 available)
+  video_player 2.10.1 (2.13.0 available)
+  video_player_android 2.9.5 (2.12.0 available)
+  video_player_avfoundation 2.8.9 (2.11.0 available)
+  video_player_platform_interface 6.7.0 (6.9.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies in `<repo>/app`!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Building com.example.demoApp for device (ios)...
+Running Xcode build...
+Xcode build done.                                           26.6s
+✓ Built build/ios/iphoneos/Runner.app
+
+```
+
+## Command
+
+```text
+rg -n MediaCaptureBridgePlugin app/apps/demo/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java app/apps/demo/ios/Runner/GeneratedPluginRegistrant.m
+```
+
+Exit code: 0
+
+## Output
+
+```text
+app/apps/demo/ios/Runner/GeneratedPluginRegistrant.m:9:#if __has_include(<app_media_capture_bridge/MediaCaptureBridgePlugin.h>)
+app/apps/demo/ios/Runner/GeneratedPluginRegistrant.m:10:#import <app_media_capture_bridge/MediaCaptureBridgePlugin.h>
+app/apps/demo/ios/Runner/GeneratedPluginRegistrant.m:42:  [MediaCaptureBridgePlugin registerWithRegistrar:[registry registrarForPlugin:@"MediaCaptureBridgePlugin"]];
+app/apps/demo/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java:19:      flutterEngine.getPlugins().add(new com.example.media_capture.MediaCaptureBridgePlugin());
+app/apps/demo/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java:21:      Log.e(TAG, "Error registering plugin app_media_capture_bridge, com.example.media_capture.MediaCaptureBridgePlugin", e);
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```
+
+## Command
+
+```text
+make harness-check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+bash scripts/dart-tool.sh run tool/sync_codex_adapters.dart --check
+[codex-adapters] Codex 原生适配同步检查通过。
+bash scripts/dart-tool.sh run tool/harness_check.dart
+[harness-check] AI Harness 静态检查通过。
+
+```
+
+## Command
+
+```text
+git diff --check
+```
+
+Exit code: 0
+
+## Output
+
+```text
+
+```

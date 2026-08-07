@@ -38,7 +38,12 @@ Executor/范围冲突或跨平台实现未拆卡时停止；正文和实际 diff
 
 1. 严格按卡片范围实现代码和测试。
 2. 格式化触碰的 Dart 文件。
-3. 通过 `scripts/quality/capture-evidence.sh` 直接执行受影响静态分析、聚焦测试和 `make lint`，把命令、退出码和脱敏后的完整输出写入 `docs/reviews/test-evidence/<task-slug>.log`；首条命令使用覆盖模式，后续命令使用 `--append`。不得先裸跑再为留证重复执行，也不得直接重定向原始 stdout/stderr 到入库证据。
+3. 通过 `scripts/quality/capture-evidence.sh` 直接执行受影响静态分析、聚焦测试和 `make lint`，把
+   shell-safe 命令、工具版本、退出码、稳定结果或首个失败根因、完整脱敏输出行数/字节数与 SHA-256 的
+   `bounded-v1` 摘要写入 `docs/reviews/test-evidence/<task-slug>.log`；首条命令使用覆盖模式，后续命令使用
+   `--append`。命令只执行一次，原始输出只进入临时文件并在脱敏后删除。本地执行不伪造 Artifact；CI
+   通过 `--artifact` 把同次命令的完整脱敏输出交给固定 14 天上传步骤。不得直接重定向 stdout/stderr
+   到入库证据或 Artifact。
 4. 修改共享 Entity、公共包 API、协议生成、DI 装配、路由或平台契约时升级验证范围。
 5. 运行 `reviewer`，写入 `docs/reviews/execute-<task-slug>.md`；报告 frontmatter 必须包含与任务文件 basename 一致的 `task` slug、`status` 和当前未解决的 `p0`、`p1` 数量。
 6. 判断是否需要 Security Review。任务声明 `securityReview: required` 时必须执行；未声明但实际 diff 引入或改变下列任一边界时，先把该字段补入活动任务卡再执行：

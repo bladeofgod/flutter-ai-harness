@@ -1872,10 +1872,9 @@ package final class MediaCaptureBridgeController {
             }
             let encoded: [String: Any]
             do {
-                encoded = try MediaCaptureWireCodec.confirmedMedia(
+                encoded = try MediaCaptureWireCodec.captureFlowConfirmed(
                     requestId: request.requestId,
-                    value: media,
-                    resultType: "capture_flow_confirmed"
+                    value: media
                 )
             } catch {
                 await releaseMediaIfPossible(handle.rawValue)

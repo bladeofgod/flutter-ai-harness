@@ -118,7 +118,11 @@ if [[ -n "${PACKAGE_DEPS_JSON:-}" ]]; then
     fail=1
   fi
 else
-  if ! bash "$TOOL_ROOT/scripts/dart-tool.sh" run tool/check_package_dependencies.dart; then
+  if ! bash "$TOOL_ROOT/scripts/dart-tool.sh" run \
+    tool/check_package_dependencies.dart \
+    --check-consumption \
+    --workspace-root "$ROOT/app" \
+    --plugin-discovery "$ROOT/app/apps/demo/.flutter-plugins-dependencies"; then
     fail=1
   fi
 fi

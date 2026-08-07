@@ -1,5 +1,6 @@
 import 'package:app_data/app_data.dart';
 import 'package:demo_app/auth/auth_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -111,20 +112,161 @@ void main() {
       expect(snapshots.single.currentUserId, isNull);
     });
 
-    test('composes an injected reset with the Demo session reset', () {
-      var injectedResetCount = 0;
-      var demoResetCount = 0;
-      final coordinator = AuthStateCoordinator(
-        onSessionReset: () => injectedResetCount += 1,
-      );
+    test(
+      'dispatches constructor and attached resets in registration order',
+      () {
+        final calls = <String>[];
+        final coordinator = AuthStateCoordinator(
+          onSessionReset: () => calls.add('constructor'),
+        );
+        addTearDown(coordinator.dispose);
+        coordinator.attachSessionReset(() => calls.add('first'));
+        coordinator.attachSessionReset(() => calls.add('second'));
+        coordinator.authenticate(_authResult());
+
+        coordinator.logout();
+
+        expect(calls, ['constructor', 'first', 'second']);
+      },
+    );
+
+    test('detach removes only its registration and is idempotent', () {
+      final calls = <String>[];
+      final coordinator = AuthStateCoordinator();
       addTearDown(coordinator.dispose);
-      coordinator.attachSessionReset(() => demoResetCount += 1);
+      coordinator.attachSessionReset(() => calls.add('first'));
+      final detachSecond = coordinator.attachSessionReset(
+        () => calls.add('second'),
+      );
+      coordinator.attachSessionReset(() => calls.add('third'));
+      coordinator.authenticate(_authResult());
+
+      detachSecond();
+      detachSecond();
+      coordinator.logout();
+
+      expect(calls, ['first', 'third']);
+    });
+
+    test('same callback can be registered and detached independently', () {
+      var resetCount = 0;
+      void reset() => resetCount += 1;
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      final detachFirst = coordinator.attachSessionReset(reset);
+      coordinator.attachSessionReset(reset);
+      coordinator.authenticate(_authResult());
+
+      detachFirst();
+      coordinator.logout();
+
+      expect(resetCount, 1);
+    });
+
+    test('self-detach does not skip callbacks in the dispatch snapshot', () {
+      final calls = <String>[];
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      late void Function() detachSelf;
+      detachSelf = coordinator.attachSessionReset(() {
+        calls.add('self');
+        detachSelf();
+      });
+      coordinator.attachSessionReset(() => calls.add('other'));
+
+      coordinator.authenticate(_authResult());
+      coordinator.logout();
+      coordinator.authenticate(_authResult());
+      coordinator.logout();
+
+      expect(calls, ['self', 'other', 'other']);
+    });
+
+    test('registration during dispatch starts with the next logout', () {
+      final calls = <String>[];
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      var attachedLateReset = false;
+      coordinator.attachSessionReset(() {
+        calls.add('first');
+        if (!attachedLateReset) {
+          attachedLateReset = true;
+          coordinator.attachSessionReset(() => calls.add('late'));
+        }
+      });
+      coordinator.attachSessionReset(() => calls.add('second'));
+
+      coordinator.authenticate(_authResult());
+      coordinator.logout();
+      expect(calls, ['first', 'second']);
+
+      coordinator.authenticate(_authResult());
+      coordinator.logout();
+      expect(calls, ['first', 'second', 'first', 'second', 'late']);
+    });
+
+    test('logout, detach, and dispose remain idempotent', () {
+      var resetCount = 0;
+      final coordinator = AuthStateCoordinator();
+      final detach = coordinator.attachSessionReset(() => resetCount += 1);
+      coordinator.authenticate(_authResult());
+
+      coordinator.logout();
+      coordinator.logout();
+      detach();
+      detach();
+      coordinator.dispose();
+      coordinator.dispose();
+
+      expect(resetCount, 1);
+    });
+
+    test('reset failure cannot block logout or later registrations', () {
+      final reportedErrors = <FlutterErrorDetails>[];
+      final previousErrorHandler = FlutterError.onError;
+      FlutterError.onError = reportedErrors.add;
+      addTearDown(() => FlutterError.onError = previousErrorHandler);
+      final calls = <String>[];
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      coordinator.attachSessionReset(() {
+        calls.add('failing');
+        throw StateError('sensitive reset detail');
+      });
+      coordinator.attachSessionReset(() => calls.add('later'));
       coordinator.authenticate(_authResult());
 
       coordinator.logout();
 
-      expect(injectedResetCount, 1);
-      expect(demoResetCount, 1);
+      expect(calls, ['failing', 'later']);
+      expect(coordinator.isLoggedIn, isFalse);
+      expect(coordinator.value, isNull);
+      expect(reportedErrors, hasLength(1));
+      expect(
+        reportedErrors.single.exception.toString(),
+        'SessionResetFailure(<redacted>)',
+      );
+      expect(
+        reportedErrors.single.exception.toString(),
+        isNot(contains('sensitive reset detail')),
+      );
+    });
+
+    test('reentrant logout does not recursively dispatch resets', () {
+      final calls = <String>[];
+      final coordinator = AuthStateCoordinator();
+      addTearDown(coordinator.dispose);
+      coordinator.attachSessionReset(() {
+        calls.add('reentrant');
+        coordinator.logout();
+      });
+      coordinator.attachSessionReset(() => calls.add('later'));
+      coordinator.authenticate(_authResult());
+
+      coordinator.logout();
+
+      expect(calls, ['reentrant', 'later']);
+      expect(coordinator.isLoggedIn, isFalse);
     });
   });
 }

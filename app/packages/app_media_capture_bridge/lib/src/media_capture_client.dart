@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
 
-import 'media_capture_constants.dart';
 import 'media_capture_models.dart';
 import 'media_capture_wire_codec.dart';
 
@@ -353,7 +352,7 @@ final class MediaCaptureClient {
   materializeMedia(MediaCaptureConfirmedMedia media) {
     return _invoke(
       methodMaterializeMediaResource,
-      () => _codec.mediaHandlePayload(media.mediaHandle),
+      () => _codec.materializeMediaPayload(media.mediaHandle),
       (value, requestId, stackTrace) => _codec.decodeMaterializedMedia(
         value,
         requestId: requestId,

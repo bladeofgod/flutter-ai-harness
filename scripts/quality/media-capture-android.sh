@@ -254,13 +254,16 @@ validate_transfer_adapter() {
   stage "Validate Wire V3 transfer Adapter, private cache and plugin registration"
 
   assert_match_count 1 \
-    '^internal const val MEDIA_CAPTURE_WIRE_VERSION = 3$' \
+    '^internal const val MEDIA_CAPTURE_WIRE_VERSION = generatedMediaCaptureWireVersion$' \
     "$ADAPTER_MAIN/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt"
-  assert_match_count 2 \
-    '"materialize_media_resource"' \
+  assert_match_count 1 \
+    'GeneratedMediaCaptureWireMethod\.entries\.mapTo' \
     "$ADAPTER_MAIN/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt"
-  assert_match_count 3 \
-    '"release_materialized_media"' \
+  assert_match_count 1 \
+    '"materialize_media_resource_request_payload"' \
+    "$ADAPTER_MAIN/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt"
+  assert_match_count 1 \
+    '"release_materialized_media_request_payload"' \
     "$ADAPTER_MAIN/kotlin/com/example/media_capture/MediaCaptureWireCodec.kt"
   assert_match_count 1 \
     'const val TRANSFER_RELATIVE_PATH = "app_media_capture_bridge/exports"' \
@@ -293,6 +296,10 @@ validate_transfer_adapter() {
     "Transfer Adapter must not log local locators or handles" \
     'android\.util\.Log|println\(|printStackTrace\(' \
     "$ADAPTER_MAIN/kotlin/com/example/media_capture"
+  assert_no_match \
+    "Transfer Store must reserve the final path without hard-link or rename publishing" \
+    'Os\.link\(|\.renameTo\(' \
+    "$ADAPTER_MAIN/kotlin/com/example/media_capture/MediaCaptureTransferStore.kt"
 }
 
 validate_dependency_boundaries() {
@@ -489,7 +496,7 @@ run_contract_matrix() {
     com.example.media_capture.MediaCaptureWireCodecTest 5 \
     com.example.media_capture.MediaCaptureBridgeControllerTest 40 \
     com.example.media_capture.BoundedCommandHandlerTest 3 \
-    com.example.media_capture.MediaCaptureTransferStoreTest 12 \
+    com.example.media_capture.MediaCaptureTransferStoreTest 14 \
     com.example.media_capture.AndroidContractVectorGateTest 3
 }
 
@@ -557,7 +564,7 @@ validate_dependency_boundaries
 validate_transfer_adapter
 run_module_gate "Core" media_capture_core "$CORE" 88
 run_module_gate "Native UI" media_capture_ui "$UI" 42
-run_module_gate "Bridge Adapter" media_capture_bridge "$ADAPTER" 71
+run_module_gate "Bridge Adapter" media_capture_bridge "$ADAPTER" 77
 run_contract_matrix
 run_gate_fixture
 run_optional_instrumented_tests

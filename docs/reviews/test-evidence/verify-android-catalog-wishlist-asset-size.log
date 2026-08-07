@@ -1,0 +1,37 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\nBASE=/tmp/flutter-ai-harness-size-baseline.gMNV0P\nPOST=/tmp/flutter-ai-harness-size-post.HXXH2R\ntest "$(stat -f %z "$BASE/app-release.aab")" = 28530515\ntest "$(stat -f %z "$POST/app-release.aab")" = 28155074\ntest "$(shasum -a 256 "$BASE/aab-code-size-analysis.json" | cut -d " " -f 1)" = bf76c61ab13520d4943f954ab74b8dbd3a823290f5ddaacb6173ef89a85ef631\ntest "$(shasum -a 256 "$POST/aab-code-size-analysis.json" | cut -d " " -f 1)" = a07ae1a1bc201ce082005c1ceeffa7d5927ef138983363cb72b7b5fb1d9a9bc6\njq -e "([.children[].value] | add) == 28429397 and .children[2].children[1].value == 8898633" "$BASE/aab-code-size-analysis.json" >/dev/null\njq -e "([.children[].value] | add) == 28054726 and .children[2].children[1].value == 8524545" "$POST/aab-code-size-analysis.json" >/dev/null\ntest "$(unzip -l "$POST/app-release.aab" | rg -c "shop_product_0[234]\\.png")" = 3\nif unzip -l "$POST/app-release.aab" | rg "recent_(hat|pink_dress|red_dress)\\.png"; then exit 1; fi\nruby -e \'rows={aab:[28530515,28155074],analysis_total:[28429397,28054726],assets:[8898633,8524545],flutter_assets:[8266966,7892923]};rows.each{|name,(before,after)|delta=before-after;printf "%s before=%d after=%d delta=-%d percent=-%.4f%%\\\\n",name,before,after,delta,delta.fdiv(before)*100}\'\nprintf "post size verification passed\\n"'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "17.0.12" 2024-07-16
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: be5cda88d2c346843d39bea08c4131ce02ef7d8fb19133467af3152862e48425
+Original output bytes: 319
+Original output lines: 1
+Summary output bytes: 318
+Summary output lines: 1
+Truncated: no
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+aab before=28530515 after=28155074 delta=-375441 percent=-1.3159%\nanalysis_total before=28429397 after=28054726 delta=-374671 percent=-1.3179%\nassets before=8898633 after=8524545 delta=-374088 percent=-4.2039%\nflutter_assets before=8266966 after=7892923 delta=-374043 percent=-4.5245%\npost size verification passed
+```

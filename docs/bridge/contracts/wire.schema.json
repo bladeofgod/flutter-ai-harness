@@ -28,7 +28,8 @@
     "lifecycle": {"$ref": "#/$defs/lifecycleContract"},
     "transferStore": {"oneOf": [{"$ref": "#/$defs/transferStoreContract"}, {"type": "null"}]},
     "security": {"$ref": "#/$defs/securityContract"},
-    "changeLog": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/changeEntry"}}
+    "changeLog": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/changeEntry"}},
+    "codeGeneration": {"$ref": "#/$defs/codeGeneration"}
   },
   "$defs": {
     "stableId": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
@@ -38,6 +39,7 @@
     "stringSet": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
     "stableIdSet": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
     "stableIdSequence": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
+    "stableIdReferenceSequence": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/stableId"}},
     "capabilityReference": {
       "type": "object",
       "additionalProperties": false,
@@ -57,6 +59,66 @@
         "kind": {"enum": ["method_channel", "event_channel"]},
         "name": {"type": "string", "pattern": "^com\\.example\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"}
       }
+    },
+    "codeGeneration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generatorVersion", "sourceDigestAlgorithm", "outputs", "generated", "manualOnly"],
+      "properties": {
+        "generatorVersion": {"type": "integer", "minimum": 1},
+        "sourceDigestAlgorithm": {"const": "sha256"},
+        "outputs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/codeGenerationOutput"}},
+        "generated": {"$ref": "#/$defs/generatedContractReferences"},
+        "manualOnly": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/manualContractReference"}}
+      }
+    },
+    "codeGenerationOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime", "language", "path", "identifierStyle", "typeStyle"],
+      "properties": {
+        "runtime": {"enum": ["dart", "android", "ios"]},
+        "language": {"enum": ["dart", "kotlin", "swift"]},
+        "path": {"type": "string", "pattern": "^app/[a-zA-Z0-9_./-]+$"},
+        "identifierStyle": {"const": "lower_camel_case"},
+        "typeStyle": {"const": "upper_camel_case"}
+      }
+    },
+    "generatedContractReferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wireVersionPointer", "channelIds", "methodIds", "eventIds", "resultTypeIds", "failureTypeIds", "errorCodes", "errorPropertyNames", "errorDetailKeys", "payloadIds", "fieldIds", "envelopePointers", "transportConstraintPointers"],
+      "properties": {
+        "wireVersionPointer": {"const": "/wireVersion"},
+        "channelIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "methodIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "eventIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "resultTypeIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "failureTypeIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "errorCodes": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "errorPropertyNames": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}},
+        "errorDetailKeys": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$"}},
+        "payloadIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "fieldIds": {"$ref": "#/$defs/stableIdReferenceSequence"},
+        "envelopePointers": {"$ref": "#/$defs/jsonPointerSequence"},
+        "transportConstraintPointers": {"$ref": "#/$defs/jsonPointerSequence"}
+      }
+    },
+    "manualContractReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contractPointers", "reason"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "contractPointers": {"$ref": "#/$defs/jsonPointerSequence"},
+        "reason": {"$ref": "#/$defs/nonEmptyString"}
+      }
+    },
+    "jsonPointerSequence": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^/[a-zA-Z0-9_/-]+$"}
     },
     "fieldMapping": {
       "type": "object",

@@ -21,6 +21,12 @@ Flutter Host 通过 `.plugin_symlinks` 引入 Plugin。manifest 从自身真实�
 
 ## Wire 边界
 
+稳定 Wire 标识、闭合枚举、payload/field/error descriptor 和基础 primitive 由
+`docs/bridge/contracts/media-capture.wire.json` 生成到 `MediaCaptureWire.generated.swift`。
+`MediaCaptureWireCodec` 先执行生成的 fail-closed 校验，再映射到 Capability 值对象；MainActor、
+presentation、transfer store、文件清理、JPEG 和生命周期仍为手写边界。生产生成文件只通过仓库
+generator 更新，禁止手工编辑。
+
 `MediaCaptureWireCodec` 在调用 Core/UI 前完成闭合校验：
 
 - envelope 和每种 payload 必须使用精确 key 集合；
@@ -167,7 +173,7 @@ generation。Native-only render attachment revoke 不投影到 Flutter。
 
 `ios/tool/verify-core-tests.sh` 从 `simctl` JSON 选择可用 iPhone Simulator，将 Bridge Core、测试与
 Native Package 复制到受限临时目录，并用独立的 `Package.core-tests.swift` 固定测试 graph，运行
-69 个 Codec/Controller/Transfer Store XCTest；生产 `Package.swift` 不通过环境变量改变依赖图。Core 测试和 Host
+70 个 Codec/Controller/Transfer Store XCTest；生产 `Package.swift` 不通过环境变量改变依赖图。Core 测试和 Host
 验证共用 `safe-rsync-copy.sh`，以大小写不敏感规则统一排除完整 `.env*` 范围、签名证书/私钥、Provisioning Profile、
 钥匙串导出物、本地配置和生成目录，并只保留目标目录内的安全符号链接。没有可用 Simulator 时会明确
 报告 runtime tests skipped。

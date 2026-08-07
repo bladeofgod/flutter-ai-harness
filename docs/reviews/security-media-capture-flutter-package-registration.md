@@ -17,10 +17,17 @@ implementationFiles:
   - docs/architecture.md
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 0a854d78a51599cf0ba0d5da632d00be65801b13c61f81f84783b4bf7e475ea1
+implementationDigest: fc82b271d27c4409083e9c22bfe07602708aad0cdf9429d06abdb5dfc6d41e37
 ---
 
 # Security Review: Media Capture Flutter Package 登记
+
+## Workspace 消费检查器影响
+
+新增消费模式没有放宽允许依赖矩阵。Plugin 直连只有在目标 pubspec 声明平台、Android/iOS discovery
+均存在唯一 production native entry、路径匹配普通 Workspace Package，且移除直连后不存在其它生产
+可达路径时才作为必要消费；否则稳定报告冗余边。Fixture 覆盖必要/冗余、缺失 iOS、未知 Package、
+条件 import/export、注释与生成文件假命中，失败不输出绝对路径。
 
 ## 结论
 
@@ -89,3 +96,17 @@ Melos bootstrap 与完整 `make bootstrap` 已通过；独立增量安全复核�
 技术栈、Media Capture 参考链路与现有 CI 门禁事实。页面没有增加脚本、表单、远程可执行资源、依赖源、
 Agent 能力或 CI 权限；新增外链只指向仓库内已存在的事实文档。Workspace Package、Plugin discovery、
 SwiftPM 接线及发布边界均未改变，P0/P1/P2 仍为 0/0/0，摘要按当前 implementationFiles 重新绑定。
+
+## Workspace 冗余依赖清理影响
+
+Demo 对 `app_media_capture_bridge` 的冗余直连已删除，唯一生产路径改为既有的
+`demo -> app_features -> app_media_capture_bridge`。消费门禁同时验证 pub graph 与 Android/iOS discovery
+中的唯一 production native entry；两端生成注册器仍注册 `MediaCaptureBridgePlugin`，Android Debug APK
+和 iOS 无签名 Debug App 均成功构建。Package 仍为 Workspace 本地且 `publish_to: none`，没有新增远程
+来源、权限、脚本或发布能力，P0/P1/P2 维持 0/0/0。
+
+## Wire Formatter 工具依赖影响
+
+根 Workspace 新增精确固定的 `dart_style 3.1.7` direct dev dependency，只由 Wire generator 使用，不是
+Bridge Package 或 Demo 的 Runtime 依赖。Plugin discovery、Workspace 本地来源、`publish_to: none`、
+Android/iOS 注册链和发布边界均未改变，P0/P1/P2 维持 0/0/0。

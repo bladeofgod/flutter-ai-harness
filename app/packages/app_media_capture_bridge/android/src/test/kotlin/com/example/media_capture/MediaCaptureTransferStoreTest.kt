@@ -44,6 +44,10 @@ class MediaCaptureTransferStoreTest {
         withTemporaryDirectory { cache ->
             val store = testTransferStore(cache)
             val reservation = store.createReservation(metadata(byteLength = 4))
+            val reservedFile = reservation.transferFile
+
+            assertTrue(reservedFile.isFile)
+            assertTrue(reservedFile.name.endsWith(".jpg"))
 
             reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 4)
             reservation.mediaSink.write(byteArrayOf(1, 2, 3, 4), 4)
@@ -53,6 +57,7 @@ class MediaCaptureTransferStoreTest {
             val uri = store.fileUri(reservation)
             assertTrue(uri.startsWith("file://${cache.canonicalPath}/app_media_capture_bridge/exports/"))
             assertFalse(uri.contains(".partial"))
+            assertEquals(reservedFile.canonicalPath, reservation.transferFile.canonicalPath)
             assertTrue(store.delete(reservation))
             assertTrue(store.delete(reservation))
         }
@@ -84,7 +89,7 @@ class MediaCaptureTransferStoreTest {
     }
 
     @Test
-    fun rejectsLengthDriftAndAbortRemovesStaging() = runTest {
+    fun rejectsLengthDriftAndAbortRemovesReservedFile() = runTest {
         withTemporaryDirectory { cache ->
             val store = testTransferStore(cache)
             val reservation = store.createReservation(metadata(byteLength = 4))
@@ -99,13 +104,41 @@ class MediaCaptureTransferStoreTest {
     }
 
     @Test
+    fun closeFailureDoesNotCommitAndAbortRetriesDescriptorClose() = runTest {
+        withTemporaryDirectory { cache ->
+            var closeAttempts = 0
+            val fileSystem =
+                TestTransferFileSystem(
+                    beforeClose = {
+                        closeAttempts += 1
+                        if (closeAttempts == 1) error("injected close failure")
+                    },
+                )
+            val store = testTransferStore(cache, fileSystem = fileSystem)
+            val reservation = store.createReservation(metadata(byteLength = 1))
+            reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1)
+            reservation.mediaSink.write(byteArrayOf(1), 1)
+
+            assertFails { reservation.mediaSink.commit(1) }
+            assertFalse(reservation.committed)
+            assertTrue(reservation.descriptor.valid)
+
+            reservation.mediaSink.abort()
+
+            assertEquals(2, closeAttempts)
+            assertFalse(reservation.descriptor.valid)
+            assertFalse(reservation.transferFile.exists())
+        }
+    }
+
+    @Test
     fun cleanupRejectsRootSymlinkReplacementWithoutTouchingExternalFiles() = runTest {
         withTemporaryDirectory { cache ->
             withTemporaryDirectory { outside ->
                 val store = testTransferStore(cache)
                 val reservation = store.createReservation(metadata(byteLength = 1))
                 val root = File(cache, "app_media_capture_bridge/exports")
-                val external = File(outside, reservation.stagingFile.name).apply { writeText("keep") }
+                val external = File(outside, reservation.transferFile.name).apply { writeText("keep") }
                 assertTrue(root.deleteRecursively())
                 Files.createSymbolicLink(root.toPath(), outside.toPath())
 
@@ -118,41 +151,57 @@ class MediaCaptureTransferStoreTest {
     }
 
     @Test
-    fun stagingSymlinkReplacementCannotRedirectDescriptorWrite() = runTest {
+    fun transferSymlinkReplacementCannotRedirectDescriptorWrite() = runTest {
         withTemporaryDirectory { cache ->
             withTemporaryDirectory { outside ->
                 val store = testTransferStore(cache)
                 val reservation = store.createReservation(metadata(byteLength = 1))
                 reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1)
                 val sentinel = File(outside, "sentinel.bin").apply { writeBytes(byteArrayOf(9)) }
-                assertTrue(reservation.stagingFile.delete())
-                Files.createSymbolicLink(reservation.stagingFile.toPath(), sentinel.toPath())
+                assertTrue(reservation.transferFile.delete())
+                Files.createSymbolicLink(reservation.transferFile.toPath(), sentinel.toPath())
 
                 assertFails { reservation.mediaSink.write(byteArrayOf(1), 1) }
                 reservation.mediaSink.abort()
 
                 assertEquals(byteArrayOf(9).toList(), sentinel.readBytes().toList())
-                assertTrue(Files.isSymbolicLink(reservation.stagingFile.toPath()))
+                assertTrue(Files.isSymbolicLink(reservation.transferFile.toPath()))
                 assertTrue(store.delete(reservation))
             }
         }
     }
 
     @Test
-    fun existingFinalTargetIsNotOverwrittenOrDeletedByFailedCommit() = runTest {
+    fun replacementTargetIsNotOverwrittenOrDeletedByFailedCommit() = runTest {
         withTemporaryDirectory { cache ->
             val store = testTransferStore(cache)
             val reservation = store.createReservation(metadata(byteLength = 1))
             reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1)
             reservation.mediaSink.write(byteArrayOf(1), 1)
-            reservation.finalFile.writeText("keep")
+            assertTrue(reservation.transferFile.delete())
+            reservation.transferFile.writeText("keep")
 
             assertFails { reservation.mediaSink.commit(1) }
             reservation.mediaSink.abort()
 
-            assertEquals("keep", reservation.finalFile.readText())
-            assertFalse(reservation.stagingFile.exists())
+            assertEquals("keep", reservation.transferFile.readText())
             assertTrue(store.delete(reservation))
+        }
+    }
+
+    @Test
+    fun hardLinkDriftRejectsWriteWithoutPublishingThroughAnotherLink() = runTest {
+        withTemporaryDirectory { cache ->
+            val store = testTransferStore(cache)
+            val reservation = store.createReservation(metadata(byteLength = 1))
+            val alias = File(reservation.transferFile.parentFile, "external-hard-link")
+            Files.createLink(alias.toPath(), reservation.transferFile.toPath())
+
+            assertFails { reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1) }
+            reservation.mediaSink.abort()
+
+            assertTrue(alias.isFile)
+            assertTrue(alias.delete())
         }
     }
 
@@ -222,7 +271,7 @@ class MediaCaptureTransferStoreTest {
             val second = testTransferStore(cache)
 
             assertTrue(second.isAvailable)
-            assertTrue(reservation.finalFile.isFile)
+            assertTrue(reservation.transferFile.isFile)
             second.closeGeneration()
             assertTrue(first.delete(reservation))
             first.closeGeneration()
@@ -242,7 +291,7 @@ class MediaCaptureTransferStoreTest {
             val second = testTransferStore(cache)
 
             assertTrue(second.isAvailable)
-            assertTrue(reservation.finalFile.isFile)
+            assertTrue(reservation.transferFile.isFile)
             assertTrue(first.delete(reservation))
             second.closeGeneration()
         }

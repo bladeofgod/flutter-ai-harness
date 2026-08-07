@@ -10,7 +10,6 @@ resolution: workspace
 dependencies:
   app_core: any
   app_data: any
-  app_im: any
   app_media: any
   app_media_capture_bridge: any
   app_ui: any
@@ -36,5 +35,4 @@ flutter:
     - assets/images/catalog/categories/
     - assets/images/catalog/products/
     - assets/images/profile/
-    - assets/images/wishlist/
     - assets/images/welcome/shoppe_brand.png

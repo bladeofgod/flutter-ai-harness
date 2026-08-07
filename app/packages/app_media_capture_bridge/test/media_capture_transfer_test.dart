@@ -141,11 +141,36 @@ void main() {
         'schemaVersion',
         'contractId',
         'consumerBindings',
+        'generation',
         'current',
         'history',
         'transfer',
         'lifecycle',
         'redaction',
+      });
+      final generation = _objectMap(crossRuntime['generation']);
+      expect(generation, {
+        'generatorVersion': 1,
+        'normalizedDescriptorDigest':
+            '76e65a567971ca209e0b4f50412e79002a83eda04869149f21d136a7c6569d27',
+        'wireVersion': 3,
+        'methodCount': 17,
+        'eventCount': 5,
+        'resultTypeCount': 14,
+        'failureTypeCount': 1,
+        'errorCount': 36,
+        'payloadDescriptorCount': 28,
+        'fieldDescriptorCount': 40,
+        'contractImplementationDigest':
+            'b5aeb860563a1de121269f0334c4567acc68b5fd50366a1d020e7bbca5f16a61',
+        'outputImplementationDigests': {
+          'dart':
+              '99fc39ef9181f3709b4dbf8cfce1433454903d0a1e0e78f5a576f517d63b87f7',
+          'android':
+              'b8bf9e693ff51e20174b6122ddb7890dfb49c230173402ca4536c67baa7747a6',
+          'ios':
+              '26592a0b26ab9ce7953d0a3536cf91bfa88f127b2004a8ebdf4557c44ed87d36',
+        },
       });
       final current = _objectMap(crossRuntime['current']);
       expect(current['capabilityVersion'], 4);

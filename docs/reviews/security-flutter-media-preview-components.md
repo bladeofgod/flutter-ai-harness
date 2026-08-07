@@ -22,10 +22,15 @@ implementationFiles:
   - app/tool/redact_evidence.dart
   - scripts/quality/evidence-lint.sh
   - scripts/quality/test-evidence.sh
-implementationDigest: edcd6ee08c440740e0cdad85c3a6aae76131357f19bb129226924fdc3c87a817
+implementationDigest: 1471c277c7884261be6066f247a6135141fefe7cd7bf29db3793b0179fd0c6e8
 ---
 
 # Security Review：Flutter 媒体预览组件
+
+## Workspace 消费检查器影响
+
+共享 lockfile 只把既有 `analyzer 10.0.1` 从传递依赖提升为根工具直接 dev dependency，版本、来源与
+SHA-256 未变。媒体预览生产依赖、解码边界、日志和资源生命周期均未修改。
 
 ## 最终结论
 
@@ -105,3 +110,9 @@ target 均编译成功。第三方 Android 低版本全帧解码、原生异常�
 
 lockfile 变化只把已存在的 `xml` 提升为 Harness 直接 dev dependency；Thumbnail/Viewer、播放器和资源
 生命周期实现未修改。独立安全复审为 P0/P1/P2 0/0/0，本报告刷新摘要。
+
+## Wire Formatter 工具依赖影响
+
+共享 lockfile 新增精确固定的 `dart_style 3.1.7` direct dev dependency，仅服务 Wire generator 的内存
+格式化，不进入 `app_media` Runtime。Thumbnail/Viewer、播放器、文件边界与资源生命周期均未修改，
+P0/P1/P2 维持 0/0/0。

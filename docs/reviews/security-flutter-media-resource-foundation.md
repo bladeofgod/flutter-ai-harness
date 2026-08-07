@@ -24,10 +24,17 @@ implementationFiles:
   - app/tool/check_package_dependencies.dart
   - scripts/lint/repository-boundaries.sh
   - scripts/lint/test-repository-boundaries.sh
-implementationDigest: 24781a8dca9fdefa11a45b2449b6acabf926805d8eae0f50fb512afa2c9860df
+implementationDigest: a4055494ca97fbc4ee792d3f37e72079744e0ca33d3db6599315e856a88a3d50
 ---
 
 # Security Review: Flutter 媒体资源存储基础件
+
+## Workspace 消费检查器影响
+
+依赖工具新增显式消费模式：Workspace path 必须为根内普通目录，root/package pubspec 与输入 JSON 必须
+为普通文件；源码只用 Analyzer AST 读取 import/export，不执行被扫描代码；错误不回显绝对路径。
+Plugin 例外同时要求 pub graph 可达、目标 pubspec 平台声明以及 Android/iOS discovery 的唯一 production
+native entry。默认依赖矩阵未放宽，媒体 Store、文件系统和资源 API 未修改。
 
 ## 首轮结论
 
@@ -105,3 +112,15 @@ pubspec、lockfile 和依赖门禁继续保留在实现文件集合中；当前�
 媒体输入、文件访问、网络来源或权限。`app_media` Store、canonicalization、lease 和 cleanup 实现未改，
 锁文件内容保持不变。隔离 Runner 配置下的 bootstrap 已通过，本报告 P0/P1/P2 维持 0/0/0，并按原文件
 集合重新绑定摘要；独立增量安全复核未发现新的供应链或 Runtime 信任边界风险。
+
+## Workspace 冗余依赖清理影响
+
+Demo 不再直连 `app_media`，但其生产源码原本也未直接 import 该包；`app_features` 仍直接消费并传递
+Media 与 Bridge。Store、文件系统、canonicalization、预算、lease 和清理语义未改，lockfile 没有新增
+版本或来源；完整 Workspace 测试与双平台 Host 构建通过。P0/P1/P2 维持 0/0/0。
+
+## Wire Formatter 工具依赖影响
+
+根 Workspace 新增精确固定的 `dart_style 3.1.7` direct dev dependency，只由 Wire generator 在内存中
+消费，不进入 `app_media` Runtime。Store、文件系统 canonicalization、预算、lease 与 cleanup ownership
+均未改变，P0/P1/P2 维持 0/0/0。

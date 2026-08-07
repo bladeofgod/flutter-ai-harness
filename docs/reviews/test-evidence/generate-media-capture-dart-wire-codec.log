@@ -1,0 +1,87 @@
+Evidence format: bounded-v1
+
+## Command
+
+```text
+bash -c $'set -euo pipefail\ncd app\ndart run tool/generate_media_capture_wire.dart --runtime dart --check\ncd ..\nTOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/flutter-tool.sh analyze --fatal-infos\nTOOL_WORKDIR=app/packages/app_media_capture_bridge bash scripts/flutter-tool.sh test'
+```
+
+## Tool Versions
+
+```text
+GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)
+GNU Make 3.81
+Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "macos_arm64"
+Flutter 3.41.9 • channel [user-branch] • unknown source
+openjdk version "21.0.10" 2026-01-20
+Xcode 26.5
+Build version 17F42
+```
+
+## Result
+
+Exit code: 0
+
+Output SHA-256: 5079ac8e93308246b68b322dc6f8cb1d65314f795061df512b2db5e9a9e6bdcf
+Original output bytes: 21815
+Original output lines: 210
+Summary output bytes: 5146
+Summary output lines: 51
+Truncated: yes
+Selection: success-stable-lines-v1
+
+## Output Summary
+
+```text
+[media-capture-wire] checked dart output (76e65a567971ca209e0b4f50412e79002a83eda04869149f21d136a7c6569d27)
+Resolving dependencies in `<repo>/app`...
+Downloading packages...
+  _fe_analyzer_shared 93.0.0 (105.0.0 available)
+  analyzer 10.0.1 (14.1.0 available)
+  cli_util 0.5.1 (0.5.2 available)
+  cross_file 0.3.5+2 (0.3.5+4 available)
+  dart_style 3.1.7 (3.1.12 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_plugin_android_lifecycle 2.0.34 (2.0.35 available)
+  go_router 15.1.3 (17.4.0 available)
+  image_picker 1.2.2 (1.2.3 available)
+  image_picker_android 0.8.13+17 (0.8.13+19 available)
+  image_picker_ios 0.8.13+3 (0.8.13+6 available)
+  jni 1.0.2 (1.0.3 available)
+  lints 5.1.1 (6.1.0 available)
+  matcher 0.12.19 (0.12.20 available)
+  melos 7.8.2 (8.2.2 available)
+  meta 1.17.0 (1.19.0 available)
+  mustache_template 2.0.4 (2.0.5 available)
+00:00 +100: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +101: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +102: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +103: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +104: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+...[summary byte limit reached; use the redacted CI artifact for full output]...
+00:00 +105: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +106: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +107: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +108: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +109: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +110: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +111: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +112: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +113: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +114: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +115: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +116: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +117: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +118: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +119: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +120: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +121: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:00 +122: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:01 +123: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:02 +124: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:02 +125: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: Dart generated Wire output has no drift
+00:04 +126: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: codec consumes every generated payload descriptor
+00:04 +127: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: generated descriptor coverage matches the shared neutral golden
+00:04 +128: <repo>/app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart: public package surface does not expose generated internals
+00:04 +129: All tests passed!
+```

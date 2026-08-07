@@ -38,10 +38,12 @@
 - 实现状态：已实现。
 - 目标所有者：`apps/demo` 组合根可见的认证状态协调层，组合 `AuthService` 与 `UserService`。
 - 模块路径：`app/apps/demo/lib/auth/auth_state.dart`。
-- 公共 API：`authenticate(AuthResult)`、`updateCurrentUser(UserEntity)`、`logout()`、`session`、`isLoggedIn` 和 `CurrentUserProvider.value`；同时实现 `Listenable`。
+- 公共 API：`authenticate(AuthResult)`、`updateCurrentUser(UserEntity)`、`logout()`、`attachSessionReset(VoidCallback)`、`session`、`isLoggedIn` 和 `CurrentUserProvider.value`；同时实现 `Listenable`。
 - 首个消费者：受认证保护的 Profile Route 与 Shoppe Auth 成功回调；根组合装配、Router 刷新、注册/登录认证提交和 Profile Provider 注入均已接线。
 - 采用模式：作为 Session/User 的唯一公共写入入口，同时实现 GoRouter 刷新 `Listenable` 和 Feature 所需的只读 `CurrentUserProvider`。认证事务先写入 ID 匹配的 User 与 Session，登出事务先清空二者，再各发送一次共享通知。
-- 生命周期：由壳工程组合根创建一个实例并交给 Router/Profile，根 App 销毁时调用 `dispose()`；页面切换和登出不销毁实例。
+- 生命周期：由壳工程组合根创建一个实例并交给 Router/Profile，根 App 销毁时调用幂等 `dispose()`；页面切换和登出不销毁实例。`attachSessionReset` 按注册顺序保存回调并返回只解除该次注册的幂等句柄；logout 对当前注册快照分发，分发中解除不跳过既有项，新注册从下一次有效 logout 生效。
+- 所有权：`DemoApp` 只拥有自己的 Session Reset 注册。销毁顺序为 Router、解除注册、内部 Registry、内部 Coordinator；即使 Coordinator 或 Registry 由外部持有，App 卸载也会解除自己的回调，但不会销毁外部对象。外部 Registry 以已登出的 Coordinator 重新挂载时，App 会在注册前清理一次会话状态，避免卸载期间发生的 logout 让保留 Registry 携带上一用户数据。
+- 失败边界：logout 分发期间的重入会直接返回；单个 reset 同步失败会以脱敏错误上报，但不会阻断后续 reset、认证状态清空或通知。
 - 状态不变量：每次对外通知时，已登录必须同时存在 User 和 Session 且 User ID 匹配；未登录必须同时不存在 User 与 Session。不得公开可绕过 Coordinator 的单 Service 写入路径。
 - 禁止耦合：不负责调用 Auth API、保存密码、显示 UI、执行导航或持久化 Session；Feature 不 import、查找或持有 Coordinator 类型。
 - 启用验证：`app/apps/demo/test/auth/auth_state_test.dart` 监听完整通知序列，断言单次事务只通知一次且没有不一致中间快照；`app/apps/demo/test/router/demo_router_test.dart` 覆盖未登录/已登录 Redirect 与登出；`app/packages/app_features/test/feature_profile/profile_dashboard_page_test.dart` 覆盖 Provider 更新和页面销毁时释放监听。

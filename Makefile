@@ -1,4 +1,4 @@
-.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap codex-adapters codex-adapters-check format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test media-capture-android media-capture-ios check proto proto-check marionette-install hooks-install hooks-uninstall
+.PHONY: setup flutter-sdk prerequisites prerequisites-test bootstrap codex-adapters codex-adapters-check format analyze test integration-test integration-runner-test spec-check spec-test lint lint-test hook-test evidence-lint evidence-test harness-check harness-test media-capture-wire-generate media-capture-wire-check media-capture-android media-capture-ios check proto proto-check marionette-install hooks-install hooks-uninstall
 
 setup: prerequisites flutter-sdk
 	$(MAKE) bootstrap
@@ -63,7 +63,17 @@ harness-check: codex-adapters-check
 	bash scripts/dart-tool.sh run tool/harness_check.dart
 
 harness-test:
-	bash scripts/quality/test-harness.sh
+	bash scripts/quality/run-harness-tests.sh
+
+media-capture-wire-generate:
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime dart
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime android
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime ios
+
+media-capture-wire-check:
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime dart --check
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime android --check
+	bash scripts/dart-tool.sh run tool/generate_media_capture_wire.dart --runtime ios --check
 
 media-capture-android:
 	bash scripts/quality/media-capture-android.sh
@@ -71,7 +81,7 @@ media-capture-android:
 media-capture-ios:
 	bash scripts/quality/media-capture-ios.sh
 
-check: prerequisites format analyze harness-check spec-check lint lint-test harness-test spec-test integration-runner-test hook-test evidence-lint evidence-test prerequisites-test proto-check test
+check: prerequisites format analyze media-capture-wire-check harness-check spec-check lint lint-test harness-test spec-test integration-runner-test hook-test evidence-lint evidence-test prerequisites-test proto-check test
 
 proto:
 	bash scripts/proto/generate.sh

@@ -106,8 +106,8 @@ summary_is_exact_success() {
   SUMMARY_JSON="$summary" ruby -rjson -e '
     summary = JSON.parse(ENV.fetch("SUMMARY_JSON"))
     valid = summary.fetch("result") == "Passed" &&
-      summary.fetch("totalTestCount") == 69 &&
-      summary.fetch("passedTests") == 69 &&
+      summary.fetch("totalTestCount") == 70 &&
+      summary.fetch("passedTests") == 70 &&
       summary.fetch("failedTests") == 0 &&
       summary.fetch("skippedTests") == 0 &&
       summary.fetch("expectedFailures") == 0
@@ -213,9 +213,9 @@ emit_sanitized_failure_summary() {
 }
 
 verify_result_policy_fixture() {
-  local passed='{"result":"Passed","totalTestCount":69,"passedTests":69,"failedTests":0,"skippedTests":0,"expectedFailures":0}'
-  local drifted='{"result":"Passed","totalTestCount":69,"passedTests":68,"failedTests":0,"skippedTests":1,"expectedFailures":0}'
-  local failed='{"result":"Failed","totalTestCount":69,"passedTests":68,"failedTests":1,"skippedTests":0,"expectedFailures":0}'
+  local passed='{"result":"Passed","totalTestCount":70,"passedTests":70,"failedTests":0,"skippedTests":0,"expectedFailures":0}'
+  local drifted='{"result":"Passed","totalTestCount":70,"passedTests":69,"failedTests":0,"skippedTests":1,"expectedFailures":0}'
+  local failed='{"result":"Failed","totalTestCount":70,"passedTests":69,"failedTests":1,"skippedTests":0,"expectedFailures":0}'
   local tests='{"testNodes":[{"name":"BridgeTests","nodeType":"Test Suite","result":"Failed","children":[{"name":"testSafeFailure()","nodeType":"Test Case","result":"Failed","failureText":"/private/secret 00000000-0000-0000-0000-000000000000"}]}]}'
   local output
 
@@ -279,4 +279,4 @@ if ! summary_is_exact_success "$SUMMARY"; then
   printf '%s\n' 'Bridge Core Simulator runtime tests failed; private build output was not emitted.' >&2
   exit 1
 fi
-printf '%s\n' 'Bridge Core Simulator runtime tests passed with an exact 69-test result.'
+printf '%s\n' 'Bridge Core Simulator runtime tests passed with an exact 70-test result.'

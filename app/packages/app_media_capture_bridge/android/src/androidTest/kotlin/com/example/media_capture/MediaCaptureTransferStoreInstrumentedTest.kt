@@ -24,21 +24,28 @@ class MediaCaptureTransferStoreInstrumentedTest {
         val sentinel = File(root, "sentinel.bin").apply { writeBytes(byteArrayOf(9)) }
         val symlinkReservation = store.createReservation(metadata())
         runBlocking { symlinkReservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1) }
-        assertTrue(symlinkReservation.stagingFile.delete())
-        Os.symlink(sentinel.absolutePath, symlinkReservation.stagingFile.absolutePath)
+        assertTrue(symlinkReservation.transferFile.delete())
+        Os.symlink(sentinel.absolutePath, symlinkReservation.transferFile.absolutePath)
 
         assertFails { runBlocking { symlinkReservation.mediaSink.write(byteArrayOf(1), 1) } }
         runBlocking { symlinkReservation.mediaSink.abort() }
 
         assertEquals(byteArrayOf(9).toList(), sentinel.readBytes().toList())
-        assertTrue(OsConstants.S_ISLNK(Os.lstat(symlinkReservation.stagingFile.absolutePath).st_mode))
+        assertTrue(OsConstants.S_ISLNK(Os.lstat(symlinkReservation.transferFile.absolutePath).st_mode))
         assertFalse(symlinkReservation.descriptor.valid)
-        Os.remove(symlinkReservation.stagingFile.absolutePath)
+        Os.remove(symlinkReservation.transferFile.absolutePath)
 
         val hardLinkReservation = store.createReservation(metadata())
         runBlocking { hardLinkReservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1) }
-        val alias = File(hardLinkReservation.stagingFile.parentFile, "external-hard-link")
-        Os.link(hardLinkReservation.stagingFile.absolutePath, alias.absolutePath)
+        val alias = File(hardLinkReservation.transferFile.parentFile, "external-hard-link")
+        val hardLinksSupported =
+            runCatching {
+                Os.link(hardLinkReservation.transferFile.absolutePath, alias.absolutePath)
+            }.isSuccess
+        if (!hardLinksSupported) {
+            assertTrue(store.delete(hardLinkReservation))
+            return@withProductionStore
+        }
 
         assertFails { runBlocking { hardLinkReservation.mediaSink.write(byteArrayOf(1), 1) } }
         runBlocking { hardLinkReservation.mediaSink.abort() }
@@ -55,7 +62,7 @@ class MediaCaptureTransferStoreInstrumentedTest {
             runBlocking { reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1) }
             val externalDescriptor =
                 Os.open(
-                    reservation.stagingFile.absolutePath,
+                    reservation.transferFile.absolutePath,
                     OsConstants.O_WRONLY or OsConstants.O_APPEND,
                     0,
                 )
@@ -69,27 +76,46 @@ class MediaCaptureTransferStoreInstrumentedTest {
             runBlocking { reservation.mediaSink.abort() }
 
             assertFalse(reservation.descriptor.valid)
-            assertFalse(reservation.stagingFile.exists())
+            assertFalse(reservation.transferFile.exists())
         }
 
     @Test
-    fun productionPublishDoesNotReplaceFinalAndClosesDescriptor() = withProductionStore { root, store ->
+    fun productionCommitDoesNotReplaceTargetAndClosesDescriptor() = withProductionStore { root, store ->
         val reservation = store.createReservation(metadata())
         runBlocking {
             reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1)
             reservation.mediaSink.write(byteArrayOf(1), 1)
         }
         val sentinel = File(root, "final-sentinel.bin").apply { writeBytes(byteArrayOf(8)) }
-        Os.symlink(sentinel.absolutePath, reservation.finalFile.absolutePath)
+        assertTrue(reservation.transferFile.delete())
+        Os.symlink(sentinel.absolutePath, reservation.transferFile.absolutePath)
 
         assertFails { runBlocking { reservation.mediaSink.commit(1) } }
         runBlocking { reservation.mediaSink.abort() }
 
         assertEquals(byteArrayOf(8).toList(), sentinel.readBytes().toList())
-        assertTrue(OsConstants.S_ISLNK(Os.lstat(reservation.finalFile.absolutePath).st_mode))
+        assertTrue(OsConstants.S_ISLNK(Os.lstat(reservation.transferFile.absolutePath).st_mode))
         assertFalse(reservation.descriptor.valid)
         assertTrue(store.delete(reservation))
-        Os.remove(reservation.finalFile.absolutePath)
+        Os.remove(reservation.transferFile.absolutePath)
+    }
+
+    @Test
+    fun productionCommitKeepsReservedPathAndClosesDescriptor() = withProductionStore { _, store ->
+        val reservation = store.createReservation(metadata())
+        val reservedPath = reservation.transferFile.canonicalPath
+
+        runBlocking {
+            reservation.mediaSink.begin(MediaType.PHOTO, "image/jpeg", 1)
+            reservation.mediaSink.write(byteArrayOf(1), 1)
+            reservation.mediaSink.commit(1)
+        }
+
+        assertTrue(reservation.committed)
+        assertEquals(reservedPath, reservation.transferFile.canonicalPath)
+        assertTrue(store.fileUri(reservation).endsWith(".jpg"))
+        assertFalse(reservation.descriptor.valid)
+        assertTrue(store.delete(reservation))
     }
 
     private fun withProductionStore(block: (File, MediaCaptureTransferStore) -> Unit) {

@@ -4,21 +4,47 @@
   "consumerBindings": [
     {
       "path": "app/packages/app_media_capture_bridge/test/media_capture_transfer_test.dart",
-      "implementationDigest": "72213ca9473de4ea28279d9e629d628ebc61ff32cb0a8228e4860575c13964d2"
+      "implementationDigest": "7eb1529670a69388342a9694ff5b07b0c9b336606d1ddd4f8921cf7718b7771f"
+    },
+    {
+      "path": "app/packages/app_media_capture_bridge/test/media_capture_generated_wire_test.dart",
+      "implementationDigest": "f1e67d8847916448018de3df0463e01624a1d64f1e26665f3b5b13236da2553c"
     },
     {
       "path": "app/native/android/media_capture_gate/src/adapterTest/kotlin/com/example/media_capture/AndroidContractVectorGateTest.kt",
-      "implementationDigest": "e4d1734c639b968fdbfa549fbfe49735f899f3a46736030621ec15926f06b898"
+      "implementationDigest": "0727a4f89d63a38dfb13e58371a9b98326c1fd5683adc845e61e2e287b5ffb8c"
+    },
+    {
+      "path": "app/packages/app_media_capture_bridge/android/src/test/kotlin/com/example/media_capture/MediaCaptureGeneratedWireTest.kt",
+      "implementationDigest": "02b3a251f9fae3063c36e4d1903ec4d61a77893dc663dc664382324220c73b14"
     },
     {
       "path": "app/packages/app_media_capture_bridge/ios/app_media_capture_bridge/Tests/MediaCaptureBridgeCoreTests/MediaCaptureWireCodecTests.swift",
-      "implementationDigest": "eb5811265ebc4bc9dad9fe5a0e41788209deeebb83ce01df7ceb223c9b3b0773"
+      "implementationDigest": "1646ebfd012a75d23564101a863e3e5e009face269a3679bed0c7ea26c339844"
     },
     {
       "path": "app/packages/app_media_capture_bridge/ios/tool/verify-core-tests.sh",
-      "implementationDigest": "4eebced7f25c7daf303e59255d7901fb8f676481bd255063fc41746a448d0e97"
+      "implementationDigest": "01449b076e770578f8b1348d56080ed472756f3085375290be9e5df026333fb1"
     }
   ],
+  "generation": {
+    "generatorVersion": 1,
+    "normalizedDescriptorDigest": "76e65a567971ca209e0b4f50412e79002a83eda04869149f21d136a7c6569d27",
+    "wireVersion": 3,
+    "methodCount": 17,
+    "eventCount": 5,
+    "resultTypeCount": 14,
+    "failureTypeCount": 1,
+    "errorCount": 36,
+    "payloadDescriptorCount": 28,
+    "fieldDescriptorCount": 40,
+    "contractImplementationDigest": "b5aeb860563a1de121269f0334c4567acc68b5fd50366a1d020e7bbca5f16a61",
+    "outputImplementationDigests": {
+      "dart": "99fc39ef9181f3709b4dbf8cfce1433454903d0a1e0e78f5a576f517d63b87f7",
+      "android": "f53bcd5a16a03c3107c429077feb31f603bc7d29640ecaad19a3ef19efea7be8",
+      "ios": "110873ace7ec210f0b90bb68a17894ca72f98c62630ab49dbe719c3140c5275c"
+    }
+  },
   "current": {
     "capabilityVersion": 4,
     "wireVersion": 3,
