@@ -32,6 +32,7 @@ implementationFiles:
   - scripts/flutter-tool.sh
   - scripts/install-ripgrep.sh
   - docs/README.zh-CN.md
+  - docs/media/harness-readme-banner.png
   - docs/architecture.md
   - docs/bridge/media-capture.md
   - docs/bridge/media-capture-android.md
@@ -42,7 +43,7 @@ implementationFiles:
   - docs/infrastructure/media-capture-ios.md
   - docs/infrastructure/media-resources.md
   - docs/native-architecture.md
-implementationDigest: 8f1419f15c88a20bb0071b7e87b1d2cdb3be8c3148a5fd1a91ccc8894c59d98f
+implementationDigest: 8364f405d955f438335e56ac2ec9b6c5dbc996d8e3edf27f0853c7b9680c6175
 ---
 
 # Security Review：Media Capture 跨 Runtime 最终集成
@@ -194,3 +195,10 @@ implementationFiles 重新绑定。无 ready emulator 的设备矩阵缺口保�
 实施前等待用户批准。该文档变更不修改本仓库命令、Agent 权限、依赖来源、Host、Wire、平台权限、媒体
 locator 或资源生命周期；本报告摘要按既有 implementationFiles 重新绑定，原安全结论和人工设备验收边界
 不变。
+
+## README Harness 静态横图影响
+
+2026-08-07 中英文 README 在标题下引用同一张仓库内 PNG，用固定文字和流程节点说明 Harness 的仓库级
+工程定位、执行闭环与“非运行时 SDK”边界。图片不包含脚本、远程资源、链接、用户输入或可执行内容，
+也不改变本仓库命令、Agent 权限、依赖来源、Host、Wire、平台权限、媒体 locator 或资源生命周期。
+图片已加入 implementationFiles，P0/P1/P2 维持 0/0/0。

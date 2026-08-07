@@ -1,5 +1,7 @@
 # Flutter AI Harness
 
+![Flutter AI Harness repository-native engineering system](docs/media/harness-readme-banner.png)
+
 **[Read the detailed guide](https://htmlpreview.github.io/?https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/index.html)** · [中文 README](docs/README.zh-CN.md)
 
 An AI-native engineering harness for production Flutter and hybrid mobile application repositories.
