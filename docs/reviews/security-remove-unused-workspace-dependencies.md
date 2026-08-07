@@ -18,10 +18,11 @@ implementationFiles:
   - docs/architecture.md
   - docs/im-architecture.md
   - docs/figma/shoppe-main-app-design-context.md
+  - docs/assets/harness-guide.css
   - docs/assets/harness-guide.js
   - docs/index.html
   - docs/zh-CN/index.html
-implementationDigest: fe7520a1ea620558c237ca1e9181e08adf17b0063b1332a0021420dac9a275ad
+implementationDigest: bc2ba3f83b2c2ae5be7328565e556b706978004e4e61a20d705c721bbfd222c4
 ---
 
 # Security Review：移除无消费者 Workspace Package 与直接依赖
@@ -68,3 +69,10 @@ implementationDigest: fe7520a1ea620558c237ca1e9181e08adf17b0063b1332a0021420dac9
 凭据或剪贴板内容，不发起网络请求，也不使用远程脚本、`eval` 或持久存储。该页面变更不改变 Workspace
 依赖、Plugin discovery、构建命令、CI、Agent 配置或权限；摘要按当前 implementationFiles 重新绑定，原
 依赖清理安全结论不变。
+
+## 首屏 Harness 执行动画影响
+
+中英文详细指南使用仓库内 HTML 与 CSS，把首屏右侧的 Demo 运行截图替换为 Harness 执行闭环动画；Demo
+截图仍只出现在后续参考实现小结。动画内容是固定展示文本，不读取用户输入，不执行命令，也没有新增脚本、
+网络请求、远程资源、存储、权限或 Agent/CI 能力；`prefers-reduced-motion` 下会停止动画。样式文件已加入
+implementationFiles，当前依赖清理与 Plugin discovery 安全结论不变。

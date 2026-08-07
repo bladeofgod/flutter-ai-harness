@@ -15,10 +15,11 @@ implementationFiles:
   - scripts/lint/test-repository-boundaries.sh
   - CLAUDE.md
   - docs/architecture.md
+  - docs/assets/harness-guide.css
   - docs/assets/harness-guide.js
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: 920034d08e3f68859921082b160c303240e253b40325de7caa082fde1cbebc76
+implementationDigest: 0708e38b5a92026415b834273db083a8e87c7bd45c5552e262b82901fa501620
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -118,3 +119,10 @@ Android/iOS 注册链和发布边界均未改变，P0/P1/P2 维持 0/0/0。
 只在用户点击后把固定提示词文本写入剪贴板，不执行提示词或命令，不读取表单、凭据或剪贴板内容，不访问
 网络，也不加载远程代码。本次页面变更不修改 Workspace Package、Plugin discovery、SwiftPM 接线、Agent
 配置或发布边界；摘要按当前 implementationFiles 重新绑定，P0/P1/P2 维持 0/0/0。
+
+## 首屏 Harness 执行动画影响
+
+中英文详细指南使用仓库内 HTML 与 CSS，把首屏右侧的 Demo 运行截图替换为 Harness 执行闭环动画；Demo
+截图仍只出现在后续参考实现小结。动画是固定、只读的视觉表达，不增加脚本、网络请求、远程资源、用户输入、
+存储或权限，并为减少动态效果偏好提供静态状态。该变更不影响 Workspace Package、Plugin discovery、
+SwiftPM、媒体能力、Agent 配置或发布边界；样式文件已加入 implementationFiles，P0/P1/P2 维持 0/0/0。
