@@ -525,47 +525,184 @@
 
           <section class="section" id="adoption">
             <p class="section-kicker">08 / 采用方式</p>
-            <h2>复用工程模式，不必复刻目录结构。</h2>
+            <h2>从你的工程开始，让 Harness 适配进去。</h2>
             <p class="section-lead">
-              这套仓库刻意保持可改造性。采用目标是保留明确契约和反馈闭环，同时允许目标工程
-              延续自己的技术栈、Package 边界、CI 和团队约定。
+              主要路径不是安装 Flutter Demo，而是在你准备构建的工程中启动编码 Agent，
+              使用下面的提示词，并把所有实施动作放在明确的人工批准门禁之后。
             </p>
 
-            <div class="adoption-paths">
-              <div class="adoption-path">
-                <div class="path-number">01</div>
-                <div><h3>改造已有工程</h3></div>
+            <div class="adoption-journey" aria-label="四步采用流程">
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">01</span>
+                <strong>进入目标工程</strong>
+                <p>在你拥有的目标仓库中启动 Agent。</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">02</span>
+                <strong>发现工程事实</strong>
+                <p>审计已有工程，或讨论一个新项目。</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">03</span>
+                <strong>审查采用方案</strong>
+                <p>确认技术栈、边界、文件和验证方式。</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">04</span>
+                <strong>实施并验证</strong>
+                <p>只落地批准后的目标工程 Harness。</p>
+              </div>
+            </div>
+
+            <div class="adoption-start">
+              <div>
+                <span class="adoption-label">从这里开始</span>
+                <h3>在目标目录中打开你的编码 Agent。</h3>
                 <p>
-                  在目标仓库中启动 Agent。它先审计现有指令、架构、CI 和已有改动，
-                  提出采用方案并等待用户批准，然后才能实施。
+                  目标工程始终保持权威。Harness 来源仓库位于目标目录之外，
+                  只作为本次采用的参考输入。
                 </p>
               </div>
-              <div class="adoption-path">
-                <div class="path-number">02</div>
-                <div><h3>创建新工程</h3></div>
-                <p>
-                  空目录中先讨论产品、目标端、约束、技术栈和验证方式。用户批准这些决策
-                  和初始化方案前，不创建文件、不安装依赖。
-                </p>
+              <pre class="adoption-command"><code>cd path/to/your-project
+# 在这里启动 Claude Code、Codex 或具备等价能力的编码 Agent。</code></pre>
+            </div>
+
+            <h3 class="adoption-heading">第一阶段：发现事实并制定方案</h3>
+            <p class="adoption-intro">
+              先粘贴这段提示词。它只授权临时来源 checkout 和对目标目录的只读分析。
+            </p>
+
+            <div class="prompt-panel">
+              <div class="prompt-panel-header">
+                <div class="prompt-panel-title">
+                  <span>阶段 01</span>
+                  <strong>只读启动提示词</strong>
+                </div>
+                <button
+                  class="prompt-copy"
+                  type="button"
+                  data-copy-target="adoption-audit-prompt"
+                  data-copy-success="启动提示词已复制"
+                  data-copy-failure="请手动选择并复制提示词"
+                >复制提示词</button>
               </div>
-              <div class="adoption-path">
-                <div class="path-number">03</div>
-                <div><h3>运行参考 Demo</h3></div>
+              <pre id="adoption-audit-prompt" class="prompt-code" tabindex="0"><code>请将以下 AI Harness 的工程模式适配到当前目录：
+
+https://github.com/bladeofgod/flutter-ai-harness.git
+
+当前目录是目标项目，Harness 仓库只是参考输入。第一阶段保持目标目录只读：
+不要修改目标文件、安装依赖、初始化项目、提交或推送。唯一允许的写入是将 Harness
+克隆到目标目录之外的临时目录；不要执行来源仓库脚本。记录实际使用的精确 Commit，
+并遵循 docs/adoption/AGENT_BOOTSTRAP.zh-CN.md。
+
+如果当前目录是已有工程，先审计技术栈、架构、项目指令、测试、CI 和已有改动，
+再提出适配方案。如果当前目录为空，先与我讨论产品需求、目标端、技术约束、
+部署方式、团队能力和质量要求；技术栈和项目边界得到我批准前，不得初始化工程。
+如果目录状态无法判断，先询问我如何处理。
+
+不要复制 Flutter Demo、业务代码、归档任务、Review 或证据。请输出采用方案、
+计划修改文件、验证命令、冲突和未决问题，然后停止并等待我批准。</code></pre>
+              <div class="prompt-panel-footer">
+                <span>目标目录保持只读</span>
+                <span class="copy-status" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <h3 class="adoption-heading">Agent 只会进入一条安全路径</h3>
+            <div class="adoption-decisions">
+              <div class="adoption-decision existing">
+                <span class="adoption-decision-tag">已有工程</span>
+                <h3>先审计已经成立的事实。</h3>
+                <p>检查技术栈、架构、项目指令、CI、测试和当前改动，再提出任何变更。</p>
+                <strong>输出：采用方案</strong>
+              </div>
+              <div class="adoption-decision new">
+                <span class="adoption-decision-tag">空目录</span>
+                <h3>先讨论产品，再讨论技术栈。</h3>
+                <p>初始化前确认目标端、技术约束、部署方式、团队能力和质量要求。</p>
+                <strong>输出：初始化方案</strong>
+              </div>
+              <div class="adoption-decision ambiguous">
+                <span class="adoption-decision-tag">模糊目录</span>
+                <h3>询问，而不是猜测。</h3>
+                <p>现有文件无法证明项目意图时，Agent 先询问用户该如何处理这个目录。</p>
+                <strong>输出：用户决策</strong>
+              </div>
+            </div>
+
+            <div class="approval-gate">
+              <div class="approval-gate-label">人工门禁</div>
+              <div>
+                <h3>用户批准前，不开始实施。</h3>
                 <p>
-                  可以选择 Clone 并运行本仓库，查看完整可执行示例。运行或复制 Demo
-                  不是采用 Harness 的前置条件。
+                  检查建议技术栈、架构边界、计划修改文件、质量门禁和未决问题。
+                  Agent 在这里停止，直到你明确批准方案。
                 </p>
               </div>
             </div>
 
-            <p>
-              从工具中立的
-              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.zh-CN.md">Agent 采用协议</a>
-              开始。它要求来源材料位于目标目录之外、第一阶段保持只读，并在实施前取得用户明确批准。
-              适配完成后，目标仓库自己的项目契约成为权威；上游变化只是待评估输入，不是自动升级依赖。
+            <h3 class="adoption-heading">第二阶段：实施已批准方案</h3>
+            <p class="adoption-intro">
+              只有方案已经准确描述你要构建的项目，才继续执行。
             </p>
 
-            <h3>适配检查清单</h3>
+            <div class="prompt-panel secondary">
+              <div class="prompt-panel-header">
+                <div class="prompt-panel-title">
+                  <span>阶段 02</span>
+                  <strong>实施提示词</strong>
+                </div>
+                <button
+                  class="prompt-copy"
+                  type="button"
+                  data-copy-target="adoption-implementation-prompt"
+                  data-copy-success="实施提示词已复制"
+                  data-copy-failure="请手动选择并复制提示词"
+                >复制提示词</button>
+              </div>
+              <pre id="adoption-implementation-prompt" class="prompt-code compact" tabindex="0"><code>按照已批准的采用方案实施。保持目标工程已确认的技术栈和项目契约权威，
+只采用存在真实消费者的能力，保护已有改动，并执行目标技术栈检查。
+准确报告无法验证的平台和不可用环境。未经我明确要求，不提交、不推送。</code></pre>
+              <div class="prompt-panel-footer">
+                <span>只实施批准范围</span>
+                <span class="copy-status" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="adoption-resources">
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.zh-CN.md"
+              >
+                <span>完整协议</span>
+                <strong>阅读 Agent 采用契约</strong>
+              </a>
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/existing-project.zh-CN.md"
+              >
+                <span>已有工程</span>
+                <strong>只读审计与适配细节</strong>
+              </a>
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/new-project.zh-CN.md"
+              >
+                <span>新工程</span>
+                <strong>产品与技术栈讨论方式</strong>
+              </a>
+            </div>
+
+            <div class="reference-option">
+              <div>
+                <span class="adoption-label">可选参考</span>
+                <h3>只有需要查看实例时，才运行 Demo。</h3>
+                <p>它是 Harness 有效运行的工程证据，但不是安装步骤，也不是采用前置条件。</p>
+              </div>
+              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/evaluation.zh-CN.md">Demo 评估指南</a>
+            </div>
+
+            <h3 class="adoption-heading">方案必须覆盖什么</h3>
             <ul class="checklist">
               <li>映射 Package 与 Feature 边界</li>
               <li>识别原生宿主职责</li>
@@ -713,5 +850,6 @@
         </a>
       </div>
     </footer>
+    <script src="../assets/harness-guide.js" defer></script>
   </body>
 </html>

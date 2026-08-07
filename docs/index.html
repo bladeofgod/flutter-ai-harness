@@ -548,53 +548,193 @@
 
           <section class="section" id="adoption">
             <p class="section-kicker">08 / Adoption paths</p>
-            <h2>Reuse the pattern, not necessarily the directory tree.</h2>
+            <h2>Start in your repository, then let the Harness adapt.</h2>
             <p class="section-lead">
-              This repository is intentionally adaptable. The goal is to preserve
-              explicit contracts and feedback loops while allowing the host project
-              to keep its own stack, package boundaries, CI, and team conventions.
+              The primary path is not to install the Flutter Demo. Start a coding
+              Agent in the project you want to build, use the prompt below, and keep
+              implementation behind an explicit approval gate.
             </p>
 
-            <div class="adoption-paths">
-              <div class="adoption-path">
-                <div class="path-number">01</div>
-                <div><h3>Adapt an existing project</h3></div>
+            <div class="adoption-journey" aria-label="Four-step adoption flow">
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">01</span>
+                <strong>Open the target</strong>
+                <p>Start the Agent inside the repository you own.</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">02</span>
+                <strong>Discover facts</strong>
+                <p>Audit an existing project or discuss a new one.</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">03</span>
+                <strong>Review the plan</strong>
+                <p>Confirm the stack, boundaries, files, and checks.</p>
+              </div>
+              <div class="adoption-journey-step">
+                <span class="adoption-journey-number">04</span>
+                <strong>Implement and verify</strong>
+                <p>Apply only the approved, target-specific Harness.</p>
+              </div>
+            </div>
+
+            <div class="adoption-start">
+              <div>
+                <span class="adoption-label">Start here</span>
+                <h3>Open your coding Agent in the target directory.</h3>
                 <p>
-                  Start an Agent in the target repository. It audits existing
-                  instructions, architecture, CI, and changes before proposing an
-                  adaptation plan and waiting for approval.
+                  The target stays authoritative. The Harness source is cloned to a
+                  temporary location outside it and used only as reference input.
                 </p>
               </div>
-              <div class="adoption-path">
-                <div class="path-number">02</div>
-                <div><h3>Start a new project</h3></div>
-                <p>
-                  In an empty directory, discuss the product, targets, constraints,
-                  stack, and validation approach first. Nothing is initialized until
-                  the user approves those decisions and the implementation plan.
-                </p>
+              <pre class="adoption-command"><code>cd path/to/your-project
+# Start Claude Code, Codex, or an equivalent coding Agent here.</code></pre>
+            </div>
+
+            <h3 class="adoption-heading">Phase 1: discover and plan</h3>
+            <p class="adoption-intro">
+              Paste this first. It authorizes only a temporary source checkout and
+              read-only analysis of the target.
+            </p>
+
+            <div class="prompt-panel">
+              <div class="prompt-panel-header">
+                <div class="prompt-panel-title">
+                  <span>Phase 01</span>
+                  <strong>Read-only bootstrap prompt</strong>
+                </div>
+                <button
+                  class="prompt-copy"
+                  type="button"
+                  data-copy-target="adoption-audit-prompt"
+                  data-copy-success="Bootstrap prompt copied"
+                  data-copy-failure="Select the prompt and copy it manually"
+                >Copy prompt</button>
               </div>
-              <div class="adoption-path">
-                <div class="path-number">03</div>
-                <div><h3>Run the reference Demo</h3></div>
+              <pre id="adoption-audit-prompt" class="prompt-code" tabindex="0"><code>Adapt the AI Harness engineering model from
+https://github.com/bladeofgod/flutter-ai-harness.git
+to the current directory.
+
+The current directory is the target project. The Harness repository is reference
+input only. Keep the target read-only during phase one: do not edit its files,
+install dependencies, initialize a project, commit, or push. The only permitted
+write is cloning the Harness outside the target into a temporary directory. Do not
+execute source-repository scripts. Record the exact source commit and follow
+docs/adoption/AGENT_BOOTSTRAP.md.
+
+If this is an existing project, audit its stack, architecture, instructions, tests,
+CI, and current changes before proposing an adaptation plan. If the directory is
+empty, first discuss the product requirements, targets, constraints, deployment,
+team capabilities, and quality expectations with me. Do not select a stack or
+initialize the project until I approve those decisions. If the directory is
+ambiguous, ask me how it should be treated.
+
+Do not copy the Flutter Demo, business code, archived tasks, reviews, or evidence.
+Present the adoption plan, proposed files, verification commands, conflicts, and
+unresolved decisions, then stop and wait for my approval.</code></pre>
+              <div class="prompt-panel-footer">
+                <span>Target remains read-only</span>
+                <span class="copy-status" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <h3 class="adoption-heading">The Agent chooses one safe route</h3>
+            <div class="adoption-decisions">
+              <div class="adoption-decision existing">
+                <span class="adoption-decision-tag">Existing project</span>
+                <h3>Audit what is already true.</h3>
+                <p>Inspect the stack, architecture, instructions, CI, tests, and current work before proposing changes.</p>
+                <strong>Output: adaptation plan</strong>
+              </div>
+              <div class="adoption-decision new">
+                <span class="adoption-decision-tag">Empty directory</span>
+                <h3>Discuss the product before the stack.</h3>
+                <p>Confirm targets, constraints, deployment, team capabilities, and quality expectations before initialization.</p>
+                <strong>Output: initialization plan</strong>
+              </div>
+              <div class="adoption-decision ambiguous">
+                <span class="adoption-decision-tag">Ambiguous files</span>
+                <h3>Ask instead of guessing.</h3>
+                <p>When files do not establish project intent, the Agent asks the user how the directory should be treated.</p>
+                <strong>Output: user decision</strong>
+              </div>
+            </div>
+
+            <div class="approval-gate">
+              <div class="approval-gate-label">Human gate</div>
+              <div>
+                <h3>No implementation before approval.</h3>
                 <p>
-                  Optionally clone and run this repository to inspect a complete
-                  working example. Running or copying the Demo is not a prerequisite
-                  for adopting the Harness.
+                  Review the proposed technology stack, architecture boundaries,
+                  changed files, quality gates, and unresolved decisions. The Agent
+                  stops here until you approve the plan.
                 </p>
               </div>
             </div>
 
-            <p>
-              Begin with the tool-neutral
-              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.md">Agent adoption protocol</a>.
-              It keeps source material outside the target, makes phase one read-only,
-              and requires explicit approval before implementation. Once adapted, the
-              target repository's contract becomes authoritative; upstream changes are
-              inputs to evaluate, not automatic dependency upgrades.
+            <h3 class="adoption-heading">Phase 2: implement the approved plan</h3>
+            <p class="adoption-intro">
+              Continue only after the plan reflects the project you actually want.
             </p>
 
-            <h3>Adaptation checklist</h3>
+            <div class="prompt-panel secondary">
+              <div class="prompt-panel-header">
+                <div class="prompt-panel-title">
+                  <span>Phase 02</span>
+                  <strong>Implementation prompt</strong>
+                </div>
+                <button
+                  class="prompt-copy"
+                  type="button"
+                  data-copy-target="adoption-implementation-prompt"
+                  data-copy-success="Implementation prompt copied"
+                  data-copy-failure="Select the prompt and copy it manually"
+                >Copy prompt</button>
+              </div>
+              <pre id="adoption-implementation-prompt" class="prompt-code compact" tabindex="0"><code>Implement the approved adoption plan. Keep the target project's confirmed stack
+and contract authoritative, adopt only capabilities with real consumers, preserve
+existing work, and run the target-specific checks. Report every unverified platform
+or unavailable environment. Do not commit or push unless I explicitly ask.</code></pre>
+              <div class="prompt-panel-footer">
+                <span>Approved scope only</span>
+                <span class="copy-status" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="adoption-resources">
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/AGENT_BOOTSTRAP.md"
+              >
+                <span>Protocol</span>
+                <strong>Read the complete Agent contract</strong>
+              </a>
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/existing-project.md"
+              >
+                <span>Existing project</span>
+                <strong>Audit and adaptation details</strong>
+              </a>
+              <a
+                class="adoption-resource"
+                href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/new-project.md"
+              >
+                <span>New project</span>
+                <strong>Product and stack discovery</strong>
+              </a>
+            </div>
+
+            <div class="reference-option">
+              <div>
+                <span class="adoption-label">Optional reference</span>
+                <h3>Run the Demo only when you want to inspect the example.</h3>
+                <p>It is useful evidence of the model, but it is not an installation step or an adoption prerequisite.</p>
+              </div>
+              <a href="https://github.com/bladeofgod/flutter-ai-harness/blob/main/docs/adoption/evaluation.md">Demo evaluation guide</a>
+            </div>
+
+            <h3 class="adoption-heading">What the plan must cover</h3>
             <ul class="checklist">
               <li>Map package and feature boundaries</li>
               <li>Identify native host responsibilities</li>
@@ -743,5 +883,6 @@
         </a>
       </div>
     </footer>
+    <script src="assets/harness-guide.js" defer></script>
   </body>
 </html>

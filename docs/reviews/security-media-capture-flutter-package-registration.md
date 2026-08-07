@@ -15,9 +15,10 @@ implementationFiles:
   - scripts/lint/test-repository-boundaries.sh
   - CLAUDE.md
   - docs/architecture.md
+  - docs/assets/harness-guide.js
   - docs/zh-CN/index.html
   - docs/index.html
-implementationDigest: ee4dfc71535fb77083ec1c40d4a0529b9db72630f913d3ac19e250fb8842f123
+implementationDigest: 920034d08e3f68859921082b160c303240e253b40325de7caa082fde1cbebc76
 ---
 
 # Security Review: Media Capture Flutter Package 登记
@@ -113,6 +114,7 @@ Android/iOS 注册链和发布边界均未改变，P0/P1/P2 维持 0/0/0。
 
 ## 详细指南采用路径调整影响
 
-中英文详细指南只调整 Harness 采用入口顺序并链接仓库内采用协议；页面没有增加脚本、表单或远程可执行
-资源。本次文档变更不修改 Workspace Package、Plugin discovery、SwiftPM 接线、Agent 配置或发布边界，
-摘要按既有 implementationFiles 重新绑定，P0/P1/P2 维持 0/0/0。
+中英文详细指南调整 Harness 采用入口顺序、展示两阶段提示词并链接仓库内采用协议。新增的本地静态脚本
+只在用户点击后把固定提示词文本写入剪贴板，不执行提示词或命令，不读取表单、凭据或剪贴板内容，不访问
+网络，也不加载远程代码。本次页面变更不修改 Workspace Package、Plugin discovery、SwiftPM 接线、Agent
+配置或发布边界；摘要按当前 implementationFiles 重新绑定，P0/P1/P2 维持 0/0/0。

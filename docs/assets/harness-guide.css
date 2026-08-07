@@ -729,6 +729,350 @@ a {
   border-bottom: 1px solid var(--line);
 }
 
+.adoption-journey {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.adoption-journey-step {
+  min-height: 174px;
+  padding: 24px 22px;
+  background: var(--surface);
+}
+
+.adoption-journey-number {
+  display: block;
+  margin-bottom: 22px;
+  color: var(--coral);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.adoption-journey-step strong {
+  display: block;
+  color: var(--navy);
+  font-size: 17px;
+}
+
+.adoption-journey-step p {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.adoption-start {
+  margin-top: 34px;
+  padding: 28px 30px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 34px;
+  align-items: center;
+  background: var(--teal-soft);
+  border-left: 5px solid var(--teal);
+}
+
+.adoption-start h3,
+.reference-option h3,
+.approval-gate h3,
+.adoption-decision h3 {
+  margin: 7px 0 0;
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.adoption-start p,
+.reference-option p,
+.approval-gate p,
+.adoption-decision p {
+  margin: 9px 0 0;
+  color: var(--ink-soft);
+}
+
+.adoption-label {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.adoption-command {
+  margin: 0;
+  padding: 20px 22px;
+  overflow-x: auto;
+  background: var(--code);
+  color: #d7e4eb;
+  border-radius: var(--radius);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.adoption-heading {
+  margin: 50px 0 0;
+  color: var(--navy);
+  font-size: 24px;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.adoption-intro {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+}
+
+.prompt-panel {
+  margin-top: 18px;
+  overflow: hidden;
+  background: var(--code);
+  border: 1px solid #29404f;
+  border-top: 4px solid var(--teal);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 42px rgba(11, 38, 56, 0.18);
+}
+
+.prompt-panel.secondary {
+  border-top-color: var(--coral);
+}
+
+.prompt-panel-header {
+  min-height: 72px;
+  padding: 14px 18px 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: #172b39;
+  border-bottom: 1px solid #29404f;
+}
+
+.prompt-panel-title span {
+  display: block;
+  color: #79d5cc;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.prompt-panel.secondary .prompt-panel-title span {
+  color: #f19a8d;
+}
+
+.prompt-panel-title strong {
+  display: block;
+  margin-top: 2px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.prompt-copy {
+  min-height: 38px;
+  flex: 0 0 auto;
+  padding: 8px 13px;
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #708896;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 760;
+  cursor: pointer;
+}
+
+.prompt-copy:hover {
+  background: #243e4f;
+  border-color: #ffffff;
+}
+
+.prompt-copy.is-copied {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.prompt-code {
+  max-height: 520px;
+  margin: 0;
+  padding: 26px;
+  overflow: auto;
+  background: transparent;
+  color: #d7e4eb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.68;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.prompt-code.compact {
+  max-height: none;
+}
+
+.prompt-panel-footer {
+  min-height: 48px;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: #8fa5b2;
+  border-top: 1px solid #29404f;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.copy-status {
+  color: #8ad9d1;
+  text-align: right;
+}
+
+.adoption-decisions {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.adoption-decision {
+  min-height: 260px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--teal);
+  border-radius: var(--radius);
+}
+
+.adoption-decision.new {
+  border-top-color: var(--coral);
+}
+
+.adoption-decision.ambiguous {
+  border-top-color: var(--yellow);
+}
+
+.adoption-decision-tag {
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.adoption-decision.new .adoption-decision-tag {
+  color: var(--coral);
+}
+
+.adoption-decision.ambiguous .adoption-decision-tag {
+  color: #8b670c;
+}
+
+.adoption-decision p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.adoption-decision > strong {
+  margin-top: auto;
+  padding-top: 22px;
+  color: var(--navy);
+  font-size: 13px;
+}
+
+.approval-gate {
+  margin-top: 30px;
+  padding: 28px 30px;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 30px;
+  align-items: start;
+  background: #fff4d5;
+  border-top: 1px solid #e8c46a;
+  border-bottom: 1px solid #e8c46a;
+}
+
+.approval-gate-label {
+  color: #7c5d0d;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.approval-gate h3 {
+  margin-top: 0;
+}
+
+.adoption-resources {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.adoption-resource {
+  min-height: 118px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.adoption-resource:hover {
+  background: #eef3f1;
+  color: var(--ink);
+}
+
+.adoption-resource span {
+  color: var(--coral);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.adoption-resource strong {
+  margin-top: 6px;
+  color: var(--navy);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.reference-option {
+  margin-top: 30px;
+  padding: 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.reference-option > div {
+  max-width: 620px;
+}
+
+.reference-option > a {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 760;
+}
+
 .path-number {
   color: var(--coral);
   font-size: 24px;
@@ -913,6 +1257,18 @@ a {
   .demo-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .adoption-journey {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adoption-decisions {
+    grid-template-columns: 1fr;
+  }
+
+  .adoption-decision {
+    min-height: 0;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1039,7 +1395,11 @@ a {
   .source-model,
   .security-band,
   .trigger-grid,
-  .link-list {
+  .link-list,
+  .adoption-journey,
+  .adoption-start,
+  .adoption-resources,
+  .approval-gate {
     grid-template-columns: 1fr;
   }
 
@@ -1120,6 +1480,32 @@ a {
     columns: 1;
   }
 
+  .adoption-journey-step {
+    min-height: 0;
+  }
+
+  .adoption-start,
+  .approval-gate {
+    gap: 18px;
+    padding: 24px;
+  }
+
+  .prompt-code {
+    max-height: 560px;
+    padding: 22px;
+    font-size: 12px;
+  }
+
+  .prompt-code.compact {
+    max-height: none;
+  }
+
+  .reference-option {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .footer-inner {
     min-height: 190px;
     align-items: flex-start;
@@ -1136,6 +1522,25 @@ a {
   .toc ol,
   .demo-grid {
     grid-template-columns: 1fr;
+  }
+
+  .prompt-panel-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .prompt-copy {
+    width: 100%;
+  }
+
+  .prompt-panel-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .copy-status {
+    text-align: left;
   }
 }
 

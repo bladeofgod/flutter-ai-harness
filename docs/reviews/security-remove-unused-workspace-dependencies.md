@@ -18,9 +18,10 @@ implementationFiles:
   - docs/architecture.md
   - docs/im-architecture.md
   - docs/figma/shoppe-main-app-design-context.md
+  - docs/assets/harness-guide.js
   - docs/index.html
   - docs/zh-CN/index.html
-implementationDigest: 2205f939f46f0041f4e9a01da91a48c112ad0e9ebe3c92e4a539b54d01640142
+implementationDigest: fe7520a1ea620558c237ca1e9181e08adf17b0063b1332a0021420dac9a275ad
 ---
 
 # Security Review：移除无消费者 Workspace Package 与直接依赖
@@ -62,6 +63,8 @@ implementationDigest: 2205f939f46f0041f4e9a01da91a48c112ad0e9ebe3c92e4a539b54d01
 
 ## 详细指南采用路径调整影响
 
-中英文详细指南只把真实工程采用和空目录技术选型前置，并将参考 Demo 标记为可选评估路径。新增链接指向
-仓库内采用协议，不改变 Workspace 依赖、Plugin discovery、构建命令、CI、Agent 配置或权限；摘要按既有
-implementationFiles 重新绑定，原依赖清理安全结论不变。
+中英文详细指南把真实工程采用和空目录技术选型前置，将参考 Demo 标记为可选评估路径，并用仓库内静态
+脚本提供提示词复制。脚本只在用户点击后读取固定 DOM 文本并写入剪贴板；不执行提示词或命令，不读取表单、
+凭据或剪贴板内容，不发起网络请求，也不使用远程脚本、`eval` 或持久存储。该页面变更不改变 Workspace
+依赖、Plugin discovery、构建命令、CI、Agent 配置或权限；摘要按当前 implementationFiles 重新绑定，原
+依赖清理安全结论不变。
